@@ -70,3 +70,73 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .tiptap-editor {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm;
+  }
+
+  .tiptap-editor:focus-within {
+    @apply ring-2 ring-blue-500/20 border-blue-500;
+  }
+
+  .prose {
+    @apply max-w-none px-4 py-3;
+  }
+
+  .prose p {
+    @apply my-3 text-gray-800 leading-relaxed;
+  }
+
+  .prose h1 {
+    @apply text-3xl font-bold text-gray-900 mb-4 mt-6;
+  }
+
+  .prose h2 {
+    @apply text-2xl font-semibold text-gray-900 mb-3 mt-5;
+  }
+
+  .prose h3 {
+    @apply text-xl font-semibold text-gray-900 mb-3 mt-4;
+  }
+
+  .prose ul {
+    @apply list-disc list-outside ml-4 space-y-2;
+  }
+
+  .prose ol {
+    @apply list-decimal list-outside ml-4 space-y-2;
+  }
+
+  .prose li {
+    @apply text-gray-800;
+  }
+
+  .prose blockquote {
+    @apply pl-4 border-l-4 border-gray-200 text-gray-700 italic my-4;
+  }
+
+  .prose code {
+    @apply bg-gray-100 text-gray-900 px-1.5 py-0.5 rounded font-mono text-sm;
+  }
+
+  .prose pre {
+    @apply bg-gray-900 text-gray-100 rounded-lg p-4 my-4 overflow-x-auto;
+  }
+
+  .prose a {
+    @apply text-blue-600 hover:text-blue-700 underline decoration-blue-500/30 hover:decoration-blue-600;
+  }
+
+  .prose strong {
+    @apply font-semibold text-gray-900;
+  }
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
