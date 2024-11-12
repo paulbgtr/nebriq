@@ -22,13 +22,14 @@ export const DetailedNote = ({
   id,
   children,
   title: initialTitle,
-  content,
+  content: noteContent,
   createdAt,
 }: DetailedNoteProps) => {
   const [title, setTitle] = useState(initialTitle);
+  const [content, setContent] = useState(noteContent);
+  const { updateNoteMutation } = useNotes();
 
   const editor = useEditor({
-    immediatelyRender: false,
     extensions: [StarterKit, Placeholder.configure()],
     editorProps: {
       attributes: {
@@ -36,14 +37,22 @@ export const DetailedNote = ({
       },
     },
     content,
-  });
+    onUpdate: ({ editor }) => {
+      const newContent = editor.getHTML();
+      setContent(newContent);
 
-  const { updateNoteMutation } = useNotes();
+      updateNoteMutation.mutate({
+        id,
+        title,
+        content: newContent,
+        created_at: createdAt,
+      });
+    },
+  });
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
-    console.log("Updating title to:", newTitle);
 
     updateNoteMutation.mutate({
       id,
