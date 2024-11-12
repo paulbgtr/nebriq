@@ -70,14 +70,13 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
 @layer components {
   .tiptap-editor {
     @apply bg-white rounded-lg border border-gray-200 shadow-sm;
   }
 
   .tiptap-editor:focus-within {
-    @apply ring-2 ring-blue-500/20 border-blue-500;
+    @apply ring-2 ring-gray-500/20 border-gray-500;
   }
 
   .prose {
@@ -125,7 +124,7 @@ body {
   }
 
   .prose a {
-    @apply text-blue-600 hover:text-blue-700 underline decoration-blue-500/30 hover:decoration-blue-600;
+    @apply text-gray-600 hover:text-gray-700 underline decoration-gray-500/30 hover:decoration-gray-600;
   }
 
   .prose strong {
