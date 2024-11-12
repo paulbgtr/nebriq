@@ -5,7 +5,7 @@ type NoteProps = {
 };
 
 export const Note = ({ title, content, createdAt }: NoteProps) => {
-  const shortenedContent = content.slice(0, 100);
+  const contentWithoutHTML = content.replace(/<[^>]*>/g, "");
 
   return (
     <div className="p-4 mb-4 bg-card rounded-lg border border-border shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-primary/20 cursor-pointer">
@@ -13,7 +13,7 @@ export const Note = ({ title, content, createdAt }: NoteProps) => {
         {title}
       </h3>
       <p className="text-muted-foreground mb-3 group-hover:text-foreground/80 transition-colors">
-        {shortenedContent}
+        {contentWithoutHTML.slice(0, 100).trim()}
       </p>
       <div className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
         {createdAt.toLocaleDateString()}
