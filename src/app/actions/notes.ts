@@ -21,6 +21,7 @@ export const updateNote = async (note: Note) => {
   const { data: updatedNote } = await supabase
     .from("notes")
     .update(note)
+    .eq("id", note.id)
     .select();
   return updatedNote;
 };
