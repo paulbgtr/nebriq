@@ -5,6 +5,7 @@ import {
   updateNote,
   deleteNote,
 } from "@/app/actions/notes";
+import queryClient from "@/lib/react-query";
 
 export const useNotes = () => {
   const getNotesQuery = useQuery({
@@ -14,14 +15,23 @@ export const useNotes = () => {
 
   const createNoteMutation = useMutation({
     mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
   });
 
   const updateNoteMutation = useMutation({
     mutationFn: updateNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
   });
 
   const deleteNoteMutation = useMutation({
     mutationFn: deleteNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
   });
 
   return {
