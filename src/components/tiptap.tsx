@@ -10,6 +10,7 @@ import { Spinner } from "@/components/spinner";
 const Tiptap = () => {
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
 
   const { createNoteMutation, updateNoteMutation } = useNotes();
 
@@ -43,7 +44,7 @@ const Tiptap = () => {
 
       updateNoteMutation.mutate({
         id,
-        title: "",
+        title,
         content: newContent,
         created_at: new Date(),
       });
@@ -55,11 +56,28 @@ const Tiptap = () => {
   }
 
   return (
-    <div
-      className="h-full cursor-text"
-      onClick={() => editor?.commands.focus()}
-    >
-      <EditorContent editor={editor} />
+    <div className="flex flex-col h-full gap-4">
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => {
+          setTitle(e.target.value);
+          updateNoteMutation.mutate({
+            id,
+            title: e.target.value,
+            content,
+            created_at: new Date(),
+          });
+        }}
+        placeholder="Untitled"
+        className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
+      />
+      <div
+        className="h-full cursor-text"
+        onClick={() => editor?.commands.focus()}
+      >
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };
