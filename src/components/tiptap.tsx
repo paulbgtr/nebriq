@@ -16,7 +16,10 @@ const Tiptap = () => {
   });
 
   return (
-    <div className="tiptap-editor transition-all duration-200">
+    <div
+      className="h-screen cursor-text"
+      onClick={() => editor?.commands.focus()}
+    >
       <EditorContent editor={editor} />
     </div>
   );
