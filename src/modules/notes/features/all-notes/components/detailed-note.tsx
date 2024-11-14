@@ -15,14 +15,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/shared/components/ui/alert-dialog";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 import { useNotes } from "@/hooks/use-notes";
 import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { CiShare2 } from "react-icons/ci";
+import { Editor } from "./editor";
 
 type DetailedNoteProps = {
   children: React.ReactNode;
@@ -36,33 +34,12 @@ export const DetailedNote = ({
   id,
   children,
   title: initialTitle,
-  content: noteContent,
+  content: initialContent,
   createdAt,
 }: DetailedNoteProps) => {
   const [title, setTitle] = useState(initialTitle);
-  const [content, setContent] = useState(noteContent);
+  const [content, setContent] = useState(initialContent);
   const { updateNoteMutation, deleteNoteMutation } = useNotes();
-
-  const editor = useEditor({
-    extensions: [StarterKit, Placeholder.configure()],
-    editorProps: {
-      attributes: {
-        class: "prose prose-slate focus:outline-none",
-      },
-    },
-    content,
-    onUpdate: ({ editor }) => {
-      const newContent = editor.getHTML();
-      setContent(newContent);
-
-      updateNoteMutation.mutate({
-        id,
-        title,
-        content: newContent,
-        created_at: new Date(createdAt),
-      });
-    },
-  });
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
@@ -71,7 +48,6 @@ export const DetailedNote = ({
     updateNoteMutation.mutate({
       id,
       title: newTitle,
-      content,
       created_at: new Date(createdAt),
     });
   };
@@ -129,9 +105,12 @@ export const DetailedNote = ({
             </div>
           </div>
           <div className="flex-1 overflow-y-auto px-6 py-4">
-            <EditorContent
-              editor={editor}
-              className="[&_.ProseMirror]:h-[73vh]"
+            <Editor
+              id={id}
+              title={title}
+              content={content}
+              setContent={setContent}
+              createdAt={createdAt}
             />
             <div className="text-sm text-muted-foreground/60 mt-4">
               {new Date(createdAt).toLocaleString()}
