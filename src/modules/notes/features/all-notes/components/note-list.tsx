@@ -3,7 +3,7 @@
 import { DetailedNote } from "./detailed-note";
 import { Note } from "./note";
 import { useNotes } from "@/hooks/use-notes";
-import { Spinner } from "@/components/spinner";
+import { Spinner } from "@/shared/components/spinner";
 import Link from "next/link";
 
 export const NoteList = () => {

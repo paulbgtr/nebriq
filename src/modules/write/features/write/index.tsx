@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useNotes } from "@/hooks/use-notes";
-import { Spinner } from "@/components/spinner";
+import { Spinner } from "@/shared/components/spinner";
+import { Editor } from "./components/editor";
 
-const Tiptap = () => {
+export default function Write() {
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
@@ -56,30 +57,12 @@ const Tiptap = () => {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => {
-          setTitle(e.target.value);
-          updateNoteMutation.mutate({
-            id,
-            title: e.target.value,
-            content,
-            created_at: new Date(),
-          });
-        }}
-        placeholder="Untitled"
-        className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
-      />
-      <div
-        className="h-full cursor-text"
-        onClick={() => editor?.commands.focus()}
-      >
-        <EditorContent editor={editor} />
-      </div>
-    </div>
+    <Editor
+      id={id}
+      editor={editor}
+      title={title}
+      setTitle={setTitle}
+      content={content}
+    />
   );
-};
-
-export default Tiptap;
+}

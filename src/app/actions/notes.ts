@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/shared/lib/supabase";
 import { type CreateNote, type Note } from "@/types/note";
 
 export const getNotes = async () => {

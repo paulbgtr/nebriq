@@ -5,7 +5,7 @@ import {
   updateNote,
   deleteNote,
 } from "@/app/actions/notes";
-import queryClient from "@/lib/react-query";
+import queryClient from "@/shared/lib/react-query";
 
 export const useNotes = () => {
   const getNotesQuery = useQuery({
