@@ -59,7 +59,7 @@ export const DetailedNote = ({
         id,
         title,
         content: newContent,
-        created_at: createdAt,
+        created_at: new Date(createdAt),
       });
     },
   });
@@ -72,7 +72,7 @@ export const DetailedNote = ({
       id,
       title: newTitle,
       content,
-      created_at: createdAt,
+      created_at: new Date(createdAt),
     });
   };
 
