@@ -6,3 +6,5 @@ export type Note = {
   linked_notes?: string[];
   created_at: Date;
 };
+
+export type CreateNote = Omit<Note, "id">;
