@@ -18,7 +18,7 @@ import {
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useNotes } from "@/hooks/useNotes";
+import { useNotes } from "@/hooks/use-notes";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -29,8 +29,9 @@ type DetailedNoteProps = {
   id: string;
   title: string;
   content: string;
-  createdAt: Date;
+  createdAt: string;
 };
+
 export const DetailedNote = ({
   id,
   children,
@@ -130,10 +131,10 @@ export const DetailedNote = ({
           <div className="flex-1 overflow-y-auto px-6 py-4">
             <EditorContent
               editor={editor}
-              className="[&_.ProseMirror]:min-h-[200px]"
+              className="[&_.ProseMirror]:h-[73vh]"
             />
             <div className="text-sm text-muted-foreground/60 mt-4">
-              {createdAt.toLocaleDateString()}
+              {new Date(createdAt).toLocaleString()}
             </div>
           </div>
         </div>
