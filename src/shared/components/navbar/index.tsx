@@ -11,6 +11,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
+import { UserActions } from "./user-actions";
 
 const navItems = [
   { name: "all notes.", href: "/notes" },
@@ -56,53 +57,56 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
-            <div className="flex items-center sm:hidden">
-              <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="h-9 w-9 p-0 hover:bg-accent/50"
+            <div className="flex items-center gap-4">
+              <UserActions userName="John Doe" userEmail="john@example.com" />
+              <div className="sm:hidden">
+                <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="h-9 w-9 p-0 hover:bg-accent/50"
+                    >
+                      <Menu className="h-5 w-5" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className="w-[240px] sm:w-[540px] p-0"
                   >
-                    <Menu className="h-5 w-5" />
-                    <span className="sr-only">Toggle menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="right"
-                  className="w-[240px] sm:w-[540px] p-0"
-                >
-                  <div className="flex flex-col py-4">
-                    <div className="px-6 pb-4">
-                      <Button
-                        asChild
-                        variant="default"
-                        className="w-full gap-2"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Link href="/write">
-                          <PlusCircle className="w-4 h-4" />
-                          <span>New Note</span>
+                    <div className="flex flex-col py-4">
+                      <div className="px-6 pb-4">
+                        <Button
+                          asChild
+                          variant="default"
+                          className="w-full gap-2"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <Link href="/write">
+                            <PlusCircle className="w-4 h-4" />
+                            <span>New Note</span>
+                          </Link>
+                        </Button>
+                      </div>
+                      {navItems.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            "px-6 py-3 text-sm font-medium transition-colors",
+                            pathname === item.href
+                              ? "bg-accent/50 text-primary"
+                              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                          )}
+                        >
+                          {item.name}
                         </Link>
-                      </Button>
+                      ))}
                     </div>
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          "px-6 py-3 text-sm font-medium transition-colors",
-                          pathname === item.href
-                            ? "bg-accent/50 text-primary"
-                            : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-                        )}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </SheetContent>
-              </Sheet>
+                  </SheetContent>
+                </Sheet>
+              </div>
             </div>
           </div>
         </div>
