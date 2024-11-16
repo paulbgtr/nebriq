@@ -1,16 +1,26 @@
 import type { Metadata } from "next";
 import Navbar from "@/shared/components/navbar";
+import { redirect } from "next/navigation";
+import { createClient } from "@/shared/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Dashboard | Notes App",
   description: "Manage your notes efficiently",
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data?.user) {
+    redirect("/login");
+  }
+
   return (
     <main className="flex w-full flex-col overflow-hidden">
       <Navbar />
