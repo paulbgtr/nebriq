@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,7 @@ import { Button } from "@/shared/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { CiShare2 } from "react-icons/ci";
 import { Editor } from "./editor";
+import { createClient } from "@/shared/lib/supabase/client";
 
 type DetailedNoteProps = {
   children: React.ReactNode;
@@ -37,18 +39,32 @@ export const DetailedNote = ({
   content: initialContent,
   createdAt,
 }: DetailedNoteProps) => {
+  const [userId, setUserId] = useState<string | undefined>();
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const { updateNoteMutation, deleteNoteMutation } = useNotes();
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const supabase = await createClient();
+      const { data } = await supabase.auth.getUser();
+      setUserId(data?.user?.id);
+    };
+
+    getUserId();
+  }, [userId]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
 
+    if (!userId) return;
+
     updateNoteMutation.mutate({
       id,
       title: newTitle,
       created_at: new Date(createdAt),
+      user_id: userId,
     });
   };
 
