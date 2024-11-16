@@ -12,6 +12,8 @@ import {
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
 import { UserActions } from "./user-actions";
+import { useEffect, useState } from "react";
+import { createClient } from "@/shared/lib/supabase/client";
 
 const navItems = [
   { name: "all notes.", href: "/notes" },
@@ -21,6 +23,18 @@ const navItems = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const pathname = usePathname();
+
+  const [userEmail, setUserEmail] = useState<string | undefined>();
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const supabase = await createClient();
+      const { data } = await supabase.auth.getUser();
+      setUserEmail(data?.user?.email);
+    };
+
+    getUserData();
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
@@ -58,7 +72,7 @@ export default function Navbar() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <UserActions userName="John Doe" userEmail="john@example.com" />
+              <UserActions email={userEmail} />
               <div className="sm:hidden">
                 <Sheet open={isOpen} onOpenChange={setIsOpen}>
                   <SheetTrigger asChild>
