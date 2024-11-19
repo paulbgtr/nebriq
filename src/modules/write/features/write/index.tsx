@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -13,30 +13,33 @@ export default function Write() {
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const [isCreatingNote, setIsCreatingNote] = useState(false);
 
   const { user } = useUser();
-
   const { createNoteMutation, updateNoteMutation } = useNotes();
 
-  useEffect(() => {
-    if (!user) return;
+  const createNote = async () => {
+    if (!user || id) return;
 
-    if (!id) {
-      createNoteMutation.mutate(
-        {
-          title: "",
-          content: "",
-          created_at: new Date(),
-          user_id: user!.id,
+    setIsCreatingNote(true);
+    createNoteMutation.mutate(
+      {
+        title,
+        content,
+        created_at: new Date(),
+        user_id: user.id,
+      },
+      {
+        onSuccess: (data) => {
+          setId(data?.[0]?.id);
+          setIsCreatingNote(false);
         },
-        {
-          onSuccess: (data) => {
-            setId(data?.[0]?.id);
-          },
-        }
-      );
-    }
-  }, [user, id]);
+        onError: () => {
+          setIsCreatingNote(false);
+        },
+      }
+    );
+  };
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -51,7 +54,10 @@ export default function Write() {
       const newContent = editor.getHTML();
       setContent(newContent);
 
-      // Debounce the update to avoid too many API calls
+      if (!id && !isCreatingNote) {
+        createNote();
+      }
+
       const timeoutId = setTimeout(() => {
         if (!id) return;
         updateNoteMutation.mutate({
@@ -66,7 +72,17 @@ export default function Write() {
     },
   });
 
-  if (createNoteMutation.isPending) {
+  // Handle title changes
+  const handleTitleChange = (newTitle: string) => {
+    setTitle(newTitle);
+
+    // Create note if this is the first title input
+    if (!id && !isCreatingNote) {
+      createNote();
+    }
+  };
+
+  if (createNoteMutation.isPending && !editor) {
     return <Spinner />;
   }
 
@@ -75,7 +91,7 @@ export default function Write() {
       id={id}
       editor={editor}
       title={title}
-      setTitle={setTitle}
+      setTitle={handleTitleChange}
       content={content}
     />
   );
