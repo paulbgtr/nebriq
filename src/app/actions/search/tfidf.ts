@@ -8,15 +8,20 @@ export const searchUsingTFIDF = async (query: string, notes: Note[]) => {
 
   const TfIdf = natural.TfIdf;
   const tfidf = new TfIdf();
+  const titleTfidf = new TfIdf();
 
   notes.forEach((note) => {
     if (!note?.content) return;
     tfidf.addDocument(note.content);
+    titleTfidf.addDocument(note.title || "");
   });
 
-  const results = tfidf.tfidfs(query).map((score, index) => ({
-    note: notes[index],
-    score,
+  const contentScores = tfidf.tfidfs(query);
+  const titleScores = titleTfidf.tfidfs(query);
+
+  const results = notes.map((note, index) => ({
+    note,
+    score: contentScores[index] + titleScores[index] * 2, // Give more weight to title matches
   })) satisfies ({ note: Note; score: number } | null)[];
 
   const filteredResults = results
