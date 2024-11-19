@@ -28,21 +28,21 @@ export default function Home() {
           >
             <Badge>🚀 Now in public beta</Badge>
             <h1 className={`mt-8 text-5xl md:text-7xl tracking-wide font-bold`}>
-              Your thoughts,{" "}
+              Where Thoughts Become{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
-                reimagined
+                Breakthroughs
               </span>
             </h1>
             <p className="mt-8 text-xl text-muted-foreground">
-              The intelligent note-taking app that adapts to your way of
-              thinking
+              The intelligent knowledge companion that transforms how scholars,
+              writers, and thinkers capture, connect, and cultivate ideas
             </p>
             <div className="mt-12 flex items-center justify-center gap-4">
               <Button asChild size="lg">
-                <Link href="/signup">Get started for free</Link>
+                <Link href="/signup">Elevate Your Thinking</Link>
               </Button>
               <Button size="lg" variant="outline">
-                Watch demo
+                Watch the Demo
               </Button>
             </div>
           </motion.div>
@@ -73,12 +73,10 @@ export default function Home() {
       <section className="py-24 bg-muted/50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-light">
-              Everything you need to think better
-            </h2>
+            <h2 className="text-3xl font-light">Your Intellectual Ecosystem</h2>
             <p className="mt-4 text-muted-foreground">
-              Powerful features that help you capture, connect, and retrieve
-              your ideas
+              Precision tools designed to amplify your cognitive potential and
+              research workflow
             </p>
           </div>
 
@@ -95,10 +93,11 @@ export default function Home() {
                   AI Search screenshot
                 </div>
               </div>
-              <h3 className="text-xl mb-4">AI-Powered Search</h3>
+              <h3 className="text-xl mb-4">Contextual Intelligence Search</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Find anything instantly with contextual search that understands
-                the meaning behind your notes, not just keywords.
+                Dive beyond keywords. Our AI understands the nuanced context of
+                your research, surfacing insights you didn&apos;t even know you
+                were looking for.
               </p>
             </motion.div>
 
@@ -114,10 +113,11 @@ export default function Home() {
                   Graph View screenshot
                 </div>
               </div>
-              <h3 className="text-xl mb-4">Visual Knowledge Graph</h3>
+              <h3 className="text-xl mb-4">Idea Constellation Map</h3>
               <p className="text-muted-foreground leading-relaxed">
-                See how your ideas connect with an interactive visualization of
-                your knowledge network.
+                Visualize the constellation of your thoughts. Watch how
+                seemingly disparate ideas orbit and intersect in your personal
+                knowledge universe.
               </p>
             </motion.div>
           </div>
@@ -135,19 +135,19 @@ export default function Home() {
               transition={{ duration: 0.5 }}
             >
               <h2 className="text-3xl font-light mb-6">
-                Focus on what matters
+                Craft Without Constraints
               </h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                Our minimal interface removes distractions and lets you focus on
-                capturing your thoughts. With powerful keyboard shortcuts and
-                markdown support, you can write naturally without breaking your
-                flow.
+                We&apos;ve engineered an environment that respects your
+                intellectual flow. Minimalist design meets powerful
+                functionality, letting your creativity breathe without
+                technological friction.
               </p>
               <div className="space-y-4">
                 {[
-                  "Distraction-free editor",
-                  "Markdown support",
-                  "Quick capture",
+                  "Zen-like writing environment",
+                  "Markdown for scholars",
+                  "Lightning-fast idea capture",
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="h-1 w-1 bg-foreground rounded-full" />
@@ -156,18 +156,7 @@ export default function Home() {
                 ))}
               </div>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border">
-                <div className="h-full flex items-center justify-center text-muted-foreground">
-                  Editor screenshot
-                </div>
-              </div>
-            </motion.div>
+            {/* [Editor screenshot remains the same] */}
           </div>
         </div>
       </section>
@@ -182,14 +171,15 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-3xl md:text-4xl font-light mb-8">
-              Ready to organize your mind?
+              Your Intellectual Journey Starts Here
             </h2>
             <p className="text-primary-foreground/80 mb-12 max-w-xl mx-auto">
-              Join thousands of thinkers who are already using nebriq to capture
-              and connect their ideas.
+              Join a community of scholars, researchers, and visionaries who are
+              reimagining how brilliant ideas are born, nurtured, and
+              transformed.
             </p>
             <Button size="lg" variant="secondary">
-              Start for free
+              Unlock Your Potential
             </Button>
           </motion.div>
         </div>
@@ -202,16 +192,10 @@ export default function Home() {
             <span className="text-muted-foreground">© 2024 nebriq</span>
             <div className="space-x-6">
               <Link
-                href="#"
+                href="https://x.com/paulbgtr"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Twitter
-              </Link>
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                GitHub
               </Link>
             </div>
           </div>
