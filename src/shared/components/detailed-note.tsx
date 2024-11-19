@@ -21,6 +21,7 @@ import { Button } from "@/shared/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { CiShare2 } from "react-icons/ci";
 import { Editor } from "./editor";
+import { formatDate } from "../lib/utils";
 
 type DetailedNoteProps = {
   children: React.ReactNode;
@@ -113,7 +114,7 @@ export const DetailedNote = ({
               createdAt={createdAt}
             />
             <div className="text-sm text-muted-foreground/60 mt-4">
-              {createdAt.toLocaleString()}
+              {formatDate(createdAt)}
             </div>
           </div>
         </div>

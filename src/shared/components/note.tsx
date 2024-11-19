@@ -1,3 +1,5 @@
+import { formatDate } from "../lib/utils";
+
 type NoteProps = {
   title: string;
   content: string;
@@ -5,10 +7,10 @@ type NoteProps = {
 };
 
 export const Note = ({ title, content, createdAt }: NoteProps) => {
-  const contentWithoutHTML = content.replace(/<[^>]*>/g, "");
+  const contentWithoutHTML = content.replace(/<[^>]*>/g, "").trim();
 
   const shortenedContent =
-    content.length > 30
+    contentWithoutHTML.length > 30
       ? `${contentWithoutHTML.slice(0, 30).trim()}...`
       : contentWithoutHTML;
 
@@ -23,11 +25,7 @@ export const Note = ({ title, content, createdAt }: NoteProps) => {
         </p>
       </div>
       <div className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
-        {createdAt.toLocaleString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })}
+        {formatDate(createdAt)}
       </div>
     </div>
   );
