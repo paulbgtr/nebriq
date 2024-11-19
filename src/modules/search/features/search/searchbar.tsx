@@ -5,6 +5,7 @@ import { Search as SearchIcon, Sparkle } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { FaArrowUp } from "react-icons/fa";
 
 type SearchBarProps = {
   searchQuery: string;
@@ -60,13 +61,14 @@ export const SearchBar = ({
               type="submit"
               variant="secondary"
               size="sm"
+              disabled={searchQuery.length <= 0}
               className={cn(
-                "absolute right-1 hover:bg-muted transition-all duration-300",
+                "absolute right-2 hover:bg-muted transition-all duration-300 rounded-full w-8 h-8",
                 searchQuery &&
                   "bg-primary text-primary-foreground hover:bg-primary/90"
               )}
             >
-              Search
+              <FaArrowUp className="h-4 w-4" />
             </Button>
           </div>
         </div>
