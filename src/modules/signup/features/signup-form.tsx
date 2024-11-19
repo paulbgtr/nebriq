@@ -25,11 +25,23 @@ export default function SignupForm() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" required />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="johndoe@example.com"
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm password</Label>
@@ -37,6 +49,7 @@ export default function SignupForm() {
               id="confirmPassword"
               name="confirmPassword"
               type="password"
+              placeholder="••••••••"
               required
             />
           </div>
