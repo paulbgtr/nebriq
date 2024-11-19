@@ -9,3 +9,5 @@ export type Note = {
 };
 
 export type CreateNote = Omit<Note, "id">;
+
+export type UpdateNote = Omit<Note, "user_id">;
