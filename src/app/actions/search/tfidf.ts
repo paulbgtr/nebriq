@@ -3,7 +3,9 @@
 import { Note } from "@/types/note";
 import natural from "natural";
 
-export const searchUsingTFIDF = (query: string, notes: Note[]) => {
+export const searchUsingTFIDF = async (query: string, notes: Note[]) => {
+  if (!notes || !query || notes.length === 0 || query.length === 0) return [];
+
   const TfIdf = natural.TfIdf;
   const tfidf = new TfIdf();
 
@@ -17,7 +19,9 @@ export const searchUsingTFIDF = (query: string, notes: Note[]) => {
     score,
   })) satisfies ({ note: Note; score: number } | null)[];
 
-  return results
+  const filteredResults = results
     .filter((result) => result !== null && result.score !== 0)
     .sort((a, b) => b.score - a.score);
+
+  return filteredResults;
 };
