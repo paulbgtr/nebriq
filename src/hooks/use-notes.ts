@@ -6,11 +6,15 @@ import {
   deleteNote,
 } from "@/app/actions/notes";
 import queryClient from "@/shared/lib/react-query";
+import { useUser } from "@/hooks/use-user";
 
 export const useNotes = () => {
+  const { user } = useUser();
+
   const getNotesQuery = useQuery({
-    queryKey: ["notes"],
-    queryFn: getNotes,
+    queryKey: ["notes", user?.id],
+    queryFn: () => getNotes(user!.id),
+    enabled: !!user?.id,
   });
 
   const createNoteMutation = useMutation({
