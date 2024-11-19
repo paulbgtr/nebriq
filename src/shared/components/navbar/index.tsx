@@ -15,9 +15,8 @@ import { UserActions } from "./user-actions";
 import { useUser } from "@/hooks/use-user";
 
 const navItems = [
-  { name: "search.", href: "/search" },
-  { name: "all notes.", href: "/notes" },
-  { name: "reflect.", href: "/reflect" },
+  { name: "search", href: "/search" },
+  { name: "all notes", href: "/notes" },
 ];
 
 export default function Navbar() {
@@ -40,7 +39,7 @@ export default function Navbar() {
               className="gap-2"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>compose.</span>
+              <span>compose</span>
             </Button>
           </div>
           <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2">
