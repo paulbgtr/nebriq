@@ -27,10 +27,10 @@ export default function Home() {
             className="text-center max-w-3xl mx-auto"
           >
             <Badge>🚀 Now in public beta</Badge>
-            <h1 className="mt-8 text-5xl md:text-7xl font-light tracking-tight">
+            <h1 className={`mt-8 text-5xl md:text-7xl tracking-wide font-bold`}>
               Your thoughts,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-muted-foreground">
-                organized
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
+                reimagined
               </span>
             </h1>
             <p className="mt-8 text-xl text-muted-foreground">
