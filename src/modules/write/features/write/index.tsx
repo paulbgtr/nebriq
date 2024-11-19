@@ -7,35 +7,27 @@ import StarterKit from "@tiptap/starter-kit";
 import { useNotes } from "@/hooks/use-notes";
 import { Spinner } from "@/shared/components/spinner";
 import { Editor } from "./components/editor";
-import { createClient } from "@/shared/lib/supabase/client";
+import { useUser } from "@/hooks/use-user";
 
 export default function Write() {
   const [id, setId] = useState("");
-  const [userId, setUserId] = useState<string | undefined>();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+
+  const { user } = useUser();
 
   const { createNoteMutation, updateNoteMutation } = useNotes();
 
   useEffect(() => {
-    const getUserId = async () => {
-      const supabase = createClient();
-      const { data } = await supabase.auth.getUser();
-      console.log(data);
-      setUserId(data?.user?.id);
-    };
-
-    getUserId();
-
-    if (!userId) return;
+    if (!user) return;
 
     if (!id) {
       createNoteMutation.mutate(
         {
           title: "",
-          user_id: userId,
           content: "",
           created_at: new Date(),
+          user_id: user!.id,
         },
         {
           onSuccess: (data) => {
@@ -44,7 +36,7 @@ export default function Write() {
         }
       );
     }
-  }, [userId]);
+  }, [user, id]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -61,11 +53,10 @@ export default function Write() {
 
       // Debounce the update to avoid too many API calls
       const timeoutId = setTimeout(() => {
-        if (!id || !userId) return;
+        if (!id) return;
         updateNoteMutation.mutate({
           id,
           title,
-          user_id: userId,
           content: newContent,
           created_at: new Date(),
         });
