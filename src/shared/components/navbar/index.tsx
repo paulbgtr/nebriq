@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/components/ui/button";
 import { Menu, PlusCircle } from "lucide-react";
@@ -23,6 +23,7 @@ const navItems = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const router = useRouter();
   const pathname = usePathname();
 
   const [userEmail, setUserEmail] = useState<string | undefined>();
@@ -42,11 +43,15 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center">
           <div className="flex-1 flex items-center justify-start">
-            <Button asChild variant="default" size="sm" className="gap-2">
-              <Link href="/write">
-                <PlusCircle className="w-4 h-4" />
-                <span>compose.</span>
-              </Link>
+            <Button
+              onClick={() => router.push("/write")}
+              disabled={pathname === "/write"}
+              variant="default"
+              size="sm"
+              className="gap-2"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>compose.</span>
             </Button>
           </div>
           <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2">
