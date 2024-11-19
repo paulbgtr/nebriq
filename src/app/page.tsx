@@ -73,7 +73,7 @@ export default function Home() {
       <section className="py-24 bg-muted/50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-light">Your Intellectual Ecosystem</h2>
+            <h2 className="text-3xl font-bold">Your Intellectual Ecosystem</h2>
             <p className="mt-4 text-muted-foreground">
               Precision tools designed to amplify your cognitive potential and
               research workflow
@@ -93,7 +93,9 @@ export default function Home() {
                   AI Search screenshot
                 </div>
               </div>
-              <h3 className="text-xl mb-4">Contextual Intelligence Search</h3>
+              <h3 className="text-xl font-bold mb-4">
+                Contextual Intelligence Search
+              </h3>
               <p className="text-muted-foreground leading-relaxed">
                 Dive beyond keywords. Our AI understands the nuanced context of
                 your research, surfacing insights you didn&apos;t even know you
@@ -113,7 +115,7 @@ export default function Home() {
                   Graph View screenshot
                 </div>
               </div>
-              <h3 className="text-xl mb-4">Idea Constellation Map</h3>
+              <h3 className="text-xl font-bold mb-4">Idea Constellation Map</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Visualize the constellation of your thoughts. Watch how
                 seemingly disparate ideas orbit and intersect in your personal
@@ -134,7 +136,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-3xl font-light mb-6">
+              <h2 className="text-3xl font-bold mb-6">
                 Craft Without Constraints
               </h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
@@ -170,7 +172,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl md:text-4xl font-light mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">
               Your Intellectual Journey Starts Here
             </h2>
             <p className="text-primary-foreground/80 mb-12 max-w-xl mx-auto">
