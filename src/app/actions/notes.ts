@@ -1,12 +1,14 @@
 "use server";
 
 import { createClient } from "@/shared/lib/supabase/server";
-import { type CreateNote, type Note } from "@/types/note";
+import { type CreateNote, type UpdateNote } from "@/types/note";
 
-export const getNotes = async () => {
+export const getNotes = async (userId: string) => {
   const supabase = await createClient();
-  const { data: notes } = await supabase.from("notes").select("*");
-  console.log(notes);
+  const { data: notes } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("user_id", userId);
   return notes;
 };
 
@@ -16,7 +18,7 @@ export const createNote = async (note: CreateNote) => {
   return newNote;
 };
 
-export const updateNote = async (note: Note) => {
+export const updateNote = async (note: UpdateNote) => {
   const supabase = await createClient();
   const { data: updatedNote } = await supabase
     .from("notes")
