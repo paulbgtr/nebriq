@@ -27,7 +27,7 @@ type DetailedNoteProps = {
   id: string;
   title: string;
   content: string;
-  createdAt: string;
+  createdAt: Date;
 };
 
 export const DetailedNote = ({
@@ -48,7 +48,7 @@ export const DetailedNote = ({
     updateNoteMutation.mutate({
       id,
       title: newTitle,
-      created_at: new Date(createdAt),
+      created_at: createdAt,
     });
   };
 
@@ -113,7 +113,7 @@ export const DetailedNote = ({
               createdAt={createdAt}
             />
             <div className="text-sm text-muted-foreground/60 mt-4">
-              {new Date(createdAt).toLocaleString()}
+              {createdAt.toLocaleString()}
             </div>
           </div>
         </div>

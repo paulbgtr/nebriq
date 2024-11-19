@@ -1,7 +1,7 @@
 type NoteProps = {
   title: string;
   content: string;
-  createdAt: string;
+  createdAt: Date;
 };
 
 export const Note = ({ title, content, createdAt }: NoteProps) => {
@@ -23,7 +23,11 @@ export const Note = ({ title, content, createdAt }: NoteProps) => {
         </p>
       </div>
       <div className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
-        {new Date(createdAt).toLocaleString()}
+        {createdAt.toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}
       </div>
     </div>
   );

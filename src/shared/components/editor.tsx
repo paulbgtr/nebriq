@@ -8,7 +8,7 @@ type EditorProps = {
   title: string;
   content: string;
   setContent: (content: string) => void;
-  createdAt: string;
+  createdAt: Date;
 };
 
 export const Editor = ({
@@ -35,7 +35,7 @@ export const Editor = ({
         id,
         title,
         content: newContent,
-        created_at: new Date(createdAt),
+        created_at: createdAt,
       });
     },
   });
