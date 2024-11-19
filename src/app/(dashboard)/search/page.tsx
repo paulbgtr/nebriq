@@ -1,5 +1,5 @@
-import SearchBar from "@/modules/search/features/searchbar";
+import Search from "@/modules/search/features/search";
 
 export default function SearchPage() {
-  return <SearchBar />;
+  return <Search />;
 }
