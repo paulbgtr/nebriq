@@ -89,8 +89,8 @@ export const SearchBar = ({
               <button
                 key={suggestion}
                 onClick={() => setSearchQuery(suggestion)}
-                className="px-3 py-1 rounded-full bg-muted hover:bg-muted/80 
-                           transition-colors text-sm"
+                className="px-3 py-1 rounded-full bg-muted hover:opacity-80 
+                           transition-all text-sm"
               >
                 {suggestion}
               </button>
