@@ -1,7 +1,7 @@
-import { TFIDFResult } from "@/modules/search/types";
 import { Note } from "@/types/note";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { TFIDFResult } from "@/types/TFIDFResult";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

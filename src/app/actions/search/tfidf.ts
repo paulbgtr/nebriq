@@ -1,6 +1,7 @@
 "use server";
 
 import { Note } from "@/types/note";
+import { TFIDFResult } from "@/types/TFIDFResult";
 import natural from "natural";
 
 export const searchUsingTFIDF = async (query: string, notes: Note[]) => {
@@ -22,7 +23,7 @@ export const searchUsingTFIDF = async (query: string, notes: Note[]) => {
   const results = notes.map((note, index) => ({
     note,
     score: contentScores[index] + titleScores[index] * 2, // Give more weight to title matches
-  })) satisfies ({ note: Note; score: number } | null)[];
+  })) satisfies TFIDFResult[] | null;
 
   const filteredResults = results
     .filter((result) => result !== null && result.score !== 0)
