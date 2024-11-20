@@ -12,7 +12,7 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { Bell, LogOut, Settings, User } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
-import { logout } from "@/app/actions/auth";
+import { logout } from "@/app/actions/supabase/auth";
 
 type UserActionsProps = {
   email: string | undefined;

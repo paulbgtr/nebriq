@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { signup } from "@/app/actions/auth";
+import { signup } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 
 export default function SignupForm() {

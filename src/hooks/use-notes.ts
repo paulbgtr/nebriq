@@ -4,7 +4,7 @@ import {
   createNote,
   updateNote,
   deleteNote,
-} from "@/app/actions/notes";
+} from "@/app/actions/supabase/notes";
 import queryClient from "@/shared/lib/react-query";
 import { useUser } from "@/hooks/use-user";
 
