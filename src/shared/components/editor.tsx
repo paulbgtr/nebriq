@@ -5,8 +5,8 @@ import { useNotes } from "@/hooks/use-notes";
 
 type EditorProps = {
   id: string;
-  title: string | null;
-  content: string;
+  title?: string;
+  content?: string;
   setContent: (content: string) => void;
   createdAt: Date;
 };
@@ -33,7 +33,7 @@ export const Editor = ({
       setContent(newContent);
       updateNoteMutation.mutate({
         id,
-        title,
+        title: title ? title : "",
         content: newContent,
         created_at: createdAt,
       });
