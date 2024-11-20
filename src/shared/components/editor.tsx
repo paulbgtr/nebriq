@@ -5,7 +5,7 @@ import { useNotes } from "@/hooks/use-notes";
 
 type EditorProps = {
   id: string;
-  title: string;
+  title: string | null;
   content: string;
   setContent: (content: string) => void;
   createdAt: Date;

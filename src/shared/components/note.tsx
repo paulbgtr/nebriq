@@ -1,13 +1,15 @@
 import { formatDate } from "../lib/utils";
 
 type NoteProps = {
-  title: string;
-  content: string;
+  title?: string;
+  content?: string;
   createdAt: Date;
 };
 
 export const Note = ({ title, content, createdAt }: NoteProps) => {
-  const contentWithoutHTML = content.replace(/<[^>]*>/g, "").trim();
+  const contentWithoutHTML = content
+    ? content.replace(/<[^>]*>/g, "").trim()
+    : "";
 
   const shortenedContent =
     contentWithoutHTML.length > 30

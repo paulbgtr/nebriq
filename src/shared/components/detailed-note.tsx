@@ -26,8 +26,8 @@ import { formatDate } from "../lib/utils";
 type DetailedNoteProps = {
   children: React.ReactNode;
   id: string;
-  title: string;
-  content: string;
+  title?: string;
+  content?: string;
   createdAt: Date;
 };
 
