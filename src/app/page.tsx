@@ -9,7 +9,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <main className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background decorative elements */}
+      {/* Background decorative elements remain unchanged */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
         <div className="absolute top-0 -left-1/4 w-1/2 aspect-square bg-primary/5 rounded-full blur-[100px]" />
@@ -34,12 +34,13 @@ export default function Home() {
               </span>
             </h1>
             <p className="mt-8 text-xl text-muted-foreground">
-              The intelligent knowledge companion that transforms how scholars,
-              writers, and thinkers capture, connect, and cultivate ideas
+              Nebriq is the intelligent knowledge companion that transforms how
+              scholars, writers, and thinkers capture, connect, and cultivate
+              ideas into lasting insights
             </p>
             <div className="mt-12 flex items-center justify-center gap-4">
               <Button asChild size="lg">
-                <Link href="/signup">Elevate Your Thinking</Link>
+                <Link href="/signup">Start Writing</Link>
               </Button>
               <Button size="lg" variant="outline">
                 Watch the Demo
@@ -58,7 +59,7 @@ export default function Home() {
               <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                 <Image
                   src="/hero-image.png"
-                  alt="Screenshot of the note-taking app interface"
+                  alt="nebriq's intuitive note-taking interface"
                   fill
                   className="object-cover rounded-xl"
                   priority
@@ -90,7 +91,7 @@ export default function Home() {
             >
               <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border mb-8">
                 <div className="h-full flex items-center justify-center text-muted-foreground">
-                  AI Search screenshot
+                  nebriq AI Search
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-4">
@@ -112,7 +113,7 @@ export default function Home() {
             >
               <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border mb-8">
                 <div className="h-full flex items-center justify-center text-muted-foreground">
-                  Graph View screenshot
+                  nebriq Graph View
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-4">Idea Constellation Map</h3>
@@ -140,16 +141,15 @@ export default function Home() {
                 Craft Without Constraints
               </h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                We&apos;ve engineered an environment that respects your
-                intellectual flow. Minimalist design meets powerful
-                functionality, letting your creativity breathe without
-                technological friction.
+                We&apos;ve engineered Nebriq to respect your intellectual flow.
+                Our minimalist design meets powerful functionality, letting your
+                creativity breathe without technological friction.
               </p>
               <div className="space-y-4">
                 {[
-                  "Zen-like writing environment",
-                  "Markdown for scholars",
-                  "Lightning-fast idea capture",
+                  "nebriq's zen-like writing environment",
+                  "Enhanced markdown for scholars",
+                  "Lightning-fast idea capture with nebriq",
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="h-1 w-1 bg-foreground rounded-full" />
@@ -173,15 +173,15 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
-              Your Intellectual Journey Starts Here
+              Begin Your Nebriq Journey Today
             </h2>
             <p className="text-primary-foreground/80 mb-12 max-w-xl mx-auto">
-              Join a community of scholars, researchers, and visionaries who are
-              reimagining how brilliant ideas are born, nurtured, and
-              transformed.
+              Join the community of scholars, researchers, and visionaries who
+              are using Nebriq to reimagine how brilliant ideas are born,
+              nurtured, and transformed.
             </p>
-            <Button size="lg" variant="secondary">
-              Unlock Your Potential
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/signup">Experience Nebriq</Link>
             </Button>
           </motion.div>
         </div>
