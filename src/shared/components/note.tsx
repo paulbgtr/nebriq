@@ -1,12 +1,14 @@
 import { formatDate } from "../lib/utils";
+import { Badge } from "./ui/badge";
 
 type NoteProps = {
   title?: string;
   content?: string;
   createdAt: Date;
+  tags?: string[];
 };
 
-export const Note = ({ title, content, createdAt }: NoteProps) => {
+export const Note = ({ title, content, createdAt, tags = [] }: NoteProps) => {
   const contentWithoutHTML = content
     ? content.replace(/<[^>]*>/g, "").trim()
     : "";
@@ -26,8 +28,15 @@ export const Note = ({ title, content, createdAt }: NoteProps) => {
           {shortenedContent}
         </p>
       </div>
-      <div className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
-        {formatDate(createdAt)}
+      <div className="flex items-center justify-between text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <Badge key={tag} variant="secondary" className="text-xs">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+        <div>{formatDate(createdAt)}</div>
       </div>
     </div>
   );
