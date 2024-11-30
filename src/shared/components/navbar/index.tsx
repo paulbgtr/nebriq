@@ -16,7 +16,6 @@ import { useUser } from "@/hooks/use-user";
 
 const navItems = [
   { name: "search", href: "/search" },
-  { name: "all notes", href: "/notes" },
 ];
 
 export default function Navbar() {
