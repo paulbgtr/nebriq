@@ -13,8 +13,8 @@ export default function AllNotes() {
 
   if (!notes?.length) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-center">
-        <p className="text-xl font-light tracking-wide">a blank canvas</p>
+      <div className="flex flex-col items-center justify-center gap-4 text-center">
+        <p className="text-xl font-light tracking-wide">no notes</p>
         <p className="text-gray-500 text-sm">waiting for your thoughts</p>
         <Link
           href="/write"
@@ -28,8 +28,9 @@ export default function AllNotes() {
   }
 
   return (
-    <>
+    <section>
+      <h2 className="text-lg font-normal mb-6 text-gray-500">Here are all your notes</h2>
       <NoteList notes={notes} />
-    </>
+    </section>
   );
 }
