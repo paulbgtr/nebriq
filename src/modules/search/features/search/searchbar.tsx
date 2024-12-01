@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search as SearchIcon, Sparkle } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
@@ -21,10 +21,9 @@ export const SearchBar = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="max-w-2xl mx-auto mt-20">
-      <div className="mb-8 text-center space-y-2">
-        <Sparkle className="w-12 h-12 mx-auto text-muted-foreground" />
-        <h1 className="text-2xl font-semibold tracking-tight">
+    <div className="w-full">
+      <div className="mb-6 text-center space-y-2">
+        <h1 className="text-xl font-semibold tracking-tight">
           What&apos;s on your mind?
         </h1>
       </div>
@@ -33,7 +32,7 @@ export const SearchBar = ({
         <div
           className={cn(
             "relative group transition-all duration-300",
-            isFocused && "scale-[1.01]"
+            isFocused && "ring-1 ring-gray-200 rounded-lg"
           )}
         >
           <div className="relative flex items-center">
@@ -73,31 +72,6 @@ export const SearchBar = ({
           </div>
         </div>
       </form>
-
-      {!searchQuery && (
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>Try searching for:</p>
-          <div className="mt-2 flex flex-wrap gap-2 justify-center">
-            {[
-              "Research methodology",
-              "Literature analysis",
-              "Data findings",
-              "Theoretical framework",
-              "Research gaps",
-              "Future directions",
-            ].map((suggestion) => (
-              <button
-                key={suggestion}
-                onClick={() => setSearchQuery(suggestion)}
-                className="px-3 py-1 rounded-full bg-muted hover:opacity-80 
-                           transition-all text-sm"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
