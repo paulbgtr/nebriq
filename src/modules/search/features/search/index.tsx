@@ -36,7 +36,7 @@ export default function Search() {
   };
 
   return (
-    <>
+    <section className="mx-auto">
       <SearchBar
         searchQuery={searchQuery}
         setSearchQuery={handleSearchQueryChange}
@@ -59,6 +59,6 @@ export default function Search() {
           )}
         </div>
       )}
-    </>
+    </section>
   );
 }
