@@ -28,7 +28,7 @@ export default function AllNotes() {
   }
 
   return (
-    <section>
+    <section className="max-w-5xl mx-auto">
       <h2 className="text-lg font-normal mb-6 text-gray-500">Here are all your notes</h2>
       <NoteList notes={notes} />
     </section>
