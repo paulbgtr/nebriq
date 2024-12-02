@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/shared/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "./ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +20,9 @@ import { formatDate } from "../lib/utils";
 import { Badge } from "@/shared/components/ui/badge";
 import { Input } from "@/shared/components/ui/input";
 import { IoMdAdd } from "react-icons/io";
+import { useUser } from "@/hooks/use-user";
+import { useTags } from "@/hooks/use-tags";
+import { CreateTag } from "@/types/tag";
 
 type DetailedNoteProps = {
   children: React.ReactNode;
@@ -32,7 +30,7 @@ type DetailedNoteProps = {
   title?: string;
   content?: string;
   createdAt: Date;
-  tags?: string[];
+  initialTags?: string[];
 };
 
 export const DetailedNote = ({
@@ -41,14 +39,17 @@ export const DetailedNote = ({
   title: initialTitle,
   content: initialContent,
   createdAt,
-  tags: initialTags = [],
+  initialTags = [],
 }: DetailedNoteProps) => {
+  const { updateNoteMutation, deleteNoteMutation } = useNotes();
+  const { user } = useUser();
+  const { createTagMutation, deleteTagMutation } = useTags();
+
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [tags, setTags] = useState<string[]>(initialTags);
   const [newTag, setNewTag] = useState("");
   const [showTagInput, setShowTagInput] = useState(false);
-  const { updateNoteMutation, deleteNoteMutation } = useNotes();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
@@ -66,16 +67,27 @@ export const DetailedNote = ({
   };
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!user) return;
+
     if (e.key === "Enter" && newTag.trim()) {
       const updatedTags = [...tags, newTag.trim()];
       setTags(updatedTags);
       setNewTag("");
       setShowTagInput(false);
 
-      updateNoteMutation.mutate({
-        id,
-        tags: updatedTags,
-        created_at: createdAt,
+      const tag: CreateTag = {
+        name: newTag.trim(),
+        user_id: user.id,
+        note_id: id,
+      };
+
+      createTagMutation.mutate(tag, {
+        onError: (error) => {
+          console.error("Failed to create tag:", error);
+          setTags(tags);
+          setNewTag("");
+          setShowTagInput(false);
+        },
       });
     } else if (e.key === "Escape") {
       setShowTagInput(false);
@@ -85,12 +97,15 @@ export const DetailedNote = ({
 
   const handleRemoveTag = (tagToRemove: string) => {
     const updatedTags = tags.filter((tag) => tag !== tagToRemove);
-    setTags(updatedTags);
 
-    updateNoteMutation.mutate({
-      id,
-      tags: updatedTags,
-      created_at: createdAt,
+    deleteTagMutation.mutate(tagToRemove, {
+      onSuccess: () => {
+        setTags(updatedTags);
+      },
+      onError: (error) => {
+        console.error("Failed to delete tag:", error);
+        setTags(tags);
+      },
     });
   };
 
