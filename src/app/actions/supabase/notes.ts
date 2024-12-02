@@ -5,11 +5,25 @@ import { type CreateNote, type UpdateNote } from "@/types/note";
 
 export const getNotes = async (userId: string) => {
   const supabase = await createClient();
-  const { data: notes } = await supabase
+  const { data: rawNotes } = await supabase
     .from("notes")
-    .select("*")
+    .select(
+      `
+      *,
+      note_tags (
+        tags (
+          id,
+          name
+        )
+      )
+    `
+    )
     .eq("user_id", userId);
-  return notes;
+
+  return rawNotes?.map(({ note_tags, ...note }) => ({
+    ...note,
+    tags: note_tags?.map((nt) => nt.tags.name) || [], // todo fix any
+  }));
 };
 
 export const createNote = async (note: CreateNote) => {
