@@ -1,3 +1,4 @@
+import React from "react";
 import { formatDate } from "../lib/utils";
 import { Badge } from "./ui/badge";
 
@@ -8,7 +9,7 @@ type NoteProps = {
   tags?: string[];
 };
 
-export const Note = ({ title, content, createdAt, tags = [] }: NoteProps) => {
+const NoteComponent = ({ title, content, createdAt, tags = [] }: NoteProps) => {
   const contentWithoutHTML = content
     ? content.replace(/<[^>]*>/g, "").trim()
     : "";
@@ -41,3 +42,5 @@ export const Note = ({ title, content, createdAt, tags = [] }: NoteProps) => {
     </div>
   );
 };
+
+export const Note = React.memo(NoteComponent);

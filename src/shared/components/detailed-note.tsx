@@ -1,3 +1,4 @@
+import React from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "./ui/dialog";
 import {
   AlertDialog,
@@ -33,7 +34,7 @@ type DetailedNoteProps = {
   initialTags?: string[];
 };
 
-export const DetailedNote = ({
+const DetailedNoteComponent = ({
   id,
   children,
   title: initialTitle,
@@ -216,3 +217,5 @@ export const DetailedNote = ({
     </Dialog>
   );
 };
+
+export const DetailedNote = React.memo(DetailedNoteComponent);

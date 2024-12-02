@@ -1,3 +1,4 @@
+import React from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -11,36 +12,32 @@ type EditorProps = {
   createdAt: Date;
 };
 
-export const Editor = ({
-  id,
-  title,
-  content,
-  setContent,
-  createdAt,
-}: EditorProps) => {
-  const { updateNoteMutation } = useNotes();
+export const Editor = React.memo(
+  ({ id, title, content, setContent, createdAt }: EditorProps) => {
+    const { updateNoteMutation } = useNotes();
 
-  const editor = useEditor({
-    extensions: [StarterKit, Placeholder.configure()],
-    editorProps: {
-      attributes: {
-        class: "prose prose-slate focus:outline-none",
+    const editor = useEditor({
+      extensions: [StarterKit, Placeholder.configure()],
+      editorProps: {
+        attributes: {
+          class: "prose prose-slate focus:outline-none",
+        },
       },
-    },
-    content,
-    onUpdate: ({ editor }) => {
-      const newContent = editor.getHTML();
-      setContent(newContent);
-      updateNoteMutation.mutate({
-        id,
-        title: title ? title : "",
-        content: newContent,
-        created_at: createdAt,
-      });
-    },
-  });
+      content,
+      onUpdate: ({ editor }) => {
+        const newContent = editor.getHTML();
+        setContent(newContent);
+        updateNoteMutation.mutate({
+          id,
+          title: title ? title : "",
+          content: newContent,
+          created_at: createdAt,
+        });
+      },
+    });
 
-  return (
-    <EditorContent editor={editor} className="[&_.ProseMirror]:h-[73vh]" />
-  );
-};
+    return (
+      <EditorContent editor={editor} className="[&_.ProseMirror]:h-[73vh]" />
+    );
+  }
+);
