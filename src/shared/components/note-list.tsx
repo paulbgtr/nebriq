@@ -15,7 +15,12 @@ export const NoteList = ({ notes }: NoteListProps) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {sortedNotes.map((note) => (
-        <DetailedNote key={note.id} {...note} createdAt={note.created_at}>
+        <DetailedNote
+          key={note.id}
+          {...note}
+          initialTags={note.tags}
+          createdAt={note.created_at}
+        >
           <Note {...note} createdAt={note.created_at} />
         </DetailedNote>
       ))}
