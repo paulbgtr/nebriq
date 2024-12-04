@@ -17,8 +17,10 @@ export default function createSuggestion(currentNoteId: string) {
       }
 
       return notes
-        .filter((item) =>
-          item.title.toLowerCase().startsWith(query.toLowerCase())
+        .filter(
+          (item) =>
+            item.title &&
+            item.title.toLowerCase().startsWith(query.toLowerCase())
         )
         .slice(0, 5);
     },
@@ -49,6 +51,8 @@ export default function createSuggestion(currentNoteId: string) {
             interactive: true,
             trigger: "manual",
             placement: "bottom-start",
+            theme: "custom",
+            maxWidth: "none",
           });
         },
 
