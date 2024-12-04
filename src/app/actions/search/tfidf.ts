@@ -5,36 +5,55 @@ import { TFIDFResult } from "@/types/TFIDFResult";
 import natural from "natural";
 
 export const searchUsingTFIDF = async (query: string, notes: Note[]) => {
-  if (!notes || !query || notes.length === 0 || query.length === 0) return [];
+  try {
+    if (!notes || !query || notes.length === 0 || query.length === 0) return [];
 
-  const TfIdf = natural.TfIdf;
-  const tfidf = new TfIdf();
-  const titleTfidf = new TfIdf();
-  const tagsTfidf = new TfIdf();
+    const TfIdf = natural.TfIdf;
+    if (!TfIdf) {
+      console.error("TfIdf is not available");
+      return [];
+    }
 
-  notes.forEach((note) => {
-    if (!note?.content) return;
-    tfidf.addDocument(note.content);
-    titleTfidf.addDocument(note.title || "");
-    const tagsString = note.tags?.join(" ") || "";
-    tagsTfidf.addDocument(tagsString);
-  });
+    const tfidf = new TfIdf();
+    const titleTfidf = new TfIdf();
+    const tagsTfidf = new TfIdf();
 
-  const contentScores = tfidf.tfidfs(query);
-  const titleScores = titleTfidf.tfidfs(query);
-  const tagScores = tagsTfidf.tfidfs(query);
+    notes.forEach((note) => {
+      if (!note?.content) return;
+      try {
+        tfidf.addDocument(note.content);
+        titleTfidf.addDocument(note.title || "");
+        const tagsString = note.tags?.join(" ") || "";
+        tagsTfidf.addDocument(tagsString);
+      } catch (err) {
+        console.error("Error processing note:", err);
+      }
+    });
 
-  const results = notes.map((note, index) => ({
-    note,
-    score:
-      contentScores[index] +
-      titleScores[index] * 2 + // Give more weight to title matches
-      tagScores[index] * 3, // Give even more weight to tag matches
-  })) satisfies TFIDFResult[] | null;
+    const contentScores = tfidf.tfidfs(query);
+    const titleScores = titleTfidf.tfidfs(query);
+    const tagScores = tagsTfidf.tfidfs(query);
 
-  const filteredResults = results
-    .filter((result) => result !== null && result.score !== 0)
-    .sort((a, b) => b.score - a.score);
+    if (!contentScores || !titleScores || !tagScores) {
+      console.error("Failed to calculate scores");
+      return [];
+    }
 
-  return filteredResults;
+    const results = notes.map((note, index) => ({
+      note,
+      score:
+        (contentScores[index] || 0) +
+        (titleScores[index] || 0) * 2 + // Give more weight to title matches
+        (tagScores[index] || 0) * 3, // Give even more weight to tag matches
+    })) satisfies TFIDFResult[] | null;
+
+    const filteredResults = results
+      .filter((result) => result !== null && result.score !== 0)
+      .sort((a, b) => b.score - a.score);
+
+    return filteredResults;
+  } catch (error) {
+    console.error("Search error:", error);
+    return [];
+  }
 };
