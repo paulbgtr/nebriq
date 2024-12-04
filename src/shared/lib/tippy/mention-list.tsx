@@ -15,17 +15,11 @@ interface MentionListProps {
 
 export default forwardRef<
   { onKeyDown: (params: { event: KeyboardEvent }) => boolean },
-  {
-    items: Array<{ id: string; title: string }>;
-    command: (params: { id: string }) => void;
-    currentNoteId: string;
-  }
+  MentionListProps
 >((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectItem = async (index) => {
-    console.log(props);
-
     const item = props.items[index];
 
     if (item) {
@@ -36,8 +30,6 @@ export default forwardRef<
       note_id_from: props.currentNoteId,
       note_id_to: item.id,
     };
-
-    console.log(noteConnection);
 
     await createNoteConnection(noteConnection);
   };
