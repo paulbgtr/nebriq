@@ -13,52 +13,52 @@ body {
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 265 89% 60%; /* Vibrant violet */
+    --primary: 328 80% 29%; /* Burgundy #880E4F (Material Red 900) */
     --primary-foreground: 0 0% 100%;
-    --secondary: 260 20% 96%;
-    --secondary-foreground: 240 10% 3.9%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 265 89% 95%; /* Light violet */
-    --accent-foreground: 240 10% 3.9%;
+    --secondary: 351 100% 96%; /* Cream #FFEBEE (Material Red 50) */
+    --secondary-foreground: 0 0% 26%; /* Dark gray #424242 */
+    --muted: 351 100% 96%;
+    --muted-foreground: 0 0% 26%;
+    --accent: 0 0% 26%; /* Dark gray #424242 */
+    --accent-foreground: 351 100% 96%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 265 89% 60%;
+    --border: 351 100% 92%;
+    --input: 351 100% 92%;
+    --ring: 328 80% 29%;
     --radius: 0.75rem;
-    --chart-1: 265 89% 60%;
-    --chart-2: 230 80% 60%;
-    --chart-3: 200 70% 60%;
-    --chart-4: 170 60% 60%;
-    --chart-5: 140 50% 60%;
+    --chart-1: 328 80% 29%; /* Burgundy */
+    --chart-2: 0 0% 26%; /* Dark gray */
+    --chart-3: 328 70% 39%; /* Lighter burgundy */
+    --chart-4: 0 0% 36%; /* Medium gray */
+    --chart-5: 328 60% 49%; /* Light burgundy */
   }
 
   .dark {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 100%;
-    --card: 240 10% 4%;
-    --card-foreground: 0 0% 100%;
-    --popover: 240 10% 4%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 265 89% 65%; /* Brighter violet for dark mode */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 8% 12%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 240 8% 12%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 265 89% 20%; /* Darker violet */
-    --accent-foreground: 0 0% 100%;
+    --background: 0 0% 9%; /* Darker than #424242 for better contrast */
+    --foreground: 351 100% 96%;
+    --card: 0 0% 9%;
+    --card-foreground: 351 100% 96%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 351 100% 96%;
+    --primary: 328 80% 34%; /* Slightly brighter burgundy for dark mode */
+    --primary-foreground: 351 100% 96%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 351 100% 96%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 351 100% 86%;
+    --accent: 351 100% 96%; /* Cream color becomes accent in dark mode */
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 8% 12%;
-    --input: 240 8% 12%;
-    --ring: 265 89% 65%;
-    --chart-1: 265 89% 65%;
-    --chart-2: 230 80% 65%;
-    --chart-3: 200 70% 65%;
-    --chart-4: 170 60% 65%;
-    --chart-5: 140 50% 65%;
+    --destructive-foreground: 351 100% 96%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 328 80% 34%;
+    --chart-1: 328 80% 34%; /* Bright burgundy */
+    --chart-2: 351 100% 96%; /* Cream */
+    --chart-3: 328 70% 44%; /* Medium burgundy */
+    --chart-4: 0 0% 26%; /* Dark gray */
+    --chart-5: 328 60% 54%; /* Light burgundy */
   }
 }
 
@@ -162,7 +162,6 @@ body {
   width: 100%;
 }
 
-.dropdown-menu button:hover,
 .dropdown-menu button.is-selected:hover {
   background-color: rgba(129, 56, 237, 0.2);
 }
