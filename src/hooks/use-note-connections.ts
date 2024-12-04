@@ -45,8 +45,6 @@ export const useNoteConnections = ({
 
     const mentionsInContent = extractNoteConnectionsFromContent(content);
 
-    console.log(mentionsInContent);
-
     const currentConnectionIds = mentionsInContent
       .map((mention) => {
         const note = getNotesQuery.data?.find(
@@ -63,8 +61,6 @@ export const useNoteConnections = ({
     const connectionsToRemove = existingConnectionIds.filter(
       (connectionId) => !currentConnectionIds.includes(connectionId)
     );
-
-    console.log(existingConnectionIds, connectionsToRemove);
 
     connectionsToRemove.forEach((connectionId) => {
       deleteNoteConnectionMutation.mutate(connectionId);
