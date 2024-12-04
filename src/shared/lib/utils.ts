@@ -33,3 +33,20 @@ export function formatDate(date: Date) {
     day: "numeric",
   }).format(new Date(date));
 }
+
+/**
+ * Extracts note connections from the given content string.
+ */
+export const extractNoteConnectionsFromContent = (
+  content: string
+): string[] => {
+  const regex = /@(\w+)/g;
+  const matches = content.matchAll(regex);
+  const noteConnections: string[] = [];
+
+  for (const match of matches) {
+    noteConnections.push(match[1]);
+  }
+
+  return noteConnections;
+};
