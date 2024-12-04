@@ -5,4 +5,5 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default MillionLint.next({ rsc: true })(nextConfig);
+// export default MillionLint.next()(nextConfig);
+export default nextConfig;
