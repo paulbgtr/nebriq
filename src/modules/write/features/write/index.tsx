@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
+import Mention from "@tiptap/extension-mention";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useNotes } from "@/hooks/use-notes";
 import { Spinner } from "@/shared/components/spinner";
 import { Editor } from "./components/editor";
 import { useUser } from "@/hooks/use-user";
+import createSuggestion from "@/shared/lib/tippy/suggestion";
 
 export default function Write() {
   const [id, setId] = useState("");
@@ -41,36 +43,48 @@ export default function Write() {
     );
   };
 
-  const editor = useEditor({
-    immediatelyRender: false,
-    extensions: [StarterKit, Placeholder.configure()],
-    editorProps: {
-      attributes: {
-        class: "prose prose-slate focus:outline-none",
+  const editor = useEditor(
+    {
+      immediatelyRender: false,
+      extensions: [
+        StarterKit,
+        Placeholder.configure(),
+        Mention.configure({
+          HTMLAttributes: {
+            class: "mention",
+          },
+          suggestion: createSuggestion(id),
+        }),
+      ],
+      editorProps: {
+        attributes: {
+          class: "prose prose-slate focus:outline-none",
+        },
+      },
+      content,
+      onUpdate: ({ editor }) => {
+        const newContent = editor.getHTML();
+        setContent(newContent);
+
+        if (!id && !isCreatingNote) {
+          createNote();
+        }
+
+        const timeoutId = setTimeout(() => {
+          if (!id) return;
+          updateNoteMutation.mutate({
+            id,
+            title,
+            content: newContent,
+            created_at: new Date(),
+          });
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
       },
     },
-    content,
-    onUpdate: ({ editor }) => {
-      const newContent = editor.getHTML();
-      setContent(newContent);
-
-      if (!id && !isCreatingNote) {
-        createNote();
-      }
-
-      const timeoutId = setTimeout(() => {
-        if (!id) return;
-        updateNoteMutation.mutate({
-          id,
-          title,
-          content: newContent,
-          created_at: new Date(),
-        });
-      }, 500);
-
-      return () => clearTimeout(timeoutId);
-    },
-  });
+    [id]
+  );
 
   // Handle title changes
   const handleTitleChange = (newTitle: string) => {

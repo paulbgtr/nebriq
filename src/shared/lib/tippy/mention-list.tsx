@@ -4,16 +4,42 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
+import { createNoteConnection } from "@/app/actions/supabase/note_connections";
+import { CreateNoteConnection } from "@/types/note-connection";
 
-export default forwardRef((props, ref) => {
+interface MentionListProps {
+  items: Array<{ id: string; title: string }>;
+  command: (params: { id: string }) => void;
+  currentNoteId: string;
+}
+
+export default forwardRef<
+  { onKeyDown: (params: { event: KeyboardEvent }) => boolean },
+  {
+    items: Array<{ id: string; title: string }>;
+    command: (params: { id: string }) => void;
+    currentNoteId: string;
+  }
+>((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const selectItem = (index) => {
+  const selectItem = async (index) => {
+    console.log(props);
+
     const item = props.items[index];
 
     if (item) {
-      props.command({ id: item });
+      props.command({ id: item.title });
     }
+
+    const noteConnection: CreateNoteConnection = {
+      note_id_from: props.currentNoteId,
+      note_id_to: item.id,
+    };
+
+    console.log(noteConnection);
+
+    await createNoteConnection(noteConnection);
   };
 
   const upHandler = () => {
@@ -60,9 +86,11 @@ export default forwardRef((props, ref) => {
           <button
             className={index === selectedIndex ? "is-selected" : ""}
             key={index}
-            onClick={() => selectItem(index)}
+            onClick={async () => {
+              await selectItem(index);
+            }}
           >
-            {item}
+            {item.title}
           </button>
         ))
       ) : (

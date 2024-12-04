@@ -6,73 +6,78 @@ import { createClient } from "../supabase/client";
 
 import MentionList from "./mention-list";
 
-export default {
-  items: async ({ query }) => {
-    const supabase = await createClient();
-    const { data: notes } = await supabase.from("notes").select("*");
+export default function createSuggestion(currentNoteId: string) {
+  return {
+    items: async ({ query }) => {
+      const supabase = await createClient();
+      const { data: notes } = await supabase.from("notes").select("*");
 
-    if (!notes) {
-      return [];
-    }
+      if (!notes) {
+        return [];
+      }
 
-    const notesTitles = notes.map((note) => note.title);
+      return notes
+        .filter((item) =>
+          item.title.toLowerCase().startsWith(query.toLowerCase())
+        )
+        .slice(0, 5);
+    },
 
-    return notesTitles
-      .filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))
-      .slice(0, 5);
-  },
+    render: () => {
+      let component;
+      let popup;
 
-  render: () => {
-    let component;
-    let popup;
+      return {
+        onStart: (props) => {
+          component = new ReactRenderer(MentionList, {
+            props: {
+              ...props,
+              currentNoteId,
+            },
+            editor: props.editor,
+          });
 
-    return {
-      onStart: (props) => {
-        component = new ReactRenderer(MentionList, {
-          props,
-          editor: props.editor,
-        });
+          if (!props.clientRect) {
+            return;
+          }
 
-        if (!props.clientRect) {
-          return;
-        }
+          popup = tippy("body", {
+            getReferenceClientRect: props.clientRect,
+            appendTo: () => document.body,
+            content: component.element,
+            showOnCreate: true,
+            interactive: true,
+            trigger: "manual",
+            placement: "bottom-start",
+          });
+        },
 
-        popup = tippy("body", {
-          getReferenceClientRect: props.clientRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
-        });
-      },
+        onUpdate(props) {
+          component?.updateProps(props);
 
-      onUpdate(props) {
-        component?.updateProps(props);
+          if (!props.clientRect) {
+            return;
+          }
 
-        if (!props.clientRect) {
-          return;
-        }
+          popup?.[0].setProps({
+            getReferenceClientRect: props.clientRect,
+          });
+        },
 
-        popup?.[0].setProps({
-          getReferenceClientRect: props.clientRect,
-        });
-      },
+        onKeyDown(props) {
+          if (props.event.key === "Escape") {
+            popup?.[0].hide();
+            return true;
+          }
 
-      onKeyDown(props) {
-        if (props.event.key === "Escape") {
-          popup?.[0].hide();
-          return true;
-        }
+          return component?.ref?.onKeyDown(props);
+        },
 
-        return component?.ref?.onKeyDown(props);
-      },
-
-      onExit() {
-        popup?.[0].destroy();
-        component?.destroy();
-      },
-    };
-  },
-};
+        onExit() {
+          popup?.[0].destroy();
+          component?.destroy();
+        },
+      };
+    },
+  };
+}
