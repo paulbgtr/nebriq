@@ -56,7 +56,7 @@ export default function Write() {
           HTMLAttributes: {
             class: "mention",
           },
-          suggestion: createSuggestion(id, user?.id),
+          suggestion: createSuggestion(id),
         }),
       ],
       editorProps: {
@@ -86,7 +86,7 @@ export default function Write() {
         return () => clearTimeout(timeoutId);
       },
     },
-    [id, user]
+    [id]
   );
 
   // Handle title changes
