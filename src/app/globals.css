@@ -163,7 +163,7 @@ body {
 }
 
 .dropdown-menu button.is-selected:hover {
-  background-color: rgba(129, 56, 237, 0.2);
+  background-color: #FFEBEE;
 }
 
 .dropdown-menu button.is-selected {
@@ -176,7 +176,7 @@ body {
 }
 
 .mention {
-  background-color: rgba(129, 56, 237, 0.2);
+  background-color: #FFEBEE;
   border-radius: 0.4rem;
   box-decoration-break: clone;
   padding: 0.1rem 0.3rem;

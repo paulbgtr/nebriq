@@ -12,7 +12,7 @@ export const Spinner = ({ size = "md" }: SpinnerProps) => {
   return (
     <div className="flex items-center justify-center">
       <div
-        className={`animate-spin ${sizeClasses[size]} rounded-full border-b-2 border-gray-300 border-t-transparent border-r-transparent border-l-gray-800`}
+        className={`animate-spin ${sizeClasses[size]} rounded-full border-b-2 border-secondary border-t-transparent border-r-transparent border-l-primary`}
         style={{
           borderRadius: "50%", // ensures a perfect circle
           animationDuration: "1.5s", // a slower, deliberate spin to resemble writing pace
