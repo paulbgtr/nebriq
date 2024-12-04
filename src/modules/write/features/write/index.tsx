@@ -10,12 +10,15 @@ import { Spinner } from "@/shared/components/spinner";
 import { Editor } from "./components/editor";
 import { useUser } from "@/hooks/use-user";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
+import { useNoteConnections } from "@/hooks/use-note-connections";
 
 export default function Write() {
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
+
+  useNoteConnections({ noteId: id, content });
 
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
@@ -53,7 +56,7 @@ export default function Write() {
           HTMLAttributes: {
             class: "mention",
           },
-          suggestion: createSuggestion(id),
+          suggestion: createSuggestion(id, user?.id),
         }),
       ],
       editorProps: {
@@ -83,7 +86,7 @@ export default function Write() {
         return () => clearTimeout(timeoutId);
       },
     },
-    [id]
+    [id, user]
   );
 
   // Handle title changes
