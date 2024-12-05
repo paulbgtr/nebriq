@@ -9,11 +9,16 @@ export default function AllNotes() {
   const { getNotesQuery } = useNotes();
   const { data: notes, isPending } = getNotesQuery;
 
-  if (isPending) return <Spinner size="md" />;
+  if (isPending)
+    return (
+      <div className="min-h-[300px] flex items-center justify-center">
+        <Spinner size="sm" />
+      </div>
+    );
 
   if (!notes?.length) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 text-center">
+      <div className="min-h-[300px] flex flex-col items-center justify-center gap-4 text-center">
         <p className="text-xl font-light tracking-wide">no notes</p>
         <p className="text-gray-500 text-sm">waiting for your thoughts</p>
         <Link
@@ -29,7 +34,9 @@ export default function AllNotes() {
 
   return (
     <section className="max-w-5xl mx-auto">
-      <h2 className="text-lg font-normal mb-6 text-gray-500">Here are all your notes</h2>
+      <h2 className="text-lg font-normal mb-6 text-gray-500">
+        Here are all your notes
+      </h2>
       <NoteList notes={notes} />
     </section>
   );
