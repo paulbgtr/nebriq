@@ -3,11 +3,13 @@ import AllNotes from "@/modules/search/features/all-notes";
 
 export default function SearchPage() {
   return (
-    <main>
-      <div className="min-h-[80vh] grid items-center">
+    <main className="min-h-screen flex flex-col items-center justify-center h-full">
+      <div className="my-auto">
         <Search />
       </div>
-      <AllNotes />
+      <div className="mt-16">
+        <AllNotes />
+      </div>
     </main>
   );
 }
