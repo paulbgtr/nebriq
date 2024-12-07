@@ -20,8 +20,8 @@ body {
     --secondary-foreground: 0 0% 26%; /* Dark gray #424242 */
     --muted: 351 100% 96%;
     --muted-foreground: 0 0% 26%;
-    --accent: 0 0% 26%; /* Dark gray #424242 */
-    --accent-foreground: 351 100% 96%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 351 100% 92%;
