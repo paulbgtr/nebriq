@@ -50,3 +50,10 @@ export const extractNoteConnectionsFromContent = (
 
   return noteConnections;
 };
+
+/**
+ * Formats a note's content HTML by removing all HTML tags and trimming the result.
+ */
+export const formatHTMLNoteContent = (content: string): string => {
+  return content ? content.replace(/<[^>]*>/g, "").trim() : "";
+};

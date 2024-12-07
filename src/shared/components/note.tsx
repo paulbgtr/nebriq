@@ -1,6 +1,7 @@
 import React from "react";
 import { formatDate } from "../lib/utils";
 import { Badge } from "./ui/badge";
+import { formatHTMLNoteContent } from "../lib/utils";
 
 type NoteProps = {
   title?: string;
@@ -10,9 +11,7 @@ type NoteProps = {
 };
 
 const NoteComponent = ({ title, content, createdAt, tags = [] }: NoteProps) => {
-  const contentWithoutHTML = content
-    ? content.replace(/<[^>]*>/g, "").trim()
-    : "";
+  const contentWithoutHTML = formatHTMLNoteContent(content || "");
 
   const shortenedContent =
     contentWithoutHTML.length > 30
