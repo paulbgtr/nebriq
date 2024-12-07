@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SearchBar from "@/shared/components/search-bar";
 import { useRouter } from "next/navigation";
+import { Library } from "lucide-react";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,8 +26,11 @@ export default function Search() {
         className={`transition-all duration-500 ease-in-out w-full max-w-md mx-auto`}
       >
         <div className="mb-6 text-center space-y-2">
+          <div className="flex justify-center mb-3">
+            <Library className="w-8 h-8 text-primary" />
+          </div>
           <h1 className="text-xl font-semibold tracking-tight">
-            What&apos;s on your mind?
+            Search your knowledge base
           </h1>
         </div>
         <SearchBar

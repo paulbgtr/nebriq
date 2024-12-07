@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/components/ui/button";
-import { Menu, PlusCircle } from "lucide-react";
+import { Menu, Pen } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -14,9 +14,7 @@ import {
 import { UserActions } from "./user-actions";
 import { useUser } from "@/hooks/use-user";
 
-const navItems = [
-  { name: "search", href: "/search" },
-];
+const navItems = [{ name: "search", href: "/search" }];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -37,7 +35,7 @@ export default function Navbar() {
               size="sm"
               className="gap-2"
             >
-              <PlusCircle className="w-4 h-4" />
+              <Pen className="w-4 h-4" />
               <span>compose</span>
             </Button>
           </div>
@@ -89,7 +87,7 @@ export default function Navbar() {
                         onClick={() => setIsOpen(false)}
                       >
                         <Link href="/write">
-                          <PlusCircle className="w-4 h-4" />
+                          <Pen className="w-4 h-4" />
                           <span>New Note</span>
                         </Link>
                       </Button>

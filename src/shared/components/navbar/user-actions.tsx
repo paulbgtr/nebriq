@@ -32,7 +32,7 @@ export const UserActions = ({ email }: UserActionsProps) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-8 w-8 rounded-full transition-all duration-300 hover:ring-2 hover:ring-primary/50 hover:ring-offset-2 hover:ring-offset-background"
+          className="relative h-8 w-8 rounded-full transition-all duration-200 hover:ring-2 hover:ring-primary/50 hover:ring-offset-2 hover:ring-offset-background"
         >
           <Avatar className="h-8 w-8">
             <AvatarFallback>{firstLetter.toUpperCase()}</AvatarFallback>
