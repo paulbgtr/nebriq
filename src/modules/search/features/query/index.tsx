@@ -9,12 +9,12 @@ export default function SearchQuery() {
 
   if (!searchQueryResult) return null;
 
-  const { notes, hasSearched, searchQuery, setSearchQuery, handleSearch } =
+  const { answer, hasSearched, searchQuery, setSearchQuery, handleSearch } =
     searchQueryResult;
 
   return (
     <div className="flex flex-col gap-4">
-      <Results notes={notes} hasSearched={hasSearched} />
+      <Results answer={answer} hasSearched={hasSearched} />
       <div className="fixed bottom-5 left-0 right-0 max-w-xl mx-auto">
         <SearchBar
           searchQuery={searchQuery}
