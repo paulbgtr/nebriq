@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/components/ui/button";
-import { Menu, Pen } from "lucide-react";
+import { Menu, Pen, Search } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -14,7 +14,7 @@ import {
 import { UserActions } from "./user-actions";
 import { useUser } from "@/hooks/use-user";
 
-const navItems = [{ name: "search", href: "/search" }];
+const navItems = [{ icon: Search, name: "search", href: "/search" }];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -50,9 +50,14 @@ export default function Navbar() {
                     pathname === item.href
                       ? "text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
-                    "group"
+                    "group",
+                    "flex items-center gap-2"
                   )}
                 >
+                  <item.icon
+                    className={cn(pathname === item.href ? "opacity-100" : "")}
+                    size={16}
+                  />
                   {item.name}
                   {pathname === item.href && (
                     <span className="absolute bottom-0 left-0 h-0.5 w-full bg-primary" />
@@ -76,22 +81,9 @@ export default function Navbar() {
                 </SheetTrigger>
                 <SheetContent
                   side="right"
-                  className="w-[240px] sm:w-[540px] p-0"
+                  className="w-[240px] sm:w-[540px] p-0 pt-8"
                 >
                   <div className="flex flex-col py-4">
-                    <div className="px-6 pb-4">
-                      <Button
-                        asChild
-                        variant="default"
-                        className="w-full gap-2"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Link href="/write">
-                          <Pen className="w-4 h-4" />
-                          <span>New Note</span>
-                        </Link>
-                      </Button>
-                    </div>
                     {navItems.map((item) => (
                       <Link
                         key={item.name}
@@ -101,9 +93,11 @@ export default function Navbar() {
                           "px-6 py-3 text-sm font-medium transition-colors",
                           pathname === item.href
                             ? "bg-accent/50 text-primary"
-                            : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                            : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                          "flex items-center gap-2"
                         )}
                       >
+                        <item.icon className="w-4 h-4" />
                         {item.name}
                       </Link>
                     ))}
