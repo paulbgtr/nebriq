@@ -19,7 +19,6 @@ export default function SearchBar({
   handleSearch,
 }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
-  const [isAISearch, setIsAISearch] = useState(false);
 
   return (
     <article className="flex flex-col gap-2 justify-end rounded-md p-2 bg-accent pb-3">
@@ -62,7 +61,7 @@ export default function SearchBar({
           </div>
         </div>
       </form>
-      <AISearch isAISearch={isAISearch} setIsAISearch={setIsAISearch} />
+      <AISearch />
     </article>
   );
 }
