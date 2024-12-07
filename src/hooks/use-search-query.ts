@@ -6,17 +6,28 @@ import { useNotes } from "@/hooks/use-notes";
 import { searchUsingTFIDF } from "@/app/actions/search/tfidf";
 import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
 import { Note } from "@/types/note";
+import { useSearchStore } from "@/store/search";
+import { llmAnswer } from "@/app/actions/search/ai-search";
 
-export const useSearchQuery = () => {
+type ReturnType = {
+  answer: Note[] | string;
+  hasSearched: boolean;
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  handleSearch: (e: React.FormEvent) => void;
+};
+
+export const useSearchQuery = (): ReturnType | null => {
   const { query } = useParams() as { query: string };
   const router = useRouter();
+  const { isAiSearch } = useSearchStore();
 
   if (!query) return null;
 
   const [searchQuery, setSearchQuery] = useState<string>(
     decodeURIComponent(query)
   );
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [answer, setAnswer] = useState<Note[] | string>("");
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -32,20 +43,31 @@ export const useSearchQuery = () => {
     if (!notesData) return;
 
     const fetchResults = async () => {
-      const results = await searchUsingTFIDF(searchQuery, notesData);
+      try {
+        const results = await searchUsingTFIDF(searchQuery, notesData);
 
-      const convertedNotes = convertTFIDFToNotesWithDefaults(results);
+        if (isAiSearch) {
+          const answer = await llmAnswer(searchQuery, results);
+          setAnswer(answer || "");
+          setHasSearched(true);
+          return;
+        }
 
-      setNotes(convertedNotes);
+        const convertedNotes = convertTFIDFToNotesWithDefaults(results);
 
-      setHasSearched(true);
+        setAnswer(convertedNotes);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setHasSearched(true);
+      }
     };
 
     fetchResults();
-  }, [query, getNotesQuery.data, setNotes, setHasSearched]);
+  }, [query, getNotesQuery.data, isAiSearch, setAnswer, setHasSearched]);
 
   return {
-    notes,
+    answer,
     hasSearched,
     searchQuery,
     setSearchQuery,
