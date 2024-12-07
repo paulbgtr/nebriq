@@ -4,7 +4,7 @@ import AllNotes from "@/modules/search/features/all-notes";
 export default function SearchPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center h-full">
-      <div className="my-auto">
+      <div className="my-auto w-full">
         <Search />
       </div>
       <div className="mt-16">

@@ -21,9 +21,9 @@ export default function Search() {
   };
 
   return (
-    <article className="grid h-full items-center">
+    <article className="h-full items-center">
       <div
-        className={`transition-all duration-500 ease-in-out w-full max-w-md mx-auto`}
+        className={`transition-all duration-500 ease-in-out w-full max-w-xl mx-auto`}
       >
         <div className="mb-6 text-center space-y-2">
           <div className="flex justify-center mb-3">
