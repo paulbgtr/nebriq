@@ -4,7 +4,10 @@ import { Note } from "@/types/note";
 import { TFIDFResult } from "@/types/TFIDFResult";
 import natural from "natural";
 
-export const searchUsingTFIDF = async (query: string, notes: Note[]) => {
+export const searchUsingTFIDF = async (
+  query: string,
+  notes: Note[]
+): Promise<TFIDFResult[]> => {
   try {
     if (!notes || !query || notes.length === 0 || query.length === 0) return [];
 
