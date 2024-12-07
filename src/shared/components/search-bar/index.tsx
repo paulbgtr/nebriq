@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Search as SearchIcon } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
@@ -32,13 +31,6 @@ export default function SearchBar({
           )}
         >
           <div className="relative flex items-center">
-            <SearchIcon
-              className={cn(
-                "absolute left-3 text-muted-foreground transition-colors",
-                isFocused && "text-foreground"
-              )}
-              size={20}
-            />
             <Input
               type="text"
               value={searchQuery}
@@ -47,7 +39,7 @@ export default function SearchBar({
               onBlur={() => setIsFocused(false)}
               placeholder="Seek and you shall find..."
               className={cn(
-                "pl-10 pr-24 h-12 transition-all duration-300",
+                "pl-3 h-12 transition-all duration-300",
                 isFocused && "ring-2 ring-offset-2",
                 "placeholder:text-muted-foreground/60"
               )}
