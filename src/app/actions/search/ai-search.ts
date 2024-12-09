@@ -37,7 +37,7 @@ const selectRelevantNotes = (
 const extractKeyFragments = (
   note: Note,
   query: string,
-  maxlength = 100
+  maxlength = 500
 ): string | undefined => {
   const sentences = note.content?.split(/[.!?]+/);
   return sentences
@@ -45,8 +45,8 @@ const extractKeyFragments = (
       sentence.toLowerCase().includes(query.toLowerCase())
     )
     .filter((sentence: string) => sentence.trim())
-    .slice(0, 3)
-    .join(" ")
+    .slice(0, 5)
+    .join(". ")
     .substring(0, maxlength);
 };
 
