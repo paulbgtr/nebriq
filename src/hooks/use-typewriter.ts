@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, useAnimationControls } from "framer-motion";
+import { useAnimationControls } from "framer-motion";
 
 export const useTypewriter = (text: string, speed: number = 50) => {
   const [displayedText, setDisplayedText] = useState("");
@@ -9,7 +9,7 @@ export const useTypewriter = (text: string, speed: number = 50) => {
   useEffect(() => {
     setDisplayedText("");
     setIsComplete(false);
-    
+
     let currentIndex = 0;
     const interval = setInterval(() => {
       if (currentIndex <= text.length) {
@@ -27,6 +27,6 @@ export const useTypewriter = (text: string, speed: number = 50) => {
   return {
     displayedText,
     isComplete,
-    controls
+    controls,
   };
 };
