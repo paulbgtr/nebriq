@@ -8,9 +8,10 @@ import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
 import { Note } from "@/types/note";
 import { useSearchStore } from "@/store/search";
 import { llmAnswer } from "@/app/actions/search/ai-search";
+import { LLMAnswer } from "@/types/llm-answer";
 
 type ReturnType = {
-  answer: Note[] | string;
+  answer: Note[] | LLMAnswer;
   hasSearched: boolean;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -27,7 +28,10 @@ export const useSearchQuery = (): ReturnType | null => {
   const [searchQuery, setSearchQuery] = useState<string>(
     decodeURIComponent(query)
   );
-  const [answer, setAnswer] = useState<Note[] | string>("");
+  const [answer, setAnswer] = useState<Note[] | LLMAnswer>({
+    answer: "",
+    notes: [],
+  });
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -48,7 +52,7 @@ export const useSearchQuery = (): ReturnType | null => {
 
         if (isAiSearch) {
           const answer = await llmAnswer(searchQuery, results);
-          setAnswer(answer || "");
+          setAnswer(answer || null);
           setHasSearched(true);
           return;
         }
