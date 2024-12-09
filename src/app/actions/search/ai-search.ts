@@ -4,6 +4,8 @@ import OpenAI from "openai";
 import { TFIDFResult } from "@/types/TFIDFResult";
 import { Note } from "@/types/note";
 import { formatHTMLNoteContent } from "@/shared/lib/utils";
+import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
+import { LLMAnswer } from "@/types/llm-answer";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is not defined in environment");
@@ -76,7 +78,10 @@ const createPrompt = (query: string, context: string): string => {
   Give a brief and accurate answer, using only the information from the notes. If there is not enough information, indicate that.`;
 };
 
-export const llmAnswer = async (query: string, data: TFIDFResult[]) => {
+export const llmAnswer = async (
+  query: string,
+  data: TFIDFResult[]
+): Promise<LLMAnswer> => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -94,7 +99,10 @@ export const llmAnswer = async (query: string, data: TFIDFResult[]) => {
       messages: [{ role: "user", content: prompt }],
     });
 
-    return completion.choices[0].message.content;
+    return {
+      answer: completion.choices[0].message.content || "",
+      notes: convertTFIDFToNotesWithDefaults(relevantNotes),
+    };
   } catch (error) {
     console.error(`chatgpt error: ${error}`);
     throw error;
