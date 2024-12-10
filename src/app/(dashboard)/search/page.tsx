@@ -7,7 +7,7 @@ export default function SearchPage() {
       <div className="my-auto w-full">
         <Search />
       </div>
-      <div className="mt-16">
+      <div className="mt-16 min-h-[450px]">
         <AllNotes />
       </div>
     </main>
