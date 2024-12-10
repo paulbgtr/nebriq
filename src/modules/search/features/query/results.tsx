@@ -4,7 +4,7 @@ import { Note } from "@/types/note";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { motion } from "framer-motion";
 import { LLMAnswer } from "@/types/llm-answer";
-import { Sparkles, Search } from "lucide-react";
+import { Frown, Sparkles, Search } from "lucide-react";
 
 type ResultsProps = {
   answer: Note[] | LLMAnswer;
@@ -92,25 +92,12 @@ export const Results = ({ answer, hasSearched }: ResultsProps) => {
           </motion.div>
         ) : (
           <motion.div
-            className="text-center py-16 px-6 bg-gray-50 rounded-lg border border-gray-200"
+            className="text-center py-16 px-6"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <Frown className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-2xl font-semibold text-gray-800 mb-2">
               No results found
             </h2>
