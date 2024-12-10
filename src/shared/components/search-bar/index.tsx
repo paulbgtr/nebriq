@@ -21,7 +21,7 @@ export default function SearchBar({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <article className="flex flex-col gap-2 justify-end rounded-md p-2 bg-accent pb-3">
+    <article className="flex flex-col gap-2 justify-end rounded-md p-[8px] shadow-sm bg-accent pb-3 border">
       <form onSubmit={handleSearch}>
         <div
           className={cn(
