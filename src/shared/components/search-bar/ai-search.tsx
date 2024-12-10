@@ -15,23 +15,37 @@ export const AISearch = () => {
 
   return (
     <TooltipProvider>
-      <div className="flex items-center space-x-2 self-end">
+      <div className="flex items-center space-x-2 self-end relative">
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center space-x-2 cursor-pointer">
+            <div
+              className={cn(
+                "flex items-center space-x-2 cursor-pointer p-1.5 rounded-full transition-all duration-700",
+                isAiSearch && "bg-primary/10"
+              )}
+            >
               <Switch
                 id="ai-search"
                 checked={isAiSearch}
                 onCheckedChange={setIsAiSearch}
-                className={cn("data-[state=checked]:bg-primary")}
+                className={cn(
+                  "data-[state=checked]:bg-primary transition-all duration-700",
+                  isAiSearch && "shadow-lg shadow-primary/20"
+                )}
               />
               <Label
                 htmlFor="ai-search"
                 className={cn(
-                  "flex items-center space-x-1 cursor-pointer select-none"
+                  "flex items-center space-x-1 cursor-pointer select-none transition-all duration-700",
+                  isAiSearch && "text-primary"
                 )}
               >
-                <Sparkles className="w-4 h-4" />
+                <Sparkles
+                  className={cn(
+                    "w-4 h-4 transition-all duration-700",
+                    isAiSearch && "animate-pulse"
+                  )}
+                />
               </Label>
             </div>
           </TooltipTrigger>
