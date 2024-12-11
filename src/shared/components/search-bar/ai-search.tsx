@@ -42,7 +42,7 @@ export const AISearch = () => {
               >
                 <Sparkles
                   className={cn(
-                    "w-4 h-4 transition-all duration-700",
+                    "w-4 h-4 transition-all duration-800",
                     isAiSearch && "animate-pulse"
                   )}
                 />
