@@ -69,7 +69,7 @@ const createPrompt = (query: string, context: string): string => {
 
   Question: ${query}
 
-  Give a brief and accurate answer, using only the information from the notes. If there is not enough information, indicate that.`;
+  Format your response using HTML tags for better presentation. Use <p> for paragraphs, <strong> for emphasis, <ul>/<li> for lists, and <em> for highlighting key terms. If there is relevant information in the notes, provide a brief and accurate answer based solely on that information. If there is no relevant information available, respond with: "<p>I don't have any specific information about this topic in your notes, but here's what I can tell you about <strong>[topic]</strong>: [general explanation of the topic/concept]</p>". Always maintain accuracy and clarity in your response.`;
 };
 
 export const llmAnswer = async (
