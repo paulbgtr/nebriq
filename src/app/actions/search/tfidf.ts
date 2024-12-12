@@ -3,11 +3,12 @@
 import { Note } from "@/types/note";
 import { TFIDFResult } from "@/types/TFIDFResult";
 import natural from "natural";
+import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
 
 export const searchUsingTFIDF = async (
   query: string,
   notes: Note[]
-): Promise<TFIDFResult[]> => {
+): Promise<Note[]> => {
   try {
     if (!notes || !query || notes.length === 0 || query.length === 0) return [];
 
@@ -54,7 +55,7 @@ export const searchUsingTFIDF = async (
       .filter((result) => result !== null && result.score !== 0)
       .sort((a, b) => b.score - a.score);
 
-    return filteredResults;
+    return convertTFIDFToNotesWithDefaults(filteredResults);
   } catch (error) {
     console.error("Search error:", error);
     return [];

@@ -14,13 +14,10 @@ if (!process.env.OPENAI_API_KEY) {
 /**
  * Selects relevant notes from the given results, prioritizing shorter notes first.
  */
-const selectRelevantNotes = (
-  results: TFIDFResult[],
-  maxTokens = 1000
-): TFIDFResult[] => {
+const selectRelevantNotes = (notes: Note[], maxTokens = 1000): Note[] => {
   let totalTokens = 0;
-  return results.filter((result) => {
-    const resultWithoutHTML = formatHTMLNoteContent(result.note.content || "");
+  return notes.filter((note) => {
+    const resultWithoutHTML = formatHTMLNoteContent(note.content || "");
 
     const noteTokens = resultWithoutHTML?.split(/\s+/)?.length;
     if (totalTokens + (noteTokens || 0) <= maxTokens) {
@@ -53,14 +50,11 @@ const extractKeyFragments = (
 /**
  * Prepares the context for a prompt from the given relevant notes and query.
  */
-const prepareContext = (
-  relevantNotes: TFIDFResult[],
-  query: string
-): string => {
+const prepareContext = (relevantNotes: Note[], query: string): string => {
   return relevantNotes
-    .map((result) => {
-      const keyFragment = extractKeyFragments(result.note, query);
-      return `Note "${result.note.title}": ${keyFragment}`;
+    .map((note) => {
+      const keyFragment = extractKeyFragments(note, query);
+      return `Note "${note.title}": ${keyFragment}`;
     })
     .join("\n\n");
 };
@@ -80,19 +74,16 @@ const createPrompt = (query: string, context: string): string => {
 
 export const llmAnswer = async (
   query: string,
-  data: TFIDFResult[]
+  data: Note[]
 ): Promise<LLMAnswer> => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
   try {
     const relevantNotes = selectRelevantNotes(data);
+
     const context = prepareContext(relevantNotes, query);
     const prompt = createPrompt(query, context);
-
-    console.log("relevantNotes", relevantNotes);
-    console.log("prompt", prompt);
-    console.log("context", context);
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -101,7 +92,7 @@ export const llmAnswer = async (
 
     return {
       answer: completion.choices[0].message.content || "",
-      notes: convertTFIDFToNotesWithDefaults(relevantNotes),
+      notes: relevantNotes,
     };
   } catch (error) {
     console.error(`chatgpt error: ${error}`);
