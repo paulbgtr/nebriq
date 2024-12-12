@@ -5,6 +5,7 @@ import { useTypewriter } from "@/hooks/use-typewriter";
 import { motion } from "framer-motion";
 import { LLMAnswer } from "@/types/llm-answer";
 import { Frown, Sparkles, Search } from "lucide-react";
+import parse from "html-react-parser";
 
 type ResultsProps = {
   answer: Note[] | LLMAnswer;
@@ -60,8 +61,8 @@ export const Results = ({ answer, hasSearched }: ResultsProps) => {
                     </p>
                   </div>
                 </div>
-                <div className="text-gray-700 leading-relaxed rounded-lg p-4">
-                  {displayedText}
+                <div className="text-gray-700 leading-relaxed prose prose-sm max-w-none rounded-lg p-4">
+                  {parse(displayedText)}
                 </div>
               </motion.div>
             </div>
