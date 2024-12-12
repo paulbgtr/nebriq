@@ -28,22 +28,27 @@ export default function SearchBar({
       className={cn(
         "flex flex-col gap-3 justify-end rounded-lg p-4 shadow-lg border relative overflow-hidden transition-all duration-700",
         isAiSearch
-          ? "bg-gradient-to-r from-violet-500/5 via-purple-500/5 to-fuchsia-500/5"
-          : "bg-background"
+          ? "bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 backdrop-blur-sm"
+          : "bg-background/95 backdrop-blur-sm"
       )}
     >
       {isAiSearch && (
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 animate-gradient opacity-0 animate-fade-in" />
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-fuchsia-500/20 animate-gradient opacity-0 animate-fade-in blur-xl" />
       )}
       <form onSubmit={handleSearch} className="relative z-10">
         <div
           className={cn(
-            "relative group transition-all duration-300",
-            isFocused && "ring-2 ring-primary/20 rounded-lg"
+            "relative group transition-all duration-500 ease-in-out",
+            isFocused && "ring-2 ring-primary/30 rounded-lg shadow-lg"
           )}
         >
           <div className="relative flex items-center">
-            <div className="absolute left-4">
+            <div
+              className={cn(
+                "absolute left-4 transition-all duration-300",
+                isFocused ? "text-primary scale-110" : "text-muted-foreground"
+              )}
+            >
               <FaSearch className="h-4 w-4" />
             </div>
             <Input
@@ -54,28 +59,33 @@ export default function SearchBar({
               onBlur={() => setIsFocused(false)}
               placeholder="Search anything..."
               className={cn(
-                "pl-11 pr-20 h-14 transition-all duration-300",
-                isAiSearch ? "bg-background/80" : "bg-background/50",
+                "pl-11 pr-20 h-14 transition-all duration-300 ease-in-out",
+                isAiSearch ? "bg-background/90" : "bg-background/80",
                 "border-muted hover:border-primary/50",
-                isFocused && "ring-2 ring-primary/20 border-primary",
+                isFocused &&
+                  "ring-2 ring-primary/20 border-primary shadow-inner",
                 "placeholder:text-muted-foreground/60",
-                "text-base"
+                "text-base",
+                "hover:shadow-md"
               )}
             />
             <div className="absolute right-3 flex items-center space-x-2">
               <Button
                 type="submit"
-                variant="secondary"
+                variant="ghost"
                 size="sm"
                 disabled={searchQuery.length <= 0}
                 className={cn(
-                  "hover:bg-muted transition-all duration-300 rounded-full w-10 h-10",
-                  searchQuery &&
-                    "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transform",
-                  "shadow-sm"
+                  "transition-all duration-200 rounded-full w-8 h-8 p-0",
+                  searchQuery && [
+                    "text-primary hover:text-primary/90",
+                    "hover:scale-105 transform",
+                    "hover:bg-transparent",
+                  ],
+                  !searchQuery && "text-muted-foreground"
                 )}
               >
-                <FaArrowUp className="h-4 w-4" />
+                <FaArrowUp className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
