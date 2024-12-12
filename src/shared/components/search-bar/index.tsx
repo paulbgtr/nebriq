@@ -52,6 +52,7 @@ export default function SearchBar({
               <FaSearch className="h-4 w-4" />
             </div>
             <Input
+              isBordered={false}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
