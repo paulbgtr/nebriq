@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/providers";
-import { Poppins } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 
-const poppins = Poppins({
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} antialiased`}>
+      <body className={`${sourceSans.className} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>
