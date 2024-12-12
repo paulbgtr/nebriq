@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/providers";
 import { Source_Sans_3 } from "next/font/google";
+import { Toaster } from "@/shared/components/ui/toaster";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${sourceSans.className} antialiased`}>
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   );
