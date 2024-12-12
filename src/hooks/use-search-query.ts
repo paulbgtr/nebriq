@@ -9,6 +9,7 @@ import { Note } from "@/types/note";
 import { useSearchStore } from "@/store/search";
 import { llmAnswer } from "@/app/actions/search/ai-search";
 import { LLMAnswer } from "@/types/llm-answer";
+import { semanticSearch } from "@/app/actions/search/semantic-search";
 
 type ReturnType = {
   answer: Note[] | LLMAnswer;
@@ -48,18 +49,17 @@ export const useSearchQuery = (): ReturnType | null => {
 
     const fetchResults = async () => {
       try {
-        const results = await searchUsingTFIDF(searchQuery, notesData);
-
         if (isAiSearch) {
+          const results = await semanticSearch(searchQuery, notesData);
           const answer = await llmAnswer(searchQuery, results);
           setAnswer(answer || null);
           setHasSearched(true);
           return;
         }
 
-        const convertedNotes = convertTFIDFToNotesWithDefaults(results);
+        const results = await searchUsingTFIDF(searchQuery, notesData);
 
-        setAnswer(convertedNotes);
+        setAnswer(results);
       } catch (error) {
         console.error("Error fetching search results:", error);
       } finally {
