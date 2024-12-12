@@ -57,3 +57,52 @@ export async function logout() {
   revalidatePath("/", "layout");
   redirect("/");
 }
+
+export async function updateEmail(formData: FormData) {
+  const supabase = await createClient();
+  const email = formData.get("email") as string;
+
+  const { error } = await supabase.auth.updateUser({ email });
+
+  if (error) {
+    redirect("/error");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/settings?message=email_updated");
+}
+
+export async function updatePassword(formData: FormData) {
+  const supabase = await createClient();
+  const password = formData.get("password") as string; // todo: validate user password
+  const newPassword = formData.get("newPassword") as string;
+  const confirmNewPassword = formData.get("confirmNewPassword") as string;
+
+  if (newPassword !== confirmNewPassword) {
+    redirect("/error");
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+  if (error) {
+    redirect("/error");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/settings?message=password_updated");
+}
+
+export async function deleteAccount() {
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.admin.deleteUser(
+    (await supabase.auth.getUser()).data.user?.id as string
+  );
+
+  if (error) {
+    redirect("/error");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/");
+}
