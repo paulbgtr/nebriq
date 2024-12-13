@@ -1,5 +1,5 @@
 import { useNoteConnections } from "./use-note-connections";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -7,19 +7,45 @@ import Mention from "@tiptap/extension-mention";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
 import { useUser } from "./use-user";
 import { useNotes } from "./use-notes";
+import { useNoteTabs } from "./use-note-tabs";
 
-export const useCustomEditor = () => {
+export const useCustomEditor = (initialNoteId: string | null) => {
+  const { getNotesQuery } = useNotes();
+  const { getTabsQuery, createNoteTabMutation } = useNoteTabs();
+
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
+
+  useEffect(() => {
+    if (id && !getTabsQuery.data?.find((tab) => tab.id === id)) {
+      createNoteTabMutation.mutate({
+        note_id: id,
+      });
+    }
+  }, [id, getTabsQuery.data]);
+
+  useEffect(() => {
+    if (initialNoteId) {
+      const note = getNotesQuery.data?.find(
+        (note) => note.id === initialNoteId
+      );
+
+      if (note) {
+        setContent(note.content || "");
+        setTitle(note.title || "");
+        setId(note.id);
+      }
+    }
+  }, [initialNoteId]);
 
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
   useNoteConnections({ noteId: id, content });
 
   const createNote = async () => {
-    if (!user || id) return;
+    if (!user || id || initialNoteId) return;
 
     setIsCreatingNote(true);
     createNoteMutation.mutate(
