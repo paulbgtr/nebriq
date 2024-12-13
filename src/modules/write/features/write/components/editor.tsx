@@ -1,8 +1,8 @@
 import { EditorContent } from "@tiptap/react";
 import { useNotes } from "@/hooks/use-notes";
 import { Editor as TiptapEditor } from "@tiptap/react";
-import { Check } from "lucide-react";
 import { useEffect } from "react";
+import { useToast } from "@/shared/hooks/use-toast";
 
 type EditorProps = {
   id: string;
@@ -20,6 +20,7 @@ export const Editor = ({
   content,
 }: EditorProps) => {
   const { updateNoteMutation } = useNotes();
+  const { toast } = useToast();
 
   const updateNote = (newTitle?: string, newContent?: string) => {
     updateNoteMutation.mutate({
@@ -38,6 +39,14 @@ export const Editor = ({
     }
   }, [editor]);
 
+  useEffect(() => {
+    if (updateNoteMutation.isSuccess) {
+      toast({
+        title: "Note updated",
+      });
+    }
+  }, [updateNoteMutation.isSuccess]);
+
   return (
     <div className="flex flex-col h-full gap-4">
       <div className="flex items-center justify-between">
@@ -51,16 +60,6 @@ export const Editor = ({
           placeholder="Untitled"
           className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
         />
-        <div className="text-sm text-muted-foreground flex items-center gap-1">
-          {updateNoteMutation.isPending ? (
-            "Saving..."
-          ) : (
-            <>
-              <Check size={14} className="text-green-500" />
-              <span>Saved</span>
-            </>
-          )}
-        </div>
       </div>
       <div
         className="h-full cursor-text"
