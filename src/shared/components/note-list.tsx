@@ -44,13 +44,7 @@ export const NoteList = ({ notes }: NoteListProps) => {
     >
       {sortedNotes.map((note) => (
         <motion.div key={note.id} variants={item}>
-          <DetailedNote
-            {...note}
-            initialTags={note.tags}
-            createdAt={note.created_at}
-          >
-            <Note {...note} createdAt={note.created_at} />
-          </DetailedNote>
+          <Note {...note} createdAt={note.created_at} />
         </motion.div>
       ))}
     </motion.div>
