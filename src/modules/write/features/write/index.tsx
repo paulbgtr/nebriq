@@ -1,10 +1,15 @@
 "use client";
 
-import { Editor } from "./components/editor";
 import { useCustomEditor } from "@/hooks/use-editor";
+import { useSearchParams } from "next/navigation";
+
+import { Editor } from "./components/editor";
 
 export default function Write() {
-  const { id, title, content, setTitle, editor } = useCustomEditor();
+  const searchParams = useSearchParams();
+  const { id, title, content, setTitle, editor } = useCustomEditor(
+    searchParams.get("id")
+  );
 
   return (
     <Editor
