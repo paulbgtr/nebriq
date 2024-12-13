@@ -26,14 +26,11 @@ export default function SearchBar({
   return (
     <article
       className={cn(
-        "flex flex-col gap-3 justify-end rounded-lg p-4 shadow-lg border relative overflow-hidden transition-all duration-700",
-        isAiSearch
-          ? "bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 backdrop-blur-sm"
-          : "bg-background/95 backdrop-blur-sm"
+        "flex flex-col gap-3 justify-end rounded-lg p-4 shadow-lg border relative overflow-hidden transition-all duration-700"
       )}
     >
       {isAiSearch && (
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-fuchsia-500/20 animate-gradient opacity-0 animate-fade-in blur-xl" />
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/30 via-crimson-500/30 to-red-500/30 animate-gradient opacity-0 animate-fade-in blur-xl" />
       )}
       <form onSubmit={handleSearch} className="relative z-10">
         <div
