@@ -21,6 +21,7 @@ export const useNotes = () => {
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
+      queryClient.invalidateQueries({ queryKey: ["note-tabs"] });
     },
   });
 
@@ -28,6 +29,7 @@ export const useNotes = () => {
     mutationFn: updateNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
+      queryClient.invalidateQueries({ queryKey: ["note-tabs"] });
     },
   });
 
