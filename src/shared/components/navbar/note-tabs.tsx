@@ -14,7 +14,7 @@ export const NoteTabs = () => {
 
   return (
     <Tabs className="w-full max-w-[250px] h-full" orientation="vertical">
-      <TabsList className="h-full flex flex-col bg-background overflow-y-auto">
+      <TabsList className="h-full flex bg-background overflow-y-auto">
         {notesTabs.map((noteTab) => (
           <Link
             key={noteTab.id}
