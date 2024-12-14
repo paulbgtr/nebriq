@@ -1,13 +1,17 @@
 import { useNoteConnections } from "./use-note-connections";
 import { useEffect, useState } from "react";
 import { useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import Mention from "@tiptap/extension-mention";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
 import { useUser } from "./use-user";
 import { useNotes } from "./use-notes";
 import { useNoteTabs } from "./use-note-tabs";
+
+import Mathematics, {
+  defaultShouldRender,
+} from "@tiptap-pro/extension-mathematics";
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+import Mention from "@tiptap/extension-mention";
 
 export const useCustomEditor = (initialNoteId: string | null) => {
   const { getNotesQuery } = useNotes();
@@ -87,6 +91,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             class: "mention",
           },
           suggestion: createSuggestion(id),
+        }),
+        Mathematics.configure({
+          shouldRender: defaultShouldRender,
         }),
       ],
       editorProps: {
