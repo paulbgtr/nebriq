@@ -25,6 +25,9 @@ type NoteProps = {
   content?: string;
   createdAt: Date;
   tags?: string[];
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (selected: boolean) => void;
 };
 
 const NoteComponent = ({
@@ -33,6 +36,9 @@ const NoteComponent = ({
   content,
   createdAt,
   tags = [],
+  selectable = false,
+  selected = false,
+  onSelect,
 }: NoteProps) => {
   const { deleteNoteMutation } = useNotes();
   const { push } = useRouter();
@@ -52,10 +58,24 @@ const NoteComponent = ({
     }
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (selectable) {
+      e.preventDefault();
+      e.stopPropagation();
+      onSelect?.(!selected);
+    } else {
+      push(`/write?id=${id}`);
+    }
+  };
+
   return (
     <div
-      onClick={() => push(`/write?id=${id}`)}
-      className="h-full min-w-[300px] flex flex-col justify-between p-4 mb-4 bg-card rounded-lg border border-border shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-primary/20 cursor-pointer"
+      onClick={handleClick}
+      className={`h-full flex flex-col justify-between p-4 mb-4 bg-card rounded-lg border shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-primary/20 cursor-pointer ${
+        selected && selectable
+          ? "border-primary ring-2 ring-primary/20"
+          : "border-border"
+      }`}
     >
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors">
