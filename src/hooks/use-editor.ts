@@ -1,3 +1,5 @@
+import "katex/dist/katex.min.css";
+
 import { useNoteConnections } from "./use-note-connections";
 import { useEffect, useState } from "react";
 import { useEditor } from "@tiptap/react";
