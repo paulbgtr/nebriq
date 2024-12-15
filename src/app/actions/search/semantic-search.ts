@@ -14,6 +14,9 @@ const embeddings = new OpenAIEmbeddings({
   model: "text-embedding-3-large",
 });
 
+/**
+ * Represents a document to be searched.
+ */
 type Document = {
   pageContent: string;
   metadata: {
@@ -25,6 +28,9 @@ type Document = {
   };
 };
 
+/**
+ * Handles searching a list of documents using a query.
+ */
 const searchHandler = async (query: string, documents: Document[]) => {
   const vectorStore = await MemoryVectorStore.fromDocuments(
     documents,
@@ -38,7 +44,17 @@ const searchHandler = async (query: string, documents: Document[]) => {
     .invoke(query);
 };
 
-const convertDocumentToNote = (document: Document) => {
+/**
+ * Converts a {@link Document} object to a {@link Note} object.
+ *
+ * @remarks
+ * This function is used to convert the documents returned by the semantic search
+ * into notes that can be used by the application.
+ *
+ * @param document - The document to be converted.
+ * @returns The converted note.
+ */
+const convertDocumentToNote = (document: Document): Note => {
   return {
     id: document.metadata.id,
     user_id: document.metadata.user_id,
@@ -47,9 +63,16 @@ const convertDocumentToNote = (document: Document) => {
     content: document.pageContent === "no content" ? "" : document.pageContent,
     tags: document.metadata.tags,
     created_at: document.metadata.created_at,
-  } satisfies Note;
+  };
 };
 
+/**
+ * Searches a list of notes using a query.
+ *
+ * @param query - The query to search the notes with.
+ * @param notes - The list of notes to search.
+ * @returns The notes that match the query, sorted by relevance.
+ */
 export const semanticSearch = async (
   query: string,
   notes: Note[]
