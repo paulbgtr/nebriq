@@ -6,7 +6,7 @@ import { useEditor } from "@tiptap/react";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
 import { useUser } from "./use-user";
 import { useNotes } from "./use-notes";
-import { useNoteTabs } from "./use-note-tabs";
+import { useNoteTabsStore } from "@/store/note-tabs";
 
 import Mathematics, {
   defaultShouldRender,
@@ -17,7 +17,7 @@ import Mention from "@tiptap/extension-mention";
 
 export const useCustomEditor = (initialNoteId: string | null) => {
   const { getNotesQuery } = useNotes();
-  const { getTabsQuery, createNoteTabMutation } = useNoteTabs();
+  const { openNotes, setOpenNotes } = useNoteTabsStore();
 
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
@@ -25,12 +25,17 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   const [isCreatingNote, setIsCreatingNote] = useState(false);
 
   useEffect(() => {
-    if (id && !getTabsQuery.data?.find((tab) => tab.id === id)) {
-      createNoteTabMutation.mutate({
-        note_id: id,
-      });
+    if (id && !openNotes.find((note) => note.id === id)) {
+      setOpenNotes([
+        ...openNotes,
+        {
+          id,
+          title,
+          content,
+        },
+      ]);
     }
-  }, [id, getTabsQuery.data]);
+  }, [id, setOpenNotes]);
 
   useEffect(() => {
     if (initialNoteId) {
