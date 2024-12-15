@@ -13,7 +13,7 @@ export const NoteTabs = () => {
   const notesTabs = getTabsQuery.data ?? [];
 
   return (
-    <Tabs className="w-full max-w-[250px] h-full" orientation="vertical">
+    <Tabs className="w-full h-full" orientation="vertical">
       <TabsList className="h-full flex bg-background overflow-y-auto">
         {notesTabs.map((noteTab) => (
           <Link
