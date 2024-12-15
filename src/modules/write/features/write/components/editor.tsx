@@ -1,8 +1,10 @@
 import { EditorContent } from "@tiptap/react";
 import { useNotes } from "@/hooks/use-notes";
 import { Editor as TiptapEditor } from "@tiptap/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/shared/hooks/use-toast";
+import { Expand, Shrink } from "lucide-react";
+import { Button } from "@/shared/components/ui/button";
 
 type EditorProps = {
   id: string;
@@ -21,6 +23,7 @@ export const Editor = ({
 }: EditorProps) => {
   const { updateNoteMutation } = useNotes();
   const { toast } = useToast();
+  const [isZenMode, setIsZenMode] = useState(false);
 
   const updateNote = (newTitle?: string, newContent?: string) => {
     updateNoteMutation.mutate({
@@ -48,7 +51,11 @@ export const Editor = ({
   }, [updateNoteMutation.isSuccess]);
 
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div
+      className={`flex flex-col h-full gap-4 transition-all duration-300 ${
+        isZenMode ? "fixed inset-0 bg-background p-8 z-50" : ""
+      }`}
+    >
       <div className="flex items-center justify-between">
         <input
           type="text"
@@ -60,9 +67,21 @@ export const Editor = ({
           placeholder="Untitled"
           className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
         />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsZenMode(!isZenMode)}
+          title={isZenMode ? "Exit Zen Mode" : "Enter Zen Mode"}
+        >
+          {isZenMode ? (
+            <Shrink className="h-4 w-4" />
+          ) : (
+            <Expand className="h-4 w-4" />
+          )}
+        </Button>
       </div>
       <div
-        className="h-full cursor-text"
+        className={`h-full cursor-text ${isZenMode ? "mx-auto w-full" : ""}`}
         onClick={() => editor?.commands.focus()}
       >
         <EditorContent editor={editor} />
