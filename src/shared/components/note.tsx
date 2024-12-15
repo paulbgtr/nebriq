@@ -2,7 +2,6 @@ import React from "react";
 import { formatDate } from "../lib/utils";
 import { Badge } from "./ui/badge";
 import { formatHTMLNoteContent } from "../lib/utils";
-import Link from "next/link";
 import { useNotes } from "@/hooks/use-notes";
 import { Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -18,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/shared/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
+import { useNoteTabsStore } from "@/store/note-tabs";
 
 type NoteProps = {
   id?: string;
@@ -42,6 +42,7 @@ const NoteComponent = ({
 }: NoteProps) => {
   const { deleteNoteMutation } = useNotes();
   const { push } = useRouter();
+  const { openNotes, setOpenNotes } = useNoteTabsStore();
 
   const contentWithoutHTML = formatHTMLNoteContent(content || "");
 
@@ -55,6 +56,7 @@ const NoteComponent = ({
     e.stopPropagation();
     if (id) {
       deleteNoteMutation.mutate(id);
+      setOpenNotes(openNotes.filter((note) => note.id !== id));
     }
   };
 
