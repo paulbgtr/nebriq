@@ -7,4 +7,5 @@ export type CreateTokenLimit = {
 
 export type UpdateTokenLimit = CreateTokenLimit & {
   tokens_used: number;
+  reset_date: Date;
 };
