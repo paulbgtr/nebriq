@@ -1,11 +1,11 @@
 "use server";
 
 import OpenAI from "openai";
-import { TFIDFResult } from "@/types/TFIDFResult";
 import { Note } from "@/types/note";
 import { formatHTMLNoteContent } from "@/shared/lib/utils";
-import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
 import { LLMAnswer } from "@/types/llm-answer";
+import { getEncoding } from "js-tiktoken";
+import { getUserTokenLimits, updateTokenLimit } from "../supabase/token_limits";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is not defined in environment");
@@ -72,9 +72,17 @@ const createPrompt = (query: string, context: string): string => {
   Format your response using HTML tags for better presentation. Use <p> for paragraphs, <strong> for emphasis, <ul>/<li> for lists, and <em> for highlighting key terms. If there is relevant information in the notes, provide a brief and accurate answer based solely on that information. If there is no relevant information available, respond with: "<p>I don't have any specific information about this topic in your notes, but here's what I can tell you about <strong>[topic]</strong>: [general explanation of the topic/concept]</p>". Always maintain accuracy and clarity in your response.`;
 };
 
+const getErrorAnswer = (answer: string) => {
+  return {
+    answer,
+    notes: [],
+  };
+};
+
 export const llmAnswer = async (
   query: string,
-  data: Note[]
+  data: Note[],
+  userId: string
 ): Promise<LLMAnswer> => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -84,6 +92,38 @@ export const llmAnswer = async (
 
     const context = prepareContext(relevantNotes, query);
     const prompt = createPrompt(query, context);
+
+    const tokenLimit = await getUserTokenLimits(userId);
+
+    if (!tokenLimit) {
+      throw new Error("Token limit not found");
+    }
+
+    const enc = getEncoding("gpt2");
+    const newTokens = enc.encode(prompt).length;
+
+    const now = new Date();
+    if (tokenLimit.reset_date < now) {
+      const nextReset = new Date(now);
+      nextReset.setHours(now.getHours() + 24);
+
+      await updateTokenLimit({
+        user_id: userId,
+        tokens_used: newTokens,
+        reset_date: nextReset,
+      });
+    } else {
+      const totalTokens = tokenLimit.tokens_used + newTokens;
+      if (totalTokens > tokenLimit.token_limit) {
+        throw new Error("Token limit exceeded");
+      }
+
+      await updateTokenLimit({
+        user_id: userId,
+        tokens_used: totalTokens,
+        reset_date: tokenLimit.reset_date,
+      });
+    }
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
