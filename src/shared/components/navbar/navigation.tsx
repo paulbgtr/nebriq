@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import Link from "next/link";
 import { Button } from "@/shared/components/ui/button";
-import { Menu, Pen, Search } from "lucide-react";
+import { Menu, Pen, Search, Waypoints } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -11,7 +11,14 @@ import {
 import { UserActions } from "./user-actions";
 import { useRouter, usePathname } from "next/navigation";
 
-const navItems = [{ icon: Search, name: "search", href: "/search" }];
+const navItems = [
+  { icon: Search, name: "search", href: "/search" },
+  {
+    icon: Waypoints,
+    name: "connections",
+    href: "/graph",
+  },
+];
 
 type Props = {
   email: string | undefined;
