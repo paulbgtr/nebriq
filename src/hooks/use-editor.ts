@@ -95,7 +95,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         Placeholder.configure(),
         Mention.configure({
           HTMLAttributes: {
-            class: "mention",
+            class: "mention cursor-pointer",
           },
           suggestion: createSuggestion(id),
         }),
@@ -106,6 +106,22 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       editorProps: {
         attributes: {
           class: "prose prose-slate focus:outline-none",
+        },
+        handleClick: (view, pos, event) => {
+          console.log(event);
+
+          const node = view.state.doc.nodeAt(pos);
+          if (node?.type.name === "mention") {
+            const mentionTitle = node.attrs.id;
+            const note = getNotesQuery.data?.find(
+              (note) => note.title?.toLowerCase() === mentionTitle.toLowerCase()
+            );
+            if (note) {
+              window.location.href = `/write?id=${note.id}`;
+            }
+            return true;
+          }
+          return false;
         },
       },
       content,
