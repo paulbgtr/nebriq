@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useNotes } from "@/hooks/use-notes";
 import { searchUsingTFIDF } from "@/app/actions/search/tfidf";
-import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
 import { Note } from "@/types/note";
 import { useSearchStore } from "@/store/search";
 import { llmAnswer } from "@/app/actions/search/ai-search";
 import { LLMAnswer } from "@/types/llm-answer";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
+import { useUser } from "./use-user";
 
 type ReturnType = {
   answer: Note[] | LLMAnswer;
@@ -23,6 +23,8 @@ export const useSearchQuery = (): ReturnType | null => {
   const { query } = useParams() as { query: string };
   const router = useRouter();
   const { isAiSearch } = useSearchStore();
+
+  const { user } = useUser();
 
   if (!query) return null;
 
@@ -49,9 +51,9 @@ export const useSearchQuery = (): ReturnType | null => {
 
     const fetchResults = async () => {
       try {
-        if (isAiSearch) {
+        if (isAiSearch && user) {
           const results = await semanticSearch(searchQuery, notesData);
-          const answer = await llmAnswer(searchQuery, results);
+          const answer = await llmAnswer(searchQuery, results, user.id);
           setAnswer(answer || null);
           setHasSearched(true);
           return;
