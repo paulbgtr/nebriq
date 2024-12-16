@@ -49,7 +49,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         setId(note.id);
       }
     }
-  }, [initialNoteId]);
+  }, [initialNoteId, getNotesQuery.data]);
 
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
