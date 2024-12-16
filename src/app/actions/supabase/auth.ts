@@ -4,28 +4,16 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/shared/lib/supabase/server";
-import {
-  getUserTokenLimits,
-  createTokenLimit,
-  updateTokenLimit,
-} from "./token_limits";
+import { getUserTokenLimits, createTokenLimit } from "./token_limits";
 
-const upsertTokenLimitForUser = async (userId: string) => {
+const createTokenLimitIfNotExists = async (userId: string) => {
   const tokenLimit = await getUserTokenLimits(userId);
-
   if (!tokenLimit) {
     await createTokenLimit({
       user_id: userId,
       token_limit: 5000,
     });
-
-    return;
   }
-
-  await updateTokenLimit({
-    user_id: userId,
-    tokens_used: 0,
-  });
 };
 
 export async function login(formData: FormData) {
@@ -38,16 +26,16 @@ export async function login(formData: FormData) {
     password: formData.get("password") as string,
   };
 
-  const { data: userData, error } =
-    await supabase.auth.signInWithPassword(data);
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.signInWithPassword(data);
 
-  if (error) {
+  if (error || !user) {
     redirect("/error");
   }
 
-  const { id } = userData.user;
-
-  await upsertTokenLimitForUser(id);
+  await createTokenLimitIfNotExists(user.id);
 
   revalidatePath("/", "layout");
   redirect("/write");
@@ -71,7 +59,7 @@ export async function signup(formData: FormData) {
     redirect("/error");
   }
 
-  await upsertTokenLimitForUser(user.id);
+  await createTokenLimitIfNotExists(user.id);
 
   revalidatePath("/", "layout");
   redirect("/write");
