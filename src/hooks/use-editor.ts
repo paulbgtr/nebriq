@@ -7,6 +7,7 @@ import createSuggestion from "@/shared/lib/tippy/suggestion";
 import { useUser } from "./use-user";
 import { useNotes } from "./use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
+import { all, createLowlight } from "lowlight";
 
 import Mathematics, {
   defaultShouldRender,
@@ -14,8 +15,10 @@ import Mathematics, {
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 
 export const useCustomEditor = (initialNoteId: string | null) => {
+  const lowlight = createLowlight(all);
   const { getNotesQuery } = useNotes();
   const { openNotes, setOpenNotes } = useNoteTabsStore();
 
@@ -92,6 +95,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       immediatelyRender: false,
       extensions: [
         StarterKit,
+        CodeBlockLowlight.configure({
+          lowlight,
+        }),
         Placeholder.configure(),
         Mention.configure({
           HTMLAttributes: {
