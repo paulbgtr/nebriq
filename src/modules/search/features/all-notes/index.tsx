@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { CheckSquare } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { Pen } from "lucide-react";
+import Link from "next/link";
 
 export default function AllNotes() {
   const { getNotesQuery } = useNotes();
@@ -46,9 +48,19 @@ export default function AllNotes() {
             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
           />
         </svg>
-        <div className="space-y-1">
-          <h3 className="text-base font-medium">No notes yet</h3>
-          <p className="text-sm text-gray-500">Start writing your first note</p>
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <h3 className="text-base font-medium">No notes yet</h3>
+            <p className="text-sm text-gray-500">
+              Start writing your first note
+            </p>
+          </div>
+          <Button variant="ghost" asChild>
+            <Link href="/write">
+              <Pen />
+              <span>compose</span> <span className="sr-only">Note</span>
+            </Link>
+          </Button>
         </div>
       </div>
     );
