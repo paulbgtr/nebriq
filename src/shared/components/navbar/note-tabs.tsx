@@ -27,7 +27,9 @@ export const NoteTabs = () => {
             <div className="text-sm font-medium truncate min-w-0 flex-1">
               {note.title
                 ? note.content
-                  ? `${note.title} - ${formatHTMLNoteContent(note.content)}`
+                  ? `${note.title} - ${formatHTMLNoteContent(
+                      note.content
+                    ).slice(0, 50)}...`
                   : note.title
                 : "Untitled"}
             </div>
