@@ -3,6 +3,14 @@
 import { createClient } from "@/shared/lib/supabase/server";
 import { NoteConnection, CreateNoteConnection } from "@/types/note-connection";
 
+export const getAllNoteConnections = async () => {
+  const supabase = await createClient();
+  const { data: noteConnections } = await supabase
+    .from("note_connections")
+    .select("*");
+  return noteConnections;
+};
+
 export const getNoteConnections = async (noteId: string) => {
   const supabase = await createClient();
   const { data: noteConnections } = await supabase
