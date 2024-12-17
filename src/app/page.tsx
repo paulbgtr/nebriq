@@ -90,9 +90,14 @@ export default function Home() {
               transition={{ duration: 0.5 }}
             >
               <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border mb-8">
-                <div className="h-full flex items-center justify-center text-muted-foreground">
-                  nebriq AI Search
-                </div>
+                <Image
+                  src="/intelligent-search.png"
+                  alt="Nebriq Graph View"
+                  width={800}
+                  height={600}
+                  className="object-cover w-full h-full"
+                  priority
+                />
               </div>
               <h3 className="text-xl font-bold mb-4">
                 Contextual Intelligence Search
@@ -112,9 +117,14 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border mb-8">
-                <div className="h-full flex items-center justify-center text-muted-foreground">
-                  nebriq Graph View
-                </div>
+                <Image
+                  src="/graph.png"
+                  alt="Nebriq Graph View"
+                  width={800}
+                  height={600}
+                  className="object-cover w-full h-full"
+                  priority
+                />
               </div>
               <h3 className="text-xl font-bold mb-4">Idea Constellation Map</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -123,6 +133,197 @@ export default function Home() {
                 knowledge universe.
               </p>
             </motion.div>
+
+            {/* Feature 3 - Code Syntax Highlighting */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border mb-8">
+                <Image
+                  src="/syntax-highlighting.png"
+                  alt="Nebriq Graph View"
+                  width={1200}
+                  height={900}
+                  className="object-cover w-full h-full"
+                  priority
+                  style={{ transform: "scale(1.2)" }}
+                />
+              </div>
+              <h3 className="text-xl font-bold mb-4">
+                Smart Code Highlighting
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Seamlessly embed and highlight code snippets with support for
+                over 100 programming languages. Perfect for technical
+                documentation and programming notes.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted border mb-8">
+                <Image
+                  src="/links.png"
+                  alt="Nebriq Graph View"
+                  width={1200}
+                  height={900}
+                  className="object-cover w-full h-full"
+                  priority
+                  style={{ transform: "scale(1.8)" }}
+                />
+              </div>
+              <h3 className="text-xl font-bold mb-4">
+                Explore the Hidden Connections
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Discover the hidden connections between your notes and
+                bookmarks. Nebriq's AI uncovers the relationships between your
+                research, providing a deeper understanding of your knowledge
+                graph.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Feature Showcase */}
+      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4">See Nebriq in Action</h2>
+            <p className="text-muted-foreground text-xl">
+              Watch how Nebriq transforms your writing workflow
+            </p>
+          </motion.div>
+
+          <div className="relative aspect-[16/9] rounded-xl overflow-hidden border bg-muted/30 backdrop-blur">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="absolute inset-0"
+            >
+              {/* Interactive Demo Window */}
+              <div className="absolute top-0 left-0 right-0 h-10 bg-background/80 backdrop-blur flex items-center px-4 gap-2">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                </div>
+                <div className="flex-1 text-center text-sm text-muted-foreground">
+                  Nebriq - Your Second Brain
+                </div>
+              </div>
+
+              <div className="absolute top-10 inset-x-0 bottom-0 p-6">
+                <motion.div
+                  className="grid grid-cols-2 gap-8 h-full"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {/* Editor Demo */}
+                  <div className="bg-background rounded-lg p-6 shadow-lg">
+                    <div className="space-y-4">
+                      <motion.div
+                        className="h-4 bg-primary/10 rounded w-3/4"
+                        animate={{ width: ["0%", "75%"] }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                      />
+                      <motion.div
+                        className="h-4 bg-primary/10 rounded w-full"
+                        animate={{ width: ["0%", "100%"] }}
+                        transition={{ duration: 1.2, delay: 0.7 }}
+                      />
+                      <motion.div
+                        className="h-4 bg-primary/10 rounded w-1/2"
+                        animate={{ width: ["0%", "50%"] }}
+                        transition={{ duration: 0.8, delay: 0.9 }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Graph View Demo */}
+                  <div className="bg-background rounded-lg p-6 shadow-lg relative overflow-hidden">
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5"
+                      animate={{
+                        background: [
+                          "linear-gradient(45deg, rgba(var(--primary)/.05) 0%, rgba(var(--secondary)/.05) 100%)",
+                          "linear-gradient(225deg, rgba(var(--primary)/.05) 0%, rgba(var(--secondary)/.05) 100%)",
+                        ],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                      }}
+                    />
+
+                    {/* Animated Connection Points */}
+                    <div className="relative h-full">
+                      <motion.div
+                        className="absolute w-3 h-3 bg-primary rounded-full"
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.5, 1, 0.5],
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        style={{ left: "20%", top: "30%" }}
+                      />
+                      <motion.div
+                        className="absolute w-3 h-3 bg-secondary rounded-full"
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.5, 1, 0.5],
+                        }}
+                        transition={{
+                          duration: 2,
+                          delay: 0.5,
+                          repeat: Infinity,
+                        }}
+                        style={{ right: "30%", bottom: "40%" }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Feature Pills */}
+          <div className="mt-12 flex flex-wrap justify-center gap-4">
+            {[
+              "AI-Powered",
+              "Real-time Sync",
+              "Markdown Support",
+              "Graph View",
+            ].map((feature, index) => (
+              <motion.div
+                key={feature}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Badge variant="secondary" className="px-4 py-2 text-sm">
+                  {feature}
+                </Badge>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -147,9 +348,12 @@ export default function Home() {
               </p>
               <div className="space-y-4">
                 {[
-                  "nebriq's zen-like writing environment",
-                  "Enhanced markdown for scholars",
-                  "Lightning-fast idea capture with nebriq",
+                  "Distraction-free writing environment",
+                  "Seamless note organization",
+                  "Customizable workspace layouts",
+                  "Real-time cloud synchronization",
+                  "Advanced formatting options",
+                  "Intuitive knowledge linking",
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="h-1 w-1 bg-foreground rounded-full" />
@@ -191,7 +395,7 @@ export default function Home() {
       <footer className="border-t">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">© 2024 nebriq</span>
+            <span className="text-muted-foreground"> 2024 nebriq</span>
             <div className="space-x-6">
               <Link
                 href="https://x.com/paulbgtr"
