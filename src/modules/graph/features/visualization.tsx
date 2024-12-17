@@ -7,6 +7,7 @@ import { Controls } from "./controls";
 import { useNotes } from "@/hooks/use-notes";
 import { useQuery } from "@tanstack/react-query";
 import { getAllNoteConnections } from "@/app/actions/supabase/note_connections";
+import { FolderPlus } from "lucide-react";
 
 type GraphNode = d3.SimulationNodeDatum & {
   id: string;
@@ -320,83 +321,6 @@ function ForceGraph({
   );
 }
 
-// Sample data for testing
-const dummyNotes: Note[] = [
-  {
-    id: "1",
-    title: "React Hooks",
-    content: "",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "2",
-    title: "TypeScript Basics",
-    content: "",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "3",
-    title: "D3.js Visualization",
-    content: "",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "4",
-    title: "Next.js 13",
-    content: "",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "5",
-    title: "Tailwind CSS",
-    content: "",
-    user_id: "1",
-    created_at: new Date(),
-  },
-];
-
-const dummyConnections: NoteConnection[] = [
-  {
-    id: "1",
-    note_id_from: "1",
-    note_id_to: "2",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "2",
-    note_id_from: "2",
-    note_id_to: "3",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "3",
-    note_id_from: "3",
-    note_id_to: "4",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "4",
-    note_id_from: "4",
-    note_id_to: "5",
-    user_id: "1",
-    created_at: new Date(),
-  },
-  {
-    id: "5",
-    note_id_from: "1",
-    note_id_to: "5",
-    user_id: "1",
-    created_at: new Date(),
-  },
-];
-
 export const Visualization = () => {
   const { getNotesQuery } = useNotes();
 
@@ -409,6 +333,25 @@ export const Visualization = () => {
       return data;
     },
   });
+
+  if (!isPending && notesData.length === 0) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center p-8 max-w-md">
+          <div className="mb-4 text-gray-400">
+            <FolderPlus className="w-10 h-10 mx-auto" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No notes yet
+          </h3>
+          <p className="text-sm text-gray-500">
+            Create your first note to start building your knowledge graph. Your
+            notes will be visualized here as an interactive network.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="absolute inset-0">
