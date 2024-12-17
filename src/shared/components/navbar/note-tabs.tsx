@@ -14,17 +14,17 @@ export const NoteTabs = () => {
 
   return (
     <Tabs className="w-full h-full" orientation="vertical">
-      <TabsList className="h-full flex bg-background overflow-y-auto">
+      <TabsList className="h-full min-h-[40px] flex bg-background overflow-y-auto">
         {openNotes.map((note) => (
           <Link
             key={note.id}
             href={`/write?id=${note.id}`}
             className={cn(
-              "group flex items-center justify-between w-full px-3 py-2 relative hover:bg-accent/50 rounded-sm transition-colors",
+              "group flex items-center justify-between w-[200px] min-w-[200px] px-3 py-2 relative hover:bg-accent/50 rounded-sm transition-colors",
               note.id === currentNoteId && "bg-accent"
             )}
           >
-            <div className="text-sm font-medium truncate min-w-0 flex-1">
+            <div className="text-sm font-medium truncate min-w-0 flex-1 mr-2">
               {note.title
                 ? note.content
                   ? `${note.title} - ${formatHTMLNoteContent(
@@ -34,7 +34,7 @@ export const NoteTabs = () => {
                 : "Untitled"}
             </div>
             <button
-              className="ml-2 rounded-sm opacity-0 group-hover:opacity-100 hover:bg-accent p-0.5 transition-opacity flex-shrink-0"
+              className="ml-2 rounded-sm opacity-30 group-hover:opacity-100 hover:bg-accent p-0.5 transition-opacity flex-shrink-0"
               onClick={(e) => {
                 e.preventDefault();
 
