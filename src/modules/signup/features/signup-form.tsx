@@ -15,6 +15,7 @@ import { signup } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useState, useTransition } from "react";
+import { Lock, Mail } from "lucide-react";
 
 export default function SignupForm() {
   const { toast } = useToast();
@@ -68,72 +69,96 @@ export default function SignupForm() {
   }
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>Sign up</CardTitle>
-        <CardDescription>
-          Enter your email and password to create your account.
+    <Card className="w-[400px] shadow-lg">
+      <CardHeader className="space-y-3 text-center">
+        <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+        <CardDescription className="text-base">
+          Enter your details to create your account
         </CardDescription>
       </CardHeader>
       <form>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="johndoe@example.com"
-              required
-              disabled={isPending}
-              aria-describedby={error ? "signup-error" : undefined}
-            />
+            <Label htmlFor="email" className="text-sm font-medium">
+              Email Address
+            </Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="johndoe@example.com"
+                required
+                disabled={isPending}
+                className="pl-10"
+                aria-describedby={error ? "signup-error" : undefined}
+              />
+            </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              required
-              disabled={isPending}
-              aria-describedby={error ? "signup-error" : undefined}
-              minLength={6}
-            />
+            <Label htmlFor="password" className="text-sm font-medium">
+              Password
+            </Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                required
+                disabled={isPending}
+                className="pl-10"
+                aria-describedby={error ? "signup-error" : undefined}
+                minLength={6}
+              />
+            </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm password</Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              required
-              disabled={isPending}
-              aria-describedby={error ? "signup-error" : undefined}
-              minLength={6}
-            />
+            <Label htmlFor="confirmPassword" className="text-sm font-medium">
+              Confirm Password
+            </Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                required
+                disabled={isPending}
+                className="pl-10"
+                aria-describedby={error ? "signup-error" : undefined}
+                minLength={6}
+              />
+            </div>
           </div>
           {error && (
-            <div id="signup-error" className="text-sm text-destructive">
+            <div
+              id="signup-error"
+              className="text-sm text-destructive bg-destructive/10 p-3 rounded-md"
+            >
               {error}
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter className="flex flex-col gap-6 pb-6">
           <Button
-            className="w-full"
+            className="w-full h-11 text-base font-medium"
             type="submit"
             formAction={handleSubmit}
             disabled={isPending}
           >
-            {isPending ? "Creating account..." : "Create account"}
+            {isPending ? "Creating account..." : "Create Account"}
           </Button>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-center text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
-              Log in
+            <Link
+              href="/login"
+              className="text-primary hover:underline font-medium"
+            >
+              Sign in
             </Link>
           </div>
         </CardFooter>
