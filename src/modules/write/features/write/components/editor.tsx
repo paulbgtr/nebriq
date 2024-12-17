@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/shared/hooks/use-toast";
 import { Expand, Shrink } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+import { useDebouncedCallback } from "use-debounce";
 
 type EditorProps = {
   id: string;
@@ -34,10 +35,17 @@ export const Editor = ({
     });
   };
 
+  const debouncedUpdate = useDebouncedCallback(
+    (newTitle?: string, newContent?: string) => {
+      updateNote(newTitle, newContent);
+    },
+    1000 // 1 second delay
+  );
+
   useEffect(() => {
     if (editor) {
       editor.on("update", ({ editor }) => {
-        updateNote(undefined, editor.getHTML());
+        debouncedUpdate(undefined, editor.getHTML());
       });
     }
   }, [editor]);
