@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { Visualization } from "./features/visualization";
 import { Controls } from "@/modules/graph/features/controls";
-import { Sidebar } from "./features/sidebar";
+// import { Sidebar } from "./features/sidebar";
 
 export default function GraphModule() {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -15,7 +15,7 @@ export default function GraphModule() {
         <Controls svgRef={svgRef} />
       </div>
 
-      <Sidebar />
+      {/* <Sidebar /> */}
     </div>
   );
 }
