@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -11,8 +13,31 @@ import {
 } from "@/shared/components/ui/card";
 import { login } from "@/app/actions/supabase/auth";
 import Link from "next/link";
+import { useToast } from "@/shared/hooks/use-toast";
+import { useState, useTransition } from "react";
 
 export default function LoginForm() {
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+
+  async function handleSubmit(formData: FormData) {
+    setError("");
+    startTransition(async () => {
+      try {
+        await login(formData);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to login";
+        setError(message);
+        toast({
+          variant: "destructive",
+          title: "Login failed",
+          description: message,
+        });
+      }
+    });
+  }
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -31,6 +56,8 @@ export default function LoginForm() {
               type="email"
               placeholder="johndoe@example.com"
               required
+              disabled={isPending}
+              aria-describedby={error ? "login-error" : undefined}
             />
           </div>
           <div className="space-y-2">
@@ -41,12 +68,24 @@ export default function LoginForm() {
               type="password"
               placeholder="••••••••"
               required
+              disabled={isPending}
+              aria-describedby={error ? "login-error" : undefined}
             />
           </div>
+          {error && (
+            <div id="login-error" className="text-sm text-destructive">
+              {error}
+            </div>
+          )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full" type="submit" formAction={login}>
-            Log in
+          <Button
+            className="w-full"
+            type="submit"
+            formAction={handleSubmit}
+            disabled={isPending}
+          >
+            {isPending ? "Logging in..." : "Log in"}
           </Button>
           <div className="text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
