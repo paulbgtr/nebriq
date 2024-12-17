@@ -32,13 +32,12 @@ export async function login(formData: FormData) {
   } = await supabase.auth.signInWithPassword(data);
 
   if (error || !user) {
-    redirect("/error");
+    throw new Error(error?.message);
   }
 
   await createTokenLimitIfNotExists(user.id);
 
   revalidatePath("/", "layout");
-  redirect("/write");
 }
 
 export async function signup(formData: FormData) {
@@ -56,13 +55,12 @@ export async function signup(formData: FormData) {
   } = await supabase.auth.signUp(data);
 
   if (error || data.password !== data.confirmPassword || !user) {
-    redirect("/error");
+    throw new Error(error?.message);
   }
 
   await createTokenLimitIfNotExists(user.id);
 
   revalidatePath("/", "layout");
-  redirect("/write");
 }
 
 export async function logout() {
@@ -70,11 +68,10 @@ export async function logout() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    redirect("/error");
+    throw new Error(error.message);
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
 }
 
 export async function updateEmail(formData: FormData) {
