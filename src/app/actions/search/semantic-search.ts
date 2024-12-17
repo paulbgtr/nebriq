@@ -36,12 +36,22 @@ const searchHandler = async (query: string, documents: Document[]) => {
     documents,
     embeddings
   );
-  return await vectorStore
-    .asRetriever({
-      k: 3,
-      searchType: "similarity",
-    })
-    .invoke(query);
+
+  const results = await vectorStore.similaritySearchWithScore(query, 3);
+
+  const filteredResults = results
+    .filter(([doc, score]) => score > 0.4)
+    .map(([doc]) => doc);
+
+  console.log(
+    "Search results with scores:",
+    results.map(([doc, score]) => ({
+      content: doc.pageContent.substring(0, 100) + "...",
+      score,
+    }))
+  );
+
+  return filteredResults;
 };
 
 /**
@@ -77,9 +87,15 @@ export const semanticSearch = async (
   query: string,
   notes: Note[]
 ): Promise<Note[]> => {
+  // Normalize query
+  const normalizedQuery = query.trim().toLowerCase();
+
   const documents = notes.map((note) => {
+    // Combine title and content for better search coverage
+    const content = [note.title, note.content].filter(Boolean).join("\n\n");
+
     return {
-      pageContent: note.content || "no content",
+      pageContent: content || "no content",
       metadata: {
         id: note.id,
         user_id: note.user_id,
@@ -90,7 +106,10 @@ export const semanticSearch = async (
     };
   });
 
-  const results = (await searchHandler(query, documents)) as Document[];
+  const results = (await searchHandler(
+    normalizedQuery,
+    documents
+  )) as Document[];
 
   return results.map((result) => {
     return convertDocumentToNote(result);
