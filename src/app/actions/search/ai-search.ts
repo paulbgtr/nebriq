@@ -12,49 +12,24 @@ if (!process.env.OPENAI_API_KEY) {
 }
 
 /**
- * Selects relevant notes from the given results, prioritizing shorter notes first.
- */
-const selectRelevantNotes = (notes: Note[], maxTokens = 1000): Note[] => {
-  let totalTokens = 0;
-  return notes.filter((note) => {
-    const resultWithoutHTML = formatHTMLNoteContent(note.content || "");
-
-    const noteTokens = resultWithoutHTML?.split(/\s+/)?.length;
-    if (totalTokens + (noteTokens || 0) <= maxTokens) {
-      totalTokens += noteTokens || 0;
-      return true;
-    }
-    return false;
-  });
-};
-
-/**
  * Extracts the most relevant sentences from a note's content that match a search query.
  */
 const extractKeyFragments = (
   note: Note,
-  query: string,
   maxlength = 500
 ): string | undefined => {
-  const sentences = note.content?.split(/[.!?]+/);
-  return sentences
-    ?.filter((sentence: string) =>
-      sentence.toLowerCase().includes(query.toLowerCase())
-    )
-    .filter((sentence: string) => sentence.trim())
-    .slice(0, 5)
-    .join(". ")
-    .substring(0, maxlength);
+  if (!note.content) return undefined;
+  return note.content.substring(0, maxlength);
 };
 
 /**
  * Prepares the context for a prompt from the given relevant notes and query.
  */
-const prepareContext = (relevantNotes: Note[], query: string): string => {
+const prepareContext = (relevantNotes: Note[]): string => {
   return relevantNotes
     .map((note) => {
-      const keyFragment = extractKeyFragments(note, query);
-      return `Note "${note.title}": ${keyFragment}`;
+      const keyFragment = extractKeyFragments(note);
+      return `Note "${note.title}"\n${keyFragment}`;
     })
     .join("\n\n");
 };
@@ -63,20 +38,28 @@ const prepareContext = (relevantNotes: Note[], query: string): string => {
  * Creates a prompt for the LLM using the given query and context.
  */
 const createPrompt = (query: string, context: string): string => {
-  return `Using the following fragments from the user's notes, answer the question. Base your answer only on the provided information:
+  return `Using the following fragments from the user's notes, provide a comprehensive answer to the question. Base your answer only on the provided information:
 
   ${context}
 
   Question: ${query}
 
-  Format your response using HTML tags for better presentation. Use <p> for paragraphs, <strong> for emphasis, <ul>/<li> for lists, and <em> for highlighting key terms. If there is relevant information in the notes, provide a brief and accurate answer based solely on that information. If there is no relevant information available, respond with: "<p>I don't have any specific information about this topic in your notes, but here's what I can tell you about <strong>[topic]</strong>: [general explanation of the topic/concept]</p>". Always maintain accuracy and clarity in your response.`;
-};
-
-const getErrorAnswer = (answer: string) => {
-  return {
-    answer,
-    notes: [],
-  };
+  Format your response using HTML tags for better presentation, following these guidelines:
+  1. Start with a brief overview using <p> tags
+  2. Use <strong> for key concepts and terms
+  3. Use <em> for definitions and important explanations
+  4. If there are multiple points or concepts, use <ul>/<li> to list them
+  5. Include relevance scores to show how closely each note matches the query
+  
+  If the notes contain relevant information:
+  - Synthesize the information from all relevant notes
+  - Highlight relationships between different concepts
+  - Present the information in a logical, hierarchical manner
+  
+  If there is no relevant information available:
+  Respond with: "<p>I don't have any specific information about <strong>[topic]</strong> in your notes, but here's a general overview: [brief explanation]</p>"
+  
+  Always prioritize accuracy and clarity in your response.`;
 };
 
 export const llmAnswer = async (
@@ -88,9 +71,7 @@ export const llmAnswer = async (
     apiKey: process.env.OPENAI_API_KEY,
   });
   try {
-    const relevantNotes = selectRelevantNotes(data);
-
-    const context = prepareContext(relevantNotes, query);
+    const context = prepareContext(data);
     const prompt = createPrompt(query, context);
 
     const tokenLimit = await getUserTokenLimits(userId);
@@ -132,7 +113,7 @@ export const llmAnswer = async (
 
     return {
       answer: completion.choices[0].message.content || "",
-      notes: relevantNotes,
+      notes: data,
     };
   } catch (error) {
     console.error(`chatgpt error: ${error}`);
