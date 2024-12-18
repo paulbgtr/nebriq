@@ -41,7 +41,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative">
+      <section id="hero" className="relative">
         <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
           <motion.div
@@ -118,10 +118,10 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Problem Statement Section */}
-      <div className="relative py-24 bg-muted/30">
+      <section id="problem" className="relative py-24 bg-muted/30">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -223,10 +223,281 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </div>
-      </div>
+      </section>
+
+      {/* Solution Section - Core Features */}
+      <section id="features-overview" className="py-24 bg-muted/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <Badge variant="secondary" className="mb-3">
+              Core Features
+            </Badge>
+            <h2 className="text-3xl font-bold">Your Intellectual Ecosystem</h2>
+            <p className="mt-4 text-muted-foreground">
+              Precision tools designed to amplify your cognitive potential and
+              research workflow
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
+            {/* Feature 1 - AI Summary & Semantic Search */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
+            >
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
+                <Image
+                  src="/intelligent-search.png"
+                  alt="AI-Powered Insights"
+                  width={800}
+                  height={600}
+                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
+                  priority
+                />
+              </div>
+              <div className="space-y-4">
+                <Badge variant="secondary" className="mb-2">
+                  AI-Powered
+                </Badge>
+                <h3 className="text-xl font-bold">
+                  Intelligent Semantic Search
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Find exactly what you need with context-aware search that
+                  understands the meaning behind your queries. Go beyond simple
+                  keyword matching to discover relevant content across your
+                  notes.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature 2 - Graph View */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
+            >
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
+                <Image
+                  src="/graph.png"
+                  alt="Knowledge Graph"
+                  width={800}
+                  height={600}
+                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
+                  priority
+                />
+              </div>
+              <div className="space-y-4">
+                <Badge variant="secondary" className="mb-2">
+                  Interactive
+                </Badge>
+                <h3 className="text-xl font-bold">
+                  Interactive Knowledge Graph
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Visualize connections between your notes in an interactive
+                  graph view, revealing hidden relationships and patterns in
+                  your knowledge network.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature 3 - AI Summary */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
+            >
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
+                <Image
+                  src="/links.png"
+                  alt="AI Summary"
+                  width={1200}
+                  height={900}
+                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
+                  priority
+                  style={{ transform: "scale(1.8)" }}
+                />
+              </div>
+              <div className="space-y-4">
+                <Badge variant="secondary" className="mb-2">
+                  Smart Analysis
+                </Badge>
+                <h3 className="text-xl font-bold">AI-Powered Insights</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Transform lengthy notes into clear, concise summaries with our
+                  AI. Get the essence of your content instantly while preserving
+                  key insights and ideas.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature 4 - Note Connections */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
+            >
+              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
+                <Image
+                  src="/links.png"
+                  alt="Smart Organization"
+                  width={1200}
+                  height={900}
+                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
+                  priority
+                  style={{ transform: "scale(1.8)" }}
+                />
+              </div>
+              <div className="space-y-4">
+                <Badge variant="secondary" className="mb-2">
+                  Dynamic Connections
+                </Badge>
+                <h3 className="text-xl font-bold">Dynamic Note Connections</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Create meaningful connections between your notes with our
+                  intuitive linking system. Build a rich, interconnected
+                  knowledge base that grows with your understanding.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="text-center mt-16"
+          >
+            <p className="text-lg text-muted-foreground">
+              Ready to unlock the full potential?{" "}
+              <span className="text-primary font-medium">
+                Dive into our power features
+              </span>{" "}
+              that turn good notes into great ideas →
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Advanced Features Section */}
+      <section id="feature-details" className="py-24 bg-accent/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="space-y-8"
+            >
+              <div className="space-y-4">
+                <Badge variant="secondary">Advanced Capabilities</Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold">
+                  Craft Without Constraints
+                </h2>
+                <p className="text-muted-foreground leading-relaxed max-w-lg">
+                  We&apos;ve engineered Nebriq to respect your intellectual
+                  flow. Our minimalist design meets powerful functionality,
+                  letting your creativity breathe without technological
+                  friction.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  {
+                    title: "LaTeX Support",
+                    description:
+                      "Advanced LaTeX support for mathematical expressions",
+                    icon: <Sigma />,
+                  },
+                  {
+                    title: "Rich Formatting",
+                    description:
+                      "Rich Markdown formatting for beautiful documents",
+                    icon: <Baseline />,
+                  },
+                  {
+                    title: "Code Highlighting",
+                    description:
+                      "Syntax highlighting for over 100 programming languages",
+                    icon: <Code />,
+                  },
+                  {
+                    title: "Smart Organization",
+                    description:
+                      "Customizable tagging system for better organization",
+                    icon: <Tag />,
+                  },
+                  {
+                    title: "Focus Mode",
+                    description: "Distraction-free writing environment",
+                    icon: <Expand />,
+                  },
+                  {
+                    title: "Always in Sync",
+                    description:
+                      "Real-time cloud synchronization across devices",
+                    icon: <Cloud />,
+                  },
+                ].map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="group flex items-start gap-4 p-3 rounded-lg hover:bg-background/80 transition-colors"
+                  >
+                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      {feature.icon}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-medium">{feature.title}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border shadow-xl"
+            >
+              <Image
+                src="/editor.png"
+                alt="Nebriq Editor Interface"
+                fill
+                className="object-cover w-full h-full"
+                priority
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Early Adopter Benefits Section */}
-      <section className="py-24 bg-gradient-to-b from-background to-accent/20">
+      <section
+        id="benefits"
+        className="py-24 bg-gradient-to-b from-background to-accent/20"
+      >
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -273,7 +544,7 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-16">
+      <section id="pricing" className="py-24 bg-background">
         <div className="max-w-5xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -461,275 +732,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 bg-muted/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold">Your Intellectual Ecosystem</h2>
-            <p className="mt-4 text-muted-foreground">
-              Precision tools designed to amplify your cognitive potential and
-              research workflow
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
-            {/* Feature 1 - AI Summary & Semantic Search */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
-            >
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
-                <Image
-                  src="/intelligent-search.png"
-                  alt="AI-Powered Insights"
-                  width={800}
-                  height={600}
-                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
-                  priority
-                />
-              </div>
-              <div className="space-y-4">
-                <Badge variant="secondary" className="mb-2">
-                  AI-Powered
-                </Badge>
-                <h3 className="text-xl font-bold">
-                  Intelligent Semantic Search
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Find exactly what you need with context-aware search that
-                  understands the meaning behind your queries. Go beyond simple
-                  keyword matching to discover relevant content across your
-                  notes.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Feature 2 - Graph View */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
-            >
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
-                <Image
-                  src="/graph.png"
-                  alt="Knowledge Graph"
-                  width={800}
-                  height={600}
-                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
-                  priority
-                />
-              </div>
-              <div className="space-y-4">
-                <Badge variant="secondary" className="mb-2">
-                  Interactive
-                </Badge>
-                <h3 className="text-xl font-bold">
-                  Interactive Knowledge Graph
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Visualize connections between your notes in an interactive
-                  graph view, revealing hidden relationships and patterns in
-                  your knowledge network.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Feature 3 - AI Summary */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
-            >
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
-                <Image
-                  src="/links.png"
-                  alt="AI Summary"
-                  width={1200}
-                  height={900}
-                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
-                  priority
-                  style={{ transform: "scale(1.8)" }}
-                />
-              </div>
-              <div className="space-y-4">
-                <Badge variant="secondary" className="mb-2">
-                  Smart Analysis
-                </Badge>
-                <h3 className="text-xl font-bold">AI-Powered Insights</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Transform lengthy notes into clear, concise summaries with our
-                  AI. Get the essence of your content instantly while preserving
-                  key insights and ideas.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Feature 4 - Note Connections */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="group p-6 rounded-xl hover:bg-accent/50 transition-colors"
-            >
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
-                <Image
-                  src="/links.png"
-                  alt="Smart Organization"
-                  width={1200}
-                  height={900}
-                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
-                  priority
-                  style={{ transform: "scale(1.8)" }}
-                />
-              </div>
-              <div className="space-y-4">
-                <Badge variant="secondary" className="mb-2">
-                  Dynamic Connections
-                </Badge>
-                <h3 className="text-xl font-bold">Dynamic Note Connections</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Create meaningful connections between your notes with our
-                  intuitive linking system. Build a rich, interconnected
-                  knowledge base that grows with your understanding.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Highlight */}
-      <section className="py-24 bg-accent/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="space-y-8"
-            >
-              <div className="space-y-4">
-                <Badge variant="secondary" className="text-sm">
-                  Features
-                </Badge>
-                <h2 className="text-3xl lg:text-4xl font-bold">
-                  Craft Without Constraints
-                </h2>
-                <p className="text-muted-foreground leading-relaxed max-w-lg">
-                  We&apos;ve engineered Nebriq to respect your intellectual
-                  flow. Our minimalist design meets powerful functionality,
-                  letting your creativity breathe without technological
-                  friction.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {[
-                  {
-                    title: "LaTeX Support",
-                    description:
-                      "Advanced LaTeX support for mathematical expressions",
-                    icon: <Sigma />,
-                  },
-                  {
-                    title: "Rich Formatting",
-                    description:
-                      "Rich Markdown formatting for beautiful documents",
-                    icon: <Baseline />,
-                  },
-                  {
-                    title: "Code Highlighting",
-                    description:
-                      "Syntax highlighting for over 100 programming languages",
-                    icon: <Code />,
-                  },
-                  {
-                    title: "Smart Organization",
-                    description:
-                      "Customizable tagging system for better organization",
-                    icon: <Tag />,
-                  },
-                  {
-                    title: "Focus Mode",
-                    description: "Distraction-free writing environment",
-                    icon: <Expand />,
-                  },
-                  {
-                    title: "Always in Sync",
-                    description:
-                      "Real-time cloud synchronization across devices",
-                    icon: <Cloud />,
-                  },
-                ].map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                    className="group flex items-start gap-4 p-3 rounded-lg hover:bg-background/80 transition-colors"
-                  >
-                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      {feature.icon}
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="font-medium">{feature.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border shadow-xl"
-            >
-              <Image
-                src="/editor.png"
-                alt="Nebriq Editor Interface"
-                fill
-                className="object-cover w-full h-full"
-                priority
-              />
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto px-6 py-24 text-center">
+      <section id="cta" className="py-24 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">
-              Begin Your Nebriq Journey Today
+            <Badge variant="secondary" className="mb-6">
+              Get Started Today
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Join the Future of Note-Taking
             </h2>
-            <p className="text-primary-foreground/80 mb-12 max-w-xl mx-auto">
-              Join the community of scholars, researchers, and visionaries who
-              are using Nebriq to reimagine how brilliant ideas are born,
-              nurtured, and transformed.
+            <p className="text-lg text-muted-foreground mb-8">
+              Don't miss out on our early adopter benefits. Start organizing
+              your thoughts better today.
             </p>
-            <Button asChild size="lg" variant="secondary">
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-primary to-primary/80"
+            >
               <Link href="/signup">Experience Nebriq</Link>
             </Button>
           </motion.div>
