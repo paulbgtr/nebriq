@@ -15,8 +15,10 @@ type ResultsProps = {
 export const Results = ({ answer, hasSearched }: ResultsProps) => {
   const displayedText = useTypewriter(
     (answer as LLMAnswer)?.answer ?? "",
-    30
+    25
   ).displayedText;
+
+  const parsedDisplayText = parse(displayedText);
 
   return (
     <motion.div
@@ -62,7 +64,7 @@ export const Results = ({ answer, hasSearched }: ResultsProps) => {
                   </div>
                 </div>
                 <div className="text-gray-700 leading-relaxed prose prose-sm max-w-none rounded-lg p-4">
-                  {parse(displayedText)}
+                  {parsedDisplayText}
                 </div>
               </motion.div>
             </div>
