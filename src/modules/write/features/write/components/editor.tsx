@@ -6,6 +6,7 @@ import { useToast } from "@/shared/hooks/use-toast";
 import { Expand, Shrink } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useDebouncedCallback } from "use-debounce";
+import { TagManager } from "./tag-manager";
 
 type EditorProps = {
   id: string;
@@ -60,21 +61,24 @@ export const Editor = ({
 
   return (
     <div
-      className={`flex flex-col h-full gap-4 transition-all duration-300 ${
+      className={`flex flex-col h-full gap-2 transition-all duration-300 ${
         isZenMode ? "fixed inset-0 bg-background p-8 z-50" : ""
       }`}
     >
       <div className="flex items-center justify-between">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-            updateNote(e.target.value);
-          }}
-          placeholder="Untitled"
-          className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
-        />
+        <div className="flex flex-col gap-2">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              updateNote(e.target.value);
+            }}
+            placeholder="Untitled"
+            className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
+          />
+          <TagManager noteId={id} />
+        </div>
         <Button
           variant="ghost"
           size="icon"
