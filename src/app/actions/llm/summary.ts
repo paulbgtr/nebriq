@@ -2,8 +2,6 @@
 
 import OpenAI from "openai";
 import { Note } from "@/types/note";
-import { formatHTMLNoteContent } from "@/shared/lib/utils";
-import { LLMAnswer } from "@/types/llm-answer";
 import { getEncoding } from "js-tiktoken";
 import { getUserTokenLimits, updateTokenLimit } from "../supabase/token_limits";
 
@@ -35,14 +33,12 @@ const prepareContext = (relevantNotes: Note[]): string => {
 };
 
 /**
- * Creates a prompt for the LLM using the given query and context.
+ * Creates a prompt for the LLM using the given context.
  */
-const createPrompt = (query: string, context: string): string => {
-  return `Using the following fragments from the user's notes, provide a comprehensive answer to the question. Base your answer only on the provided information:
+const createPrompt = (context: string): string => {
+  return `Summarize the information from the user's notes in a concise and organized manner, using the provided information:
 
   ${context}
-
-  Question: ${query}
 
   Format your response using HTML tags for better presentation, following these guidelines:
   1. Start with a brief overview using <p> tags
@@ -56,23 +52,19 @@ const createPrompt = (query: string, context: string): string => {
   - Highlight relationships between different concepts
   - Present the information in a logical, hierarchical manner
   
-  If there is no relevant information available:
-  Respond with: "<p>I don't have any specific information about <strong>[topic]</strong> in your notes, but here's a general overview: [brief explanation]</p>"
-  
   Always prioritize accuracy and clarity in your response.`;
 };
 
-export const llmAnswer = async (
-  query: string,
+export const summarize = async (
   data: Note[],
   userId: string
-): Promise<LLMAnswer> => {
+): Promise<string | null> => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
   try {
     const context = prepareContext(data);
-    const prompt = createPrompt(query, context);
+    const prompt = createPrompt(context);
 
     const tokenLimit = await getUserTokenLimits(userId);
 
@@ -111,10 +103,7 @@ export const llmAnswer = async (
       messages: [{ role: "user", content: prompt }],
     });
 
-    return {
-      answer: completion.choices[0].message.content || "",
-      notes: data,
-    };
+    return completion.choices[0].message.content || null;
   } catch (error) {
     console.error(`chatgpt error: ${error}`);
     throw error;
