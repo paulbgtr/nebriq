@@ -6,13 +6,11 @@ import { useNotes } from "@/hooks/use-notes";
 import { searchUsingTFIDF } from "@/app/actions/search/tfidf";
 import { Note } from "@/types/note";
 import { useSearchStore } from "@/store/search";
-import { llmAnswer } from "@/app/actions/search/ai-search";
-import { LLMAnswer } from "@/types/llm-answer";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
 import { useUser } from "./use-user";
 
 type ReturnType = {
-  answer: Note[] | LLMAnswer;
+  results: Note[];
   hasSearched: boolean;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -31,10 +29,7 @@ export const useSearchQuery = (): ReturnType | null => {
   const [searchQuery, setSearchQuery] = useState<string>(
     decodeURIComponent(query)
   );
-  const [answer, setAnswer] = useState<Note[] | LLMAnswer>({
-    answer: "",
-    notes: [],
-  });
+  const [results, setResults] = useState<Note[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -50,30 +45,28 @@ export const useSearchQuery = (): ReturnType | null => {
     if (!notesData) return;
 
     const fetchResults = async () => {
+      let notes: Note[] = [];
+
       try {
         if (isAiSearch && user) {
-          const results = await semanticSearch(searchQuery, notesData);
-          const answer = await llmAnswer(searchQuery, results, user.id);
-          setAnswer(answer || null);
-          setHasSearched(true);
+          notes = await semanticSearch(searchQuery, notesData);
           return;
         }
 
-        const results = await searchUsingTFIDF(searchQuery, notesData);
-
-        setAnswer(results);
+        notes = await searchUsingTFIDF(searchQuery, notesData);
       } catch (error) {
         console.error("Error fetching search results:", error);
       } finally {
+        setResults(notes);
         setHasSearched(true);
       }
     };
 
     fetchResults();
-  }, [query, getNotesQuery.data, isAiSearch, setAnswer, setHasSearched]);
+  }, [query, getNotesQuery.data, isAiSearch, user, setResults, setHasSearched]);
 
   return {
-    answer,
+    results,
     hasSearched,
     searchQuery,
     setSearchQuery,
