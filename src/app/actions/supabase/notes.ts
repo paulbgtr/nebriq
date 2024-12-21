@@ -2,37 +2,11 @@
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { z } from "zod";
-import { noteSchema } from "@/shared/lib/schemas/note";
-
-const getNote = async (id: string): Promise<z.infer<typeof noteSchema>> => {
-  const supabase = await createClient();
-
-  const { data: noteToDelete, error } = await supabase
-    .from("notes")
-    .select("id")
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return noteSchema.parse(noteToDelete);
-};
-
-const handleNoteExists = async (
-  id: string,
-  errorMessage: string = "Note not found"
-) => {
-  try {
-    const existingNote = await getNote(id);
-    if (!existingNote) throw new Error(errorMessage);
-    return existingNote;
-  } catch (error) {
-    console.error("Supabase error:", error);
-    throw error;
-  }
-};
+import {
+  noteSchema,
+  createNoteSchema,
+  updateNoteSchema,
+} from "@/shared/lib/schemas/note";
 
 export const getNotes = async (
   userId: string
@@ -70,49 +44,58 @@ export const getNotes = async (
 };
 
 export const createNote = async (
-  note: z.infer<typeof noteSchema>
+  note: z.infer<typeof createNoteSchema>
 ): Promise<z.infer<typeof noteSchema>> => {
-  const existingNote = await handleNoteExists(note.id);
-  if (existingNote) throw new Error("Note already exists");
-
   const supabase = await createClient();
-  const { data: newNote } = await supabase
+
+  const { data: newNote, error } = await supabase
     .from("notes")
     .insert({
-      id: note.id,
       user_id: note.user_id,
       title: note.title ?? undefined,
       content: note.content ?? undefined,
     })
-    .select();
-  return noteSchema.parse(newNote);
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return noteSchema.parse({
+    ...newNote,
+    created_at: new Date(newNote.created_at),
+  });
 };
 
 export const updateNote = async (
-  note: z.infer<typeof noteSchema>
+  note: z.infer<typeof updateNoteSchema>
 ): Promise<z.infer<typeof noteSchema>> => {
-  await handleNoteExists(note.id);
-
   const supabase = await createClient();
 
-  const { data: updatedNote } = await supabase
+  const { data: updatedNote, error } = await supabase
     .from("notes")
     .update({
-      id: note.id,
-      user_id: note.user_id,
       title: note.title ?? undefined,
       content: note.content ?? undefined,
     })
     .eq("id", note.id)
-    .select();
-  return noteSchema.parse(updatedNote);
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return noteSchema.parse({
+    ...updatedNote,
+    created_at: new Date(updatedNote.created_at),
+  });
 };
 
 export const deleteNote = async (
   id: string
 ): Promise<z.infer<typeof noteSchema>> => {
-  await handleNoteExists(id);
-
   const supabase = await createClient();
 
   const { data: deletedNote } = await supabase
@@ -126,5 +109,8 @@ export const deleteNote = async (
     throw new Error("Note not found");
   }
 
-  return noteSchema.parse(deletedNote);
+  return noteSchema.parse({
+    ...deletedNote,
+    created_at: new Date(deletedNote.created_at),
+  });
 };
