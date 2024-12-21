@@ -9,3 +9,13 @@ export const noteSchema = z.object({
   linked_notes: z.array(z.string()).optional(),
   created_at: z.date(),
 });
+
+export const createNoteSchema = noteSchema.omit({
+  id: true,
+  created_at: true,
+});
+
+export const updateNoteSchema = noteSchema.omit({
+  user_id: true,
+  created_at: true,
+});
