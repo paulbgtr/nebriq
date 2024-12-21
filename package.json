@@ -47,7 +47,6 @@
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.11.17",
-    "html-react-parser": "^5.2.0",
     "js-tiktoken": "^1.0.15",
     "katex": "^0.16.15",
     "langchain": "^0.3.6",
