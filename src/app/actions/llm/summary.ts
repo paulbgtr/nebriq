@@ -40,13 +40,6 @@ const createPrompt = (context: string): string => {
 
   ${context}
 
-  Format your response using HTML tags for better presentation, following these guidelines:
-  1. Start with a brief overview using <p> tags
-  2. Use <strong> for key concepts and terms
-  3. Use <em> for definitions and important explanations
-  4. If there are multiple points or concepts, use <ul>/<li> to list them
-  5. Include relevance scores to show how closely each note matches the query
-  
   If the notes contain relevant information:
   - Synthesize the information from all relevant notes
   - Highlight relationships between different concepts
@@ -69,7 +62,7 @@ export const summarize = async (
     await handleTokenLimits(userId, prompt);
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
     });
 
