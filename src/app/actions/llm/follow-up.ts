@@ -1,9 +1,8 @@
 "use server";
 
 import OpenAI from "openai";
-import { getEncoding } from "js-tiktoken";
-import { getUserTokenLimits, updateTokenLimit } from "../supabase/token_limits";
 import { FollowUpContext } from "@/types/follow-up";
+import { handleTokenLimits } from "./utils";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is not defined in environment");
@@ -49,43 +48,16 @@ export const followUp = async (
   try {
     const prompt = createPrompt(query, followUpContext);
 
-    const tokenLimit = await getUserTokenLimits(userId);
+    await handleTokenLimits(userId, prompt);
 
-    if (!tokenLimit) {
-      throw new Error("Token limit not found");
-    }
-
-    const enc = getEncoding("gpt2");
-    const newTokens = enc.encode(prompt).length;
-
-    const now = new Date();
-    if (tokenLimit.reset_date < now) {
-      const nextReset = new Date(now);
-      nextReset.setHours(now.getHours() + 24);
-
-      await updateTokenLimit({
-        user_id: userId,
-        tokens_used: newTokens,
-        reset_date: nextReset,
-      });
-    } else {
-      const totalTokens = tokenLimit.tokens_used + newTokens;
-      if (totalTokens > tokenLimit.token_limit) {
-        throw new Error("Token limit exceeded");
-      }
-
-      await updateTokenLimit({
-        user_id: userId,
-        tokens_used: totalTokens,
-        reset_date: tokenLimit.reset_date,
-      });
-    }
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      stream: true,
-    }, { signal });
+    const completion = await openai.chat.completions.create(
+      {
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      },
+      { signal }
+    );
 
     let result = "";
     for await (const chunk of completion) {
