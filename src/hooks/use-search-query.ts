@@ -63,7 +63,7 @@ export const useSearchQuery = (): ReturnType | null => {
     };
 
     fetchResults();
-  }, [query, getNotesQuery.data, isAiSearch, user, setResults, setHasSearched]);
+  }, [query, isAiSearch, setResults, setHasSearched]);
 
   return {
     results,
