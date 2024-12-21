@@ -64,14 +64,13 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     setIsCreatingNote(true);
     createNoteMutation.mutate(
       {
-        title,
-        content,
-        created_at: new Date(),
+        title: title || "Untitled",
+        content: content || "",
         user_id: user.id,
       },
       {
         onSuccess: (data) => {
-          setId(data?.[0]?.id);
+          setId(data.id);
           setIsCreatingNote(false);
         },
         onError: () => {
@@ -145,7 +144,6 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             id,
             title,
             content: newContent,
-            created_at: new Date(),
           });
         }, 500);
 
