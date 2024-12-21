@@ -18,24 +18,18 @@ import {
 } from "@/shared/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { useNoteTabsStore } from "@/store/note-tabs";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
 type NoteProps = {
-  id?: string;
-  title?: string;
-  content?: string;
-  createdAt: Date;
-  tags?: string[];
+  note: z.infer<typeof noteSchema>;
   selectable?: boolean;
   selected?: boolean;
   onSelect?: (selected: boolean) => void;
 };
 
 const NoteComponent = ({
-  id,
-  title,
-  content,
-  createdAt,
-  tags = [],
+  note: { id, title, content, tags, created_at },
   selectable = false,
   selected = false,
   onSelect,
@@ -126,15 +120,17 @@ const NoteComponent = ({
       </p>
       <div className="flex flex-col gap-2">
         <div className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
-          {formatDate(createdAt)}
+          {formatDate(created_at)}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Badge key={tag} variant="secondary" className="text-xs">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
