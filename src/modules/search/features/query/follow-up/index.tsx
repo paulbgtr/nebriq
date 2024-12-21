@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/shared/components/ui/tooltip";
+import ReactMarkdown from "react-markdown";
 
 export default function FollowUp({
   relevantNotes = [],
@@ -67,80 +68,94 @@ export default function FollowUp({
               isFocused ? "opacity-100" : "opacity-0 h-0 p-0"
             )}
           >
-            <div className="space-y-6">
-              {followUpContext.conversationHistory.map((message, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    "flex items-start gap-3",
-                    message.role === "user" ? "flex-row-reverse" : "flex-row"
-                  )}
-                >
+            {!followUpContext.conversationHistory.length ? (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <Sparkles className="text-gray-500 mb-3" />
+                <h3 className="text-lg font-semibold text-gray-900">
+                  What would you like to talk about?
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Ask me anything about your notes or interests.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {followUpContext.conversationHistory.map((message, index) => (
                   <div
+                    key={index}
                     className={cn(
-                      "flex-shrink-0 rounded-full p-1.5",
-                      message.role === "user"
-                        ? "bg-primary/10"
-                        : "bg-secondary/10"
+                      "flex items-start gap-3",
+                      message.role === "user" ? "flex-row-reverse" : "flex-row"
                     )}
                   >
-                    {message.role === "user" ? (
-                      <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-medium text-foreground uppercase">
-                          {user?.email?.[0] ?? "?"}
-                        </span>
-                      </div>
-                    ) : (
+                    <div
+                      className={cn(
+                        "flex-shrink-0 rounded-full p-1.5",
+                        message.role === "user"
+                          ? "bg-primary/10"
+                          : "bg-secondary/10"
+                      )}
+                    >
+                      {message.role === "user" ? (
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-medium text-foreground uppercase">
+                            {user?.email?.[0] ?? "?"}
+                          </span>
+                        </div>
+                      ) : (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Bot className="text-secondary-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>AI Assistant powered by GPT-4</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </div>
+                    <div
+                      className={cn(
+                        "relative flex-1 px-4 py-3 rounded-2xl text-sm",
+                        message.role === "user"
+                          ? "bg-primary/10 text-foreground"
+                          : "bg-secondary/10 text-secondary-foreground",
+                        message.role === "user"
+                          ? "rounded-tr-sm"
+                          : "rounded-tl-sm"
+                      )}
+                    >
+                      <ReactMarkdown>
+                        {message.role === "assistant" &&
+                        message ===
+                          followUpContext.conversationHistory
+                            .filter((msg) => msg.role === "assistant")
+                            .slice(-1)[0]
+                          ? displayedText
+                          : message.content}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 rounded-full p-1.5 bg-secondary/10">
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Bot className="text-secondary-foreground" />
+                          <Bot className="w-4 h-4 text-secondary-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>AI Assistant powered by GPT-4</p>
                         </TooltipContent>
                       </Tooltip>
-                    )}
+                    </div>
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-3 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
                   </div>
-                  <div
-                    className={cn(
-                      "relative flex-1 px-4 py-3 rounded-2xl text-sm",
-                      message.role === "user"
-                        ? "bg-primary/10 text-foreground"
-                        : "bg-secondary/10 text-secondary-foreground",
-                      message.role === "user"
-                        ? "rounded-tr-sm"
-                        : "rounded-tl-sm"
-                    )}
-                  >
-                    {message.role === "assistant" &&
-                    message ===
-                      followUpContext.conversationHistory
-                        .filter((msg) => msg.role === "assistant")
-                        .slice(-1)[0]
-                      ? displayedText
-                      : message.content}
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 rounded-full p-1.5 bg-secondary/10">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Bot className="w-4 h-4 text-secondary-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>AI Assistant powered by GPT-4</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-3 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Input form */}
