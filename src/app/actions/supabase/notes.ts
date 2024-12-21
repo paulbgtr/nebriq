@@ -1,9 +1,9 @@
 "use server";
 
 import { createClient } from "@/shared/lib/supabase/server";
-import { type CreateNote, type UpdateNote } from "@/types/note";
+import { Note, type CreateNote, type UpdateNote } from "@/types/note";
 
-export const getNotes = async (userId: string) => {
+export const getNotes = async (userId: string): Promise<Note[]> => {
   const supabase = await createClient();
   const { data: rawNotes } = await supabase
     .from("notes")
@@ -20,9 +20,19 @@ export const getNotes = async (userId: string) => {
     )
     .eq("user_id", userId);
 
+  if (!rawNotes) {
+    throw new Error("No notes found");
+  }
+
   return rawNotes?.map(({ note_tags, ...note }) => ({
-    ...note,
-    tags: note_tags?.map((nt) => nt.tags.name) || [], // todo fix any
+    id: note.id,
+    user_id: note.user_id,
+    title: note.title ?? undefined,
+    content: note.content ?? undefined,
+    tags: note_tags
+      ?.map((nt) => nt.tags?.name)
+      .filter((tag): tag is string => tag !== undefined),
+    created_at: new Date(note.created_at),
   }));
 };
 
