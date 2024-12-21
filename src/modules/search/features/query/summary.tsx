@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import parse from "html-react-parser";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { Button } from "@/shared/components/ui/button";
 import { Sparkle } from "lucide-react";
 import { useSummary } from "@/hooks/use-sumary";
 import { Note } from "@/types/note";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import ReactMarkdown from "react-markdown";
 
 type Props = {
   results: Note[];
@@ -16,7 +16,6 @@ export const Summary = ({ results }: Props) => {
   const { summary, setIsSummarized, isLoadingSummary } = useSummary(results);
 
   const displayedText = useTypewriter(summary ?? "", 25).displayedText;
-  const parsedDisplayText = parse(displayedText);
 
   return (
     <>
@@ -54,7 +53,7 @@ export const Summary = ({ results }: Props) => {
               </motion.div>
             ) : (
               <div className="text-gray-700 leading-relaxed prose prose-sm rounded-lg p-4">
-                {parsedDisplayText}
+                <ReactMarkdown>{displayedText}</ReactMarkdown>
               </div>
             )}
           </motion.div>
