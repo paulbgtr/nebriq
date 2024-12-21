@@ -1,13 +1,14 @@
 import { NoteList } from "@/shared/components/note-list";
 import { Spinner } from "@/shared/components/spinner";
 import { motion } from "framer-motion";
-import { Note } from "@/types/note";
+import { noteSchema } from "@/shared/lib/schemas/note";
 import { Frown } from "lucide-react";
 import { Summary } from "./summary";
+import { z } from "zod";
 
 import { useSearchStore } from "@/store/search";
 type ResultsProps = {
-  results: Note[];
+  results: z.infer<typeof noteSchema>[];
   hasSearched: boolean;
 };
 

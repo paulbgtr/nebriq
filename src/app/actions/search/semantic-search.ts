@@ -2,7 +2,8 @@
 
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is not defined in environment");
@@ -17,21 +18,24 @@ const embeddings = new OpenAIEmbeddings({
 /**
  * Represents a document to be searched.
  */
-type Document = {
-  pageContent: string;
-  metadata: {
-    id: string;
-    user_id: string;
-    title: string;
-    tags: string[];
-    created_at: Date;
-  };
-};
+const documentSchema = z.object({
+  pageContent: z.string(),
+  metadata: z.object({
+    id: z.string(),
+    user_id: z.string(),
+    title: z.string(),
+    tags: z.array(z.string()),
+    created_at: z.date(),
+  }),
+});
 
 /**
  * Handles searching a list of documents using a query.
  */
-const searchHandler = async (query: string, documents: Document[]) => {
+const searchHandler = async (
+  query: string,
+  documents: z.infer<typeof documentSchema>[]
+) => {
   const vectorStore = await MemoryVectorStore.fromDocuments(
     documents,
     embeddings
@@ -64,8 +68,10 @@ const searchHandler = async (query: string, documents: Document[]) => {
  * @param document - The document to be converted.
  * @returns The converted note.
  */
-const convertDocumentToNote = (document: Document): Note => {
-  return {
+const convertDocumentToNote = (
+  document: z.infer<typeof documentSchema>
+): z.infer<typeof noteSchema> => {
+  return noteSchema.parse({
     id: document.metadata.id,
     user_id: document.metadata.user_id,
     title:
@@ -73,7 +79,7 @@ const convertDocumentToNote = (document: Document): Note => {
     content: document.pageContent === "no content" ? "" : document.pageContent,
     tags: document.metadata.tags,
     created_at: document.metadata.created_at,
-  };
+  });
 };
 
 /**
@@ -85,8 +91,8 @@ const convertDocumentToNote = (document: Document): Note => {
  */
 export const semanticSearch = async (
   query: string,
-  notes: Note[]
-): Promise<Note[]> => {
+  notes: z.infer<typeof noteSchema>[]
+): Promise<z.infer<typeof noteSchema>[]> => {
   // Normalize query
   const normalizedQuery = query.trim().toLowerCase();
 
@@ -106,10 +112,9 @@ export const semanticSearch = async (
     };
   });
 
-  const results = (await searchHandler(
-    normalizedQuery,
-    documents
-  )) as Document[];
+  const results = documentSchema
+    .array()
+    .parse(await searchHandler(normalizedQuery, documents));
 
   return results.map((result) => {
     return convertDocumentToNote(result);

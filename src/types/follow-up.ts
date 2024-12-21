@@ -1,4 +1,4 @@
-import { Note } from "./note";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
 export type ConversationTurn = {
   role: "user" | "assistant";
@@ -7,5 +7,5 @@ export type ConversationTurn = {
 
 export type FollowUpContext = {
   conversationHistory: ConversationTurn[];
-  relevantNotes: Note[];
+  relevantNotes: z.infer<typeof noteSchema>[];
 };

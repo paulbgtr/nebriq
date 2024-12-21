@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
-type OpenNote = Omit<Note, "created_at" | "user_id">;
+type OpenNote = Omit<z.infer<typeof noteSchema>, "created_at" | "user_id">;
 
 interface NoteTabsStore {
   openNotes: OpenNote[];

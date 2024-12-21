@@ -1,6 +1,7 @@
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
-export const notes: Note[] = [
+export const notes: z.infer<typeof noteSchema>[] = [
   // Technology
   {
     id: "1",

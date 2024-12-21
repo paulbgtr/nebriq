@@ -34,9 +34,10 @@ export const useNotes = () => {
   });
 
   const deleteNoteMutation = useMutation({
-    mutationFn: deleteNote,
+    mutationFn: (id: string) => deleteNote(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
+      queryClient.invalidateQueries({ queryKey: ["note-tabs"] });
     },
   });
 

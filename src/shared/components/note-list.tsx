@@ -1,11 +1,11 @@
-import { DetailedNote } from "./detailed-note";
 import { Note } from "./note";
-import { Note as NoteType } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "../lib/schemas/note";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 type NoteListProps = {
-  notes: NoteType[];
+  notes: z.infer<typeof noteSchema>[];
   onSelectionChange?: (selectedNotes: string[]) => void;
   selectable?: boolean;
 };

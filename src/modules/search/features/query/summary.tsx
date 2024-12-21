@@ -4,12 +4,13 @@ import { useTypewriter } from "@/hooks/use-typewriter";
 import { Button } from "@/shared/components/ui/button";
 import { Sparkle } from "lucide-react";
 import { useSummary } from "@/hooks/use-sumary";
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import ReactMarkdown from "react-markdown";
 
 type Props = {
-  results: Note[];
+  results: z.infer<typeof noteSchema>[];
 };
 
 export const Summary = ({ results }: Props) => {

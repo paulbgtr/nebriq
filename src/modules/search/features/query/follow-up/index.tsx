@@ -8,7 +8,8 @@ import { FaArrowUp } from "react-icons/fa";
 import { Sparkles } from "lucide-react";
 import { Bot } from "lucide-react";
 import { useFollowUp } from "@/hooks/use-follow-up";
-import { Note } from "@/types/note";
+import { noteSchema } from "@/shared/lib/schemas/note";
+import { z } from "zod";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { useUser } from "@/hooks/use-user";
@@ -23,7 +24,7 @@ import ReactMarkdown from "react-markdown";
 export default function FollowUp({
   relevantNotes = [],
 }: {
-  relevantNotes: Note[];
+  relevantNotes: z.infer<typeof noteSchema>[];
 }) {
   const [followUp, setFollowUp] = useState("");
   const [isFocused, setIsFocused] = useState(false);

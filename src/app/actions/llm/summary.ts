@@ -1,8 +1,8 @@
 "use server";
 
 import OpenAI from "openai";
-import { Note } from "@/types/note";
-import { getUserTokenLimits, updateTokenLimit } from "../supabase/token_limits";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 import { handleTokenLimits } from "./utils";
 
 if (!process.env.OPENAI_API_KEY) {
@@ -13,7 +13,7 @@ if (!process.env.OPENAI_API_KEY) {
  * Extracts the most relevant sentences from a note's content that match a search query.
  */
 const extractKeyFragments = (
-  note: Note,
+  note: z.infer<typeof noteSchema>,
   maxlength = 500
 ): string | undefined => {
   if (!note.content) return undefined;
@@ -23,7 +23,9 @@ const extractKeyFragments = (
 /**
  * Prepares the context for a prompt from the given relevant notes and query.
  */
-const prepareContext = (relevantNotes: Note[]): string => {
+const prepareContext = (
+  relevantNotes: z.infer<typeof noteSchema>[]
+): string => {
   return relevantNotes
     .map((note) => {
       const keyFragment = extractKeyFragments(note);
@@ -49,7 +51,7 @@ const createPrompt = (context: string): string => {
 };
 
 export const summarize = async (
-  data: Note[],
+  data: z.infer<typeof noteSchema>[],
   userId: string
 ): Promise<string | null> => {
   const openai = new OpenAI({

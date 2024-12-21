@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useNotes } from "@/hooks/use-notes";
 import { searchUsingTFIDF } from "@/app/actions/search/tfidf";
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 import { useSearchStore } from "@/store/search";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
 import { useUser } from "./use-user";
 
 type ReturnType = {
-  results: Note[];
+  results: z.infer<typeof noteSchema>[];
   hasSearched: boolean;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -29,7 +30,7 @@ export const useSearchQuery = (): ReturnType | null => {
   const [searchQuery, setSearchQuery] = useState<string>(
     decodeURIComponent(query)
   );
-  const [results, setResults] = useState<Note[]>([]);
+  const [results, setResults] = useState<z.infer<typeof noteSchema>[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -44,8 +45,8 @@ export const useSearchQuery = (): ReturnType | null => {
 
     if (!notesData) return;
 
-    const fetchResults = async () => {
-      let notes: Note[] = [];
+    const fetchResults = async (): Promise<void> => {
+      let notes: z.infer<typeof noteSchema>[] = [];
 
       try {
         if (isAiSearch && user) {

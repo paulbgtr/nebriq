@@ -1,6 +1,7 @@
 "use server";
 
-import { Note } from "@/types/note";
+import { noteSchema } from "@/shared/lib/schemas/note";
+import { z } from "zod";
 import { TFIDFResult } from "@/types/TFIDFResult";
 import natural from "natural";
 import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
@@ -47,8 +48,8 @@ const calculateCombinedScore = (
  */
 export const searchUsingTFIDF = async (
   query: string,
-  notes: Note[]
-): Promise<Note[]> => {
+  notes: z.infer<typeof noteSchema>[]
+): Promise<z.infer<typeof noteSchema>[]> => {
   try {
     if (!notes?.length || !query?.trim()) return [];
 

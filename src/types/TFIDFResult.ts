@@ -1,6 +1,7 @@
-import { Note } from "./note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
 export type TFIDFResult = {
   score: number;
-  note: Note;
+  note: z.infer<typeof noteSchema>;
 };

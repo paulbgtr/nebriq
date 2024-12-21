@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { followUp } from "@/app/actions/llm/follow-up";
 import { FollowUpContext } from "@/types/follow-up";
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
 export const useFollowUp = (
   userId: string | undefined,
-  relevantNotes: Note[]
+  relevantNotes: z.infer<typeof noteSchema>[]
 ) => {
   const [query, setQuery] = useState("");
   const [followUpContext, setFollowUpContext] = useState<FollowUpContext>({
@@ -14,7 +15,7 @@ export const useFollowUp = (
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = async (message: string) => {
+  const sendMessage = async (message: string): Promise<void> => {
     if (!userId || !message.trim()) return;
 
     try {

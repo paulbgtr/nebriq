@@ -1,5 +1,6 @@
 import * as d3 from "d3";
-import { Note } from "@/types/note";
+import { z } from "zod";
+import { noteSchema } from "@/shared/lib/schemas/note";
 import { NoteConnection } from "@/types/note-connection";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -21,7 +22,7 @@ type GraphLink = d3.SimulationLinkDatum<GraphNode> & {
 };
 
 type LinePlotProps = {
-  notes: Note[];
+  notes: z.infer<typeof noteSchema>[];
   connections: NoteConnection[];
   width?: number;
   height?: number;
