@@ -63,8 +63,7 @@ export const NoteList = ({
       {sortedNotes.map((note) => (
         <motion.div key={note.id} variants={item}>
           <Note
-            {...note}
-            createdAt={note.created_at}
+            note={note}
             selectable={selectable}
             selected={selectedNotes.includes(note.id)}
             onSelect={(selected) => handleNoteSelect(note.id, selected)}
