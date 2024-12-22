@@ -2,7 +2,7 @@
 
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { z } from "zod";
-import { TFIDFResult } from "@/types/TFIDFResult";
+import { tfidfResultSchema } from "@/shared/lib/schemas/tfidf-result";
 import natural from "natural";
 import { convertTFIDFToNotesWithDefaults } from "@/shared/lib/utils";
 
@@ -82,20 +82,28 @@ export const searchUsingTFIDF = async (
       return [];
     }
 
-    const results: TFIDFResult[] = notes.map((note, index) => ({
-      note,
-      score: calculateCombinedScore(
-        contentScores[index],
-        titleScores[index],
-        tagScores[index]
-      ),
-    }));
+    const results: z.infer<typeof tfidfResultSchema>[] = notes.map(
+      (note, index) => ({
+        note,
+        score: calculateCombinedScore(
+          contentScores[index],
+          titleScores[index],
+          tagScores[index]
+        ),
+      })
+    );
 
-    const filteredResults = results
-      .filter((result) => result.score > 0)
-      .sort((a, b) => b.score - a.score);
+    const filteredResults = tfidfResultSchema
+      .array()
+      .parse(
+        results
+          .filter((result) => result.score > 0)
+          .sort((a, b) => b.score - a.score)
+      );
 
-    return convertTFIDFToNotesWithDefaults(filteredResults);
+    return noteSchema
+      .array()
+      .parse(convertTFIDFToNotesWithDefaults(filteredResults));
   } catch (error) {
     console.error("TF-IDF search error:", error);
     return [];

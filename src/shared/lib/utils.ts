@@ -2,14 +2,14 @@ import { noteSchema } from "./schemas/note";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
-import { TFIDFResult } from "@/types/TFIDFResult";
+import { tfidfResultSchema } from "./schemas/tfidf-result";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function convertTFIDFToNotesWithDefaults(
-  tfidfResults: TFIDFResult[]
+  tfidfResults: z.infer<typeof tfidfResultSchema>[]
 ): z.infer<typeof noteSchema>[] {
   return tfidfResults.map((result) => {
     const note = result.note;
