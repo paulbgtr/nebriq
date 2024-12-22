@@ -7,20 +7,24 @@ export const useUser = () => {
     queryKey: ["user"],
     queryFn: () => {
       const supabase = createClient();
-      return userSchema.parse(supabase.auth.getUser());
+      return supabase.auth.getUser();
     },
-    select: (user) => {
-      if (!user) {
+    select: (userData) => {
+      const {
+        data: { user },
+        error,
+      } = userData;
+
+      if (error || !user) {
         throw new Error("User not found");
       }
 
-      const userData = {
+      return userSchema.parse({
         id: user.id,
         email: user.email,
         role: user.role,
-        createdAt: new Date(user.createdAt),
-      };
-      return userData;
+        createdAt: new Date(user.created_at),
+      });
     },
   });
 
