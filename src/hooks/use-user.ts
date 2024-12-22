@@ -1,4 +1,4 @@
-import { User } from "@/types/user";
+import { userSchema } from "@/shared/lib/schemas/userSchema";
 import { createClient } from "@/shared/lib/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -7,16 +7,19 @@ export const useUser = () => {
     queryKey: ["user"],
     queryFn: () => {
       const supabase = createClient();
-      return supabase.auth.getUser();
+      return userSchema.parse(supabase.auth.getUser());
     },
-    select: ({ data }) => {
-      if (!data?.user) return null;
+    select: (user) => {
+      if (!user) {
+        throw new Error("User not found");
+      }
+
       const userData = {
-        id: data?.user?.id,
-        email: data?.user?.email,
-        role: data?.user?.role,
-        createdAt: new Date(data?.user?.created_at),
-      } satisfies User;
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        createdAt: new Date(user.createdAt),
+      };
       return userData;
     },
   });
