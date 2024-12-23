@@ -5,8 +5,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
-import { Sparkles } from "lucide-react";
-import { Bot } from "lucide-react";
+import { Bot, Sparkles, Trash2 } from "lucide-react";
 import { useFollowUp } from "@/hooks/use-follow-up";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { z } from "zod";
@@ -27,15 +26,14 @@ export default function FollowUp({
   relevantNotes: z.infer<typeof noteSchema>[];
 }) {
   const [followUp, setFollowUp] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
 
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { user } = useUser();
-  const { setQuery, followUpContext, isLoading } = useFollowUp(
-    user?.id,
-    relevantNotes
-  );
+  const { setQuery, followUpContext, isLoading, clearFollowUpContext } =
+    useFollowUp(user?.id, relevantNotes);
 
   const maxLength = 100;
 
@@ -52,113 +50,164 @@ export default function FollowUp({
     }
   }, [followUpContext.conversationHistory]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        chatContainerRef.current &&
+        !chatContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const ClearChat = () => {
+    return (
+      <div className="flex justify-end p-3 border-b">
+        <Button
+          onClick={clearFollowUpContext}
+          variant="ghost"
+          size="sm"
+          className={cn(
+            "group flex items-center gap-2 px-3 py-1.5",
+            "text-muted-foreground hover:text-destructive",
+            "transition-all duration-300 ease-in-out",
+            "rounded-full hover:bg-destructive/10",
+            "border border-transparent hover:border-destructive/20",
+            followUpContext.conversationHistory.length === 0 &&
+              "opacity-50 pointer-events-none"
+          )}
+        >
+          <Trash2
+            className={cn(
+              "w-4 h-4 transition-all duration-300",
+              "group-hover:scale-110 group-hover:rotate-12"
+            )}
+          />
+          <span className="text-sm font-medium">Clear chat</span>
+        </Button>
+      </div>
+    );
+  };
+
   return (
     <TooltipProvider>
       <div className="fixed bottom-5 left-0 right-0 max-w-xl mx-auto px-4">
         <article
+          ref={chatContainerRef}
           className={cn(
             "flex flex-col rounded-2xl shadow-lg border bg-background overflow-hidden transition-all duration-500 ease-in-out",
             isFocused ? "h-[450px]" : "h-[90px]"
           )}
         >
-          {/* Messages container */}
           <div
             ref={scrollContainerRef}
             className={cn(
-              "flex-1 overflow-y-auto p-6 transition-all duration-500 space-y-6",
+              "flex-1 overflow-y-auto transition-all duration-500 space-y-6",
               isFocused ? "opacity-100" : "opacity-0 h-0 p-0"
             )}
           >
-            {!followUpContext.conversationHistory.length ? (
-              <div className="flex flex-col items-center justify-center h-full text-center">
-                <Sparkles className="text-gray-500 mb-3" />
-                <h3 className="text-lg font-semibold text-gray-900">
-                  What would you like to talk about?
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Ask me anything about your notes or interests.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {followUpContext.conversationHistory.map((message, index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      "flex items-start gap-3",
-                      message.role === "user" ? "flex-row-reverse" : "flex-row"
-                    )}
-                  >
+            <ClearChat />
+            <div className="py-2 px-6">
+              {!followUpContext.conversationHistory.length ? (
+                <div className="flex flex-col items-center justify-center h-full text-center">
+                  <Sparkles className="text-gray-500 mb-3" />
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    What would you like to talk about?
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Ask me anything about your notes or interests.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {followUpContext.conversationHistory.map((message, index) => (
                     <div
+                      key={index}
                       className={cn(
-                        "flex-shrink-0 rounded-full p-1.5",
+                        "flex items-start gap-3",
                         message.role === "user"
-                          ? "bg-primary/10"
-                          : "bg-secondary/10"
+                          ? "flex-row-reverse"
+                          : "flex-row"
                       )}
                     >
-                      {message.role === "user" ? (
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-medium text-foreground uppercase">
-                            {user?.email?.[0] ?? "?"}
-                          </span>
-                        </div>
-                      ) : (
+                      <div
+                        className={cn(
+                          "flex-shrink-0 rounded-full p-1.5",
+                          message.role === "user"
+                            ? "bg-primary/10"
+                            : "bg-secondary/10"
+                        )}
+                      >
+                        {message.role === "user" ? (
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-medium text-foreground uppercase">
+                              {user?.email?.[0] ?? "?"}
+                            </span>
+                          </div>
+                        ) : (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Bot className="text-secondary-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>AI Assistant powered by GPT-4</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                      </div>
+                      <div
+                        className={cn(
+                          "relative flex-1 px-4 py-3 rounded-2xl text-sm",
+                          message.role === "user"
+                            ? "bg-primary/10 text-foreground"
+                            : "bg-secondary/10 text-secondary-foreground",
+                          message.role === "user"
+                            ? "rounded-tr-sm"
+                            : "rounded-tl-sm"
+                        )}
+                      >
+                        <ReactMarkdown>
+                          {message.role === "assistant" &&
+                          message ===
+                            followUpContext.conversationHistory
+                              .filter((msg) => msg.role === "assistant")
+                              .slice(-1)[0]
+                            ? displayedText
+                            : message.content}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                  ))}
+                  {isLoading && (
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 rounded-full p-1.5 bg-secondary/10">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Bot className="text-secondary-foreground" />
+                            <Bot className="w-4 h-4 text-secondary-foreground" />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>AI Assistant powered by GPT-4</p>
                           </TooltipContent>
                         </Tooltip>
-                      )}
+                      </div>
+                      <div className="space-y-2 flex-1">
+                        <Skeleton className="h-3 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
                     </div>
-                    <div
-                      className={cn(
-                        "relative flex-1 px-4 py-3 rounded-2xl text-sm",
-                        message.role === "user"
-                          ? "bg-primary/10 text-foreground"
-                          : "bg-secondary/10 text-secondary-foreground",
-                        message.role === "user"
-                          ? "rounded-tr-sm"
-                          : "rounded-tl-sm"
-                      )}
-                    >
-                      <ReactMarkdown>
-                        {message.role === "assistant" &&
-                        message ===
-                          followUpContext.conversationHistory
-                            .filter((msg) => msg.role === "assistant")
-                            .slice(-1)[0]
-                          ? displayedText
-                          : message.content}
-                      </ReactMarkdown>
-                    </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 rounded-full p-1.5 bg-secondary/10">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Bot className="w-4 h-4 text-secondary-foreground" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>AI Assistant powered by GPT-4</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <div className="space-y-2 flex-1">
-                      <Skeleton className="h-3 w-3/4" />
-                      <Skeleton className="h-3 w-1/2" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-
+          {/* Messages container */}
           {/* Input form */}
           <div className="p-4 bg-background/80 backdrop-blur-sm border-t">
             <form
@@ -196,11 +245,6 @@ export default function FollowUp({
                     isBordered={false}
                     type="text"
                     onFocus={() => setIsFocused(true)}
-                    onBlur={() => {
-                      if (!followUp.trim()) {
-                        setIsFocused(false);
-                      }
-                    }}
                     placeholder="Ask follow-up question..."
                     className={cn(
                       "pl-11 pr-24 h-12 transition-all duration-300 ease-in-out",
