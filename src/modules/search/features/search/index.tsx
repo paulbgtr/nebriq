@@ -4,14 +4,20 @@ import { useState } from "react";
 import SearchBar from "@/shared/components/search-bar";
 import { useRouter } from "next/navigation";
 import { Library } from "lucide-react";
+import { useSearchHistory } from "@/hooks/use-search-history";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const router = useRouter();
+  const { createSearchHistoryMutation } = useSearchHistory();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    await createSearchHistoryMutation.mutateAsync({
+      query: searchQuery,
+    });
 
     router.push(`/search/${encodeURIComponent(searchQuery)}`);
   };
