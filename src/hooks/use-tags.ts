@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  getTagLinks,
   getTagsByNoteId,
   createTag,
   updateTag,
@@ -11,15 +10,10 @@ import queryClient from "@/shared/lib/react-query";
 import { z } from "zod";
 import { createTagSchema } from "@/shared/lib/schemas/tag";
 
-export const useTags = (noteId?: string) => {
-  const getTagLinksQuery = useQuery({
-    queryKey: ["tagLinks"],
-    queryFn: getTagLinks,
-  });
-
+export const useTags = (noteId: string) => {
   const getTagsByNoteIdQuery = useQuery({
     queryKey: ["tags", noteId],
-    queryFn: () => getTagsByNoteId(noteId!),
+    queryFn: () => getTagsByNoteId(noteId),
     enabled: !!noteId,
   });
 
@@ -29,6 +23,7 @@ export const useTags = (noteId?: string) => {
         const { id } = await createTag({
           name: tag.name,
           user_id: tag.user_id,
+          note_id: tag.note_id,
         });
 
         await linkTagToNote(id, tag.note_id);
@@ -60,7 +55,6 @@ export const useTags = (noteId?: string) => {
   });
 
   return {
-    getTagLinksQuery,
     getTagsByNoteIdQuery,
     createTagMutation,
     updateTagMutation,

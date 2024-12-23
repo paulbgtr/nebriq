@@ -76,7 +76,7 @@ export const Editor = ({
             placeholder="Untitled"
             className="text-2xl font-bold bg-transparent border-none outline-none placeholder:text-gray-400 focus:ring-0"
           />
-          <TagManager noteId={id} />
+          {id && <TagManager noteId={id} />}
         </div>
         <Button
           variant="ghost"

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
 import { X, Plus } from "lucide-react";
 import { useTags } from "@/hooks/use-tags";
 import { useToast } from "@/shared/hooks/use-toast";
@@ -17,6 +16,8 @@ export const TagManager = ({ noteId }: TagManagerProps) => {
   const { user } = useUser();
   const { getTagsByNoteIdQuery, createTagMutation, deleteTagMutation } =
     useTags(noteId);
+
+  const { data: tags, isLoading } = getTagsByNoteIdQuery;
 
   const handleAddTag = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,12 +43,12 @@ export const TagManager = ({ noteId }: TagManagerProps) => {
     }
   };
 
-  const handleDeleteTag = async (tagName: string) => {
+  const handleDeleteTag = async (id: number) => {
     try {
-      await deleteTagMutation.mutateAsync(tagName);
+      await deleteTagMutation.mutateAsync(id);
       toast({
         title: "Tag deleted",
-        description: `Removed tag "${tagName}"`,
+        description: `Removed tag "${id}"`,
       });
     } catch (error) {
       toast({
@@ -73,25 +74,31 @@ export const TagManager = ({ noteId }: TagManagerProps) => {
           <Plus className="text-neutral h-4 w-4" />
         </Badge>
       </form>
-      <div className="flex flex-wrap gap-2">
-        {getTagsByNoteIdQuery.data?.map((tagLink: any) => (
-          <Badge
-            key={tagLink.tags.id}
-            variant="secondary"
-            className="text-sm group flex items-center gap-1"
-          >
-            {tagLink.tags.name}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-4 w-4 p-0 opacity-50 hover:opacity-100"
-              onClick={() => handleDeleteTag(tagLink.tags.name)}
+      {isLoading ? (
+        <div className="flex gap-2">
+          <Badge variant="secondary">Loading...</Badge>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {tags?.map((tag) => (
+            <Badge
+              key={tag.id}
+              variant="secondary"
+              className="text-sm group flex items-center gap-1"
             >
-              <X className="h-3 w-3" />
-            </Button>
-          </Badge>
-        ))}
-      </div>
+              {tag.name}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 opacity-50 hover:opacity-100"
+                onClick={() => handleDeleteTag(tag.id)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
