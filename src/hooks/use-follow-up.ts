@@ -4,16 +4,44 @@ import { FollowUpContext } from "@/types/follow-up";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 
+const STORAGE_KEY = "followUpContext";
+
 export const useFollowUp = (
   userId: string | undefined,
   relevantNotes: z.infer<typeof noteSchema>[]
 ) => {
   const [query, setQuery] = useState("");
-  const [followUpContext, setFollowUpContext] = useState<FollowUpContext>({
-    conversationHistory: [],
-    relevantNotes,
-  });
+  const [followUpContext, setFollowUpContext] = useState<FollowUpContext>(
+    () => {
+      // Initialize state from localStorage if available
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            return {
+              conversationHistory: parsed.conversationHistory || [],
+              relevantNotes: parsed.relevantNotes || relevantNotes,
+            };
+          } catch (e) {
+            console.error("Failed to parse stored context:", e);
+          }
+        }
+      }
+      // Default initial state
+      return {
+        conversationHistory: [],
+        relevantNotes,
+      };
+    }
+  );
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(followUpContext));
+    }
+  }, [followUpContext]);
 
   const sendMessage = async (message: string): Promise<void> => {
     if (!userId || !message.trim()) return;
