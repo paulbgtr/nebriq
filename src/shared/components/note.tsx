@@ -1,136 +1,122 @@
 import React from "react";
-import { formatDate } from "../lib/utils";
-import { Badge } from "./ui/badge";
-import { formatHTMLNoteContent } from "../lib/utils";
-import { useNotes } from "@/hooks/use-notes";
-import { Trash2 } from "lucide-react";
-import { Button } from "./ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/shared/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
-import { useNoteTabsStore } from "@/store/note-tabs";
+import { Trash2 } from "lucide-react";
 import { z } from "zod";
-import { noteSchema } from "@/shared/lib/schemas/note";
 
-type NoteProps = {
+import { useNotes } from "@/hooks/use-notes";
+import { useNoteTabsStore } from "@/store/note-tabs";
+import { noteSchema } from "@/shared/lib/schemas/note";
+import { formatDate, formatHTMLNoteContent } from "../lib/utils";
+import { DeleteNoteDialog } from "./delete-note-dialog";
+import { Badge } from "./ui/badge";
+
+interface NoteProps {
   note: z.infer<typeof noteSchema>;
   selectable?: boolean;
   selected?: boolean;
   onSelect?: (selected: boolean) => void;
+}
+
+const MAX_CONTENT_LENGTH = 30;
+
+const NoteContent: React.FC<{ content: string }> = ({ content }) => {
+  const formattedContent = formatHTMLNoteContent(content || "");
+  const shortenedContent =
+    formattedContent.length > MAX_CONTENT_LENGTH
+      ? `${formattedContent.slice(0, MAX_CONTENT_LENGTH).trim()}...`
+      : formattedContent;
+
+  return (
+    <p className="text-muted-foreground mb-3 group-hover:text-foreground/80 transition-colors">
+      {shortenedContent}
+    </p>
+  );
 };
 
-const NoteComponent = ({
-  note: { id, title, content, tags, created_at },
+const NoteTags: React.FC<{ tags: string[] }> = ({ tags }) => {
+  if (!tags?.length) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <Badge key={tag} variant="secondary" className="text-xs">
+          {tag}
+        </Badge>
+      ))}
+    </div>
+  );
+};
+
+const NoteComponent: React.FC<NoteProps> = ({
+  note,
   selectable = false,
   selected = false,
   onSelect,
-}: NoteProps) => {
+}) => {
+  const { id, title, content, tags, created_at } = note;
   const { deleteNoteMutation } = useNotes();
   const { push } = useRouter();
   const { openNotes, setOpenNotes } = useNoteTabsStore();
 
-  const contentWithoutHTML = formatHTMLNoteContent(content || "");
-
-  const shortenedContent =
-    contentWithoutHTML.length > 30
-      ? `${contentWithoutHTML.slice(0, 30).trim()}...`
-      : contentWithoutHTML;
-
-  const handleDelete = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (id) {
-      deleteNoteMutation.mutate(id);
-      setOpenNotes(openNotes.filter((note) => note.id !== id));
-    }
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    if (selectable) {
+  const handleDelete = React.useCallback(
+    (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      onSelect?.(!selected);
-    } else {
-      push(`/write?id=${id}`);
-    }
-  };
+      if (id) {
+        deleteNoteMutation.mutate(id);
+        setOpenNotes(openNotes.filter((note) => note.id !== id));
+      }
+    },
+    [id, deleteNoteMutation, setOpenNotes, openNotes]
+  );
 
-  return (
-    <div
-      onClick={handleClick}
-      className={`h-full flex flex-col justify-between p-4 mb-4 bg-card rounded-lg border shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-primary/20 cursor-pointer ${
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (selectable) {
+        e.preventDefault();
+        e.stopPropagation();
+        onSelect?.(!selected);
+      } else {
+        push(`/write?id=${id}`);
+      }
+    },
+    [selectable, selected, onSelect, push, id]
+  );
+
+  const noteClasses = React.useMemo(
+    () =>
+      `group relative h-full flex flex-col p-5 mb-4 bg-card rounded-xl border 
+      ${
         selected && selectable
           ? "border-primary ring-2 ring-primary/20"
-          : "border-border"
-      }`}
-    >
+          : "border-border/40"
+      }
+      transition-all duration-300 ease-in-out
+      hover:shadow-lg hover:shadow-primary/5
+      hover:border-primary/30
+      hover:translate-y-[-2px]
+      cursor-pointer`,
+    [selected, selectable]
+  );
+
+  if (!title || !content || !created_at) return null;
+
+  return (
+    <div onClick={handleClick} className={noteClasses}>
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete this note?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to delete &quot;
-                {title || "Untitled note"}&quot;? This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
-                Keep note
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(e);
-                }}
-                className="bg-destructive hover:bg-destructive/90"
-              >
-                Delete note
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <DeleteNoteDialog title={title} onDelete={handleDelete} />
       </div>
-      <p className="text-muted-foreground mb-3 group-hover:text-foreground/80 transition-colors">
-        {shortenedContent}
-      </p>
+
+      <NoteContent content={content} />
+
       <div className="flex flex-col gap-2">
-        <div className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
+        <time className="text-sm text-muted-foreground group-hover:text-foreground/60 transition-colors">
           {formatDate(created_at)}
-        </div>
-        {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
+        </time>
+        {tags && <NoteTags tags={tags} />}
       </div>
     </div>
   );
