@@ -24,3 +24,17 @@ export const getSearchHistory = async (
     }))
   );
 };
+
+export const deleteSearchHistory = async (userId: string) => {
+  const supabase = await createClient();
+
+  const searchHistory = await getSearchHistory(userId);
+
+  if (searchHistory.length === 0) {
+    throw new Error("No search history found");
+  }
+
+  const ids = searchHistory.map((item) => item.id);
+
+  await supabase.from("search_history").delete().in("id", ids);
+};
