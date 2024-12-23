@@ -2,11 +2,13 @@
 
 import {
   getSearchHistory,
+  createSearchHistory,
   deleteSearchHistory,
 } from "@/app/actions/supabase/search_history";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useUser } from "./use-user";
 import queryClient from "@/shared/lib/react-query";
+import { createSearhHistoryItemSchema } from "@/shared/lib/schemas/search-history-item";
 
 export const useSearchHistory = () => {
   const { user } = useUser();
@@ -22,6 +24,21 @@ export const useSearchHistory = () => {
     enabled: !!user?.id,
   });
 
+  const createSearchHistoryMutation = useMutation({
+    mutationFn: (data: any) => {
+      const searchHistory = createSearhHistoryItemSchema.parse({
+        ...data,
+        user_id: user?.id,
+        created_at: new Date(),
+      });
+
+      return createSearchHistory(searchHistory);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["search-history"] });
+    },
+  });
+
   const clearSearchHistory = useMutation({
     mutationFn: () => {
       if (user?.id) {
@@ -34,5 +51,9 @@ export const useSearchHistory = () => {
     },
   });
 
-  return { searchHistoryQuery, clearSearchHistory };
+  return {
+    searchHistoryQuery,
+    createSearchHistoryMutation,
+    clearSearchHistory,
+  };
 };
