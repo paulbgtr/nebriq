@@ -13,7 +13,6 @@ export const useFollowUp = (
   const [query, setQuery] = useState("");
   const [followUpContext, setFollowUpContext] = useState<FollowUpContext>(
     () => {
-      // Initialize state from localStorage if available
       if (typeof window !== "undefined") {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
@@ -28,7 +27,6 @@ export const useFollowUp = (
           }
         }
       }
-      // Default initial state
       return {
         conversationHistory: [],
         relevantNotes,
@@ -36,6 +34,13 @@ export const useFollowUp = (
     }
   );
   const [isLoading, setIsLoading] = useState(false);
+
+  const clearFollowUpContext = () => {
+    setFollowUpContext({
+      conversationHistory: [],
+      relevantNotes,
+    });
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -99,6 +104,7 @@ export const useFollowUp = (
     isLoading,
     query,
     setQuery,
+    clearFollowUpContext,
     followUpContext,
     setFollowUpContext,
   };
