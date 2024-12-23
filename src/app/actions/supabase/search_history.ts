@@ -1,10 +1,26 @@
-import { createClient } from "@/shared/lib/supabase/server";
+"use server";
 
-export const getSearchHistory = async (userId: string) => {
+import { createClient } from "@/shared/lib/supabase/server";
+import { z } from "zod";
+import { searchHistoryItemSchema } from "@/shared/lib/schemas/search-history-item";
+
+export const getSearchHistory = async (
+  userId: string
+): Promise<z.infer<typeof searchHistoryItemSchema>[]> => {
   const supabase = await createClient();
-  const { data: searchHistory } = await supabase
+  const { data: searchHistory, error } = await supabase
     .from("search_history")
     .select("*")
     .eq("user_id", userId);
-  return searchHistory;
+
+  if (error) {
+    throw error;
+  }
+
+  return searchHistoryItemSchema.array().parse(
+    searchHistory?.map((item) => ({
+      ...item,
+      created_at: new Date(item.created_at),
+    }))
+  );
 };
