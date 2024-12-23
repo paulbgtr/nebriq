@@ -11,11 +11,21 @@ export const handleTokenLimits = async (
     throw new Error("Token limit not found");
   }
 
+  const resetDate = tokenLimit.reset_date;
+  const tokensUsed = tokenLimit.tokens_used;
+  const tokensLimit = tokenLimit.token_limit;
+
+  if (!tokensLimit || !tokensUsed || !resetDate) {
+    throw new Error(
+      "One or more of these parameters are missing: reset_date, tokens_used, token_limit"
+    );
+  }
+
   const enc = getEncoding("gpt2");
   const newTokens = enc.encode(prompt).length;
   const now = new Date();
 
-  if (new Date(tokenLimit.reset_date) < now) {
+  if (resetDate < now) {
     const nextReset = new Date(now);
     nextReset.setHours(now.getHours() + 24);
 
@@ -27,14 +37,16 @@ export const handleTokenLimits = async (
     return;
   }
 
-  const totalTokens = tokenLimit.tokens_used + newTokens;
-  if (totalTokens > tokenLimit.token_limit) {
-    throw new Error("Token limit exceeded");
-  }
+  if (!tokensUsed || !tokensLimit) {
+    const totalTokens = tokensUsed + newTokens;
+    if (totalTokens > tokensLimit) {
+      throw new Error("Token limit exceeded");
+    }
 
-  await updateTokenLimit({
-    user_id: userId,
-    tokens_used: totalTokens,
-    reset_date: new Date(tokenLimit.reset_date),
-  });
+    await updateTokenLimit({
+      user_id: userId,
+      tokens_used: totalTokens,
+      reset_date: resetDate,
+    });
+  }
 };
