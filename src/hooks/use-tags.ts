@@ -8,7 +8,8 @@ import {
   linkTagToNote,
 } from "@/app/actions/supabase/tags";
 import queryClient from "@/shared/lib/react-query";
-import { CreateTag } from "@/types/tag";
+import { z } from "zod";
+import { createTagSchema } from "@/shared/lib/schemas/tag";
 
 export const useTags = (noteId?: string) => {
   const getTagLinksQuery = useQuery({
@@ -23,7 +24,7 @@ export const useTags = (noteId?: string) => {
   });
 
   const createTagMutation = useMutation({
-    mutationFn: async (tag: CreateTag) => {
+    mutationFn: async (tag: z.infer<typeof createTagSchema>) => {
       try {
         const { id } = await createTag({
           name: tag.name,
