@@ -137,21 +137,32 @@ export type Database = {
           created_at: string
           id: number
           name: string
+          note_id: string
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
+          note_id: string
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
+          note_id?: string
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tags_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       token_limits: {
         Row: {
