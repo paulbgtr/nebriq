@@ -2,32 +2,50 @@
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { z } from "zod";
-import { tagSchema, updateTagSchema } from "@/shared/lib/schemas/tag";
-
-export const getTagLinks = async (): Promise<z.infer<typeof tagSchema>[]> => {
-  const supabase = await createClient();
-  const { data: tags } = await supabase.from("note_tags").select("*");
-  return tagSchema.array().parse(tags);
-};
+import {
+  tagSchema,
+  createTagSchema,
+  updateTagSchema,
+} from "@/shared/lib/schemas/tag";
 
 export const getTagsByNoteId = async (
   noteId: string
 ): Promise<z.infer<typeof tagSchema>[]> => {
   const supabase = await createClient();
-  const { data: tags } = await supabase
+  const { data: tags, error } = await supabase
     .from("note_tags")
     .select(
       `
       tags (
-      id, name
+      *
       ) 
       `
     )
     .eq("note_id", noteId);
-  return tagSchema.array().parse(tags);
+
+  if (error) {
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return tagSchema.array().parse(
+    tags?.map(({ tags: tag }) => {
+      if (!tag) {
+        throw new Error("Tag not found");
+      }
+
+      return {
+        id: tag.id,
+        name: tag.name,
+        user_id: tag.user_id,
+        note_id: tag.note_id,
+        created_at: new Date(tag.created_at),
+      };
+    })
+  );
 };
 
-export const createTag = async (tag: { name: string; user_id: string }) => {
+export const createTag = async (tag: z.infer<typeof createTagSchema>) => {
   try {
     const supabase = await createClient();
     const { data: newTag, error } = await supabase
@@ -77,26 +95,36 @@ export const updateTag = async (
 };
 
 export const deleteTag = async (
-  name: string
+  id: number
 ): Promise<z.infer<typeof tagSchema>> => {
   const supabase = await createClient();
 
-  // todo: ensure that getting tag by name is reliable
-  const { data: noteToDelete } = await supabase
+  const { data: tagToDelete } = await supabase
     .from("tags")
     .select("id")
-    .eq("name", name)
+    .eq("id", id)
     .single();
 
-  if (!noteToDelete) {
+  if (!tagToDelete) {
     throw new Error("Tag not found");
   }
 
-  await supabase.from("note_tags").delete().eq("tag_id", noteToDelete.id);
+  await supabase.from("note_tags").delete().eq("tag_id", tagToDelete.id);
 
-  const { data: deletedTag } = await supabase
+  const { data: deletedTag, error } = await supabase
     .from("tags")
     .delete()
-    .eq("id", noteToDelete.id);
-  return tagSchema.parse(deletedTag);
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return tagSchema.parse({
+    ...deletedTag,
+    created_at: new Date(deletedTag.created_at),
+  });
 };
