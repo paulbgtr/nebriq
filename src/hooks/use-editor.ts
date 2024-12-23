@@ -52,7 +52,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         setId(note.id);
       }
     }
-  }, [initialNoteId, getNotesQuery.data]);
+  }, [initialNoteId]);
 
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
