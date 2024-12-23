@@ -32,7 +32,6 @@ export const Editor = ({
       id,
       title: newTitle ?? title,
       content: newContent ?? content,
-      created_at: new Date(),
     });
   };
 
