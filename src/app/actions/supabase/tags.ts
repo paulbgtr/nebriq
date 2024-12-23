@@ -1,15 +1,18 @@
 "use server";
 
 import { createClient } from "@/shared/lib/supabase/server";
-import { UpdateTag } from "@/types/tag";
+import { z } from "zod";
+import { tagSchema, updateTagSchema } from "@/shared/lib/schemas/tag";
 
-export const getTagLinks = async () => {
+export const getTagLinks = async (): Promise<z.infer<typeof tagSchema>[]> => {
   const supabase = await createClient();
   const { data: tags } = await supabase.from("note_tags").select("*");
-  return tags;
+  return tagSchema.array().parse(tags);
 };
 
-export const getTagsByNoteId = async (noteId: string) => {
+export const getTagsByNoteId = async (
+  noteId: string
+): Promise<z.infer<typeof tagSchema>[]> => {
   const supabase = await createClient();
   const { data: tags } = await supabase
     .from("note_tags")
@@ -21,7 +24,7 @@ export const getTagsByNoteId = async (noteId: string) => {
       `
     )
     .eq("note_id", noteId);
-  return tags;
+  return tagSchema.array().parse(tags);
 };
 
 export const createTag = async (tag: { name: string; user_id: string }) => {
@@ -45,34 +48,40 @@ export const createTag = async (tag: { name: string; user_id: string }) => {
   }
 };
 
-export const linkTagToNote = async (tagId: string, noteId: string) => {
-  console.log("tagId", tagId);
-  console.log("noteId", noteId);
-
+export const linkTagToNote = async (tagId: number, noteId: string) => {
   const supabase = await createClient();
-  const { data: linkedTag, error } = await supabase
+  const { data: linkedTag } = await supabase
     .from("note_tags")
-    .insert({ note_id: noteId, tag_id: tagId })
+    .insert({
+      note_id: noteId,
+      tag_id: tagId,
+    })
     .select()
     .single();
-
-  console.log(error);
   return linkedTag;
 };
 
-export const updateTag = async (tag: UpdateTag) => {
+export const updateTag = async (
+  tag: z.infer<typeof updateTagSchema>
+): Promise<z.infer<typeof tagSchema>> => {
   const supabase = await createClient();
   const { data: updatedTag } = await supabase
     .from("tags")
-    .update(tag)
+    .update({
+      name: tag.name,
+      note_id: tag.note_id,
+    })
     .eq("id", tag.id)
     .select();
-  return updatedTag;
+  return tagSchema.parse(updatedTag);
 };
 
-export const deleteTag = async (name: string) => {
+export const deleteTag = async (
+  name: string
+): Promise<z.infer<typeof tagSchema>> => {
   const supabase = await createClient();
 
+  // todo: ensure that getting tag by name is reliable
   const { data: noteToDelete } = await supabase
     .from("tags")
     .select("id")
@@ -89,5 +98,5 @@ export const deleteTag = async (name: string) => {
     .from("tags")
     .delete()
     .eq("id", noteToDelete.id);
-  return deletedTag;
+  return tagSchema.parse(deletedTag);
 };
