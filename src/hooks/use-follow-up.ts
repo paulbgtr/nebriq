@@ -27,16 +27,22 @@ export const useFollowUp = (
         ],
       }));
       setIsLoading(true);
-      const data = await followUp(message, userId, followUpContext);
 
-      if (data) {
-        setFollowUpContext((prev) => ({
-          ...prev,
-          conversationHistory: [
-            ...prev.conversationHistory,
-            { role: "assistant", content: data },
-          ],
-        }));
+      try {
+        const data = await followUp(message, userId, followUpContext);
+
+        if (data) {
+          setFollowUpContext((prev) => ({
+            ...prev,
+            conversationHistory: [
+              ...prev.conversationHistory,
+              { role: "assistant", content: data },
+            ],
+          }));
+        }
+      } catch (err) {
+        console.error(`An error occured when trying to follow up: ${err}`);
+        throw err;
       }
     } catch (err) {
       console.error(err);
@@ -44,7 +50,6 @@ export const useFollowUp = (
         ...prev,
         conversationHistory: [
           ...prev.conversationHistory,
-          { role: "user", content: message.trim() },
           {
             role: "assistant",
             content: "An error occurred. Please try again.",
