@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
-import { NoteConnection } from "@/types/note-connection";
+import { noteConnectionSchema } from "@/shared/lib/schemas/note-connection";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Controls } from "./controls";
@@ -23,7 +23,7 @@ type GraphLink = d3.SimulationLinkDatum<GraphNode> & {
 
 type LinePlotProps = {
   notes: z.infer<typeof noteSchema>[];
-  connections: NoteConnection[];
+  connections: z.infer<typeof noteConnectionSchema>[];
   width?: number;
   height?: number;
 };
@@ -55,14 +55,6 @@ function ForceGraph({
       tooltip: "#2D0815", // Darker burgundy for tooltip text
     },
   };
-
-  const { data: noteConnections } = useQuery({
-    queryKey: ["note-connections"],
-    queryFn: async () => {
-      const data = await getAllNoteConnections();
-      return data;
-    },
-  });
 
   useEffect(() => {
     if (!svgRef.current || !notes.length) return;
