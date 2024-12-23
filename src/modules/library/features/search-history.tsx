@@ -3,34 +3,19 @@
 import { z } from "zod";
 import { searchHistoryItemSchema } from "@/shared/lib/schemas/search-history-item";
 import { SearchHistoryList } from "./components/search-history-list";
-import { useSearchHistory } from "@/hooks/use-search-history";
 import { SkeletonHistory } from "./components/skeleton";
 
-export const SearchHistory = () => {
-  const { searchHistoryQuery } = useSearchHistory();
+type Props = {
+  searchHistory: z.infer<typeof searchHistoryItemSchema>[] | undefined;
+};
 
-  const { isLoading, data: searchHistoryData } = searchHistoryQuery;
-
-  if (searchHistoryQuery.isLoading) {
-    return <SkeletonHistory />;
-  }
-
-  const searchHistory: z.infer<typeof searchHistoryItemSchema>[] =
-    searchHistoryData
-      ? searchHistoryItemSchema.array().parse(
-          searchHistoryData.map((item) => ({
-            ...item,
-            created_at: new Date(item.created_at),
-          }))
-        )
-      : [];
-
+export const SearchHistory = ({ searchHistory }: Props) => {
   return (
     <>
-      {isLoading || searchHistory.length === 0 ? (
-        <SkeletonHistory />
-      ) : (
+      {searchHistory ? (
         <SearchHistoryList searchHistory={searchHistory} />
+      ) : (
+        <SkeletonHistory />
       )}
     </>
   );
