@@ -2,7 +2,10 @@
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { z } from "zod";
-import { searchHistoryItemSchema } from "@/shared/lib/schemas/search-history-item";
+import {
+  searchHistoryItemSchema,
+  createSearhHistoryItemSchema,
+} from "@/shared/lib/schemas/search-history-item";
 
 export const getSearchHistory = async (
   userId: string
@@ -23,6 +26,29 @@ export const getSearchHistory = async (
       created_at: new Date(item.created_at),
     }))
   );
+};
+
+export const createSearchHistory = async (
+  searchHistory: z.infer<typeof createSearhHistoryItemSchema>
+) => {
+  const supabase = await createClient();
+  const { data: newSearchHistory, error } = await supabase
+    .from("search_history")
+    .insert({
+      ...searchHistory,
+      created_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return searchHistoryItemSchema.parse({
+    ...newSearchHistory,
+    created_at: new Date(newSearchHistory.created_at),
+  });
 };
 
 export const deleteSearchHistory = async (userId: string) => {
