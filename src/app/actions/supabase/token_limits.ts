@@ -1,41 +1,59 @@
 import { createClient } from "@/shared/lib/supabase/server";
-import { CreateTokenLimit, UpdateTokenLimit } from "@/types/token-limits";
+import { z } from "zod";
+import { tokenLimitSchema } from "@/shared/lib/schemas/token-limit";
 
-export const getUserTokenLimits = async (userId: string) => {
+export const getUserTokenLimits = async (
+  userId: string
+): Promise<z.infer<typeof tokenLimitSchema>> => {
   const supabase = await createClient();
-  const { data: tokenLimits } = await supabase
+  const { data: tokenLimits, error } = await supabase
     .from("token_limits")
     .select("*")
     .eq("user_id", userId)
     .single();
-  return tokenLimits;
+
+  if (error) {
+    throw error;
+  }
+
+  return tokenLimitSchema.parse({
+    ...tokenLimits,
+    reset_date: new Date(tokenLimits.reset_date),
+  });
 };
 
-export const createTokenLimit = async (tokenLimit: CreateTokenLimit) => {
-  const now = new Date();
-
+export const createTokenLimit = async (
+  tokenLimit: z.infer<typeof tokenLimitSchema>
+): Promise<z.infer<typeof tokenLimitSchema>> => {
   const supabase = await createClient();
   const { data: newTokenLimit } = await supabase
     .from("token_limits")
     .insert({
-      ...tokenLimit,
+      user_id: tokenLimit.user_id,
       tokens_used: 0,
-      created_at: now,
-      reset_date: now,
+      token_limit: tokenLimit.token_limit ?? 5000,
     })
     .select();
-  return newTokenLimit;
+  return tokenLimitSchema.parse(newTokenLimit);
 };
 
-export const updateTokenLimit = async (tokenLimit: UpdateTokenLimit) => {
+export const updateTokenLimit = async (
+  tokenLimit: z.infer<typeof tokenLimitSchema>
+): Promise<z.infer<typeof tokenLimitSchema>> => {
   const supabase = await createClient();
-  const { data: updatedTokenLimit } = await supabase
+  const { data: updatedTokenLimit, error } = await supabase
     .from("token_limits")
     .update({
-      ...tokenLimit,
-      reset_date: new Date(),
+      tokens_used: tokenLimit.tokens_used,
+      token_limit: tokenLimit.token_limit,
+      reset_date: tokenLimit.reset_date?.toLocaleDateString(),
     })
     .eq("user_id", tokenLimit.user_id)
-    .select();
-  return updatedTokenLimit;
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  return tokenLimitSchema.parse(updatedTokenLimit);
 };
