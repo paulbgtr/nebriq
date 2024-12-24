@@ -8,21 +8,43 @@ export const getAllNoteConnections = async (): Promise<
   z.infer<typeof noteConnectionSchema>[]
 > => {
   const supabase = await createClient();
-  const { data: noteConnections } = await supabase
+  const { data: noteConnections, error } = await supabase
     .from("note_connections")
     .select("*");
-  return noteConnectionSchema.array().parse(noteConnections);
+
+  if (error) {
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return noteConnectionSchema.array().parse(
+    noteConnections?.map((noteConnection) => ({
+      ...noteConnection,
+      created_at: new Date(noteConnection.created_at),
+    }))
+  );
 };
 
 export const getNoteConnections = async (
   noteId: string
 ): Promise<z.infer<typeof noteConnectionSchema>[]> => {
   const supabase = await createClient();
-  const { data: noteConnections } = await supabase
+  const { data: noteConnections, error } = await supabase
     .from("note_connections")
     .select("*")
     .eq("note_id_from", noteId);
-  return noteConnectionSchema.array().parse(noteConnections);
+
+  if (error) {
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return noteConnectionSchema.array().parse(
+    noteConnections?.map((noteConnection) => ({
+      ...noteConnection,
+      created_at: new Date(noteConnection.created_at),
+    }))
+  );
 };
 
 export const createNoteConnection = async (
@@ -40,7 +62,7 @@ export const createNoteConnection = async (
     noteConnection.user_id = data.user?.id;
   }
 
-  const { data: newConnection } = await supabase
+  const { data: newConnection, error } = await supabase
     .from("note_connections")
     .insert({
       user_id: noteConnection.user_id,
@@ -50,7 +72,15 @@ export const createNoteConnection = async (
     .select()
     .single();
 
-  return noteConnectionSchema.parse(newConnection);
+  if (error) {
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return noteConnectionSchema.parse({
+    ...newConnection,
+    created_at: new Date(newConnection.created_at),
+  });
 };
 
 export const deleteNoteConnection = async (
@@ -58,12 +88,20 @@ export const deleteNoteConnection = async (
 ): Promise<z.infer<typeof noteConnectionSchema>> => {
   const supabase = await createClient();
 
-  const { data: deletedConnection } = await supabase
+  const { data: deletedConnection, error } = await supabase
     .from("note_connections")
     .delete()
     .eq("id", id)
     .select()
     .single();
 
-  return noteConnectionSchema.parse(deletedConnection);
+  if (error) {
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return noteConnectionSchema.parse({
+    ...deletedConnection,
+    created_at: new Date(deletedConnection.created_at),
+  });
 };
