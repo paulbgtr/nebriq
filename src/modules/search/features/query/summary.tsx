@@ -30,10 +30,7 @@ export const Summary = ({ results }: Props) => {
 
   if (!summary && !isLoadingSummary) {
     return (
-      <Button
-        onClick={() => setIsSummarized(true)}
-        className="hover:scale-105 transition-transform duration-200"
-      >
+      <Button onClick={() => setIsSummarized(true)} variant="outline">
         <Sparkle className="w-4 h-4 mr-2" />
         Summarize
       </Button>
@@ -42,7 +39,7 @@ export const Summary = ({ results }: Props) => {
 
   return (
     <motion.div className="w-full max-w-4xl mx-auto" {...fadeInAnimation}>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div>
         {/* Header */}
         <div className="flex items-center gap-4 p-6 border-b border-gray-100">
           <div className="p-2.5 bg-primary/10 rounded-lg">
