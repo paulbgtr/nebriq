@@ -5,7 +5,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
-import { Bot, Sparkles, Trash2 } from "lucide-react";
+import { Bot, Sparkles, Trash2, Lightbulb } from "lucide-react";
 import { useFollowUp } from "@/hooks/use-follow-up";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { z } from "zod";
@@ -20,13 +20,21 @@ import {
 } from "@/shared/components/ui/tooltip";
 import ReactMarkdown from "react-markdown";
 
+const QUERY_EXAMPLES = [
+  "Summarize my recent notes",
+  "Find notes about projects",
+  "What did I write about yesterday?",
+  "Show me notes with tasks",
+];
+
 export default function FollowUp({
   relevantNotes = [],
 }: {
   relevantNotes: z.infer<typeof noteSchema>[];
 }) {
   const [followUp, setFollowUp] = useState("");
-  const [isFocused, setIsFocused] = useState(true);
+  const [isFocused, setIsFocused] = useState(false);
+  const [showExamples, setShowExamples] = useState(true);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -66,6 +74,47 @@ export default function FollowUp({
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  // Hide examples when conversation starts
+  useEffect(() => {
+    if (followUpContext.conversationHistory.length > 0) {
+      setShowExamples(false);
+    }
+  }, [followUpContext.conversationHistory]);
+
+  const handleExampleClick = (example: string) => {
+    setFollowUp(example);
+    setIsFocused(true);
+  };
+
+  const QueryExamples = () => {
+    return (
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Lightbulb className="w-4 h-4 text-primary" />
+          <span className="text-sm font-medium text-foreground">
+            Try asking:
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {QUERY_EXAMPLES.map((example, index) => (
+            <button
+              key={index}
+              onClick={() => handleExampleClick(example)}
+              className={cn(
+                "text-sm px-3 py-2 rounded-lg text-left transition-all duration-200",
+                "bg-secondary/40 hover:bg-secondary/60",
+                "text-secondary-foreground hover:text-foreground",
+                "border border-transparent hover:border-primary/20"
+              )}
+            >
+              {example}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const ClearChat = () => {
     return (
@@ -116,15 +165,7 @@ export default function FollowUp({
             <ClearChat />
             <div className="py-2 px-6">
               {!followUpContext.conversationHistory.length ? (
-                <div className="flex flex-col items-center justify-center h-full text-center">
-                  <Sparkles className="text-gray-500 mb-3" />
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    What would you like to talk about?
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Ask me anything about your notes or interests.
-                  </p>
-                </div>
+                <QueryExamples />
               ) : (
                 <div className="space-y-6">
                   {followUpContext.conversationHistory.map((message, index) => (
@@ -207,8 +248,6 @@ export default function FollowUp({
               )}
             </div>
           </div>
-          {/* Messages container */}
-          {/* Input form */}
           <div className="p-4 bg-background/80 backdrop-blur-sm border-t">
             <form
               onSubmit={async (e) => {
