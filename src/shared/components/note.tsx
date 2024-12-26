@@ -90,7 +90,7 @@ const NoteComponent: React.FC<NoteProps> = ({
 
   const noteClasses = React.useMemo(
     () =>
-      `group relative flex flex-col p-6 mb-4 bg-card/50 backdrop-blur-sm rounded-lg
+      `group relative flex flex-col p-6 mb-4 bg-card/50 backdrop-blur-sm rounded-lg h-full
       ${
         selected && selectable
           ? "ring-2 ring-primary border-transparent"
@@ -114,7 +114,7 @@ const NoteComponent: React.FC<NoteProps> = ({
       className={noteClasses}
       onClick={handleClick}
     >
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200">
           {title}
           <ChevronRight className="inline-block ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
@@ -124,7 +124,7 @@ const NoteComponent: React.FC<NoteProps> = ({
 
       <NoteContent content={content} />
 
-      <div className="mt-auto pt-4 flex justify-between items-end">
+      <div className="mt-auto flex justify-between items-end">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="w-4 h-4" />
           <time className="group-hover:text-foreground/60 transition-colors duration-200">
