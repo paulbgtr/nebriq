@@ -3,7 +3,7 @@ import { Spinner } from "@/shared/components/spinner";
 import { motion, AnimatePresence } from "framer-motion";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { Frown, Search, FileText } from "lucide-react";
-import { Summary } from "./summary";
+import { Summary } from "../features/summary";
 import { z } from "zod";
 import { useSearchStore } from "@/store/search";
 
