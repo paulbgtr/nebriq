@@ -11,13 +11,18 @@ import { Pen } from "lucide-react";
 import Link from "next/link";
 
 export default function AllNotes() {
-  const { getNotesQuery } = useNotes();
+  const { getNotesQuery, deleteNotesMutation } = useNotes();
   const { data: notes, isPending } = getNotesQuery;
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState<string[]>([]);
 
   const handleSelectionChange = (selected: string[]) => {
     setSelectedNotes(selected);
+  };
+
+  const handleDeleteMultipleNotes = async () => {
+    await deleteNotesMutation.mutateAsync(selectedNotes);
+    setSelectedNotes([]);
   };
 
   const toggleSelectionMode = () => {
@@ -92,6 +97,7 @@ export default function AllNotes() {
           </Button>
           {isSelectionMode && selectedNotes.length > 0 && (
             <Button
+              onClick={handleDeleteMultipleNotes}
               variant="ghost"
               size="sm"
               className="text-red-600 hover:text-red-700 hover:bg-red-50"

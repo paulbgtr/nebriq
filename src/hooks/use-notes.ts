@@ -4,6 +4,7 @@ import {
   createNote,
   updateNote,
   deleteNote,
+  deleteNotes,
 } from "@/app/actions/supabase/notes";
 import queryClient from "@/shared/lib/react-query";
 import { useUser } from "@/hooks/use-user";
@@ -41,10 +42,19 @@ export const useNotes = () => {
     },
   });
 
+  const deleteNotesMutation = useMutation({
+    mutationFn: deleteNotes,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      queryClient.invalidateQueries({ queryKey: ["note-tabs"] });
+    },
+  });
+
   return {
     getNotesQuery,
     createNoteMutation,
     updateNoteMutation,
     deleteNoteMutation,
+    deleteNotesMutation,
   };
 };

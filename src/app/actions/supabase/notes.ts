@@ -114,3 +114,8 @@ export const deleteNote = async (
     created_at: new Date(deletedNote.created_at),
   });
 };
+
+export const deleteNotes = async (ids: string[]): Promise<void> => {
+  const supabase = await createClient();
+  await supabase.from("notes").delete().in("id", ids);
+};
