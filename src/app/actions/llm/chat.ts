@@ -1,7 +1,7 @@
 "use server";
 
 import OpenAI from "openai";
-import { FollowUpContext } from "@/types/follow-up";
+import { ChatContext } from "@/types/chat";
 import { handleTokenLimits } from "./utils";
 
 if (!process.env.OPENAI_API_KEY) {
@@ -13,33 +13,48 @@ if (!process.env.OPENAI_API_KEY) {
  */
 const createPrompt = (
   query: string,
-  followUpContext?: FollowUpContext
+  { relevantNotes, conversationHistory }: ChatContext
 ): string => {
-  let prompt = `You are a helpful assistant answering questions about the user's notes. The user can see the notes on their screen, so don't summarize them.`;
+  let prompt = `You are Briq, an AI learning assistant focused on helping users understand and learn from their notes. 
 
-  if (followUpContext?.relevantNotes?.length) {
-    prompt += `\n\nRelevant notes:\n${followUpContext.relevantNotes
+Key capabilities:
+- Create interactive quizzes about the notes' content
+- Provide clear summaries while maintaining context
+- Review and explain complex topics
+- Identify knowledge gaps and suggest improvements
+
+Guidelines:
+- Keep responses clear and educational
+- Focus on helping users understand, not just providing information
+- When creating quizzes, ask questions that test understanding
+- For reviews, highlight key concepts and connections
+- When finding gaps, be specific about what's missing
+
+Role: Learning companion, not just an information provider`;
+
+  if (relevantNotes?.length) {
+    prompt += `\n\nRelevant notes:\n${relevantNotes
       .map((note) => `Title: ${note.title}\nContent: ${note.content}\n---`)
       .join("\n")}`;
   }
 
-  if (followUpContext?.conversationHistory.length) {
-    prompt += `\n\nPrevious conversation:\n${followUpContext.conversationHistory
+  if (conversationHistory.length) {
+    prompt += `\n\nPrevious conversation:\n${conversationHistory
       .map((turn) => `${turn.role}: ${turn.content}`)
       .join("\n")}`;
   }
 
   prompt += `\n\nUser's question: ${query}`;
 
-  prompt += `\n\nProvide a clear and direct answer to the user's question. If you need to reference specific notes, mention them by title.`;
+  prompt += `\n\nRespond in a way that promotes learning and understanding. If creating a quiz or review, ensure questions are thought-provoking and explanations are clear.`;
 
   return prompt;
 };
 
-export const followUp = async (
+export const chat = async (
   query: string,
   userId: string,
-  followUpContext?: FollowUpContext,
+  followUpContext?: ChatContext,
   signal?: AbortSignal
 ): Promise<string | null> => {
   const openai = new OpenAI({

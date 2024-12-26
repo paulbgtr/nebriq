@@ -1,42 +1,40 @@
 import { useEffect, useState } from "react";
-import { followUp } from "@/app/actions/llm/follow-up";
-import { FollowUpContext } from "@/types/follow-up";
+import { chat } from "@/app/actions/llm/chat";
+import { ChatContext } from "@/types/chat";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 
-const STORAGE_KEY = "followUpContext";
+const STORAGE_KEY = "chatContext";
 
-export const useFollowUp = (
+export const useChat = (
   userId: string | undefined,
   relevantNotes: z.infer<typeof noteSchema>[]
 ) => {
   const [query, setQuery] = useState("");
-  const [followUpContext, setFollowUpContext] = useState<FollowUpContext>(
-    () => {
-      if (typeof window !== "undefined") {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            return {
-              conversationHistory: parsed.conversationHistory || [],
-              relevantNotes: parsed.relevantNotes || relevantNotes,
-            };
-          } catch (e) {
-            console.error("Failed to parse stored context:", e);
-          }
+  const [chatContext, setChatContext] = useState<ChatContext>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          return {
+            conversationHistory: parsed.conversationHistory || [],
+            relevantNotes: parsed.relevantNotes || relevantNotes,
+          };
+        } catch (e) {
+          console.error("Failed to parse stored context:", e);
         }
       }
-      return {
-        conversationHistory: [],
-        relevantNotes,
-      };
     }
-  );
+    return {
+      conversationHistory: [],
+      relevantNotes,
+    };
+  });
   const [isLoading, setIsLoading] = useState(false);
 
-  const clearFollowUpContext = () => {
-    setFollowUpContext({
+  const clearChatContext = () => {
+    setChatContext({
       conversationHistory: [],
       relevantNotes,
     });
@@ -44,15 +42,15 @@ export const useFollowUp = (
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(followUpContext));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(chatContext));
     }
-  }, [followUpContext]);
+  }, [chatContext]);
 
   const sendMessage = async (message: string): Promise<void> => {
     if (!userId || !message.trim()) return;
 
     try {
-      setFollowUpContext((prev) => ({
+      setChatContext((prev) => ({
         ...prev,
         conversationHistory: [
           ...prev.conversationHistory,
@@ -62,10 +60,10 @@ export const useFollowUp = (
       setIsLoading(true);
 
       try {
-        const data = await followUp(message, userId, followUpContext);
+        const data = await chat(message, userId, chatContext);
 
         if (data) {
-          setFollowUpContext((prev) => ({
+          setChatContext((prev) => ({
             ...prev,
             conversationHistory: [
               ...prev.conversationHistory,
@@ -79,7 +77,7 @@ export const useFollowUp = (
       }
     } catch (err) {
       console.error(err);
-      setFollowUpContext((prev) => ({
+      setChatContext((prev) => ({
         ...prev,
         conversationHistory: [
           ...prev.conversationHistory,
@@ -104,8 +102,8 @@ export const useFollowUp = (
     isLoading,
     query,
     setQuery,
-    clearFollowUpContext,
-    followUpContext,
-    setFollowUpContext,
+    clearChatContext,
+    chatContext,
+    setChatContext,
   };
 };

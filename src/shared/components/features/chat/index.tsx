@@ -5,16 +5,8 @@ import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
-import {
-  Bot,
-  Sparkles,
-  Trash2,
-  Lightbulb,
-  MessageSquare,
-  X,
-  Copy,
-} from "lucide-react";
-import { useFollowUp } from "@/hooks/use-follow-up";
+import { Sparkles, Trash2, Lightbulb, Box, X, Copy } from "lucide-react";
+import { useChat } from "@/hooks/use-chat";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { useUser } from "@/hooks/use-user";
 import {
@@ -28,10 +20,10 @@ import { useRelevantNotesStore } from "@/store/relevant-notes";
 import { useNotes } from "@/hooks/use-notes";
 
 const QUERY_EXAMPLES = [
-  "Summarize my recent notes",
-  "Find notes about projects",
-  "What did I write about yesterday?",
-  "Show me notes with tasks",
+  "🎯 Create Quiz",
+  "📝 Summarize",
+  "📅 Review",
+  "🔍 Find Gaps",
 ];
 
 export default function AIChat() {
@@ -52,12 +44,14 @@ export default function AIChat() {
   }, [allNotes]);
 
   const { user } = useUser();
-  const { setQuery, followUpContext, isLoading, clearFollowUpContext } =
-    useFollowUp(user?.id, relevantNotes);
+  const { setQuery, chatContext, isLoading, clearChatContext } = useChat(
+    user?.id,
+    relevantNotes
+  );
 
   const maxLength = 100;
 
-  const lastAssistantMessage = followUpContext.conversationHistory
+  const lastAssistantMessage = chatContext.conversationHistory
     .filter((msg) => msg.role === "assistant")
     .slice(-1)[0]?.content;
 
@@ -68,13 +62,13 @@ export default function AIChat() {
       scrollContainerRef.current.scrollTop =
         scrollContainerRef.current.scrollHeight;
     }
-  }, [followUpContext.conversationHistory]);
+  }, [chatContext.conversationHistory]);
 
   useEffect(() => {
-    if (followUpContext.conversationHistory.length > 0) {
+    if (chatContext.conversationHistory.length > 0) {
       setShowExamples(false);
     }
-  }, [followUpContext.conversationHistory]);
+  }, [chatContext.conversationHistory]);
 
   const handleExampleClick = (example: string) => {
     setFollowUp(example);
@@ -112,10 +106,10 @@ export default function AIChat() {
   const ClearChat = () => {
     return (
       <div className="flex justify-between items-center p-3 border-b">
-        <h3 className="font-semibold">AI Assistant</h3>
+        <h3 className="font-semibold">Briq - Your AI Assistant</h3>
         <div className="flex gap-2">
           <Button
-            onClick={clearFollowUpContext}
+            onClick={clearChatContext}
             variant="ghost"
             size="sm"
             className={cn(
@@ -124,7 +118,7 @@ export default function AIChat() {
               "transition-all duration-300 ease-in-out",
               "rounded-full hover:bg-destructive/10",
               "border border-transparent hover:border-destructive/20",
-              followUpContext.conversationHistory.length === 0 &&
+              chatContext.conversationHistory.length === 0 &&
                 "opacity-50 pointer-events-none"
             )}
           >
@@ -148,7 +142,7 @@ export default function AIChat() {
       onClick={() => setIsOpen(true)}
       className="fixed bottom-5 right-5 h-12 w-12 rounded-full shadow-lg"
     >
-      <MessageSquare className="h-5 w-5" />
+      <Box className="h-5 w-5" />
     </Button>
   );
 
@@ -202,11 +196,11 @@ export default function AIChat() {
             className="flex-1 overflow-y-auto space-y-6"
           >
             <div className="py-2 px-6">
-              {!followUpContext.conversationHistory.length ? (
+              {!chatContext.conversationHistory.length ? (
                 <QueryExamples />
               ) : (
                 <div className="space-y-6">
-                  {followUpContext.conversationHistory.map((message, index) => (
+                  {chatContext.conversationHistory.map((message, index) => (
                     <div
                       key={index}
                       className={cn(
@@ -233,7 +227,7 @@ export default function AIChat() {
                         ) : (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Bot className="w-4 h-4 text-secondary-foreground" />
+                              <Box className="w-4 h-4 text-secondary-foreground" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>AI Assistant powered by GPT-4</p>
@@ -253,7 +247,7 @@ export default function AIChat() {
                         <ReactMarkdown>
                           {message.role === "assistant" &&
                           message ===
-                            followUpContext.conversationHistory
+                            chatContext.conversationHistory
                               .filter((msg) => msg.role === "assistant")
                               .slice(-1)[0]
                             ? displayedText

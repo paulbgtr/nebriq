@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/shared/components/navbar";
 import { redirect } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/server";
-import AIChat from "@/modules/search/features/query/follow-up";
+import AIChat from "@/shared/components/features/chat";
 
 export const metadata: Metadata = {
   title: "Dashboard | Notes App",

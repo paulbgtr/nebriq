@@ -6,7 +6,7 @@ export type ConversationTurn = {
   content: string;
 };
 
-export type FollowUpContext = {
+export type ChatContext = {
   conversationHistory: ConversationTurn[];
   relevantNotes: z.infer<typeof noteSchema>[];
 };
