@@ -3,7 +3,7 @@
 import { useState } from "react";
 import SearchBar from "@/shared/components/search-bar";
 import { useRouter } from "next/navigation";
-import { Library } from "lucide-react";
+import { Sparkle } from "lucide-react";
 import { useSearchHistory } from "@/hooks/use-search-history";
 
 export default function Search() {
@@ -33,7 +33,7 @@ export default function Search() {
       >
         <div className="mb-6 text-center space-y-2">
           <div className="flex justify-center mb-3">
-            <Library className="w-8 h-8 text-primary" />
+            <Sparkle className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-xl font-semibold tracking-tight">
             Search your knowledge base
