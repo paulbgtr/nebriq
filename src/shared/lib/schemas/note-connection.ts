@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const noteConnectionSchema = z.object({
-  if: z.string(),
+  id: z.string(),
   user_id: z.string().optional(),
   note_id_from: z.string(),
   note_id_to: z.string(),
