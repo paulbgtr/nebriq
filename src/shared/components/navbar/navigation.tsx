@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import Link from "next/link";
 import { Button } from "@/shared/components/ui/button";
-import { Menu, Pen, Search, Waypoints, BookOpen } from "lucide-react";
+import { Menu, Pen, House, Waypoints, BookOpen } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,7 +12,7 @@ import { UserActions } from "./user-actions";
 import { useRouter, usePathname } from "next/navigation";
 
 const navItems = [
-  { icon: Search, name: "search", href: "/search" },
+  { icon: House, name: "home", href: "/home" },
   {
     icon: Waypoints,
     name: "connections",
