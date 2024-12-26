@@ -328,13 +328,17 @@ export default function Home() {
               </div>
               <div className="space-y-4">
                 <Badge variant="secondary" className="mb-2">
-                  Smart Analysis
+                  AI Assistant
                 </Badge>
-                <h3 className="text-xl font-bold">AI-Powered Insights</h3>
+                <h3 className="text-xl font-bold">
+                  Meet Briq, Your Personal Note Assistant
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Transform lengthy notes into clear, concise summaries with our
-                  AI. Get the essence of your content instantly while preserving
-                  key insights and ideas.
+                  Experience the power of Briq, your intelligent note companion.
+                  From summarizing content and finding connections to answering
+                  questions about your notes, Briq helps you get more value from
+                  your knowledge base. It's like having a research assistant
+                  that knows your notes inside and out.
                 </p>
               </div>
             </motion.div>
