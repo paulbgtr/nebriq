@@ -62,7 +62,7 @@ export default function LibraryModule() {
               size: "lg",
               className: "gap-2",
             })}
-            href="/search"
+            href="/home"
           >
             <Search className="h-5 w-5" />
             Start Searching

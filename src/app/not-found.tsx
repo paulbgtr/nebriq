@@ -29,7 +29,7 @@ export default function NotFound() {
           </p>
         </div>
         <Link
-          href={user ? "/search" : "/"}
+          href={user ? "/home" : "/"}
           className={`${buttonVariants({
             variant: "default",
           })} mt-6 transform transition-transform hover:scale-105 hover:shadow-lg`}
