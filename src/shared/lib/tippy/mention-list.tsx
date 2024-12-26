@@ -5,7 +5,8 @@ import React, {
   useState,
 } from "react";
 import { createNoteConnection } from "@/app/actions/supabase/note_connections";
-import { CreateNoteConnection } from "@/types/note-connection";
+import { z } from "zod";
+import { noteConnectionSchema } from "../schemas/note-connection";
 
 interface MentionListProps {
   items: Array<{ id: string; title: string }>;
@@ -26,7 +27,7 @@ export default forwardRef<
       props.command({ id: item.title });
     }
 
-    const noteConnection: CreateNoteConnection = {
+    const noteConnection: z.infer<typeof noteConnectionSchema> = {
       note_id_from: props.currentNoteId,
       note_id_to: item.id,
     };
