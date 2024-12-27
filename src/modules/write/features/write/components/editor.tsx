@@ -7,6 +7,7 @@ import { Expand, Shrink } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useDebouncedCallback } from "use-debounce";
 import { TagManager } from "./tag-manager";
+import { EditorContextMenu } from "./context-menu";
 
 type EditorProps = {
   id: string;
@@ -91,12 +92,18 @@ export const Editor = ({
           )}
         </Button>
       </div>
-      <div
-        className={`h-full cursor-text ${isZenMode ? "mx-auto w-full" : ""}`}
-        onClick={() => editor?.commands.focus()}
-      >
-        <EditorContent editor={editor} />
-      </div>
+
+      <EditorContextMenu>
+        <div
+          className={`h-[calc(100vh-24rem)] cursor-text ${
+            isZenMode ? "mx-auto w-full" : ""
+          }`}
+          style={{ overflow: "hidden" }}
+          onClick={() => editor?.commands.focus()}
+        >
+          <EditorContent editor={editor} />
+        </div>
+      </EditorContextMenu>
     </div>
   );
 };
