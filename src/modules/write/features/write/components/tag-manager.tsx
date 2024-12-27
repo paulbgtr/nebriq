@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import { X, Plus, Tag as TagIcon } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import { useTags } from "@/hooks/use-tags";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -66,11 +66,6 @@ export const TagManager = ({ noteId, className }: TagManagerProps) => {
 
   return (
     <div className={cn("space-y-2", className)}>
-      <div className="flex items-center gap-2">
-        <TagIcon className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-muted-foreground">Tags</span>
-      </div>
-
       <div className="flex flex-wrap items-center gap-2">
         <form onSubmit={handleAddTag} className="flex-shrink-0">
           <Badge
