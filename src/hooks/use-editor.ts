@@ -1,6 +1,5 @@
 import "katex/dist/katex.min.css";
 
-import { useNoteConnections } from "./use-note-connections";
 import { useEffect, useState } from "react";
 import { useEditor } from "@tiptap/react";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
@@ -16,6 +15,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
 
 export const useCustomEditor = (initialNoteId: string | null) => {
   const lowlight = createLowlight(all);
@@ -56,7 +57,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
 
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
-  useNoteConnections({ noteId: id, content });
+  // useNoteConnections({ noteId: id, content });
 
   const createNote = async () => {
     if (!user || id || initialNoteId) return;
@@ -94,6 +95,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       immediatelyRender: false,
       extensions: [
         StarterKit,
+        Underline,
         CodeBlockLowlight.configure({
           lowlight,
         }),
@@ -106,6 +108,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         }),
         Mathematics.configure({
           shouldRender: defaultShouldRender,
+        }),
+        TextAlign.configure({
+          types: ["heading", "paragraph"],
         }),
       ],
       editorProps: {

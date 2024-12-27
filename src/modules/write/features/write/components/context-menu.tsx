@@ -2,7 +2,6 @@ import {
   Heading1,
   Heading2,
   Heading3,
-  FileUp,
   Link,
   AlignLeft,
   AlignCenter,
@@ -26,12 +25,18 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from "@/shared/components/ui/context-menu";
+import { Editor } from "@tiptap/react";
 
 type Props = {
+  editor: Editor | null;
   children: React.ReactNode;
 };
 
-export const EditorContextMenu = ({ children }: Props) => {
+export const EditorContextMenu = ({ children, editor }: Props) => {
+  if (!editor) {
+    return null;
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
@@ -42,15 +47,27 @@ export const EditorContextMenu = ({ children }: Props) => {
             Text Style
           </ContextMenuSubTrigger>
           <ContextMenuSubContent>
-            <ContextMenuItem>
+            <ContextMenuItem
+              onClick={() =>
+                editor.chain().focus().setHeading({ level: 1 }).run()
+              }
+            >
               <Heading1 className="w-4 h-4 mr-2" />
               Heading 1
             </ContextMenuItem>
-            <ContextMenuItem>
+            <ContextMenuItem
+              onClick={() =>
+                editor.chain().focus().setHeading({ level: 2 }).run()
+              }
+            >
               <Heading2 className="w-4 h-4 mr-2" />
               Heading 2
             </ContextMenuItem>
-            <ContextMenuItem>
+            <ContextMenuItem
+              onClick={() =>
+                editor.chain().focus().setHeading({ level: 3 }).run()
+              }
+            >
               <Heading3 className="w-4 h-4 mr-2" />
               Heading 3
             </ContextMenuItem>
@@ -60,25 +77,25 @@ export const EditorContextMenu = ({ children }: Props) => {
         <ContextMenuSeparator />
 
         <ContextMenuItem
-        // onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold className="w-4 h-4 mr-2" />
           Bold
         </ContextMenuItem>
         <ContextMenuItem
-        // onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic className="w-4 h-4 mr-2" />
           Italic
         </ContextMenuItem>
         <ContextMenuItem
-        // onClick={() => editor.chain().focus().toggleUnderline().run()}
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
           <Underline className="w-4 h-4 mr-2" />
           Underline
         </ContextMenuItem>
         <ContextMenuItem
-        // onClick={() => editor.chain().focus().toggleStrike().run()}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
         >
           <Strikethrough className="w-4 h-4 mr-2" />
           Strikethrough
@@ -93,25 +110,21 @@ export const EditorContextMenu = ({ children }: Props) => {
           </ContextMenuSubTrigger>
           <ContextMenuSubContent>
             <ContextMenuItem
-            // onClick={() =>
-            //   editor.chain().focus().setTextAlign("left").run()
-            // }
+              onClick={() => editor.chain().focus().setTextAlign("left").run()}
             >
               <AlignLeft className="w-4 h-4 mr-2" />
               Left
             </ContextMenuItem>
             <ContextMenuItem
-            // onClick={() =>
-            //   editor.chain().focus().setTextAlign("center").run()
-            // }
+              onClick={() =>
+                editor.chain().focus().setTextAlign("center").run()
+              }
             >
               <AlignCenter className="w-4 h-4 mr-2" />
               Center
             </ContextMenuItem>
             <ContextMenuItem
-            // onClick={() =>
-            //   editor.chain().focus().setTextAlign("right").run()
-            // }
+              onClick={() => editor.chain().focus().setTextAlign("right").run()}
             >
               <AlignRight className="w-4 h-4 mr-2" />
               Right
@@ -122,13 +135,13 @@ export const EditorContextMenu = ({ children }: Props) => {
         <ContextMenuSeparator />
 
         <ContextMenuItem
-        // onClick={() => editor.chain().focus().toggleBulletList().run()}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List className="w-4 h-4 mr-2" />
           Bullet List
         </ContextMenuItem>
         <ContextMenuItem
-        // onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered className="w-4 h-4 mr-2" />
           Numbered List
@@ -145,10 +158,6 @@ export const EditorContextMenu = ({ children }: Props) => {
             <ContextMenuItem>
               <ImagePlus className="w-4 h-4 mr-2" />
               Upload Image
-            </ContextMenuItem>
-            <ContextMenuItem>
-              <FileUp className="w-4 h-4 mr-2" />
-              Upload Document
             </ContextMenuItem>
             <ContextMenuItem>
               <Paperclip className="w-4 h-4 mr-2" />

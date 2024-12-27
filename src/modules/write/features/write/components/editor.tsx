@@ -93,7 +93,7 @@ export const Editor = ({
         </Button>
       </div>
 
-      <EditorContextMenu>
+      <EditorContextMenu editor={editor}>
         <div
           className={`h-[calc(100vh-24rem)] cursor-text ${
             isZenMode ? "mx-auto w-full" : ""
