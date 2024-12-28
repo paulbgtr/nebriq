@@ -14,6 +14,8 @@ import {
   ListOrdered,
   Paperclip,
   ImagePlus,
+  Code,
+  Sigma,
 } from "lucide-react";
 import {
   ContextMenu,
@@ -145,6 +147,28 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
         >
           <ListOrdered className="w-4 h-4 mr-2" />
           Numbered List
+        </ContextMenuItem>
+
+        <ContextMenuSeparator />
+
+        <ContextMenuItem
+          onClick={() => editor.chain().focus().setCodeBlock().run()}
+        >
+          <Code className="w-4 h-4 mr-2" />
+          Code Block
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            editor
+              .chain()
+              .focus()
+              .insertContent("$$")
+              .setTextSelection(editor.state.selection.from + 1)
+              .run();
+          }}
+        >
+          <Sigma className="w-4 h-4 mr-2" />
+          Math Expression
         </ContextMenuItem>
 
         <ContextMenuSeparator />
