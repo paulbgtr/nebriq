@@ -8,6 +8,7 @@ import { useNotes } from "./use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { all, createLowlight } from "lowlight";
 
+import Image from "@tiptap/extension-image";
 import Mathematics, {
   defaultShouldRender,
 } from "@tiptap-pro/extension-mathematics";
@@ -96,6 +97,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       extensions: [
         StarterKit,
         Underline,
+        Image,
         CodeBlockLowlight.configure({
           lowlight,
         }),
