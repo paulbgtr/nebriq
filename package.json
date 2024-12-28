@@ -34,6 +34,7 @@
     "@tanstack/react-query": "^5.59.20",
     "@tiptap-pro/extension-mathematics": "^2.16.3",
     "@tiptap/extension-code-block-lowlight": "^2.10.3",
+    "@tiptap/extension-image": "^2.10.4",
     "@tiptap/extension-mention": "^2.10.3",
     "@tiptap/extension-placeholder": "^2.9.1",
     "@tiptap/extension-text-align": "^2.10.4",
