@@ -1,4 +1,5 @@
 import {
+  File,
   Heading1,
   Heading2,
   Heading3,
@@ -29,8 +30,10 @@ import {
 } from "@/shared/components/ui/context-menu";
 import { Editor } from "@tiptap/react";
 import { useRef } from "react";
-import { createClient } from "@/shared/lib/supabase/client";
 import { useToast } from "@/shared/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
+import { upload } from "@/app/actions/supabase/storage";
+import { Bucket } from "@/types/bucket";
 
 type Props = {
   editor: Editor | null;
@@ -42,41 +45,41 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
     return null;
   }
 
+  const { user } = useUser();
+
   const { toast } = useToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    bucket: Bucket
+  ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const supabase = createClient();
+    const userId = user?.id;
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`;
+    if (!file || !userId) {
+      toast({
+        title: "Error",
+        description: "File not found",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
 
-      const { error: imageUploadError } = await supabase.storage
-        .from("images")
-        .upload(fileName, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+    try {
+      const { url } = await upload(file, userId, bucket);
 
-      if (imageUploadError) {
-        toast({
-          title: "Image upload error",
-          description: imageUploadError.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("images").getPublicUrl(fileName);
-
-      if (publicUrl) {
-        editor.chain().focus().setImage({ src: publicUrl }).run();
-      }
+      editor.chain().focus().setImage({ src: url }).run();
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -85,7 +88,9 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleFileUpload}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          handleFileUpload(e, "images")
+        }
         accept="image/*"
         className="hidden"
       />
@@ -235,6 +240,10 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
               <ContextMenuItem onClick={() => fileInputRef.current?.click()}>
                 <ImagePlus className="w-4 h-4 mr-2" />
                 Upload Image
+              </ContextMenuItem>
+              <ContextMenuItem>
+                <File className="w-4 h-4 mr-2" />
+                Add Document
               </ContextMenuItem>
               <ContextMenuItem>
                 <Paperclip className="w-4 h-4 mr-2" />
