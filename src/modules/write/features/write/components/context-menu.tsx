@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import {
   File,
   Heading1,
@@ -40,10 +41,56 @@ type Props = {
   children: React.ReactNode;
 };
 
+const formatUrl = (url: string): string => {
+  let cleanUrl = url.trim();
+
+  cleanUrl = cleanUrl.replace(/^\/+/, "");
+
+  if (!cleanUrl.match(/^https?:\/\//i)) {
+    cleanUrl = `https://${cleanUrl}`;
+  }
+
+  new URL(cleanUrl);
+
+  return cleanUrl;
+};
+
 export const EditorContextMenu = ({ children, editor }: Props) => {
   if (!editor) {
     return null;
   }
+
+  const setLink = useCallback(() => {
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("URL", previousUrl);
+
+    if (url === null) {
+      return;
+    }
+
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+
+    try {
+      const formattedUrl = formatUrl(url);
+
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: formattedUrl })
+        .run();
+    } catch (e) {
+      toast({
+        title: "Error",
+        description: "Invalid URL",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  }, [editor]);
 
   const { user } = useUser();
 
@@ -209,6 +256,10 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
 
           <ContextMenuSeparator />
 
+          <ContextMenuItem onClick={setLink}>
+            <Link className="w-4 h-4 mr-2" />
+            Link
+          </ContextMenuItem>
           <ContextMenuItem
             onClick={() => editor.chain().focus().setCodeBlock().run()}
           >
@@ -250,15 +301,6 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
                 Attach File
               </ContextMenuItem>
               <ContextMenuSeparator />
-              <ContextMenuItem
-              // onClick={() => {
-              //   const url = window.prompt("Enter link URL");
-              //   if (url) editor.chain().focus().setLink({ href: url }).run();
-              // }}
-              >
-                <Link className="w-4 h-4 mr-2" />
-                Insert Link
-              </ContextMenuItem>
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
