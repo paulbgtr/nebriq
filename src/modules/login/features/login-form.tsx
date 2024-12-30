@@ -63,7 +63,7 @@ export default function LoginForm() {
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-6">
             <FormField
               control={form.control}
@@ -86,6 +86,7 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="password"
