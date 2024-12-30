@@ -1,6 +1,14 @@
 "use client";
 
 import { Button } from "@/shared/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import {
@@ -14,59 +22,43 @@ import {
 import { signup } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { Lock, Mail } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { signupSchema } from "@/shared/lib/schemas/auth/signup";
+import { z } from "zod";
 
 export default function SignupForm() {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState("");
 
-  async function handleSubmit(formData: FormData) {
-    setError("");
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      toast({
-        variant: "destructive",
-        title: "Validation Error",
-        description: "Passwords do not match",
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      toast({
-        variant: "destructive",
-        title: "Validation Error",
-        description: "Password must be at least 6 characters long",
-      });
-      return;
-    }
-
+  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     startTransition(async () => {
       try {
-        await signup(formData);
+        await signup(values.email, values.password, values.confirmPassword);
         toast({
           title: "Account created",
           description: "Please check your email to verify your account",
         });
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to sign up";
-        setError(message);
         toast({
           variant: "destructive",
           title: "Sign up failed",
-          description: message,
+          description: "Something went wrong. Please try again.",
         });
       }
     });
-  }
+  };
 
   return (
     <Card className="w-[400px] shadow-lg">
@@ -76,93 +68,96 @@ export default function SignupForm() {
           Enter your details to create your account
         </CardDescription>
       </CardHeader>
-      <form>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">
-              Email Address
-            </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="johndoe@example.com"
-                required
-                disabled={isPending}
-                className="pl-10"
-                aria-describedby={error ? "signup-error" : undefined}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium">
-              Password
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                required
-                disabled={isPending}
-                className="pl-10"
-                aria-describedby={error ? "signup-error" : undefined}
-                minLength={6}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirm Password
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                required
-                disabled={isPending}
-                className="pl-10"
-                aria-describedby={error ? "signup-error" : undefined}
-                minLength={6}
-              />
-            </div>
-          </div>
-          {error && (
-            <div
-              id="signup-error"
-              className="text-sm text-destructive bg-destructive/10 p-3 rounded-md"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        {...field}
+                        type="email"
+                        placeholder="n4A7o@example.com"
+                        className="pl-10"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        {...field}
+                        type="password"
+                        placeholder="••••••••"
+                        className="pl-10"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        {...field}
+                        type="password"
+                        placeholder="••••••••"
+                        className="pl-10"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+
+          <CardFooter className="flex flex-col gap-6 pb-6">
+            <Button
+              className="w-full h-11 text-base font-medium"
+              type="submit"
+              disabled={isPending}
             >
-              {error}
+              {isPending ? "Signing up..." : "Sign Up"}
+            </Button>
+            <div className="text-sm text-center text-muted-foreground">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="text-primary hover:underline font-medium"
+              >
+                Sign in
+              </Link>
             </div>
-          )}
-        </CardContent>
-        <CardFooter className="flex flex-col gap-6 pb-6">
-          <Button
-            className="w-full h-11 text-base font-medium"
-            type="submit"
-            formAction={handleSubmit}
-            disabled={isPending}
-          >
-            {isPending ? "Creating account..." : "Create Account"}
-          </Button>
-          <div className="text-sm text-center text-muted-foreground">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-primary hover:underline font-medium"
-            >
-              Sign in
-            </Link>
-          </div>
-        </CardFooter>
-      </form>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }

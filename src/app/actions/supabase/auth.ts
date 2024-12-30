@@ -38,13 +38,17 @@ export async function login(email: string, password: string) {
   revalidatePath("/", "layout");
 }
 
-export async function signup(formData: FormData) {
+export async function signup(
+  email: string,
+  password: string,
+  confirmPassword: string
+) {
   const supabase = await createClient();
 
   const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-    confirmPassword: formData.get("confirmPassword") as string,
+    email,
+    password,
+    confirmPassword,
   };
 
   const {
@@ -52,7 +56,11 @@ export async function signup(formData: FormData) {
     error,
   } = await supabase.auth.signUp(data);
 
-  if (error || data.password !== data.confirmPassword || !user) {
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (error) {
     throw new Error(error?.message);
   }
 
