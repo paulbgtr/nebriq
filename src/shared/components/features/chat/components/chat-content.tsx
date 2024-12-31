@@ -15,6 +15,20 @@ type Props = {
   isLoading: boolean;
 };
 
+/**
+ * The chat content component.
+ *
+ * This component renders the conversation history and allows the user to enter new messages.
+ *
+ * @param scrollContainerRef - The ref to the scroll container element.
+ * @param chatContext - The chat context object.
+ * @param setFollowUp - The function to set the follow-up message.
+ * @param email - The user's email address.
+ * @param displayedText - The text to display in the chat window.
+ * @param isLoading - Whether the chat is currently loading.
+ *
+ * @returns The chat content component.
+ */
 export const ChatContent = ({
   scrollContainerRef,
   chatContext,
@@ -109,6 +123,15 @@ export const ChatContent = ({
     );
   };
 
+  /**
+   * A component that renders a message bubble in the chat window.
+   *
+   * The message bubble component is responsible for rendering a single message in the chat window.
+   * It takes a message object as a prop, which contains the content of the message and its role (user or assistant).
+   *
+   * @param message - The message object to render.
+   * @returns A JSX element representing the message bubble.
+   */
   const MessageBubble = ({ message }: ChildProps) => {
     return (
       <div
