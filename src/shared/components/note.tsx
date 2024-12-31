@@ -1,8 +1,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, Calendar, ChevronRight } from "lucide-react"; // Added icons
+import { Calendar, ChevronRight } from "lucide-react";
 import { z } from "zod";
-import { motion } from "framer-motion"; // Added for smooth animations
+import { motion } from "framer-motion";
 
 import { useNotes } from "@/hooks/use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
@@ -18,7 +18,7 @@ interface NoteProps {
   onSelect?: (selected: boolean) => void;
 }
 
-const MAX_CONTENT_LENGTH = 80; // Increased for better preview
+const MAX_CONTENT_LENGTH = 80;
 
 const NoteContent: React.FC<{ content: string }> = ({ content }) => {
   const formattedContent = formatHTMLNoteContent(content || "");
@@ -27,10 +27,19 @@ const NoteContent: React.FC<{ content: string }> = ({ content }) => {
       ? `${formattedContent.slice(0, MAX_CONTENT_LENGTH).trim()}...`
       : formattedContent;
 
+  const hasImages = /<img[^>]+>/i.test(content);
+
   return (
-    <p className="text-sm leading-relaxed text-muted-foreground mb-4 group-hover:text-foreground/80 transition-colors duration-200">
-      {shortenedContent}
-    </p>
+    <div className="mb-4">
+      <p className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground/80 transition-colors duration-200">
+        {hasImages && (
+          <span className="mr-2" title="Contains images">
+            🖼️
+          </span>
+        )}
+        {shortenedContent}
+      </p>
+    </div>
   );
 };
 
