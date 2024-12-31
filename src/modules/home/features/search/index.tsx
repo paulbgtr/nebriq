@@ -3,8 +3,50 @@
 import { useState } from "react";
 import SearchBar from "@/shared/components/search-bar";
 import { useRouter } from "next/navigation";
-import { Sparkle } from "lucide-react";
+import { Compass } from "lucide-react";
 import { useSearchHistory } from "@/hooks/use-search-history";
+import { motion } from "framer-motion";
+
+const AnimatedCompass = () => {
+  return (
+    <div className="flex justify-center mb-4">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.8,
+          ease: "easeOut",
+        }}
+      >
+        <motion.div
+          animate={{
+            y: [-2, 2],
+          }}
+          transition={{
+            duration: 4,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        >
+          <motion.div
+            whileHover={{
+              scale: 1.05,
+              rotate: 15,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 200,
+              damping: 15,
+            }}
+          >
+            <Compass className="w-10 h-10 text-primary" aria-hidden="true" />
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+};
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,11 +74,9 @@ export default function Search() {
         className={`transition-all duration-500 ease-in-out w-full max-w-xl mx-auto`}
       >
         <div className="mb-6 text-center space-y-2">
-          <div className="flex justify-center mb-3">
-            <Sparkle className="w-8 h-8 text-primary" />
-          </div>
+          <AnimatedCompass />
           <h1 className="text-xl font-semibold tracking-tight">
-            Search your knowledge base
+            Discover Your Knowledge
           </h1>
         </div>
         <SearchBar
