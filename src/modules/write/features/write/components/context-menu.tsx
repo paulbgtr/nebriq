@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import {
-  File,
   Heading1,
   Heading2,
   Heading3,
@@ -293,14 +292,9 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
                 Upload Image
               </ContextMenuItem>
               <ContextMenuItem>
-                <File className="w-4 h-4 mr-2" />
-                Add Document
-              </ContextMenuItem>
-              <ContextMenuItem>
                 <Paperclip className="w-4 h-4 mr-2" />
                 Attach File
               </ContextMenuItem>
-              <ContextMenuSeparator />
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
