@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import Link from "next/link";
 import { Button } from "@/shared/components/ui/button";
-import { Menu, Pen, House, Waypoints, BookOpen } from "lucide-react";
+import { Library, Menu, Pen, House, Waypoints } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -19,7 +19,7 @@ const navItems = [
     href: "/graph",
   },
   {
-    icon: BookOpen,
+    icon: Library,
     name: "library",
     href: "/library",
   },
