@@ -28,6 +28,14 @@ type Props = {
   setFollowUp: (followUp: string) => void;
 };
 
+/**
+ * QueryExamples component.
+ *
+ * Display a list of example queries to get started
+ *
+ * @param {Props} props Component props
+ * @returns {JSX.Element} QueryExamples component
+ */
 export const QueryExamples = ({ setFollowUp }: Props) => {
   return (
     <>
