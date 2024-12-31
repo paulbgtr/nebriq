@@ -5,11 +5,31 @@ import { cn } from "@/shared/lib/utils";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export const NoteTabs = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const currentNoteId = searchParams.get("id");
   const { openNotes, setOpenNotes } = useNoteTabsStore();
+
+  const handleCloseTab = (noteId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+
+    const updatedNotes = openNotes.filter((n) => n.id !== noteId);
+    setOpenNotes(updatedNotes);
+
+    if (noteId !== currentNoteId) {
+      return;
+    }
+
+    if (updatedNotes.length > 0) {
+      const lastNote = updatedNotes[updatedNotes.length - 1];
+      router.push(`/write?id=${lastNote.id}`);
+      return;
+    }
+    router.push("/home");
+  };
 
   return (
     <Tabs className="w-full select-none" orientation="horizontal">
@@ -46,10 +66,7 @@ export const NoteTabs = () => {
                 </div>
 
                 <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenNotes(openNotes.filter((n) => n.id !== note.id));
-                  }}
+                  onClick={(e) => handleCloseTab(note.id, e)}
                   className={cn(
                     "ml-1 p-0.5 rounded-sm opacity-0",
                     "group-hover:opacity-40 hover:opacity-70",
