@@ -43,20 +43,6 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     }
   }, [id, setOpenNotes]);
 
-  useEffect(() => {
-    if (initialNoteId) {
-      const note = getNotesQuery.data?.find(
-        (note) => note.id === initialNoteId
-      );
-
-      if (note) {
-        setContent(note.content || "");
-        setTitle(note.title || "");
-        setId(note.id);
-      }
-    }
-  }, [initialNoteId]);
-
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
   // useNoteConnections({ noteId: id, content });
@@ -201,6 +187,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           return false;
         },
       },
+      autofocus: true,
+      enableInputRules: true,
+      enablePasteRules: true,
       content,
       onUpdate: ({ editor }) => {
         const newContent = editor.getHTML();
@@ -225,7 +214,28 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     [id]
   );
 
-  const isPending = createNoteMutation.isPending;
+  useEffect(() => {
+    if (editor && content && editor.getHTML() !== content) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
+
+  useEffect(() => {
+    if (initialNoteId) {
+      const note = getNotesQuery.data?.find(
+        (note) => note.id === initialNoteId
+      );
+
+      if (note) {
+        setContent(note.content || "");
+        setTitle(note.title || "");
+        setId(note.id);
+        editor?.commands.setContent(note.content || "");
+      }
+    }
+  }, [initialNoteId, getNotesQuery.data, editor]);
+
+  const { isPending } = createNoteMutation;
 
   return {
     id,
