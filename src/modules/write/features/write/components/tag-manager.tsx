@@ -6,6 +6,7 @@ import { useTags } from "@/hooks/use-tags";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/shared/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TagManagerProps {
   noteId: string;
@@ -31,92 +32,85 @@ export const TagManager = ({ noteId, className }: TagManagerProps) => {
         note_id: noteId,
       });
       setNewTag("");
+    } catch {
       toast({
-        title: "Success",
-        description: `Tag "${newTag}" has been added`,
-        duration: 2000,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add tag. Please try again.",
+        description: "Failed to add tag",
         variant: "destructive",
-        duration: 3000,
       });
     }
   };
 
-  const handleDeleteTag = async (id: number, name: string) => {
+  const handleDeleteTag = async (id: number) => {
     try {
       await deleteTagMutation.mutateAsync(id);
+    } catch {
       toast({
-        title: "Success",
-        description: `Tag "${name}" has been removed`,
-        duration: 2000,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete tag. Please try again.",
+        description: "Failed to delete tag",
         variant: "destructive",
-        duration: 3000,
       });
     }
   };
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <div className="flex flex-wrap items-center gap-2">
-        <form onSubmit={handleAddTag} className="flex-shrink-0">
+    <div className={cn("p-3 space-y-2", className)}>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <form onSubmit={handleAddTag} className="inline-flex">
           <Badge
             variant="outline"
-            className="hover:bg-secondary transition-colors cursor-text px-2 py-1"
+            className="group border-dashed hover:border-solid transition-all duration-200"
           >
             <input
               type="text"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
-              placeholder="New tag..."
-              className="bg-transparent focus:outline-none w-16 placeholder:text-muted-foreground"
+              placeholder="New tag"
+              className="w-16 bg-transparent focus:outline-none text-xs placeholder:text-muted-foreground/70"
               maxLength={20}
             />
             <Button
               type="submit"
+              size="icon"
               variant="ghost"
-              size="sm"
-              className="h-4 w-4 p-0 hover:bg-transparent"
+              className="h-4 w-4 p-0 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
               disabled={!newTag.trim()}
             >
-              <Plus className="h-3 w-3 text-muted-foreground hover:text-foreground transition-colors" />
+              <Plus className="h-3 w-3" />
             </Button>
           </Badge>
         </form>
 
-        {isLoading ? (
-          <Badge variant="secondary" className="animate-pulse">
-            Loading tags...
-          </Badge>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {tags?.map((tag) => (
-              <Badge
+        <AnimatePresence>
+          {isLoading ? (
+            <Badge variant="secondary" className="animate-pulse">
+              Loading...
+            </Badge>
+          ) : (
+            tags?.map((tag) => (
+              <motion.div
                 key={tag.id}
-                variant="secondary"
-                className="group px-2 py-1 transition-all hover:bg-secondary/80"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.15 }}
               >
-                <span className="text-sm">{tag.name}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-1 h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => handleDeleteTag(tag.id, tag.name)}
+                <Badge
+                  variant="secondary"
+                  className="group text-xs font-normal"
                 >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-destructive transition-colors" />
-                </Button>
-              </Badge>
-            ))}
-          </div>
-        )}
+                  {tag.name}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 p-0 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => handleDeleteTag(tag.id)}
+                  >
+                    <X className="h-3 w-3 hover:text-destructive transition-colors" />
+                  </Button>
+                </Badge>
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
