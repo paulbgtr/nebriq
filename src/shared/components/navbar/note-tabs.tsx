@@ -35,7 +35,7 @@ export const NoteTabs = () => {
     <Tabs className="w-full select-none" orientation="horizontal">
       <TabsList
         className="h-10 flex bg-background border-b border-border/10 
-          overflow-x-auto no-scrollbar"
+        overflow-x-auto no-scrollbar"
       >
         <AnimatePresence initial={false}>
           {openNotes.map((note) => (
@@ -45,12 +45,13 @@ export const NoteTabs = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
+              className="flex-shrink-0"
             >
               <Link
                 href={`/write?id=${note.id}`}
                 className={cn(
                   "group relative flex items-center h-10 px-3",
-                  "min-w-[100px] max-w-[180px]",
+                  "min-w-[100px] max-w-[180px] w-full",
                   "transition-colors duration-200",
                   currentNoteId === note.id && [
                     "after:absolute after:bottom-0 after:left-0",
@@ -59,8 +60,11 @@ export const NoteTabs = () => {
                   ]
                 )}
               >
-                <div className="flex-1 flex items-center">
-                  <span className="text-xs font-medium truncate opacity-70">
+                <div className="flex-1 flex items-center w-full overflow-hidden">
+                  <span
+                    className="text-xs font-medium truncate opacity-70 max-w-[130px]"
+                    title={note.title || "Untitled"}
+                  >
                     {note.title || "Untitled"}
                   </span>
                 </div>
@@ -68,7 +72,7 @@ export const NoteTabs = () => {
                 <button
                   onClick={(e) => handleCloseTab(note.id, e)}
                   className={cn(
-                    "ml-1 p-0.5 rounded-sm opacity-0",
+                    "ml-1 p-0.5 rounded-sm opacity-0 flex-shrink-0",
                     "group-hover:opacity-40 hover:opacity-70",
                     "focus-visible:opacity-70 focus-visible:outline-none",
                     "transition-opacity duration-200"
