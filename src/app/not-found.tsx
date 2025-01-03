@@ -9,7 +9,7 @@ export default function NotFound() {
   const { user } = useUser();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dot-pattern bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-dot-pattern">
       <div className="text-center space-y-6 px-4 animate-fade-in">
         <div className="relative">
           <h1 className="text-[150px] font-extrabold text-primary/10 select-none animate-pulse">
@@ -20,10 +20,10 @@ export default function NotFound() {
           </div>
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl text-foreground font-bold">
             Oops! Page not found
           </h2>
-          <p className="text-gray-600 max-w-md mx-auto">
+          <p className="text-muted-foreground max-w-md mx-auto">
             The page you're looking for seems to have wandered off. Let's get
             you back on track!
           </p>
