@@ -7,6 +7,7 @@ import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import ReactMarkdown from "react-markdown";
+import { cn } from "@/shared/lib/utils";
 
 type Props = {
   results: z.infer<typeof noteSchema>[];
@@ -39,40 +40,43 @@ export const Summary = ({ results }: Props) => {
 
   return (
     <motion.div className="w-full max-w-4xl mx-auto" {...fadeInAnimation}>
-      <div>
-        {/* Header */}
-        <div className="flex items-center gap-4 p-6 border-b border-gray-100">
-          <div className="p-2.5 bg-primary/10 rounded-lg">
-            <Sparkles className="w-5 h-5 text-primary" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 text-lg">AI Summary</h3>
-            <p className="text-sm text-gray-500">
-              Generated based on your notes and query
-            </p>
-          </div>
+      {/* Header */}
+      <div className="flex items-center gap-4 p-6 border-b border-border">
+        <div className={cn("p-2.5 rounded-lg", "bg-primary/10")}>
+          <Sparkles className="w-5 h-5 text-primary" />
         </div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-foreground text-lg">AI Summary</h3>
+          <p className="text-sm text-muted-foreground">
+            Generated based on your notes and query
+          </p>
+        </div>
+      </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {isLoadingSummary ? (
-            <motion.div className="space-y-4" {...skeletonAnimation}>
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="space-y-2.5">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-[92%]" />
-                  <Skeleton className="h-4 w-[88%]" />
-                </div>
-              ))}
-            </motion.div>
-          ) : (
-            <div className="prose prose-sm max-w-none text-gray-700">
-              <ReactMarkdown className="leading-relaxed">
-                {displayedText}
-              </ReactMarkdown>
-            </div>
-          )}
-        </div>
+      {/* Content */}
+      <div className="p-6">
+        {isLoadingSummary ? (
+          <motion.div className="space-y-4" {...skeletonAnimation}>
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="space-y-2.5">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-[92%]" />
+                <Skeleton className="h-4 w-[88%]" />
+              </div>
+            ))}
+          </motion.div>
+        ) : (
+          <div
+            className={cn(
+              "prose prose-sm max-w-none",
+              "text-muted-foreground/90"
+            )}
+          >
+            <ReactMarkdown className="leading-relaxed">
+              {displayedText}
+            </ReactMarkdown>
+          </div>
+        )}
       </div>
     </motion.div>
   );

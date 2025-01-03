@@ -22,14 +22,14 @@ export const Results = ({ results, hasSearched }: ResultsProps) => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <Frown className="w-20 h-20 text-gray-400 mb-6 animate-bounce" />
-      <h2 className="text-2xl font-bold text-gray-800 mb-3">
+      <Frown className="w-20 h-20 text-muted-foreground mb-6 animate-bounce" />
+      <h2 className="text-2xl font-bold text-foreground mb-3">
         No matches found
       </h2>
-      <p className="text-gray-600 max-w-md mx-auto leading-relaxed">
+      <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
         We couldn't find any notes matching your search. Try:
       </p>
-      <ul className="text-gray-600 mt-4 space-y-2 text-left">
+      <ul className="text-muted-foreground mt-4 space-y-2 text-left">
         <li className="flex items-center gap-2">
           <Search className="w-4 h-4" />
           Using different keywords
@@ -50,10 +50,10 @@ export const Results = ({ results, hasSearched }: ResultsProps) => {
       transition={{ duration: 0.3 }}
     >
       <Spinner size="lg" />
-      <p className="mt-6 text-gray-600 font-medium">
+      <p className="mt-6 text-muted-foreground font-medium">
         Searching through your notes
       </p>
-      <p className="text-sm text-gray-500 mt-2">
+      <p className="text-sm text-muted-foreground/80 mt-2">
         This may take a few moments...
       </p>
     </motion.div>
@@ -80,17 +80,15 @@ export const Results = ({ results, hasSearched }: ResultsProps) => {
             transition={{ duration: 0.5 }}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-gray-900">
+              <h3 className="text-2xl font-bold text-foreground">
                 Search Results
-                <span className="ml-3 text-lg text-gray-500 font-normal">
+                <span className="ml-3 text-lg text-muted-foreground font-normal">
                   ({results.length} notes found)
                 </span>
               </h3>
             </div>
 
-            <div className="bg-white rounded-xl p-6">
-              <NoteList notes={results} />
-            </div>
+            <NoteList notes={results} />
 
             {isAiSearch && (
               <motion.div
