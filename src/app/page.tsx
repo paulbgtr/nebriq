@@ -214,7 +214,7 @@ export default function Home() {
               <div className="p-8 rounded-2xl  from-primary/10 via-secondary/5 to-primary/10 border border-primary/20 shadow-lg shadow-primary/5 backdrop-blur-sm">
                 <div className="flex items-start space-x-3">
                   <span className="text-3xl text-primary/80">❝</span>
-                  <p className="text-xl font-medium leading-relaxed bg-gradient-to-r from-primary via-pink-500 to-purple-500 text-transparent bg-clip-text">
+                  <p className="text-xl font-medium leading-relaxed bg-gradient-to-r from-primary via-blue-500/90 to-sky-600 text-transparent bg-clip-text">
                     Nebriq brings simplicity back to note-taking, letting you
                     focus on what truly matters - your thoughts and ideas.
                   </p>

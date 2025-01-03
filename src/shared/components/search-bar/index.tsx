@@ -45,7 +45,7 @@ export default function SearchBar({
           ease: "easeInOut",
         }}
         className={cn(
-          "absolute inset-0 bg-gradient-to-r from-purple-700/30 via-fuchsia-600/30 to-rose-600/30",
+          "absolute inset-0 bg-gradient-to-r from-blue-700/20 via-blue-600/25 to-blue-500/20",
           "animate-gradient blur-2xl"
         )}
       />
