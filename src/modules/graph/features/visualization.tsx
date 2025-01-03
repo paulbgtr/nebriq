@@ -4,7 +4,6 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 import { noteConnectionSchema } from "@/shared/lib/schemas/note-connection";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Controls } from "./controls";
 import { useNotes } from "@/hooks/use-notes";
 import { useQuery } from "@tanstack/react-query";
 import { getAllNoteConnections } from "@/app/actions/supabase/note_connections";
@@ -12,7 +11,7 @@ import { FolderPlus } from "lucide-react";
 
 type GraphNode = d3.SimulationNodeDatum & {
   id: string;
-  title: string;
+  title: string | undefined;
   isHovered?: boolean;
 };
 
@@ -94,10 +93,8 @@ function ForceGraph({
 
     svg.call(zoomBehavior);
 
-    // Create a container for all elements that should be zoomed
     const container = svg.append("g");
 
-    // Create links
     const link = container
       .append("g")
       .selectAll("line")
@@ -107,18 +104,17 @@ function ForceGraph({
       .style("stroke-opacity", 0.6)
       .style("stroke-width", 1);
 
-    // Create nodes
     const node = container
       .append("g")
-      .selectAll("g")
+      .selectAll<SVGGElement, GraphNode>("g")
       .data(nodes)
       .join("g")
       .call(
         d3
-          .drag<SVGGElement, GraphNode>()
+          .drag<SVGGElement, GraphNode, SVGGElement>()
           .on("start", dragstarted)
           .on("drag", dragged)
-          .on("end", dragended) as d3.DragBehavior<SVGGElement, GraphNode>
+          .on("end", dragended)
       );
 
     node
@@ -157,24 +153,6 @@ function ForceGraph({
             l.source.id === d.id || l.target.id === d.id ? 2 : 1
           );
 
-        node
-          .selectAll("circle")
-          .transition()
-          .duration(300)
-          .style("fill", (n: any) => {
-            const isConnected = links.some(
-              (l) =>
-                (l.source.id === d.id && l.target.id === n.id) ||
-                (l.target.id === d.id && l.source.id === n.id)
-            );
-            return n.id === d.id
-              ? colors.node.hover // Uses 80% opacity
-              : isConnected
-                ? colors.node.connected // Uses 60% opacity
-                : colors.node.dimmed; // Uses 40% opacity
-          });
-
-        // Enhanced tooltip
         const tooltip = container
           .append("g")
           .attr("class", "tooltip")
@@ -185,7 +163,7 @@ function ForceGraph({
           .append("rect")
           .attr("x", 0)
           .attr("y", 0)
-          .attr("width", d.title.length * 8 + 24)
+          .attr("width", (d.title?.length || 0) * 8 + 24)
           .attr("height", 30)
           .attr("rx", 6)
           .style("fill", "hsl(var(--background))")
@@ -198,14 +176,13 @@ function ForceGraph({
           .style("fill", colors.text.default)
           .attr("x", 12)
           .attr("y", 20)
-          .text(d.title)
+          .text(d.title ?? "Untitled")
           .style("font-size", "12px")
           .style("font-weight", "500");
 
         tooltip.transition().duration(200).style("opacity", 1);
       })
       .on("mouseout", function (event, d) {
-        // Smooth node transition back
         d3.select(this)
           .transition()
           .duration(300)
@@ -214,7 +191,6 @@ function ForceGraph({
           .style("fill", colors.node.default)
           .style("stroke-width", 1.5);
 
-        // Reset link styles with transition
         link
           .transition()
           .duration(300)
@@ -222,7 +198,6 @@ function ForceGraph({
           .style("stroke-opacity", 0.6)
           .style("stroke-width", 1);
 
-        // Reset all nodes opacity and color
         node
           .selectAll("circle")
           .transition()
@@ -230,7 +205,6 @@ function ForceGraph({
           .style("opacity", 1)
           .style("fill", colors.node.default);
 
-        // Fade out and remove tooltip
         container
           .selectAll(".tooltip")
           .transition()
@@ -239,10 +213,9 @@ function ForceGraph({
           .remove();
       });
 
-    // Add labels with improved styling
     node
       .append("text")
-      .text((d) => d.title)
+      .text((d) => d.title ?? "Untitled")
       .attr("x", 12)
       .attr("y", 4)
       .style("font-size", "10px")
@@ -251,7 +224,6 @@ function ForceGraph({
       .style("opacity", 0.8)
       .style("pointer-events", "none");
 
-    // Update positions on simulation tick
     simulation.on("tick", () => {
       link
         .attr("x1", (d: any) => d.source.x)
@@ -262,7 +234,6 @@ function ForceGraph({
       node.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
     });
 
-    // Drag functions
     function dragstarted(event: any) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       event.subject.fx = event.subject.x;
@@ -292,7 +263,6 @@ function ForceGraph({
         className="w-full h-full"
         style={{ background: "transparent" }}
       />
-      <Controls svgRef={svgRef} />
     </div>
   );
 }
