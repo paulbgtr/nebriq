@@ -1,12 +1,12 @@
 import { ChatContext } from "@/types/chat";
-import { QueryExamples } from "./query-examples";
-import { cn } from "@/shared/lib/utils";
 import { Box } from "lucide-react";
-import { MessageActions } from "./message-actions";
 import ReactMarkdown from "react-markdown";
+import { cn } from "@/shared/lib/utils";
+import { QueryExamples } from "./query-examples";
+import { MessageActions } from "./message-actions";
 import { LoadingIndicator } from "./loading-indicator";
 
-type Props = {
+type ChatContentProps = {
   scrollContainerRef: React.RefObject<HTMLDivElement>;
   chatContext: ChatContext;
   setFollowUp: (followUp: string) => void;
@@ -15,20 +15,66 @@ type Props = {
   isLoading: boolean;
 };
 
-/**
- * The chat content component.
- *
- * This component renders the conversation history and allows the user to enter new messages.
- *
- * @param scrollContainerRef - The ref to the scroll container element.
- * @param chatContext - The chat context object.
- * @param setFollowUp - The function to set the follow-up message.
- * @param email - The user's email address.
- * @param displayedText - The text to display in the chat window.
- * @param isLoading - Whether the chat is currently loading.
- *
- * @returns The chat content component.
- */
+type MessageProps = {
+  message: ChatContext["conversationHistory"][0];
+};
+
+const Avatar = ({ message, email }: MessageProps & { email?: string }) => (
+  <div
+    className={cn(
+      "flex-shrink-0 w-10 h-10 rounded-full",
+      "flex items-center justify-center relative",
+      "transition-all duration-300 group-hover:scale-110",
+      message.role === "user"
+        ? "bg-primary/10 shadow-primary/10"
+        : "bg-secondary/10 shadow-secondary/10"
+    )}
+  >
+    {message.role === "user" ? (
+      <span className="text-base font-semibold text-primary-foreground">
+        {email?.[0].toUpperCase() ?? "?"}
+      </span>
+    ) : (
+      <Box className="w-6 h-6 text-secondary-foreground" />
+    )}
+  </div>
+);
+
+const MessageBubble = ({
+  message,
+  displayedText,
+  chatContext,
+}: MessageProps & Pick<ChatContentProps, "displayedText" | "chatContext">) => (
+  <div
+    className={cn(
+      "flex-1 px-2 text-sm rounded-lg relative",
+      "transition-all duration-200",
+      message.role === "user"
+        ? "bg-primary/10 ml-8 border-primary/20"
+        : "bg-muted mr-8 border-border"
+    )}
+  >
+    <MessageActions message={message} />
+    <ReactMarkdown
+      className={cn("prose prose-sm max-w-none")}
+      components={{
+        p: ({ children }) => <p className="text-foreground">{children}</p>,
+        code: ({ children }) => (
+          <code className="bg-muted px-1 py-0.5 rounded">{children}</code>
+        ),
+      }}
+    >
+      {message.role === "assistant" &&
+      message ===
+        chatContext.conversationHistory
+          .filter((m) => m.role === "assistant")
+          .slice(-1)[0]
+        ? displayedText
+        : message.content}
+    </ReactMarkdown>
+  </div>
+);
+
 export const ChatContent = ({
   scrollContainerRef,
   chatContext,
@@ -36,214 +82,31 @@ export const ChatContent = ({
   email,
   displayedText,
   isLoading,
-}: Props) => {
-  type ChildProps = {
-    message: ChatContext["conversationHistory"][0];
-  };
-
-  const Avatar = ({ message }: ChildProps) => {
-    return (
-      <div
-        className={cn(
-          "flex-shrink-0 relative",
-          "w-10 h-10",
-          "rounded-full",
-          "flex items-center justify-center",
-
-          "before:content-['']",
-          "before:absolute before:inset-0",
-          "before:rounded-full",
-          "before:p-[2px]",
-          "before:bg-gradient-to-r",
-
-          message.role === "user"
-            ? [
-                "bg-primary/10",
-                "before:from-primary/20 before:to-primary/40",
-                "shadow-sm shadow-primary/10",
-              ]
-            : [
-                "bg-secondary/10",
-                "before:from-secondary/20 before:to-secondary/40",
-                "shadow-sm shadow-secondary/10",
-              ],
-
-          "transform transition-all duration-300 ease-in-out",
-          "group-hover:scale-110",
-          "cursor-pointer",
-
-          "group-hover:ring-2",
-          "group-hover:ring-offset-2",
-          "group-hover:ring-offset-background",
-          message.role === "user"
-            ? "group-hover:ring-primary/30"
-            : "group-hover:ring-secondary/30"
-        )}
-      >
-        {message.role === "user" ? (
+}: ChatContentProps) => (
+  <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4">
+    {!chatContext.conversationHistory.length ? (
+      <QueryExamples setFollowUp={setFollowUp} />
+    ) : (
+      <div className="space-y-6">
+        {chatContext.conversationHistory.map((message, index) => (
           <div
+            key={index}
             className={cn(
-              "relative w-full h-full rounded-full",
-              "flex items-center justify-center",
-              "overflow-hidden",
-              "bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5"
+              "flex items-start gap-3 group",
+              "animate-in slide-in-from-bottom-2",
+              message.role === "user" ? "flex-row-reverse" : "flex-row"
             )}
           >
-            <span
-              className={cn(
-                "text-base font-semibold",
-                "text-primary-foreground",
-                "select-none",
-                "transform transition-transform duration-300",
-                "group-hover:scale-110"
-              )}
-            >
-              {email?.[0].toUpperCase() ?? "?"}
-            </span>
-          </div>
-        ) : (
-          <div
-            className={cn(
-              "relative w-full h-full rounded-full",
-              "flex items-center justify-center",
-              "bg-gradient-to-br from-secondary/20 via-secondary/10 to-secondary/5"
-            )}
-          >
-            <Box
-              className={cn(
-                "w-6 h-6",
-                "text-secondary-foreground",
-                "transform transition-transform duration-300",
-                "group-hover:scale-110"
-              )}
+            <Avatar message={message} email={email} />
+            <MessageBubble
+              message={message}
+              displayedText={displayedText}
+              chatContext={chatContext}
             />
           </div>
-        )}
+        ))}
+        {isLoading && <LoadingIndicator />}
       </div>
-    );
-  };
-
-  /**
-   * A component that renders a message bubble in the chat window.
-   *
-   * The message bubble component is responsible for rendering a single message in the chat window.
-   * It takes a message object as a prop, which contains the content of the message and its role (user or assistant).
-   *
-   * @param message - The message object to render.
-   * @returns A JSX element representing the message bubble.
-   */
-  const MessageBubble = ({ message }: ChildProps) => {
-    return (
-      <div
-        className={cn(
-          "relative flex-1 px-1 text-sm",
-          "transform transition-all duration-200 ease-in-out",
-          "rounded-[20px]",
-          "hover:scale-[1.01]",
-          "group-hover:shadow-lg group-hover:shadow-foreground/5",
-
-          message.role === "user"
-            ? [
-                "bg-primary/10",
-                "text-foreground",
-                "rounded-tr-sm",
-                "ml-8 mr-2",
-                "border border-primary/20",
-                "dark:bg-primary/15",
-                "dark:border-primary/25",
-              ]
-            : [
-                "bg-muted",
-                "text-foreground",
-                "rounded-tl-sm",
-                "mr-8 ml-2",
-                "border border-border",
-                "dark:bg-muted/50",
-                "dark:border-border/50",
-              ],
-
-          "backdrop-blur-sm",
-          "leading-relaxed tracking-wide"
-        )}
-      >
-        <MessageActions message={message} />
-
-        <ReactMarkdown
-          components={{
-            p: ({ children }) => <p className="!text-foreground">{children}</p>,
-            h1: ({ children }) => (
-              <h1 className="!text-foreground">{children}</h1>
-            ),
-            h2: ({ children }) => (
-              <h2 className="!text-foreground">{children}</h2>
-            ),
-            h3: ({ children }) => (
-              <h3 className="!text-foreground">{children}</h3>
-            ),
-            h4: ({ children }) => (
-              <h4 className="!text-foreground">{children}</h4>
-            ),
-            li: ({ children }) => (
-              <li className="!text-foreground">{children}</li>
-            ),
-            strong: ({ children }) => (
-              <strong className="!text-foreground">{children}</strong>
-            ),
-            em: ({ children }) => (
-              <em className="!text-foreground">{children}</em>
-            ),
-            code: ({ children }) => (
-              <code className="!text-foreground bg-muted px-1 py-0.5 rounded-md">
-                {children}
-              </code>
-            ),
-          }}
-          className={cn(
-            "prose prose-sm max-w-none !text-foreground",
-            "[&_*]:!text-foreground",
-            "prose-p:my-2 prose-p:leading-relaxed",
-            "prose-headings:font-semibold prose-headings:leading-tight",
-            "prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg"
-          )}
-        >
-          {message.role === "assistant" &&
-          message ===
-            chatContext.conversationHistory
-              .filter((msg) => msg.role === "assistant")
-              .slice(-1)[0]
-            ? displayedText
-            : message.content}
-        </ReactMarkdown>
-      </div>
-    );
-  };
-
-  return (
-    <div
-      ref={scrollContainerRef}
-      className="flex-1 overflow-y-auto scroll-smooth px-6 py-4"
-    >
-      {!chatContext.conversationHistory.length ? (
-        <QueryExamples setFollowUp={setFollowUp} />
-      ) : (
-        <div className="space-y-6">
-          {chatContext.conversationHistory.map((message, index) => (
-            <div
-              key={index}
-              className={cn(
-                "flex items-start gap-3 group",
-                "animate-in slide-in-from-bottom-2",
-                message.role === "user" ? "flex-row-reverse" : "flex-row"
-              )}
-            >
-              <Avatar message={message} />
-
-              <MessageBubble message={message} />
-            </div>
-          ))}
-          {isLoading && <LoadingIndicator />}
-        </div>
-      )}
-    </div>
-  );
-};
+    )}
+  </div>
+);
