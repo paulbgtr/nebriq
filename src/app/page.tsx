@@ -9,6 +9,7 @@ import Image from "next/image";
 import {
   Settings,
   Folders,
+  FolderX,
   BookOpen,
   Sigma,
   Baseline,
@@ -443,6 +444,12 @@ export default function Home() {
                     description:
                       "Customizable tagging system for better organization",
                     icon: <Tag />,
+                  },
+                  {
+                    title: "No-Folder Structure",
+                    description:
+                      "Dump your notes in a single space, no need to organize",
+                    icon: <FolderX />,
                   },
                   {
                     title: "Focus Mode",
