@@ -3,6 +3,7 @@ import Navbar from "@/shared/components/navbar";
 import { redirect } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/server";
 import AIChat from "@/shared/components/features/chat";
+import Command from "@/shared/components/features/command";
 
 export const metadata: Metadata = {
   title: "Dashboard | Notes App",
@@ -27,6 +28,7 @@ export default async function DashboardLayout({
       <Navbar />
       <div className="flex-1 space-y-4 p-8 px-16 pt-6">{children}</div>
       <AIChat />
+      <Command />
     </main>
   );
 }
