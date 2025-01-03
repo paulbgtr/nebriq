@@ -13,6 +13,7 @@ import { useNotes } from "@/hooks/use-notes";
 import { ChatContent } from "./components/chat-content";
 import { InputArea } from "./components/input-area";
 import { ChatHeader } from "./components/header";
+import { Spinner } from "../../spinner";
 
 export default function AIChat() {
   const [followUp, setFollowUp] = useState("");
@@ -24,7 +25,7 @@ export default function AIChat() {
   const { getNotesQuery } = useNotes();
   const { relevantNotes, setRelevantNotes } = useRelevantNotesStore();
 
-  const { data: allNotes } = getNotesQuery;
+  const { data: allNotes, isLoading: isAllNotesLoading } = getNotesQuery;
 
   useEffect(() => {
     setRelevantNotes(allNotes ?? []);
@@ -82,39 +83,53 @@ export default function AIChat() {
             <Box className="h-6 w-6 text-primary-foreground" />
           </Button>
         ) : (
-          <article
-            ref={chatContainerRef}
-            className={cn(
-              "flex flex-col h-[600px] rounded-3xl",
-              "bg-background/95 backdrop-blur-sm",
-              "border border-border/50",
-              "shadow-2xl hover:shadow-3xl",
-              "transition-all duration-500 ease-out",
-              "animate-in slide-in-from-bottom-3 zoom-in-95"
+          <>
+            {isAllNotesLoading ? (
+              <Spinner />
+            ) : (
+              <article
+                ref={chatContainerRef}
+                className={cn(
+                  "flex flex-col h-[600px] rounded-3xl",
+                  "bg-background/95 backdrop-blur-sm",
+                  "border border-border/50",
+                  "shadow-2xl hover:shadow-3xl",
+                  "transition-all duration-500 ease-out",
+                  "animate-in slide-in-from-bottom-3 zoom-in-95"
+                )}
+              >
+                <ChatHeader
+                  chatContext={chatContext}
+                  clearChatContext={clearChatContext}
+                  setIsOpen={setIsOpen}
+                />
+
+                {isAllNotesLoading ? (
+                  <div className="flex-1 flex justify-center items-center">
+                    <Spinner size="sm" />
+                  </div>
+                ) : (
+                  <>
+                    <ChatContent
+                      scrollContainerRef={scrollContainerRef}
+                      chatContext={chatContext}
+                      setFollowUp={setFollowUp}
+                      email={user?.email ?? ""}
+                      displayedText={displayedText}
+                      isLoading={isLoading}
+                    />
+
+                    <InputArea
+                      followUp={followUp}
+                      setFollowUp={setFollowUp}
+                      setQuery={setQuery}
+                      maxLength={maxLength}
+                    />
+                  </>
+                )}
+              </article>
             )}
-          >
-            <ChatHeader
-              chatContext={chatContext}
-              clearChatContext={clearChatContext}
-              setIsOpen={setIsOpen}
-            />
-
-            <ChatContent
-              scrollContainerRef={scrollContainerRef}
-              chatContext={chatContext}
-              setFollowUp={setFollowUp}
-              email={user?.email ?? ""}
-              displayedText={displayedText}
-              isLoading={isLoading}
-            />
-
-            <InputArea
-              followUp={followUp}
-              setFollowUp={setFollowUp}
-              setQuery={setQuery}
-              maxLength={maxLength}
-            />
-          </article>
+          </>
         )}
       </div>
     </TooltipProvider>
