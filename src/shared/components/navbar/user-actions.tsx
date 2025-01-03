@@ -16,7 +16,6 @@ import {
   Keyboard,
   PaintBucket,
   HelpCircle,
-  Bell,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
 import { logout } from "@/app/actions/supabase/auth";
@@ -41,23 +40,14 @@ const menuItems = [
       {
         icon: Settings,
         label: "General Settings",
-        shortcut: "⌘,",
         href: "/settings",
         description: "Configure general app settings",
       },
       {
         icon: PaintBucket,
         label: "Appearance",
-        shortcut: "⌘T",
         href: "/settings/appearance",
         description: "Customize theme and layout",
-      },
-      {
-        icon: Bell,
-        label: "Notifications",
-        shortcut: "⌘N",
-        href: "/settings/notifications",
-        description: "Manage reminders and alerts",
       },
     ],
   },
@@ -65,16 +55,8 @@ const menuItems = [
     group: "Help",
     items: [
       {
-        icon: Keyboard,
-        label: "Shortcuts",
-        shortcut: "⌘/",
-        href: "/shortcuts",
-        description: "View keyboard shortcuts",
-      },
-      {
         icon: HelpCircle,
         label: "Help & Support",
-        shortcut: "⌘H",
         href: "/help",
         description: "Get help and documentation",
       },
@@ -155,9 +137,6 @@ export const UserActions = ({ email }: UserActionsProps) => {
                         >
                           <item.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                           <span>{item.label}</span>
-                          <DropdownMenuShortcut className="text-muted-foreground">
-                            {item.shortcut}
-                          </DropdownMenuShortcut>
                         </Link>
                       </DropdownMenuItem>
                     ))}
