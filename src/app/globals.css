@@ -8,58 +8,75 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 328 80% 29%; /* Burgundy #880E4F (Material Red 900) */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 351 100% 96%; /* Cream #FFEBEE (Material Red 50) */
-    --secondary-foreground: 0 0% 26%; /* Dark gray #424242 */
-    --muted: 351 100% 96%;
-    --muted-foreground: 0 0% 26%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84% 60%;
+    /* Base colors */
+    --background: 220 33% 98%; /* Soft blue-tinted white */
+    --foreground: 220 25% 15%;
+    --card: 220 33% 99%;
+    --card-foreground: 220 25% 15%;
+    --popover: 220 33% 99%;
+    --popover-foreground: 220 25% 15%;
+
+    /* Primary - Blue promotes focus and memory retention */
+    --primary: 220 45% 45%;
+    --primary-foreground: 220 33% 98%;
+
+    /* Secondary - Subtle blue-gray */
+    --secondary: 220 25% 94%;
+    --secondary-foreground: 220 25% 20%;
+
+    /* Muted variations */
+    --muted: 220 25% 94%;
+    --muted-foreground: 220 20% 40%;
+
+    /* Accent - Lighter blue variation for subtle emphasis */
+    --accent: 220 35% 96%;
+    --accent-foreground: 220 25% 25%;
+
+    /* Destructive */
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 351 100% 92%;
-    --input: 351 100% 92%;
-    --ring: 328 80% 29%;
+
+    /* Borders and interactive elements */
+    --border: 220 25% 90%;
+    --input: 220 25% 90%;
+    --ring: 220 45% 45%;
+
     --radius: 0.5rem;
-    --chart-1: 328 80% 29%; /* Burgundy */
-    --chart-2: 0 0% 26%; /* Dark gray */
-    --chart-3: 328 70% 39%; /* Lighter burgundy */
-    --chart-4: 0 0% 36%; /* Medium gray */
-    --chart-5: 328 60% 49%; /* Light burgundy */
   }
 
   .dark {
-    --background: 0 0% 9%; /* Darker than #424242 for better contrast */
-    --foreground: 351 100% 96%;
-    --card: 0 0% 9%;
-    --card-foreground: 351 100% 96%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 351 100% 96%;
-    --primary: 328 80% 34%; /* Slightly brighter burgundy for dark mode */
-    --primary-foreground: 351 100% 96%;
-    --secondary: 0 0% 16%;
-    --secondary-foreground: 351 100% 96%;
-    --muted: 0 0% 16%;
-    --muted-foreground: 351 100% 86%;
-    --accent: 351 100% 96%; /* Cream color becomes accent in dark mode */
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 351 100% 96%;
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
-    --ring: 328 80% 34%;
-    --chart-1: 328 80% 34%; /* Bright burgundy */
-    --chart-2: 351 100% 96%; /* Cream */
-    --chart-3: 328 70% 44%; /* Medium burgundy */
-    --chart-4: 0 0% 26%; /* Dark gray */
-    --chart-5: 328 60% 54%; /* Light burgundy */
+    /* Base colors */
+    --background: 220 25% 12%;
+    --foreground: 220 25% 95%;
+    --card: 220 25% 14%;
+    --card-foreground: 220 25% 95%;
+    --popover: 220 25% 14%;
+    --popover-foreground: 220 25% 95%;
+
+    /* Primary */
+    --primary: 220 40% 60%;
+    --primary-foreground: 220 25% 98%;
+
+    /* Secondary */
+    --secondary: 220 20% 22%;
+    --secondary-foreground: 220 25% 95%;
+
+    /* Muted */
+    --muted: 220 20% 22%;
+    --muted-foreground: 220 20% 75%;
+
+    /* Accent - Darker blue variation */
+    --accent: 220 25% 24%;
+    --accent-foreground: 220 25% 95%;
+
+    /* Destructive */
+    --destructive: 0 60% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders and interactive */
+    --border: 220 25% 20%;
+    --input: 220 25% 20%;
+    --ring: 220 40% 60%;
   }
 }
 
@@ -104,11 +121,11 @@ body {
 
 @layer components {
   .tiptap-editor {
-    @apply bg-white rounded-lg border border-gray-200 shadow-sm;
+    @apply bg-background rounded-lg border border-border shadow-sm;
   }
 
   .tiptap-editor:focus-within {
-    @apply ring-2 ring-gray-500/20 border-gray-500;
+    @apply ring-2 ring-ring/20 border-ring;
   }
 
   .prose {
@@ -116,19 +133,19 @@ body {
   }
 
   .prose p {
-    @apply my-3 text-gray-800 leading-relaxed;
+    @apply my-3 text-foreground leading-relaxed;
   }
 
   .prose h1 {
-    @apply text-3xl font-bold text-gray-900 mb-4 mt-6;
+    @apply text-3xl font-bold text-foreground mb-4 mt-6;
   }
 
   .prose h2 {
-    @apply text-2xl font-semibold text-gray-900 mb-3 mt-5;
+    @apply text-2xl font-semibold text-foreground mb-3 mt-5;
   }
 
   .prose h3 {
-    @apply text-xl font-semibold text-gray-900 mb-3 mt-4;
+    @apply text-xl font-semibold text-foreground mb-3 mt-4;
   }
 
   .prose ul {
@@ -140,51 +157,36 @@ body {
   }
 
   .prose li {
-    @apply text-gray-800;
+    @apply text-foreground;
   }
 
   .prose blockquote {
-    @apply pl-4 border-l-4 border-gray-200 text-gray-700 italic my-4;
+    @apply pl-4 border-l-4 border-border text-muted-foreground italic my-4;
   }
 
   .prose code {
-    background-color: #f8f9fa;
-    border-radius: 0.25rem;
-    padding: 0.2rem 0.4rem;
-    font-family: "Fira Code", "Consolas", Monaco, "Andale Mono", "Ubuntu Mono",
-      monospace;
-    font-size: 0.9em;
-    color: #e63946;
+    @apply bg-muted rounded-md px-[0.4rem] py-[0.2rem] font-mono text-[0.9em] text-primary;
   }
 
   .prose pre {
-    background-color: #f8f9fa;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin: 1rem 0;
-    border: 1px solid #e9ecef;
-    overflow-x: auto;
+    @apply bg-muted rounded-lg p-4 my-4 border border-border overflow-x-auto;
   }
 
   .prose pre code {
-    font-family: "Fira Code", "Consolas", Monaco, "Andale Mono", "Ubuntu Mono",
-      monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #1a1a1a;
+    @apply font-mono text-[0.9rem] leading-relaxed text-foreground;
   }
 
   .prose a {
-    @apply text-gray-600 hover:text-gray-700 underline decoration-gray-500/30 hover:decoration-gray-600;
+    @apply text-primary hover:text-primary/80 underline decoration-primary/30 hover:decoration-primary/60;
   }
 
   .prose strong {
-    @apply font-semibold text-gray-900;
+    @apply font-semibold text-foreground;
   }
 }
 
 .tiptap p.is-editor-empty:first-child::before {
-  color: #adb5bd;
+  @apply text-muted-foreground;
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -192,40 +194,23 @@ body {
 }
 
 .dropdown-menu {
-  background-color: var(--white);
-  border: 1px solid gainsboro;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  text-align: left !important;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  overflow: auto;
-  position: relative;
-  min-width: 200px;
+  @apply bg-popover border border-border p-2 rounded-lg flex flex-col gap-0.5 overflow-auto relative min-w-[200px];
 }
 
 .dropdown-menu button {
-  text-align: left !important;
-  width: 100%;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s ease;
+  @apply text-left w-full px-2 py-1 rounded transition-colors duration-200;
 }
 
 .dropdown-menu button:hover {
-  background-color: #ffebee;
+  @apply bg-accent;
 }
 
 .dropdown-menu button.is-selected {
-  background-color: #ffebee;
+  @apply bg-accent;
 }
 
 .mention {
-  background-color: #ffebee;
-  border-radius: 0.4rem;
-  box-decoration-break: clone;
-  padding: 0.1rem 0.3rem;
+  @apply bg-accent rounded-md px-[0.3rem] py-[0.1rem] box-decoration-clone;
 }
 
 .mention::after {
@@ -234,26 +219,23 @@ body {
 
 /* Syntax highlighting styles */
 .prose-sm {
-  font-size: 0.875rem;
+  @apply text-sm;
 }
 
 /* Code block styles */
 .hljs {
-  color: var(--foreground);
-  background: var(--background);
+  @apply text-foreground bg-background;
 }
 
 .hljs-comment,
 .hljs-quote {
-  color: #616161;
-  font-style: italic;
+  @apply text-muted-foreground italic;
 }
 
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-subst {
-  color: #c792ea;
-  font-weight: bold;
+  @apply text-primary font-bold;
 }
 
 .hljs-number,
@@ -261,87 +243,74 @@ body {
 .hljs-variable,
 .hljs-template-variable,
 .hljs-tag .hljs-attr {
-  color: #f78c6c;
+  @apply text-primary/80;
 }
 
 .hljs-string,
 .hljs-doctag {
-  color: #c3e88d;
+  @apply text-primary/70;
 }
 
 .hljs-title,
 .hljs-section,
 .hljs-selector-id {
-  color: #82aaff;
-  font-weight: bold;
+  @apply text-primary font-bold;
 }
 
 .hljs-subst {
-  font-weight: normal;
+  @apply font-normal;
 }
 
 .hljs-type,
 .hljs-class .hljs-title {
-  color: #ffcb6b;
-  font-weight: bold;
+  @apply text-primary font-bold;
 }
 
 .hljs-tag,
 .hljs-name,
 .hljs-attribute {
-  color: #7fdbca;
-  font-weight: normal;
+  @apply text-primary/90 font-normal;
 }
 
 .hljs-regexp,
 .hljs-link {
-  color: #f78c6c;
+  @apply text-primary/80;
 }
 
 .hljs-symbol,
 .hljs-bullet {
-  color: #c792ea;
+  @apply text-primary;
 }
 
 .hljs-built_in,
 .hljs-builtin-name {
-  color: #82aaff;
+  @apply text-primary;
 }
 
 .hljs-deletion {
-  background: #fdd;
+  @apply bg-destructive/10;
 }
 
 .hljs-addition {
-  background: #dfd;
+  @apply bg-primary/10;
 }
 
 .hljs-emphasis {
-  font-style: italic;
+  @apply italic;
 }
 
 .hljs-strong {
-  font-weight: bold;
+  @apply font-bold;
 }
 
 .tiptap img {
-  border-radius: 1rem;
-  display: block;
-  height: auto;
-  margin: 1.5rem 0;
-  max-width: 100%;
+  @apply rounded-2xl block h-auto my-6 max-w-full;
 }
 
 .tiptap a {
-  color: #880e4f;
-  font-weight: 500;
-  text-decoration: underline;
-  transition:
-    color 0.2s ease,
-    text-decoration-color 0.2s ease;
+  @apply text-primary font-medium underline transition-colors duration-200;
 }
 
 .tiptap a:hover {
-  color: #c41d7f;
-  text-decoration-color: currentColor;
+  @apply text-primary/80;
 }
