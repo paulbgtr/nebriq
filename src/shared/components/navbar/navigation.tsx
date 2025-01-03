@@ -58,7 +58,7 @@ export const Navigation = ({ email }: Props) => {
       animate={{ y: 0 }}
       className={cn(
         "sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm transition-all duration-200",
-        scrolled && "shadow-sm"
+        scrolled && "border-border shadow-sm"
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -88,16 +88,18 @@ export const Navigation = ({ email }: Props) => {
                     className={cn(
                       "relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-200",
                       pathname === item.href
-                        ? "text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
+                        ? "text-primary bg-primary/10"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
                       "group flex items-center gap-2 hover:scale-105"
                     )}
                     aria-current={pathname === item.href ? "page" : undefined}
                   >
                     <item.icon
                       className={cn(
-                        "transition-opacity duration-200",
-                        pathname === item.href ? "opacity-100" : "opacity-70"
+                        "transition-colors duration-200",
+                        pathname === item.href
+                          ? "text-primary"
+                          : "text-muted-foreground"
                       )}
                       size={16}
                     />
@@ -133,7 +135,7 @@ export const Navigation = ({ email }: Props) => {
                 </SheetTrigger>
                 <SheetContent
                   side="right"
-                  className="w-[240px] sm:w-[540px] p-0 pt-8"
+                  className="w-[240px] sm:w-[540px] p-0 pt-8 border-l border-border"
                 >
                   <AnimatePresence>
                     <motion.div
@@ -153,14 +155,21 @@ export const Navigation = ({ email }: Props) => {
                             href={item.href}
                             onClick={() => setIsOpen(false)}
                             className={cn(
-                              "px-6 py-3 text-sm font-medium transition-all duration-200",
+                              "px-6 py-3 text-sm font-medium transition-colors duration-200",
                               pathname === item.href
-                                ? "bg-accent/50 text-primary"
-                                : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                                ? "bg-muted text-primary"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground",
                               "flex items-center gap-2"
                             )}
                           >
-                            <item.icon className="w-4 h-4" />
+                            <item.icon
+                              className={cn(
+                                "w-4 h-4",
+                                pathname === item.href
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              )}
+                            />
                             {item.name}
                           </Link>
                         </motion.div>

@@ -105,7 +105,7 @@ export const UserActions = ({ email }: UserActionsProps) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-8 w-8 rounded-full transition-all duration-200 hover:ring-2 hover:ring-primary/50 hover:ring-offset-2"
+          className="relative h-8 w-8 rounded-full transition-colors duration-200 hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-primary">
@@ -116,20 +116,26 @@ export const UserActions = ({ email }: UserActionsProps) => {
       </DropdownMenuTrigger>
       <AnimatePresence>
         {isOpen && (
-          <DropdownMenuContent className="w-64" align="end" forceMount asChild>
+          <DropdownMenuContent
+            className="w-64 border border-border bg-popover"
+            align="end"
+            forceMount
+            asChild
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
-              <DropdownMenuLabel className="font-normal p-4">
+              <DropdownMenuLabel className="font-normal p-4 border-b border-border">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">{username}</p>
+                  <p className="text-sm font-medium text-foreground">
+                    {username}
+                  </p>
                   <p className="text-xs text-muted-foreground">{email}</p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
               {menuItems.map((group, index) => (
                 <div key={group.group}>
                   <DropdownMenuGroup className="p-2">
@@ -140,26 +146,28 @@ export const UserActions = ({ email }: UserActionsProps) => {
                       <DropdownMenuItem
                         key={item.label}
                         asChild
-                        className="hover:bg-accent/50 focus:bg-accent/50"
+                        className="hover:bg-muted focus:bg-muted"
                       >
                         <Link
                           href={item.href}
-                          className="flex items-center py-2"
+                          className="flex items-center py-2 text-foreground"
                           title={item.description}
                         >
-                          <item.icon className="mr-2 h-4 w-4" />
+                          <item.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                           <span>{item.label}</span>
-                          <DropdownMenuShortcut>
+                          <DropdownMenuShortcut className="text-muted-foreground">
                             {item.shortcut}
                           </DropdownMenuShortcut>
                         </Link>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuGroup>
-                  {index < menuItems.length - 1 && <DropdownMenuSeparator />}
+                  {index < menuItems.length - 1 && (
+                    <DropdownMenuSeparator className="border-border" />
+                  )}
                 </div>
               ))}
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="border-border" />
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <div className="p-2" onClick={(e) => e.stopPropagation()}>
@@ -169,21 +177,30 @@ export const UserActions = ({ email }: UserActionsProps) => {
                     >
                       <LogOut className="mr-2 h-4 w-4 text-destructive" />
                       <span className="text-destructive">Log out</span>
-                      <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                      <DropdownMenuShortcut className="text-destructive/70">
+                        ⇧⌘Q
+                      </DropdownMenuShortcut>
                     </DropdownMenuItem>
                   </div>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="bg-popover border-border">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Log out of Nebriq?</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogTitle className="text-foreground">
+                      Log out of Nebriq?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-muted-foreground">
                       You will be logged out of Nebriq. If you have unsaved
                       changes, they will be lost. Continue?
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleLogout}>
+                    <AlertDialogCancel className="border-border hover:bg-muted">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleLogout}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
                       Continue
                     </AlertDialogAction>
                   </AlertDialogFooter>

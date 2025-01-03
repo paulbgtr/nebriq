@@ -138,41 +138,71 @@ export const ChatContent = ({
         className={cn(
           "relative flex-1 px-1 text-sm",
           "transform transition-all duration-200 ease-in-out",
-
           "rounded-[20px]",
-
           "hover:scale-[1.01]",
-          "group-hover:shadow-lg group-hover:shadow-black/5",
+          "group-hover:shadow-lg group-hover:shadow-foreground/5",
 
           message.role === "user"
             ? [
-                "bg-primary/15 text-foreground",
+                "bg-primary/10",
+                "text-foreground",
                 "rounded-tr-sm",
                 "ml-8 mr-2",
-                "border border-primary/10",
-                "dark:bg-primary/10",
+                "border border-primary/20",
+                "dark:bg-primary/15",
+                "dark:border-primary/25",
               ]
             : [
-                "bg-secondary/15 text-secondary-foreground",
+                "bg-muted",
+                "text-foreground",
                 "rounded-tl-sm",
                 "mr-8 ml-2",
-                "border border-secondary/10",
-                "dark:bg-secondary/10",
+                "border border-border",
+                "dark:bg-muted/50",
+                "dark:border-border/50",
               ],
 
           "backdrop-blur-sm",
-
           "leading-relaxed tracking-wide"
         )}
       >
         <MessageActions message={message} />
 
         <ReactMarkdown
+          components={{
+            p: ({ children }) => <p className="!text-foreground">{children}</p>,
+            h1: ({ children }) => (
+              <h1 className="!text-foreground">{children}</h1>
+            ),
+            h2: ({ children }) => (
+              <h2 className="!text-foreground">{children}</h2>
+            ),
+            h3: ({ children }) => (
+              <h3 className="!text-foreground">{children}</h3>
+            ),
+            h4: ({ children }) => (
+              <h4 className="!text-foreground">{children}</h4>
+            ),
+            li: ({ children }) => (
+              <li className="!text-foreground">{children}</li>
+            ),
+            strong: ({ children }) => (
+              <strong className="!text-foreground">{children}</strong>
+            ),
+            em: ({ children }) => (
+              <em className="!text-foreground">{children}</em>
+            ),
+            code: ({ children }) => (
+              <code className="!text-foreground bg-muted px-1 py-0.5 rounded-md">
+                {children}
+              </code>
+            ),
+          }}
           className={cn(
-            "prose prose-sm max-w-none",
-            "prose-headings:font-semibold prose-headings:leading-tight",
+            "prose prose-sm max-w-none !text-foreground",
+            "[&_*]:!text-foreground",
             "prose-p:my-2 prose-p:leading-relaxed",
-            "prose-code:px-1 prose-code:py-0.5 prose-code:rounded-md prose-code:bg-muted",
+            "prose-headings:font-semibold prose-headings:leading-tight",
             "prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg"
           )}
         >

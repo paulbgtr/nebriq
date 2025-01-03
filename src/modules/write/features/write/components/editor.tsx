@@ -2,7 +2,7 @@ import { EditorContent } from "@tiptap/react";
 import { useNotes } from "@/hooks/use-notes";
 import { Editor as TiptapEditor } from "@tiptap/react";
 import { useEffect, useState, useCallback } from "react";
-import { Check, Expand, Shrink, Save, Undo, Redo } from "lucide-react";
+import { Expand, Shrink, Save, Undo, Redo } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useDebouncedCallback } from "use-debounce";
 import { TagManager } from "./tag-manager";
@@ -17,13 +17,7 @@ type EditorProps = {
   content: string;
 };
 
-export const Editor = ({
-  id,
-  editor,
-  title,
-  setTitle,
-  content,
-}: EditorProps) => {
+export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
   const { updateNoteMutation } = useNotes();
   const { toast } = useToast();
   const [isZenMode, setIsZenMode] = useState(false);
@@ -32,14 +26,17 @@ export const Editor = ({
   const [characterCount, setCharacterCount] = useState(0);
   const [hasContentChanged, setHasContentChanged] = useState(false);
 
-  useEffect(() => {
-    if (editor && content) {
-      updateCounts();
-    }
-  }, [editor, content]);
+  const updateCounts = useCallback(() => {
+    if (!editor) return;
+    const text = editor.state.doc.textContent;
+    setCharacterCount(text.length);
+    setWordCount(text.split(/\s+/).filter(Boolean).length);
+  }, [editor]);
 
   const updateNote = useCallback(
     (newTitle?: string, newContent?: string) => {
+      if (!id) return;
+
       setIsSaving(true);
       updateNoteMutation.mutate(
         {
@@ -48,9 +45,7 @@ export const Editor = ({
           content: newContent ?? content,
         },
         {
-          onSuccess: () => {
-            setIsSaving(false);
-          },
+          onSuccess: () => setIsSaving(false),
           onError: () => {
             setIsSaving(false);
             toast({
@@ -62,43 +57,53 @@ export const Editor = ({
         }
       );
     },
-    [id, title, content]
+    [id, title, content, updateNoteMutation, toast]
   );
 
   const debouncedUpdate = useDebouncedCallback(updateNote, 1000);
 
-  const updateCounts = useCallback(() => {
-    if (editor) {
-      const text = editor.state.doc.textContent;
-      setCharacterCount(text.length);
-      setWordCount(text.split(/\s+/).filter(Boolean).length);
-    }
-  }, [editor]);
-
+  // Initial counts update
   useEffect(() => {
-    if (editor) {
-      editor.on("update", ({ editor }) => {
-        debouncedUpdate(undefined, editor.getHTML());
-        updateCounts();
-        setHasContentChanged(true);
-      });
+    if (editor && content) {
+      updateCounts();
     }
+  }, [editor, content, updateCounts]);
+
+  // Editor update handler
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleUpdate = () => {
+      const newContent = editor.getHTML();
+      debouncedUpdate(undefined, newContent);
+      updateCounts();
+      setHasContentChanged(true);
+    };
+
+    editor.on("update", handleUpdate);
+    return () => {
+      editor.off("update", handleUpdate);
+    };
   }, [editor, debouncedUpdate, updateCounts]);
 
   useEffect(() => {
     const handleKeyboard = (e: KeyboardEvent) => {
+      if (!editor) return;
+
       if (e.ctrlKey || e.metaKey) {
-        if (e.key === "s") {
-          e.preventDefault();
-          updateNote();
-        }
-        if (e.key === "z" && !e.shiftKey) {
-          e.preventDefault();
-          editor?.commands.undo();
-        }
-        if (e.key === "z" && e.shiftKey) {
-          e.preventDefault();
-          editor?.commands.redo();
+        switch (e.key) {
+          case "s":
+            e.preventDefault();
+            updateNote();
+            break;
+          case "z":
+            e.preventDefault();
+            if (e.shiftKey) {
+              editor.commands.redo();
+            } else {
+              editor.commands.undo();
+            }
+            break;
         }
       }
     };
@@ -106,6 +111,18 @@ export const Editor = ({
     window.addEventListener("keydown", handleKeyboard);
     return () => window.removeEventListener("keydown", handleKeyboard);
   }, [editor, updateNote]);
+
+  const editorContent = (
+    <div
+      className={`h-[calc(100vh-24rem)] cursor-text prose prose-sm max-w-none ${
+        isZenMode ? "mx-auto w-full max-w-3xl" : ""
+      }`}
+      style={{ overflow: "auto" }}
+      onClick={() => editor?.commands.focus()}
+    >
+      <EditorContent editor={editor} />
+    </div>
+  );
 
   return (
     <div
@@ -174,17 +191,7 @@ export const Editor = ({
         </div>
       </div>
 
-      <EditorContextMenu editor={editor}>
-        <div
-          className={`h-[calc(100vh-24rem)] cursor-text prose prose-sm max-w-none ${
-            isZenMode ? "mx-auto w-full max-w-3xl" : ""
-          }`}
-          style={{ overflow: "auto" }}
-          onClick={() => editor?.commands.focus()}
-        >
-          <EditorContent editor={editor} />
-        </div>
-      </EditorContextMenu>
+      <EditorContextMenu editor={editor}>{editorContent}</EditorContextMenu>
     </div>
   );
-};
+}
