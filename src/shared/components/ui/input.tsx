@@ -10,8 +10,26 @@ const Input = React.forwardRef<
     <input
       type={type}
       className={cn(
-        "px-3 flex h-9 w-full rounded-md transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        isBordered ? "border border-input" : "border-0",
+        "w-full h-9 px-3 rounded-md md:text-sm",
+        "bg-background",
+        "text-foreground",
+
+        "placeholder:text-muted-foreground",
+        "file:border-0 file:bg-transparent",
+        "file:text-sm file:font-medium file:text-foreground",
+
+        "focus-visible:outline-none",
+        "focus-visible:ring-2",
+        "focus-visible:ring-ring/30",
+        isBordered && "focus-visible:border-ring",
+
+        isBordered && ["border border-input", "hover:border-ring/50"],
+
+        "disabled:cursor-not-allowed",
+        "disabled:opacity-50",
+
+        "transition-colors duration-200",
+
         className
       )}
       ref={ref}
