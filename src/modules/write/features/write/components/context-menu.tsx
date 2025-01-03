@@ -36,7 +36,7 @@ import { upload } from "@/app/actions/supabase/storage";
 import { Bucket } from "@/types/bucket";
 
 type Props = {
-  editor: Editor | null;
+  editor: Editor;
   children: React.ReactNode;
 };
 
@@ -55,9 +55,7 @@ const formatUrl = (url: string): string => {
 };
 
 export const EditorContextMenu = ({ children, editor }: Props) => {
-  if (!editor) {
-    return null;
-  }
+  const { toast } = useToast();
 
   const setLink = useCallback(() => {
     const previousUrl = editor.getAttributes("link").href;
@@ -92,8 +90,6 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
   }, [editor]);
 
   const { user } = useUser();
-
-  const { toast } = useToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

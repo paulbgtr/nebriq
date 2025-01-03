@@ -191,7 +191,9 @@ export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
         </div>
       </div>
 
-      <EditorContextMenu editor={editor}>{editorContent}</EditorContextMenu>
+      {editor && (
+        <EditorContextMenu editor={editor}>{editorContent}</EditorContextMenu>
+      )}
     </div>
   );
 }
