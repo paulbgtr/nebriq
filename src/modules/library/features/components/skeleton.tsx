@@ -1,4 +1,5 @@
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { cn } from "@/shared/lib/utils";
 
 export const SkeletonHistory = () => {
   return (
@@ -6,12 +7,17 @@ export const SkeletonHistory = () => {
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}
-          className="flex justify-between items-center p-4 border-b border-gray-200 hover:opacity-80 cursor-pointer duration-300"
+          className={cn(
+            "flex justify-between items-center p-4",
+            "border-b border-border",
+            "hover:bg-muted/50 cursor-pointer",
+            "transition-colors duration-300"
+          )}
           role="button"
         >
           <div className="flex space-y-3 flex-col">
-            <Skeleton className="w-48 h-4" />
-            <Skeleton className="w-20 h-4" />
+            <Skeleton className="w-48 h-4 bg-muted" />
+            <Skeleton className="w-20 h-4 bg-muted" />
           </div>
         </div>
       ))}

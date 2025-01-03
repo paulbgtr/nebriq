@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatDate } from "@/shared/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 type SearchHistoryItemProps = {
   query: string;
@@ -21,10 +22,13 @@ const SearchHistoryItem: React.FC<SearchHistoryItemProps> = ({
   return (
     <Link
       href={`/search/${encodeURIComponent(query)}`}
-      className="block transition-all duration-200 hover:bg-gray-50"
+      className={cn(
+        "block transition-colors duration-200",
+        "hover:bg-muted/50"
+      )}
     >
       <article
-        className="group relative p-4 sm:p-6 border-b border-gray-200"
+        className={cn("group relative p-4 sm:p-6", "border-b border-border")}
         role="button"
         aria-label={`Search for ${query} from ${new Date(
           timestamp
@@ -32,11 +36,16 @@ const SearchHistoryItem: React.FC<SearchHistoryItemProps> = ({
       >
         <div className="flex flex-col gap-2">
           <header className="flex items-start justify-between">
-            <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors">
+            <h3
+              className={cn(
+                "text-lg font-medium text-foreground",
+                "group-hover:text-primary transition-colors"
+              )}
+            >
               {query}
             </h3>
             <time
-              className="hidden sm:block text-sm text-gray-500"
+              className="hidden sm:block text-sm text-muted-foreground"
               dateTime={timestamp.toISOString()}
             >
               {formatDate(timestamp)}
@@ -44,13 +53,13 @@ const SearchHistoryItem: React.FC<SearchHistoryItemProps> = ({
           </header>
 
           {summary && (
-            <p className="text-sm text-gray-600 line-clamp-2">
+            <p className="text-sm text-muted-foreground/80 line-clamp-2">
               {truncatedSummary}
             </p>
           )}
 
           <time
-            className="block sm:hidden text-sm text-gray-500"
+            className="block sm:hidden text-sm text-muted-foreground"
             dateTime={timestamp.toISOString()}
           >
             {formatDate(timestamp)}
