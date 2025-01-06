@@ -143,7 +143,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
               }
 
               return true;
-            } catch (error) {
+            } catch {
               return false;
             }
           },
@@ -160,7 +160,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
               const domain = parsedUrl.hostname;
 
               return !disallowedDomains.includes(domain);
-            } catch (error) {
+            } catch {
               return false;
             }
           },
