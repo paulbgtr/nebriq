@@ -44,7 +44,7 @@ const searchHandler = async (
   const results = await vectorStore.similaritySearchWithScore(query, 3);
 
   const filteredResults = results
-    .filter(([doc, score]) => score > 0.4)
+    .filter(([_, score]) => score > 0.4)
     .map(([doc]) => doc);
 
   console.log(
