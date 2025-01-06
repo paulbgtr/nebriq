@@ -3,12 +3,13 @@
 import { ReactRenderer } from "@tiptap/react";
 import tippy from "tippy.js";
 import { createClient } from "../supabase/client";
+import { Tippy } from "tippy.js";
 
 import MentionList from "./mention-list";
 
 export default function createSuggestion(currentNoteId: string) {
   return {
-    items: async ({ query }) => {
+    items: async ({ query }: { query: string }) => {
       const supabase = await createClient();
       const { data: notes } = await supabase.from("notes").select("*");
 
@@ -26,11 +27,11 @@ export default function createSuggestion(currentNoteId: string) {
     },
 
     render: () => {
-      let component;
-      let popup;
+      let component: any;
+      let popup: any;
 
       return {
-        onStart: (props) => {
+        onStart: (props: any) => {
           component = new ReactRenderer(MentionList, {
             props: {
               ...props,
@@ -56,7 +57,7 @@ export default function createSuggestion(currentNoteId: string) {
           });
         },
 
-        onUpdate(props) {
+        onUpdate(props: any) {
           component?.updateProps(props);
 
           if (!props.clientRect) {
@@ -68,7 +69,7 @@ export default function createSuggestion(currentNoteId: string) {
           });
         },
 
-        onKeyDown(props) {
+        onKeyDown(props: any) {
           if (props.event.key === "Escape") {
             popup?.[0].hide();
             return true;
