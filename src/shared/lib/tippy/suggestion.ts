@@ -3,7 +3,6 @@
 import { ReactRenderer } from "@tiptap/react";
 import tippy from "tippy.js";
 import { createClient } from "../supabase/client";
-import { Tippy } from "tippy.js";
 
 import MentionList from "./mention-list";
 
