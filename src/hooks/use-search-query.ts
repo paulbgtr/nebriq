@@ -25,8 +25,6 @@ export const useSearchQuery = (): ReturnType | null => {
 
   const { user } = useUser();
 
-  if (!query) return null;
-
   const [searchQuery, setSearchQuery] = useState<string>(
     decodeURIComponent(query)
   );
@@ -65,6 +63,8 @@ export const useSearchQuery = (): ReturnType | null => {
 
     fetchResults();
   }, [query, isAiSearch, setResults, setHasSearched]);
+
+  if (!query) return null;
 
   return {
     results,
