@@ -325,10 +325,10 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-6 text-lg text-muted-foreground"
             >
-              Today's note-taking tools overwhelm you with features, folders,
-              and complicated workflows. They promise organization but deliver
-              complexity. We believe that capturing and developing your ideas
-              shouldn't require a manual.
+              Today&apos;s note-taking tools overwhelm you with features,
+              folders, and complicated workflows. They promise organization but
+              deliver complexity. We believe that capturing and developing your
+              ideas shouldn&apos;t require a manual.
             </motion.p>
 
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
@@ -510,8 +510,8 @@ export default function Home() {
                   Experience the power of Briq, your intelligent note companion.
                   From summarizing content and finding connections to answering
                   questions about your notes, Briq helps you get more value from
-                  your knowledge base. It's like having a research assistant
-                  that knows your notes inside and out.
+                  your knowledge base. It&apos;s like having a research
+                  assistant that knows your notes inside and out.
                 </p>
               </div>
             </motion.div>
@@ -692,8 +692,8 @@ export default function Home() {
               Join the Future of Note-Taking
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Don't miss out on our early adopter benefits. Start organizing
-              your thoughts better today.
+              Don&apos;t miss out on our early adopter benefits. Start
+              organizing your thoughts better today.
             </p>
             <Button
               asChild
