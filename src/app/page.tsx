@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import {
+  Sparkles,
+  Search,
+  Clock,
+  Shield,
   Settings,
   Folders,
   FolderX,
@@ -17,23 +22,120 @@ import {
   Tag,
   Cloud,
   Code,
+  Mail,
 } from "lucide-react";
+import { ModeToggle } from "@/modules/landing-page/features/theme-switcher";
+import { useTheme } from "next-themes";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/shared/components/ui/form";
+import { useToast } from "@/shared/hooks/use-toast";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createClient } from "@/shared/lib/supabase/client";
+
+const wishListSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email address")
+    .max(255, "Email is too long")
+    .trim()
+    .toLowerCase(),
+});
+
+type ImageConfig = {
+  light: string;
+  dark: string;
+};
+
+const imagePaths = {
+  hero: {
+    light: "/hero-image.png",
+    dark: "/hero-image-dark.png",
+  },
+  intelligentSearch: {
+    light: "/intelligent-search.png",
+    dark: "/intelligent-search-dark.png",
+  },
+  graph: {
+    light: "/graph.png",
+    dark: "/graph-dark.png",
+  },
+  links: {
+    light: "/links.png",
+    dark: "/links-dark.png",
+  },
+  briq: {
+    light: "/briq.png",
+    dark: "/briq-dark.png",
+  },
+  editor: {
+    light: "/editor.png",
+    dark: "/editor-dark.png",
+  },
+};
 
 export default function Home() {
-  const [isYearly, setIsYearly] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [imageUrls] = useState<Record<string, ImageConfig>>(imagePaths);
+
+  const { toast } = useToast();
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const getImageUrl = (imageKey: string) => {
+    if (!mounted) return imageUrls[imageKey].light;
+
+    return theme === "dark"
+      ? imageUrls[imageKey].dark
+      : imageUrls[imageKey].light;
+  };
+
+  const form = useForm<z.infer<typeof wishListSchema>>({
+    resolver: zodResolver(wishListSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof wishListSchema>) => {
+    try {
+      const client = createClient();
+
+      const { error } = await client.from("wishlist").insert({
+        email: values.email,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      form.reset();
+
+      toast({
+        title: "Added to wish list",
+        description: "You will receive updates soon.",
+      });
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Adding to wish list failed",
+        description: "Something went wrong. Please try again.",
+      });
+    }
+  };
 
   return (
     <main className="min-h-screen bg-background relative overflow-hidden">
-      {/* Early Adopter Banner */}
-      <div className="bg-primary/10 py-2">
-        <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-sm font-medium">
-            🎉 Early Adopter Special: Get lifetime access at 50% off + unlimited
-            notes on free accounts. Limited time offer!
-          </p>
-        </div>
-      </div>
-
       {/* Background decorative elements remain unchanged */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
@@ -41,10 +143,16 @@ export default function Home() {
         <div className="absolute top-1/4 -right-1/4 w-1/2 aspect-square bg-secondary/5 rounded-full blur-[100px]" />
       </div>
 
+      <div className="fixed top-8 right-8 z-50">
+        <ModeToggle />
+      </div>
+
       {/* Hero Section */}
-      <section id="hero" className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
+      <section id="hero" className="relative min-h-[90vh] flex items-center">
+        {/* Enhanced gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/60 via-muted/30 to-transparent" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -52,69 +160,131 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <h1 className={`mt-8 text-5xl md:text-7xl tracking-wide font-bold`}>
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <Badge variant="secondary" className="animate-pulse">
+                <Clock className="w-4 h-4 mr-1" />
+                Early Access Opening Soon
+              </Badge>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight">
               Write Better.{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/60 animate-gradient">
                 Think Clearer.
               </span>
             </h1>
-            <p className="mt-8 text-xl text-muted-foreground">
-              Your all-in-one writing workspace that helps you organize
-              thoughts, connect ideas, and produce better content in half the
-              time.
+
+            {/* Value proposition with benefit-focused copy */}
+            <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Transform your writing process with our AI-powered workspace.
+              Connect ideas effortlessly, organize thoughts intelligently, and
+              create compelling content in half the time.
             </p>
-            <div className="mt-6 flex flex-col items-center gap-3">
-              <div className="flex flex-col items-center gap-4">
-                <Button
-                  asChild
-                  size="lg"
-                  className="min-w-[200px] bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+
+            {/* Conversion form with enhanced UX */}
+            <div className="mt-8 sm:mt-12">
+              <Form {...form}>
+                <form
+                  className="flex flex-col gap-3 max-w-md mx-auto"
+                  onSubmit={form.handleSubmit(onSubmit)}
                 >
-                  <Link href="/signup">Get 50% Off Lifetime Access →</Link>
-                </Button>
-                <Badge variant="secondary" className="animate-pulse">
-                  Early Bird Offer - Limited Spots Available
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <div className="relative group">
+                            <Mail className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
+                            <Input
+                              {...field}
+                              type="email"
+                              placeholder="Enter your email"
+                              className="pl-10 h-12 text-base border-2 transition-all focus:ring-2 focus:ring-primary/20"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* CTA button with enhanced visual appeal */}
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full h-12 text-base font-medium bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    Join Waitlist & Get Early Access
+                  </Button>
+                </form>
+              </Form>
+
+              {/* Trust indicators */}
+              <div className="mt-4 flex flex-col items-center gap-3">
+                <Badge variant="outline" className="animate-pulse">
+                  <Clock className="w-4 h-4 mr-1" />
+                  Limited Beta Spots Available
                 </Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                No credit card required • Unlimited notes on free plan • 14-day
-                premium trial
-              </p>
-            </div>
-
-            <div className="mt-12 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-              <div className="flex flex-col items-center">
-                <Settings className="h-8 w-8 text-primary mb-2" />
-                <p className="text-sm font-medium">Smart Organization</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <Folders className="h-8 w-8 text-primary mb-2" />
-                <p className="text-sm font-medium">Seamless Integration</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <BookOpen className="h-8 w-8 text-primary mb-2" />
-                <p className="text-sm font-medium">AI-Powered Insights</p>
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Free during beta • Priority support • Future discounts
+                </p>
               </div>
             </div>
 
-            {/* Hero Image */}
+            {/* Feature highlights with enhanced visuals */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto mt-12">
+              {[
+                {
+                  icon: Search,
+                  title: "Intelligent Search",
+                  desc: "Find exactly what you need with semantic search",
+                },
+                {
+                  icon: Folders,
+                  title: "Minimal Organization",
+                  desc: "Your mission is to write and think, not organize",
+                },
+                {
+                  icon: Sparkles,
+                  title: "AI Assistant",
+                  desc: "Let AI summarize and analyze your notes",
+                },
+              ].map((feature, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="flex flex-col items-center p-4 rounded-lg hover:bg-muted/5 transition-colors"
+                >
+                  <feature.icon className="h-8 w-8 text-primary mb-2" />
+                  <p className="font-medium">{feature.title}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Product preview with enhanced presentation */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="mt-20 relative"
+              className="mt-16 relative"
             >
               <div className="aspect-[16/9] rounded-xl overflow-hidden bg-muted border shadow-2xl">
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                  <Image
-                    src="/hero-image.png"
-                    alt="nebriq's intuitive note-taking interface"
-                    fill
-                    className="object-cover rounded-xl"
-                    priority
-                  />
-                </div>
+                <Image
+                  src={getImageUrl("hero")}
+                  alt="nebriq's intuitive writing workspace interface"
+                  fill
+                  className="object-cover rounded-xl opacity-90 hover:opacity-100 transition-opacity"
+                  priority
+                />
               </div>
             </motion.div>
           </motion.div>
@@ -251,11 +421,11 @@ export default function Home() {
             >
               <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
                 <Image
-                  src="/intelligent-search.png"
+                  src={getImageUrl("intelligentSearch")}
                   alt="AI-Powered Insights"
                   width={800}
                   height={600}
-                  className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
+                  className="object-cover w-full h-full transform transition-transform scale-125"
                   priority
                 />
               </div>
@@ -285,7 +455,7 @@ export default function Home() {
             >
               <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
                 <Image
-                  src="/graph.png"
+                  src={getImageUrl("graph")}
                   alt="Knowledge Graph"
                   width={800}
                   height={600}
@@ -318,13 +488,15 @@ export default function Home() {
             >
               <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
                 <Image
-                  src="/links.png"
+                  src={getImageUrl("briq")}
                   alt="AI Summary"
                   width={1200}
                   height={900}
                   className="object-cover w-full h-full transform transition-transform group-hover:scale-105"
+                  style={{
+                    transform: "translate(0, 4%) scale(1.3)",
+                  }}
                   priority
-                  style={{ transform: "scale(1.8)" }}
                 />
               </div>
               <div className="space-y-4">
@@ -354,7 +526,7 @@ export default function Home() {
             >
               <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted border mb-6 group-hover:border-accent transition-colors">
                 <Image
-                  src="/links.png"
+                  src={getImageUrl("links")}
                   alt="Smart Organization"
                   width={1200}
                   height={900}
@@ -493,251 +665,12 @@ export default function Home() {
               className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border shadow-xl"
             >
               <Image
-                src="/editor.png"
+                src={getImageUrl("editor")}
                 alt="Nebriq Editor Interface"
                 fill
                 className="object-cover w-full h-full"
                 priority
               />
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Early Adopter Benefits Section */}
-      <section
-        id="benefits"
-        className="py-24 bg-gradient-to-b from-background to-accent/20"
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <Badge variant="secondary" className="mb-4">
-              Limited Time Offer
-            </Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-              Early Adopter Exclusive Benefits
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6 mt-12">
-              <div className="p-6 rounded-xl bg-card border">
-                <div className="text-4xl font-bold text-primary mb-2">
-                  50% Off
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Lifetime Access</h3>
-                <p className="text-muted-foreground">
-                  Lock in our lowest price forever. Early adopters get permanent
-                  access to all premium features at half the price.
-                </p>
-              </div>
-              <div className="p-6 rounded-xl bg-card border">
-                <div className="text-4xl font-bold text-primary mb-2">∞</div>
-                <h3 className="text-xl font-semibold mb-2">Unlimited Notes</h3>
-                <p className="text-muted-foreground">
-                  Free accounts get unlimited notes storage. Start organizing
-                  your thoughts without restrictions.
-                </p>
-              </div>
-            </div>
-            <Button
-              asChild
-              size="lg"
-              className="mt-8 bg-gradient-to-r from-primary to-primary/80"
-            >
-              <Link href="/signup">Claim Your Early Bird Offer →</Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-background">
-        <div className="max-w-5xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12 max-w-2xl mx-auto"
-          >
-            <Badge variant="secondary" className="mb-3">
-              Early Bird Pricing
-            </Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-3">
-              Choose Your Plan
-            </h2>
-            <p className="text-muted-foreground">
-              Lock in our best prices forever as an early adopter
-            </p>
-            <div className="flex items-center justify-center gap-4 mt-6">
-              <span
-                className={`text-sm transition-colors duration-300 ${
-                  !isYearly
-                    ? "text-primary font-medium"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Monthly
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                className="relative"
-                onClick={() => setIsYearly(!isYearly)}
-              >
-                <div
-                  className={`w-8 h-4 bg-muted rounded-full p-0.5 transition-all duration-300 ${
-                    isYearly ? "bg-primary" : ""
-                  }`}
-                >
-                  <div
-                    className={`w-3 h-3 bg-white rounded-full transition-all duration-300 ${
-                      isYearly ? "translate-x-4" : ""
-                    }`}
-                  />
-                </div>
-              </Button>
-              <span
-                className={`text-sm transition-colors duration-300 ${
-                  isYearly
-                    ? "text-primary font-medium"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Yearly (Save 20%)
-              </span>
-            </div>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {/* Free Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-2xl p-6 bg-card border hover:border-primary/50 transition-colors"
-            >
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-1">Free</h3>
-                <p className="text-muted-foreground">Perfect to get started</p>
-                <div className="mt-3 relative h-24">
-                  <div
-                    className={`absolute inset-0 transition-all duration-300 ${
-                      isYearly ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
-                  >
-                    <span className="text-4xl font-bold">$0</span>
-                    <span className="text-muted-foreground">/year</span>
-                  </div>
-                  <div
-                    className={`absolute inset-0 transition-all duration-300 ${
-                      !isYearly
-                        ? "opacity-100"
-                        : "opacity-0 pointer-events-none"
-                    }`}
-                  >
-                    <span className="text-4xl font-bold">$0</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
-                </div>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Unlimited notes (Early Bird Special)</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Basic formatting</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Basic search</span>
-                </li>
-              </ul>
-              <Button asChild className="w-full" variant="outline">
-                <Link href="/signup">Get Started</Link>
-              </Button>
-            </motion.div>
-
-            {/* Pro Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="rounded-2xl p-6 bg-primary/5 border border-primary relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-sm rounded-bl-lg">
-                Early Bird Offer
-              </div>
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-1">Pro</h3>
-                <p className="text-muted-foreground">For power users</p>
-                <div className="mt-3 relative h-24">
-                  <div
-                    className={`absolute inset-0 transition-all duration-300 ${
-                      isYearly ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
-                  >
-                    <span className="text-4xl font-bold">$96</span>
-                    <span className="text-muted-foreground">/year</span>
-                    <div className="text-sm text-primary mt-1">
-                      Only $8/month (Save 20%)
-                    </div>
-                  </div>
-                  <div
-                    className={`absolute inset-0 transition-all duration-300 ${
-                      !isYearly
-                        ? "opacity-100"
-                        : "opacity-0 pointer-events-none"
-                    }`}
-                  >
-                    <span className="text-4xl font-bold">$12</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
-                </div>
-                <div className="mt-2 inline-block bg-primary/10 text-primary text-sm px-2 py-1 rounded transition-opacity duration-300">
-                  50% off forever for early adopters
-                </div>
-              </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Everything in Free</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>AI-powered summary</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Advanced formatting with LaTeX</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>AI-powered insights</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Advanced search & filters</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span>Priority support</span>
-                </li>
-              </ul>
-              <Button
-                asChild
-                className="w-full bg-gradient-to-r from-primary to-primary/80"
-              >
-                <Link href="/signup">Get 50% Off Forever →</Link>
-              </Button>
             </motion.div>
           </div>
         </div>
