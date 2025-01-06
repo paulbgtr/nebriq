@@ -79,7 +79,7 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
-    } catch (e) {
+    } catch {
       toast({
         title: "Error",
         description: "Invalid URL",
