@@ -7,3 +7,8 @@ export const noteConnectionSchema = z.object({
   note_id_to: z.string(),
   created_at: z.date().optional(),
 });
+
+export const createNoteConnectionSchema = noteConnectionSchema.omit({
+  id: true,
+  created_at: true,
+});

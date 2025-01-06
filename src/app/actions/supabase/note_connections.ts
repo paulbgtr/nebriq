@@ -1,7 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import { noteConnectionSchema } from "@/shared/lib/schemas/note-connection";
+import {
+  noteConnectionSchema,
+  createNoteConnectionSchema,
+} from "@/shared/lib/schemas/note-connection";
 import { createClient } from "@/shared/lib/supabase/server";
 
 export const getAllNoteConnections = async (): Promise<
@@ -48,7 +51,7 @@ export const getNoteConnections = async (
 };
 
 export const createNoteConnection = async (
-  noteConnection: z.infer<typeof noteConnectionSchema>
+  noteConnection: z.infer<typeof createNoteConnectionSchema>
 ): Promise<z.infer<typeof noteConnectionSchema>> => {
   const supabase = await createClient();
 
