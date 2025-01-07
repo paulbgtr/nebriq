@@ -38,6 +38,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/shared/lib/supabase/client";
+import { sendEmail } from "./actions/emails/send-email";
 
 const wishListSchema = z.object({
   email: z
@@ -84,6 +85,7 @@ const imagePaths = {
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [imageUrls] = useState<Record<string, ImageConfig>>(imagePaths);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toast } = useToast();
   const { theme } = useTheme();
@@ -108,16 +110,22 @@ export default function Home() {
   });
 
   const onSubmit = async (values: z.infer<typeof wishListSchema>) => {
+    setIsSubmitting(true);
+
     try {
       const client = createClient();
 
+      const { email } = values;
+
       const { error } = await client.from("wishlist").insert({
-        email: values.email,
+        email,
       });
 
       if (error) {
         throw new Error(error.message);
       }
+
+      await sendEmail("You're on our wish list!", email);
 
       form.reset();
 
@@ -125,12 +133,20 @@ export default function Home() {
         title: "Added to wish list",
         description: "You will receive updates soon.",
       });
-    } catch {
+    } catch (e) {
+      const errorDescription = (e as Error).message.includes(
+        "duplicate key value violates unique constraint"
+      )
+        ? "Your email is already on our wish list."
+        : "Something went wrong. Please try again.";
+
       toast({
         variant: "destructive",
         title: "Adding to wish list failed",
-        description: "Something went wrong. Please try again.",
+        description: errorDescription,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -212,6 +228,7 @@ export default function Home() {
                   {/* CTA button with enhanced visual appeal */}
                   <Button
                     type="submit"
+                    disabled={isSubmitting}
                     size="lg"
                     className="w-full h-12 text-base font-medium bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
