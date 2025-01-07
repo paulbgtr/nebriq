@@ -11,14 +11,19 @@ export const SearchHistoryList = ({
 }: SearchHistoryListProps) => {
   return (
     <>
-      {searchHistory?.map((item) => (
-        <SearchHistoryItem
-          key={item.id}
-          query={item.query}
-          summary={item.summary ?? ""}
-          timestamp={item.created_at}
-        />
-      ))}
+      {searchHistory
+        ?.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+        .map((item) => (
+          <SearchHistoryItem
+            key={item.id}
+            query={item.query}
+            summary={item.summary ?? ""}
+            timestamp={item.created_at}
+          />
+        ))}
     </>
   );
 };
