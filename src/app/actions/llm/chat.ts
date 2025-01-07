@@ -11,10 +11,7 @@ if (!process.env.OPENAI_API_KEY) {
 /**
  * Creates a prompt for the LLM using the given context.
  */
-const createPrompt = (
-  query: string,
-  { relevantNotes, conversationHistory }: ChatContext
-): string => {
+const createPrompt = (query: string, chatContext?: ChatContext): string => {
   let prompt = `You are Briq, an AI learning assistant focused on helping users understand and learn from their notes. 
 
 Key capabilities:
@@ -32,14 +29,14 @@ Guidelines:
 
 Role: Learning companion, not just an information provider`;
 
-  if (relevantNotes?.length) {
-    prompt += `\n\nRelevant notes:\n${relevantNotes
+  if (chatContext?.relevantNotes?.length) {
+    prompt += `\n\nRelevant notes:\n${chatContext.relevantNotes
       .map((note) => `Title: ${note.title}\nContent: ${note.content}\n---`)
       .join("\n")}`;
   }
 
-  if (conversationHistory.length) {
-    prompt += `\n\nPrevious conversation:\n${conversationHistory
+  if (chatContext?.conversationHistory) {
+    prompt += `\n\nPrevious conversation:\n${chatContext.conversationHistory
       .map((turn) => `${turn.role}: ${turn.content}`)
       .join("\n")}`;
   }
