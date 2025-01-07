@@ -184,7 +184,7 @@ function ForceGraph({
 
         tooltip.transition().duration(200).style("opacity", 1);
       })
-      .on("mouseout", function (event, d) {
+      .on("mouseout", function () {
         d3.select(this)
           .transition()
           .duration(300)
