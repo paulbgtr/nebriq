@@ -7,7 +7,7 @@ interface Props {
 export const AddToWaitlist = ({ firstName }: Props) => (
   <div
     style={{
-      backgroundColor: "#ffffff",
+      backgroundColor: "hsl(220, 33%, 98%)", // --background
       fontFamily:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       margin: 0,
@@ -24,15 +24,15 @@ export const AddToWaitlist = ({ firstName }: Props) => (
       <div
         style={{
           display: "inline-block",
-          backgroundColor: "#f3f4f6",
+          backgroundColor: "hsl(220, 25%, 94%)", // --secondary
           padding: "6px 12px",
-          borderRadius: "16px",
+          borderRadius: "8px",
           marginBottom: "24px",
         }}
       >
         <span
           style={{
-            color: "#6b7280",
+            color: "hsl(220, 20%, 40%)", // --muted-foreground
             fontSize: "14px",
           }}
         >
@@ -44,7 +44,7 @@ export const AddToWaitlist = ({ firstName }: Props) => (
         style={{
           fontSize: "32px",
           fontWeight: "700",
-          color: "#111827",
+          color: "hsl(220, 25%, 15%)", // --foreground
           marginBottom: "24px",
           lineHeight: "1.2",
         }}
@@ -52,9 +52,7 @@ export const AddToWaitlist = ({ firstName }: Props) => (
         Thanks for your interest,{" "}
         <span
           style={{
-            background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            color: "hsl(220, 45%, 45%)", // --primary
           }}
         >
           {firstName}!
@@ -64,45 +62,47 @@ export const AddToWaitlist = ({ firstName }: Props) => (
       <p
         style={{
           fontSize: "18px",
-          color: "#4b5563",
+          color: "hsl(220, 20%, 40%)", // --muted-foreground
           lineHeight: "1.6",
           marginBottom: "32px",
         }}
       >
-        We're currently selecting a limited group of 30 beta testers for our
-        first testing phase.
+        We&apos;re currently selecting a limited group of 30 beta testers for
+        our first testing phase.
       </p>
 
       <div
         style={{
-          backgroundColor: "#f9fafb",
+          backgroundColor: "hsl(220, 35%, 96%)", // --accent
           padding: "24px",
-          borderRadius: "12px",
+          borderRadius: "8px",
           marginBottom: "32px",
-          border: "1px solid #e5e7eb",
+          border: "1px solid hsl(220, 25%, 90%)", // --border
         }}
       >
         <h2
           style={{
             fontSize: "20px",
             fontWeight: "600",
-            color: "#111827",
+            color: "hsl(220, 25%, 15%)", // --foreground
             marginBottom: "16px",
           }}
         >
-          What's Next
+          What&apos;s Next
         </h2>
         <ul
           style={{
             textAlign: "left",
-            color: "#4b5563",
+            color: "hsl(220, 20%, 40%)", // --muted-foreground
             paddingLeft: "24px",
             margin: "0",
             lineHeight: "1.8",
           }}
         >
-          <li>We're reviewing all applications</li>
-          <li>If selected, you'll receive email with access instructions</li>
+          <li>We&apos;re reviewing all applications</li>
+          <li>
+            If selected, you&apos;ll receive an email with access instructions
+          </li>
           <li>Selection results will be sent within 7 days</li>
         </ul>
       </div>
@@ -110,15 +110,15 @@ export const AddToWaitlist = ({ firstName }: Props) => (
       <div
         style={{
           display: "inline-block",
-          backgroundColor: "#f3f4f6",
+          backgroundColor: "hsl(220, 25%, 94%)", // --secondary
           padding: "6px 12px",
-          borderRadius: "16px",
+          borderRadius: "8px",
           marginBottom: "24px",
         }}
       >
         <span
           style={{
-            color: "#6b7280",
+            color: "hsl(220, 20%, 40%)", // --muted-foreground
             fontSize: "14px",
           }}
         >
@@ -129,7 +129,7 @@ export const AddToWaitlist = ({ firstName }: Props) => (
       <p
         style={{
           fontSize: "14px",
-          color: "#6b7280",
+          color: "hsl(220, 20%, 40%)", // --muted-foreground
           marginBottom: "32px",
         }}
       >
@@ -138,7 +138,7 @@ export const AddToWaitlist = ({ firstName }: Props) => (
 
       <div
         style={{
-          borderTop: "1px solid #e5e7eb",
+          borderTop: "1px solid hsl(220, 25%, 90%)", // --border
           paddingTop: "24px",
           marginTop: "32px",
         }}
@@ -146,7 +146,7 @@ export const AddToWaitlist = ({ firstName }: Props) => (
         <p
           style={{
             fontSize: "14px",
-            color: "#6b7280",
+            color: "hsl(220, 20%, 40%)", // --muted-foreground
             fontStyle: "italic",
             marginBottom: "12px",
           }}
@@ -156,10 +156,19 @@ export const AddToWaitlist = ({ firstName }: Props) => (
         <div
           style={{
             fontSize: "12px",
-            color: "#9ca3af",
+            color: "hsl(220, 20%, 40%)", // --muted-foreground
           }}
         >
-          Nebriq
+          <a
+            href="https://nebriq.com"
+            style={{
+              color: "hsl(220, 45%, 45%)", // --primary
+              textDecoration: "underline",
+              fontWeight: "500",
+            }}
+          >
+            nebriq.com
+          </a>
         </div>
       </div>
     </div>
