@@ -58,3 +58,16 @@ export const extractNoteConnectionsFromContent = (
 export const formatHTMLNoteContent = (content: string): string => {
   return content ? content.replace(/<[^>]*>/g, "").trim() : "";
 };
+
+/**
+ * Extracts the first name from the given email address.
+ *
+ * Example: `extractFirstName('john.doe@example.com')` returns `'john'`.
+ *
+ * @param email - The email address from which to extract the first name.
+ * @returns The first name.
+ */
+export const extractFirstName = (email: string): string => {
+  const [firstName] = email.split("@")[0].split(".");
+  return firstName;
+};
