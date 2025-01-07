@@ -2,6 +2,11 @@ import { Copy } from "lucide-react";
 import { useToast } from "@/shared/hooks/use-toast";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { ChatContext } from "@/types/chat";
+
+type Props = {
+  message: ChatContext["conversationHistory"][0];
+};
 
 /**
  * A component that renders a message action bar with a single copy button.
@@ -15,7 +20,7 @@ import { cn } from "@/shared/lib/utils";
  * @param message - The message object to copy
  * @returns A JSX element representing the message action bar
  */
-export const MessageActions = ({ message }: { message: any }) => {
+export const MessageActions = ({ message }: Props) => {
   const { toast } = useToast();
 
   const copyToClipboard = async () => {
@@ -25,7 +30,7 @@ export const MessageActions = ({ message }: { message: any }) => {
         title: "Message copied to clipboard",
         duration: 3000,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to copy message",
         description: "Please try again",
