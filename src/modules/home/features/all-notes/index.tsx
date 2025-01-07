@@ -9,6 +9,17 @@ import { CheckSquare } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Pen } from "lucide-react";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/shared/components/ui/alert-dialog";
 
 export default function AllNotes() {
   const { getNotesQuery, deleteNotesMutation } = useNotes();
@@ -28,6 +39,11 @@ export default function AllNotes() {
   const toggleSelectionMode = () => {
     setIsSelectionMode(!isSelectionMode);
     setSelectedNotes([]); // Clear selection when toggling mode
+  };
+
+  const handleNotePlural = (count: number) => {
+    if (count === 1) return "note";
+    return "notes";
   };
 
   if (isPending)
@@ -96,14 +112,38 @@ export default function AllNotes() {
             {isSelectionMode ? "Done" : "Select"}
           </Button>
           {isSelectionMode && selectedNotes.length > 0 && (
-            <Button
-              onClick={handleDeleteMultipleNotes}
-              variant="ghost"
-              size="sm"
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this note?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete {selectedNotes.length}{" "}
+                    {handleNotePlural(selectedNotes.length)}? This action cannot
+                    be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
+                    {selectedNotes.length > 1 ? "Keep notes" : "Keep note"}
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteMultipleNotes}
+                    className="bg-destructive hover:bg-destructive/90"
+                  >
+                    Delete {handleNotePlural(selectedNotes.length)}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       </header>
