@@ -93,4 +93,6 @@ const MentionList = forwardRef<
   );
 });
 
+MentionList.displayName = "MentionList";
+
 export default MentionList;
