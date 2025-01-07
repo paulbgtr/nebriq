@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ReactRenderer } from "@tiptap/react";
 import tippy from "tippy.js";
