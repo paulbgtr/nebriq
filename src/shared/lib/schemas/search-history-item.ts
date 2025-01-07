@@ -5,7 +5,7 @@ export const searchHistoryItemSchema = z.object({
   user_id: z.string(),
   query: z.string(),
   summary: z.string().optional().nullable(),
-  created_at: z.date(),
+  created_at: z.date().optional(),
 });
 
 export const createSearhHistoryItemSchema = searchHistoryItemSchema.omit({
