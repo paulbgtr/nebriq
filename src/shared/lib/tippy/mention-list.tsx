@@ -14,7 +14,7 @@ interface MentionListProps {
   currentNoteId: string;
 }
 
-export default forwardRef<
+const MentionList = forwardRef<
   { onKeyDown: (params: { event: KeyboardEvent }) => boolean },
   MentionListProps
 >((props, ref) => {
@@ -92,3 +92,5 @@ export default forwardRef<
     </div>
   );
 });
+
+export default MentionList;
