@@ -215,6 +215,7 @@ export default function Home() {
                             <Input
                               {...field}
                               type="email"
+                              disabled={isSubmitting}
                               placeholder="Enter your email"
                               className="pl-10 h-12 text-base border-2 transition-all focus:ring-2 focus:ring-primary/20"
                             />
