@@ -184,17 +184,16 @@ export default function Home() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight">
-              Write Better.{" "}
+              Start Writing.{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/60 animate-gradient">
-                Think Clearer.
+                Stop Organizing.
               </span>
             </h1>
 
             {/* Value proposition with benefit-focused copy */}
             <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Transform your writing process with our AI-powered workspace.
-              Connect ideas effortlessly, organize thoughts intelligently, and
-              create compelling content in half the time.
+              Clean workspace for clear thinking. Enhanced with AI for better
+              learning and reflection.
             </p>
 
             {/* Conversion form with enhanced UX */}
@@ -256,18 +255,18 @@ export default function Home() {
               {[
                 {
                   icon: Search,
-                  title: "Intelligent Search",
-                  desc: "Find exactly what you need with semantic search",
-                },
-                {
-                  icon: Folders,
-                  title: "Minimal Organization",
-                  desc: "Your mission is to write and think, not organize",
+                  title: "Smart Search",
+                  desc: "Find any note instantly, even if you don't remember the exact words",
                 },
                 {
                   icon: Sparkles,
-                  title: "AI Assistant",
-                  desc: "Let AI summarize and analyze your notes",
+                  title: "AI Insights",
+                  desc: "Generate quizzes and get fresh perspectives on your notes",
+                },
+                {
+                  icon: Folders,
+                  title: "Just Write",
+                  desc: "No folders or complex systems - focus purely on your ideas",
                 },
               ].map((feature, i) => (
                 <motion.div
@@ -452,7 +451,8 @@ export default function Home() {
                   AI-Powered
                 </Badge>
                 <h3 className="text-xl font-bold">
-                  Intelligent Semantic Search
+                  Find any note instantly, even if you don’t remember the exact
+                  words
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Find exactly what you need with context-aware search that
@@ -486,7 +486,7 @@ export default function Home() {
                   Interactive
                 </Badge>
                 <h3 className="text-xl font-bold">
-                  Interactive Knowledge Graph
+                  See how your ideas connect in a beautiful, interactive view
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Visualize connections between your notes in an interactive
@@ -557,31 +557,15 @@ export default function Home() {
                 <Badge variant="secondary" className="mb-2">
                   Dynamic Connections
                 </Badge>
-                <h3 className="text-xl font-bold">Dynamic Note Connections</h3>
+                <h3 className="text-xl font-bold">Connect Your Ideas</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Create meaningful connections between your notes with our
-                  intuitive linking system. Build a rich, interconnected
-                  knowledge base that grows with your understanding.
+                  Link related notes with a simple click. Watch as your
+                  knowledge network grows naturally, revealing new insights and
+                  connections you never noticed before.
                 </p>
               </div>
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-center mt-16"
-          >
-            <p className="text-lg text-muted-foreground">
-              Ready to unlock the full potential?{" "}
-              <span className="text-primary font-medium">
-                Dive into our power features
-              </span>{" "}
-              that turn good notes into great ideas →
-            </p>
-          </motion.div>
         </div>
       </section>
 
@@ -597,60 +581,58 @@ export default function Home() {
               className="space-y-8"
             >
               <div className="space-y-4">
-                <Badge variant="secondary">Advanced Capabilities</Badge>
+                <Badge variant="secondary">Essential Tools</Badge>
                 <h2 className="text-3xl lg:text-4xl font-bold">
-                  Craft Without Constraints
+                  Powerful, Yet Simple
                 </h2>
                 <p className="text-muted-foreground leading-relaxed max-w-lg">
-                  We&apos;ve engineered Nebriq to respect your intellectual
-                  flow. Our minimalist design meets powerful functionality,
-                  letting your creativity breathe without technological
-                  friction.
+                  All the tools you need to write effectively, wrapped in a
+                  clean, distraction-free design. No complexity, just smooth
+                  writing experience.
                 </p>
               </div>
 
               <div className="space-y-4">
                 {[
                   {
-                    title: "LaTeX Support",
+                    title: "Focus Mode",
                     description:
-                      "Advanced LaTeX support for mathematical expressions",
-                    icon: <Sigma />,
+                      "Write without distractions in a clean, minimal environment",
+                    icon: <Expand />,
+                  },
+                  {
+                    title: "No Folders Needed",
+                    description:
+                      "Everything in one place - just write and let your ideas flow",
+                    icon: <FolderX />,
+                  },
+                  {
+                    title: "Always in Sync",
+                    description: "Access your notes instantly on any device",
+                    icon: <Cloud />,
                   },
                   {
                     title: "Rich Formatting",
                     description:
-                      "Rich Markdown formatting for beautiful documents",
+                      "Style your notes exactly how you want with Markdown",
                     icon: <Baseline />,
                   },
                   {
-                    title: "Code Highlighting",
+                    title: "LaTeX Support",
+                    description: "Write mathematical expressions with ease",
+                    icon: <Sigma />,
+                  },
+                  {
+                    title: "Code Blocks",
                     description:
-                      "Syntax highlighting for over 100 programming languages",
+                      "Share and format code with syntax highlighting",
                     icon: <Code />,
                   },
                   {
-                    title: "Smart Organization",
+                    title: "Quick Labels",
                     description:
-                      "Customizable tagging system for better organization",
+                      "Add light touches of context without getting lost in organization",
                     icon: <Tag />,
-                  },
-                  {
-                    title: "No-Folder Structure",
-                    description:
-                      "Dump your notes in a single space, no need to organize",
-                    icon: <FolderX />,
-                  },
-                  {
-                    title: "Focus Mode",
-                    description: "Distraction-free writing environment",
-                    icon: <Expand />,
-                  },
-                  {
-                    title: "Always in Sync",
-                    description:
-                      "Real-time cloud synchronization across devices",
-                    icon: <Cloud />,
                   },
                 ].map((feature, index) => (
                   <motion.div
@@ -704,21 +686,21 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <Badge variant="secondary" className="mb-6">
-              Get Started Today
+              Early Access
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Join the Future of Note-Taking
+              Start Writing, Stop Overthinking
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Don&apos;t miss out on our early adopter benefits. Start
-              organizing your thoughts better today.
+              Join our early adopters and experience a simpler way to write and
+              think clearly.
             </p>
             <Button
               asChild
               size="lg"
               className="bg-gradient-to-r from-primary to-primary/80"
             >
-              <Link href="/signup">Experience Nebriq</Link>
+              <Link href="/signup">Join Waitlist</Link>
             </Button>
           </motion.div>
         </div>
