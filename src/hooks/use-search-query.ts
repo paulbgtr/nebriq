@@ -18,6 +18,39 @@ type ReturnType = {
   handleSearch: (e: React.FormEvent) => void;
 };
 
+/**
+ * Combines search results from semantic search and TF-IDF search.
+ * @param semanticResults - results from semantic search
+ * @param tfidfResults - results from TF-IDF search
+ * @returns combined search results, with semantic results prioritized
+ */
+const combineSearchResults = (
+  semanticResults: z.infer<typeof noteSchema>[],
+  tfidfResults: z.infer<typeof noteSchema>[]
+): z.infer<typeof noteSchema>[] => {
+  const uniqueResults = new Map();
+
+  semanticResults.forEach((note, index) => {
+    uniqueResults.set(note.id, {
+      ...note,
+      score: (semanticResults.length - index) * 1.2,
+    });
+  });
+
+  tfidfResults.forEach((note, index) => {
+    if (!uniqueResults.has(note.id)) {
+      uniqueResults.set(note.id, {
+        ...note,
+        score: tfidfResults.length - index,
+      });
+    }
+  });
+
+  return Array.from(uniqueResults.values())
+    .sort((a, b) => b.score - a.score)
+    .map(({ score, ...note }) => note);
+};
+
 export const useSearchQuery = (): ReturnType | null => {
   const { query } = useParams() as { query: string };
   const router = useRouter();
@@ -44,19 +77,24 @@ export const useSearchQuery = (): ReturnType | null => {
     if (!notesData) return;
 
     const fetchResults = async (): Promise<void> => {
-      let notes: z.infer<typeof noteSchema>[] = [];
-
       try {
+        let notes: z.infer<typeof noteSchema>[] = [];
+
+        const tfidfResults = await searchUsingTFIDF(searchQuery, notesData);
+
         if (isAiSearch && user) {
-          notes = await semanticSearch(searchQuery, notesData);
-          return;
+          const semanticResults = await semanticSearch(searchQuery, notesData);
+
+          notes = combineSearchResults(semanticResults, tfidfResults);
+        } else {
+          notes = tfidfResults;
         }
 
-        notes = await searchUsingTFIDF(searchQuery, notesData);
+        setResults(notes);
+        setHasSearched(true);
       } catch (error) {
         console.error("Error fetching search results:", error);
-      } finally {
-        setResults(notes);
+        setResults([]);
         setHasSearched(true);
       }
     };
