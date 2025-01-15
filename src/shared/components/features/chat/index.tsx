@@ -18,6 +18,11 @@ import { Spinner } from "../../spinner";
 export default function AIChat() {
   const [followUp, setFollowUp] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -86,18 +91,23 @@ export default function AIChat() {
           <article
             ref={chatContainerRef}
             className={cn(
-              "flex flex-col h-[600px] rounded-3xl",
+              "flex flex-col rounded-3xl",
               "bg-background/95 backdrop-blur-sm",
               "border border-border/50",
               "shadow-2xl hover:shadow-3xl",
               "transition-all duration-500 ease-out",
-              "animate-in slide-in-from-bottom-3 zoom-in-95"
+              "animate-in slide-in-from-bottom-3 zoom-in-95",
+              isFullscreen
+                ? "fixed inset-0 w-full h-full rounded-none"
+                : "h-[600px] w-[400px]"
             )}
           >
             <ChatHeader
               chatContext={chatContext}
               clearChatContext={clearChatContext}
               setIsOpen={setIsOpen}
+              isFullscreen={isFullscreen}
+              toggleFullscreen={toggleFullscreen}
             />
 
             {isAllNotesLoading ? (

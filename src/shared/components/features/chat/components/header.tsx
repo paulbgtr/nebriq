@@ -1,4 +1,4 @@
-import { X, Box, Trash2 } from "lucide-react";
+import { X, Box, Trash2, Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { ChatContext } from "@/types/chat";
 import { cn } from "@/shared/lib/utils";
@@ -7,12 +7,16 @@ type Props = {
   chatContext: ChatContext;
   clearChatContext: () => void;
   setIsOpen: (isOpen: boolean) => void;
+  isFullscreen: boolean;
+  toggleFullscreen: () => void;
 };
 
 export const ChatHeader = ({
   chatContext,
   clearChatContext,
   setIsOpen,
+  isFullscreen,
+  toggleFullscreen,
 }: Props) => {
   return (
     <div className="flex items-center justify-between px-6 py-4 border-b">
@@ -38,6 +42,18 @@ export const ChatHeader = ({
           )}
         >
           <Trash2 className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleFullscreen}
+          className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary"
+        >
+          {isFullscreen ? (
+            <Minimize2 className="h-4 w-4" />
+          ) : (
+            <Maximize2 className="h-4 w-4" />
+          )}
         </Button>
         <Button
           variant="ghost"
