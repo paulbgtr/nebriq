@@ -187,7 +187,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           return false;
         },
       },
-      autofocus: true,
+      autofocus: false,
       enableInputRules: true,
       enablePasteRules: true,
       content,
