@@ -5,7 +5,10 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 
-export const useSummary = (results: z.infer<typeof noteSchema>[]) => {
+export const useSummary = (
+  results: z.infer<typeof noteSchema>[],
+  query: string
+) => {
   const [isSummarized, setIsSummarized] = useState(false);
 
   const { user } = useUser();
@@ -13,7 +16,7 @@ export const useSummary = (results: z.infer<typeof noteSchema>[]) => {
   const { data: summary, isLoading: isLoadingSummary } = useQuery({
     queryKey: ["summary", results],
     queryFn: () => {
-      return summarize(results, user?.id ?? "");
+      return summarize(results, user?.id ?? "", query);
     },
     enabled: isSummarized,
   });
