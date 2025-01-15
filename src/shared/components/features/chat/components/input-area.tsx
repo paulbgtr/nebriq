@@ -1,7 +1,8 @@
-import { Input } from "@/shared/components/ui/input";
-import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/components/ui/button";
+import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
+import { KeyboardEvent } from "react";
+import { Textarea } from "@/shared/components/ui/textarea";
 
 type Props = {
   followUp: string;
@@ -16,37 +17,50 @@ export const InputArea = ({
   setQuery,
   maxLength,
 }: Props) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (followUp.trim()) {
+        setQuery(followUp);
+        setFollowUp("");
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (followUp.trim()) {
+      setQuery(followUp);
+      setFollowUp("");
+    }
+  };
+
   return (
     <div className="p-4 bg-background/95 backdrop-blur-md border-t">
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (followUp.trim()) {
-            setQuery(followUp);
-            setFollowUp("");
-          }
-        }}
-        className="relative"
-      >
+      <form onSubmit={handleSubmit} className="relative">
         <div className="relative group">
-          <div className="relative flex items-center">
-            <Input
+          <div className="relative flex items-start">
+            <Textarea
               value={followUp}
               onChange={(e) => setFollowUp(e.target.value)}
+              onKeyDown={handleKeyDown}
               maxLength={maxLength}
-              type="text"
-              placeholder="Ask a question..."
+              placeholder="Ask a question... (Shift + Enter for new line)"
+              rows={1}
               className={cn(
-                "h-12 text-base",
+                "min-h-[48px] max-h-[200px] py-3 pr-24 text-base resize-none",
                 "rounded-xl border-input/50",
                 "bg-background/50 backdrop-blur-sm",
                 "transition-all duration-300",
                 "hover:border-primary/50 focus:border-primary",
                 "focus:ring-2 focus:ring-primary/20",
-                "placeholder:text-muted-foreground/60"
+                "placeholder:text-muted-foreground/60",
+                "scrollbar-thin scrollbar-thumb-primary/10 scrollbar-track-transparent",
+                "hover:scrollbar-thumb-primary/20"
               )}
             />
-            <div className="absolute right-3 flex items-center gap-2">
+            {/* Changed the positioning here */}
+            <div className="absolute right-3 top-1.5 flex items-center gap-2">
               <span
                 className={cn(
                   "text-xs text-muted-foreground/60",
