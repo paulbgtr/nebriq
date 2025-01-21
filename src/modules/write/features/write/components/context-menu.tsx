@@ -138,6 +138,13 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
     }
   };
 
+  const acceptFileType =
+    uploadBucket === "images"
+      ? "image/png, image/jpeg, image/gif"
+      : uploadBucket === "files"
+        ? ".pdf,.doc,.docx,.txt,.rtf,.csv,.xlsx,.xls,.zip,.rar"
+        : "";
+
   return (
     <>
       <input
@@ -157,7 +164,7 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
 
           handleFileUpload(e, uploadBucket);
         }}
-        accept="image/*"
+        accept={acceptFileType}
         className="hidden"
       />
       <ContextMenu>
