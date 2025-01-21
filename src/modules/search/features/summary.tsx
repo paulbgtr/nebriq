@@ -1,3 +1,4 @@
+import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Sparkles, Sparkle } from "lucide-react";
 import { useTypewriter } from "@/hooks/use-typewriter";
@@ -26,7 +27,13 @@ const skeletonAnimation = {
 };
 
 export const Summary = ({ results }: Props) => {
-  const { summary, setIsSummarized, isLoadingSummary } = useSummary(results);
+  const params = useParams();
+  const query = decodeURIComponent(params.query as string);
+
+  const { summary, setIsSummarized, isLoadingSummary } = useSummary(
+    results,
+    query
+  );
   const displayedText = useTypewriter(summary ?? "", 25).displayedText;
 
   if (!summary && !isLoadingSummary) {

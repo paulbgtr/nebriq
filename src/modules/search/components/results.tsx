@@ -27,7 +27,7 @@ export const Results = ({ results, hasSearched }: ResultsProps) => {
         No matches found
       </h2>
       <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-        We couldn't find any notes matching your search. Try:
+        We couldn&apos;t find any notes matching your search. Try:
       </p>
       <ul className="text-muted-foreground mt-4 space-y-2 text-left">
         <li className="flex items-center gap-2">

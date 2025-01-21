@@ -1,1 +1,1 @@
-export type Bucket = "images" | "files" | "documents";
+export type Bucket = "images" | "files";

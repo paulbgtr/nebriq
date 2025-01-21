@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   Heading1,
   Heading2,
@@ -55,6 +55,8 @@ const formatUrl = (url: string): string => {
 };
 
 export const EditorContextMenu = ({ children, editor }: Props) => {
+  const [uploadBucket, setUploadBucket] = useState<Bucket | null>(null);
+
   const { toast } = useToast();
 
   const setLink = useCallback(() => {
@@ -79,7 +81,7 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
-    } catch (e) {
+    } catch {
       toast({
         title: "Error",
         description: "Invalid URL",
@@ -113,12 +115,25 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
     try {
       const { url } = await upload(file, userId, bucket);
 
-      editor.chain().focus().setImage({ src: url }).run();
+      if (bucket === "images") {
+        editor.chain().focus().setImage({ src: url }).run();
+        return;
+      }
+
+      editor.commands.setContent({
+        type: "fileElement",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: file.name }],
+          },
+        ],
+      });
     } catch (err) {
       console.error(err);
       toast({
         title: "Error",
-        description: "Failed to upload image",
+        description: "Failed to upload file",
         variant: "destructive",
         duration: 3000,
       });
@@ -130,9 +145,20 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
       <input
         type="file"
         ref={fileInputRef}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handleFileUpload(e, "images")
-        }
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          if (!uploadBucket) {
+            toast({
+              title: "Error",
+              description:
+                "Something went wrong while uploading. Please try again.",
+              variant: "destructive",
+              duration: 3000,
+            });
+            return;
+          }
+
+          handleFileUpload(e, uploadBucket);
+        }}
         accept="image/*"
         className="hidden"
       />
@@ -283,11 +309,21 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
               Insert
             </ContextMenuSubTrigger>
             <ContextMenuSubContent>
-              <ContextMenuItem onClick={() => fileInputRef.current?.click()}>
+              <ContextMenuItem
+                onClick={() => {
+                  setUploadBucket("images");
+                  fileInputRef.current?.click();
+                }}
+              >
                 <ImagePlus className="w-4 h-4 mr-2" />
                 Upload Image
               </ContextMenuItem>
-              <ContextMenuItem>
+              <ContextMenuItem
+                onClick={() => {
+                  setUploadBucket("files");
+                  fileInputRef.current?.click();
+                }}
+              >
                 <Paperclip className="w-4 h-4 mr-2" />
                 Attach File
               </ContextMenuItem>

@@ -10,4 +10,5 @@ export const searchHistoryItemSchema = z.object({
 
 export const createSearhHistoryItemSchema = searchHistoryItemSchema.omit({
   id: true,
+  created_at: true,
 });

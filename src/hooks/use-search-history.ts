@@ -9,6 +9,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useUser } from "./use-user";
 import queryClient from "@/shared/lib/react-query";
 import { createSearhHistoryItemSchema } from "@/shared/lib/schemas/search-history-item";
+import { z } from "zod";
 
 export const useSearchHistory = () => {
   const { user } = useUser();
@@ -25,7 +26,7 @@ export const useSearchHistory = () => {
   });
 
   const createSearchHistoryMutation = useMutation({
-    mutationFn: (data: any) => {
+    mutationFn: (data: z.infer<typeof createSearhHistoryItemSchema>) => {
       const searchHistory = createSearhHistoryItemSchema.parse({
         ...data,
         user_id: user?.id,

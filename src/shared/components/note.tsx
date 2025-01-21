@@ -113,7 +113,8 @@ const NoteComponent: React.FC<NoteProps> = ({
     [selected, selectable]
   );
 
-  if (!title || !content || !created_at) return null;
+  const noteTitle = title || "Untitled";
+  const noteContent = content || "";
 
   return (
     <motion.div
@@ -125,13 +126,13 @@ const NoteComponent: React.FC<NoteProps> = ({
     >
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200">
-          {title}
+          {noteTitle}
           <ChevronRight className="inline-block ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
         </h3>
-        <DeleteNoteDialog title={title} onDelete={handleDelete} />
+        <DeleteNoteDialog title={noteTitle} onDelete={handleDelete} />
       </div>
 
-      <NoteContent content={content} />
+      <NoteContent content={noteContent} />
 
       <div className="mt-auto flex justify-between items-end">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

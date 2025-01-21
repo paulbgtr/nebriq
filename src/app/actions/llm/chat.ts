@@ -11,42 +11,34 @@ if (!process.env.OPENAI_API_KEY) {
 /**
  * Creates a prompt for the LLM using the given context.
  */
-const createPrompt = (
-  query: string,
-  { relevantNotes, conversationHistory }: ChatContext
-): string => {
-  let prompt = `You are Briq, an AI learning assistant focused on helping users understand and learn from their notes. 
+const createPrompt = (query: string, chatContext?: ChatContext): string => {
+  let prompt = `You are Briq, a concise learning assistant. Your role is to help users learn from their notes through:
+1. Brief, clear explanations (2-3 sentences)
+2. Quick knowledge checks (1-2 focused questions)
+3. Identifying specific gaps in notes
 
-Key capabilities:
-- Create interactive quizzes about the notes' content
-- Provide clear summaries while maintaining context
-- Review and explain complex topics
-- Identify knowledge gaps and suggest improvements
+Rules:
+- Keep all responses under 100 words
+- Only use information from provided notes
+- Start responses with "Based on your notes..."
+- If notes lack information, say "Your notes need more details about..."`;
 
-Guidelines:
-- Keep responses clear and educational
-- Focus on helping users understand, not just providing information
-- When creating quizzes, ask questions that test understanding
-- For reviews, highlight key concepts and connections
-- When finding gaps, be specific about what's missing
-
-Role: Learning companion, not just an information provider`;
-
-  if (relevantNotes?.length) {
-    prompt += `\n\nRelevant notes:\n${relevantNotes
-      .map((note) => `Title: ${note.title}\nContent: ${note.content}\n---`)
+  // Add relevant notes context
+  if (chatContext?.relevantNotes?.length) {
+    prompt += `\n\nNOTES:\n${chatContext.relevantNotes
+      .map((note) => `${note.title}: ${note.content}`)
       .join("\n")}`;
   }
 
-  if (conversationHistory.length) {
-    prompt += `\n\nPrevious conversation:\n${conversationHistory
+  // Add minimal conversation history for context
+  if (chatContext?.conversationHistory?.length) {
+    const lastTwoTurns = chatContext.conversationHistory.slice(-2);
+    prompt += `\n\nLAST EXCHANGE:\n${lastTwoTurns
       .map((turn) => `${turn.role}: ${turn.content}`)
       .join("\n")}`;
   }
 
-  prompt += `\n\nUser's question: ${query}`;
-
-  prompt += `\n\nRespond in a way that promotes learning and understanding. If creating a quiz or review, ensure questions are thought-provoking and explanations are clear.`;
+  prompt += `\n\nQUESTION: ${query}`;
 
   return prompt;
 };

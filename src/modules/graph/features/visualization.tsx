@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as d3 from "d3";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
@@ -182,7 +184,7 @@ function ForceGraph({
 
         tooltip.transition().duration(200).style("opacity", 1);
       })
-      .on("mouseout", function (event, d) {
+      .on("mouseout", function () {
         d3.select(this)
           .transition()
           .duration(300)

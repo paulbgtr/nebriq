@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import { createNoteConnection } from "@/app/actions/supabase/note_connections";
 import { z } from "zod";
-import { noteConnectionSchema } from "../schemas/note-connection";
+import { createNoteConnectionSchema } from "../schemas/note-connection";
 
 interface MentionListProps {
   items: Array<{ id: string; title: string }>;
@@ -14,20 +14,20 @@ interface MentionListProps {
   currentNoteId: string;
 }
 
-export default forwardRef<
+const MentionList = forwardRef<
   { onKeyDown: (params: { event: KeyboardEvent }) => boolean },
   MentionListProps
 >((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const selectItem = async (index) => {
+  const selectItem = async (index: number) => {
     const item = props.items[index];
 
     if (item) {
       props.command({ id: item.title });
     }
 
-    const noteConnection: z.infer<typeof noteConnectionSchema> = {
+    const noteConnection: z.infer<typeof createNoteConnectionSchema> = {
       note_id_from: props.currentNoteId,
       note_id_to: item.id,
     };
@@ -92,3 +92,7 @@ export default forwardRef<
     </div>
   );
 });
+
+MentionList.displayName = "MentionList";
+
+export default MentionList;

@@ -44,7 +44,8 @@ const searchHandler = async (
   const results = await vectorStore.similaritySearchWithScore(query, 3);
 
   const filteredResults = results
-    .filter(([doc, score]) => score > 0.4)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, score]) => score > 0.4)
     .map(([doc]) => doc);
 
   console.log(

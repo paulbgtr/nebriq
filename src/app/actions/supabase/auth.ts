@@ -96,7 +96,7 @@ export async function updateEmail(formData: FormData) {
 
 export async function updatePassword(formData: FormData) {
   const supabase = await createClient();
-  const password = formData.get("password") as string; // todo: validate user password
+  // const password = formData.get("password") as string; // todo: validate user password
   const newPassword = formData.get("newPassword") as string;
   const confirmNewPassword = formData.get("confirmNewPassword") as string;
 

@@ -7,6 +7,7 @@ import { Compass } from "lucide-react";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
+import { useUser } from "@/hooks/use-user";
 
 const AnimatedCompass = () => {
   return (
@@ -82,10 +83,16 @@ export default function Search() {
   const router = useRouter();
   const { createSearchHistoryMutation } = useSearchHistory();
 
+  const { user } = useUser();
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) return;
+
     await createSearchHistoryMutation.mutateAsync({
       query: searchQuery,
+      user_id: user.id,
     });
     router.push(`/search/${encodeURIComponent(searchQuery)}`);
   };
