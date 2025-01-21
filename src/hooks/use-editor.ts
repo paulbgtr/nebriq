@@ -33,15 +33,47 @@ const FileElement = Node.create({
     return {
       fileName: {
         default: "",
+        parseHTML: (element) => element.getAttribute("data-filename"),
+        renderHTML: (attributes) => ({
+          "data-filename": attributes.fileName,
+        }),
       },
       filePath: {
         default: "",
+        parseHTML: (element) => element.getAttribute("data-filepath"),
+        renderHTML: (attributes) => ({
+          "data-filepath": attributes.filePath,
+        }),
+      },
+      fileSize: {
+        default: "",
+        parseHTML: (element) => element.getAttribute("data-filesize"),
+        renderHTML: (attributes) => ({
+          "data-filesize": attributes.fileSize,
+        }),
       },
     };
   },
+
   parseHTML() {
-    return [{ tag: "div.file-element" }];
+    return [
+      {
+        tag: 'div[data-type="fileElement"]',
+      },
+    ];
   },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "div",
+      {
+        "data-type": "fileElement",
+        ...HTMLAttributes,
+        class: "file-element",
+      },
+    ];
+  },
+
   addNodeView() {
     return ReactNodeViewRenderer(FileElementComponent);
   },
