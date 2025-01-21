@@ -116,17 +116,36 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
       const { url } = await upload(file, userId, bucket);
 
       if (bucket === "images") {
-        editor.chain().focus().setImage({ src: url }).run();
+        editor
+          .chain()
+          .focus()
+          .setImage({ src: url })
+          .enter()
+          .selectParentNode()
+          .createParagraphNear()
+          .selectNodeForward()
+          .run();
         return;
       }
 
-      editor.commands.setContent({
-        type: "fileElement",
-        attrs: {
-          fileName: file.name,
-          filePath: url,
-        },
-      });
+      console.log(file.size);
+
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "fileElement",
+          attrs: {
+            fileName: file.name,
+            filePath: url,
+            fileSize: file.size,
+          },
+        })
+        .enter()
+        .selectParentNode()
+        .createParagraphNear()
+        .selectNodeForward()
+        .run();
     } catch (err) {
       console.error(err);
       toast({
