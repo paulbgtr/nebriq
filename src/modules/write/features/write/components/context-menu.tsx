@@ -122,12 +122,9 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
 
       editor.commands.setContent({
         type: "fileElement",
-        content: [
-          {
-            type: "paragraph",
-            content: [{ type: "text", text: file.name }],
-          },
-        ],
+        attrs: {
+          fileName: file.name,
+        },
       });
     } catch (err) {
       console.error(err);

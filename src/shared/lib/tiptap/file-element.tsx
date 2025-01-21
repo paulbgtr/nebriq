@@ -1,14 +1,16 @@
 import { File } from "lucide-react";
-import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
+import { NodeViewWrapper } from "@tiptap/react";
+import { Node } from "@tiptap/core";
 
 /**
  * Custom block for representing a file in tiptap editor
  */
-export const FileElement = () => {
+export const FileElement = ({ node }: any) => {
+  // todo: type
   return (
-    <NodeViewWrapper className="custom-block rounded-xl bg-primary/10 text-primary px-2 py-1 flex items-center gap-2">
+    <NodeViewWrapper className="file-element rounded-xl bg-primary/10 text-primary px-2 py-1 flex items-center gap-2">
       <File className="w-4 h-4" />
-      <NodeViewContent className="content" />
+      <span>{node.attrs.fileName}</span>{" "}
     </NodeViewWrapper>
   );
 };

@@ -26,7 +26,16 @@ import { FileElement as FileElementComponent } from "@/shared/lib/tiptap/file-el
 const FileElement = Node.create({
   name: "fileElement",
   group: "block",
-  content: "block*",
+  inline: false,
+  selectable: true,
+  draggable: true,
+  addAttributes() {
+    return {
+      fileName: {
+        default: "",
+      },
+    };
+  },
   parseHTML() {
     return [{ tag: "div.file-element" }];
   },
