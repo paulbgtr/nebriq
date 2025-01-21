@@ -19,6 +19,21 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
+import { Node } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import { FileElement as FileElementComponent } from "@/shared/lib/tiptap/file-element";
+
+const FileElement = Node.create({
+  name: "fileElement",
+  group: "block",
+  content: "block*",
+  parseHTML() {
+    return [{ tag: "div.file-element" }];
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(FileElementComponent);
+  },
+});
 
 export const useCustomEditor = (initialNoteId: string | null) => {
   const lowlight = createLowlight(all);
@@ -82,6 +97,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     {
       immediatelyRender: false,
       extensions: [
+        FileElement,
         StarterKit,
         Underline,
         Image,
