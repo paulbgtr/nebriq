@@ -34,6 +34,9 @@ const FileElement = Node.create({
       fileName: {
         default: "",
       },
+      filePath: {
+        default: "",
+      },
     };
   },
   parseHTML() {

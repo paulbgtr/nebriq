@@ -124,6 +124,7 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
         type: "fileElement",
         attrs: {
           fileName: file.name,
+          filePath: url,
         },
       });
     } catch (err) {
