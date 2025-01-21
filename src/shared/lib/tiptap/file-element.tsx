@@ -1,18 +1,30 @@
-import { File } from "lucide-react";
 import { NodeViewWrapper } from "@tiptap/react";
+import { File } from "lucide-react";
+import { formatFileSize } from "../utils";
+import {} from "@tiptap/react";
 
-/**
- * Custom block for representing a file in tiptap editor
- */
 export const FileElement = ({ node }: any) => {
-  // todo: type
+  const { fileName, filePath, fileSize, fileType } = node.attrs;
+
   return (
     <NodeViewWrapper
-      className="file-element rounded-xl bg-primary/10 text-primary px-2 py-1 flex items-center gap-2"
-      data-file-path={node.attrs.filePath}
+      className="group file-element rounded-xl bg-primary/10
+                 text-primary px-3 py-2 flex items-center gap-3 transition-colors
+                 cursor-pointer select-none"
+      data-file-path={filePath}
+      data-file-type={fileType}
+      title={`Open ${fileName}`}
     >
-      <File className="w-4 h-4" />
-      <span>{node.attrs.fileName}</span>{" "}
+      <File className="w-4 h-4 flex-shrink-0" />
+
+      <div className="flex flex-col min-w-0">
+        <span className="truncate font-medium">{fileName}</span>
+        {fileSize && (
+          <span className="text-xs text-primary/70">
+            {formatFileSize(fileSize)}
+          </span>
+        )}
+      </div>
     </NodeViewWrapper>
   );
 };
