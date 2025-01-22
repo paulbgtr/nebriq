@@ -26,7 +26,9 @@ export default async function DashboardLayout({
   return (
     <main className="flex w-full flex-col overflow-hidden">
       <Navbar />
-      <div className="flex-1 space-y-4 p-8 px-16 pt-6">{children}</div>
+      <div className="flex-1 space-y-4 p-4 md:p-6 lg:p-8 xl:px-16 max-w-7xl mx-auto w-full">
+        {children}
+      </div>
       <AIChat />
       <Command />
     </main>
