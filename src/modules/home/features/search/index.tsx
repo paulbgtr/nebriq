@@ -128,25 +128,31 @@ export default function Search() {
 
   return (
     <motion.article
-      className="h-full items-center"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
-      <div className="w-full max-w-xl mx-auto">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
         <motion.div
-          className="mb-6 text-center space-y-2"
+          className="mb-4 sm:mb-6 md:mb-8 text-center space-y-2 sm:space-y-3"
           variants={itemVariants}
         >
           <AnimatedCompass />
           <motion.h1
-            className="text-xl font-semibold tracking-tight"
+            className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight"
             variants={itemVariants}
           >
             Discover Your Knowledge
           </motion.h1>
+          <motion.p
+            className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto"
+            variants={itemVariants}
+          >
+            Search through your personal knowledge base instantly
+          </motion.p>
         </motion.div>
-        <motion.div variants={itemVariants}>
+
+        <motion.div variants={itemVariants} className="w-full">
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={handleSearchQueryChange}

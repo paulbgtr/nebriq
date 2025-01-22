@@ -29,10 +29,12 @@ export default function SearchBar({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "flex flex-col gap-3 justify-end rounded-xl p-5",
-        "backdrop-blur-xl shadow-xl",
+        "flex flex-col gap-2 sm:gap-3 justify-end rounded-lg sm:rounded-xl",
+        "p-3 sm:p-4 md:p-5",
+        "backdrop-blur-xl shadow-md sm:shadow-xl",
         "border border-white/10",
-        "relative overflow-hidden"
+        "relative overflow-hidden",
+        "w-full max-w-3xl mx-auto"
       )}
     >
       <motion.div
@@ -69,7 +71,7 @@ export default function SearchBar({
             type: "tween",
           }}
           className={cn(
-            "relative group rounded-lg",
+            "relative group rounded-md sm:rounded-lg",
             isFocused && "ring-2 ring-primary/20",
             "transition-shadow duration-200",
             isFocused ? "shadow-lg" : "shadow-md hover:shadow-lg"
@@ -83,12 +85,12 @@ export default function SearchBar({
               }}
               transition={{ duration: 0.2 }}
               className={cn(
-                "absolute left-4",
+                "absolute left-3 sm:left-4",
                 "transition-colors duration-300",
                 isFocused ? "text-primary" : "text-muted-foreground"
               )}
             >
-              <FaSearch className="h-4 w-4" />
+              <FaSearch className="h-3 w-3 sm:h-4 sm:w-4" />
             </motion.div>
 
             <Input
@@ -100,14 +102,15 @@ export default function SearchBar({
               onBlur={() => setIsFocused(false)}
               placeholder="Search anything..."
               className={cn(
-                "pl-11 pr-20 h-14",
+                "pl-9 sm:pl-11 pr-12 sm:pr-20",
+                "h-12 sm:h-14",
                 "transition-all duration-300",
                 "bg-background/80",
                 "border-muted/50 hover:border-primary/30",
                 isFocused && "ring-2 ring-primary/20 border-primary",
                 "placeholder:text-muted-foreground/60",
-                "text-base font-medium",
-                "rounded-lg"
+                "text-sm sm:text-base font-medium",
+                "rounded-md sm:rounded-lg"
               )}
             />
 
@@ -118,7 +121,7 @@ export default function SearchBar({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-3 flex items-center space-x-2"
+                  className="absolute right-2 sm:right-3 flex items-center space-x-2"
                 >
                   <Button
                     type="submit"
@@ -126,13 +129,13 @@ export default function SearchBar({
                     size="sm"
                     className={cn(
                       "transition-all duration-200",
-                      "rounded-full w-9 h-9 p-0",
+                      "rounded-full w-8 h-8 sm:w-9 sm:h-9 p-0",
                       "bg-primary/10 hover:bg-primary/20",
                       "text-primary hover:text-primary/90",
                       "hover:scale-105 transform"
                     )}
                   >
-                    <FaArrowUp className="h-3.5 w-3.5" />
+                    <FaArrowUp className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </Button>
                 </motion.div>
               )}
