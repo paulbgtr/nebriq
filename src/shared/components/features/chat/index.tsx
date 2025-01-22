@@ -70,9 +70,11 @@ export default function AIChat() {
     () => (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-5 right-5 h-12 w-12 rounded-full shadow-lg"
+        className="fixed bottom-5 right-5 h-12 w-12 rounded-full shadow-lg 
+          hover:shadow-xl transition-shadow duration-200
+          md:h-14 md:w-14"
       >
-        <Box className="h-5 w-5" />
+        <Box className="h-5 w-5 md:h-6 md:w-6" />
       </Button>
     ),
     []
@@ -84,22 +86,28 @@ export default function AIChat() {
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-5 right-5 w-[400px] z-50">
+      <div
+        className={cn(
+          "fixed z-50",
+          isFullscreen ? "inset-0" : "bottom-5 right-5 w-[90vw] sm:w-[400px]"
+        )}
+      >
         {isAllNotesLoading ? (
-          <Spinner />
+          <div className="flex justify-center items-center h-full">
+            <Spinner />
+          </div>
         ) : (
           <article
             ref={chatContainerRef}
             className={cn(
-              "flex flex-col rounded-3xl",
+              "flex flex-col",
               "bg-background/95 backdrop-blur-sm",
               "border border-border/50",
-              "shadow-2xl hover:shadow-3xl",
               "transition-all duration-500 ease-out",
               "animate-in slide-in-from-bottom-3 zoom-in-95",
               isFullscreen
-                ? "fixed inset-0 w-full h-full rounded-none"
-                : "h-[600px] w-[400px]"
+                ? "fixed inset-0 w-full h-full"
+                : "h-[80vh] sm:h-[600px] rounded-2xl shadow-2xl hover:shadow-3xl"
             )}
           >
             <ChatHeader
@@ -110,29 +118,31 @@ export default function AIChat() {
               toggleFullscreen={toggleFullscreen}
             />
 
-            {isAllNotesLoading ? (
-              <div className="flex-1 flex justify-center items-center">
-                <Spinner size="sm" />
-              </div>
-            ) : (
-              <>
-                <ChatContent
-                  scrollContainerRef={scrollContainerRef}
-                  chatContext={chatContext}
-                  setFollowUp={setFollowUp}
-                  email={user?.email ?? ""}
-                  displayedText={displayedText}
-                  isLoading={isLoading}
-                />
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {isAllNotesLoading ? (
+                <div className="flex-1 flex justify-center items-center">
+                  <Spinner size="sm" />
+                </div>
+              ) : (
+                <>
+                  <ChatContent
+                    scrollContainerRef={scrollContainerRef}
+                    chatContext={chatContext}
+                    setFollowUp={setFollowUp}
+                    email={user?.email ?? ""}
+                    displayedText={displayedText}
+                    isLoading={isLoading}
+                  />
 
-                <InputArea
-                  followUp={followUp}
-                  setFollowUp={setFollowUp}
-                  setQuery={setQuery}
-                  maxLength={maxLength}
-                />
-              </>
-            )}
+                  <InputArea
+                    followUp={followUp}
+                    setFollowUp={setFollowUp}
+                    setQuery={setQuery}
+                    maxLength={maxLength}
+                  />
+                </>
+              )}
+            </div>
           </article>
         )}
       </div>
