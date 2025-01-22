@@ -12,12 +12,16 @@ export default function Write() {
   );
 
   return (
-    <Editor
-      id={id}
-      editor={editor}
-      title={title}
-      setTitle={setTitle}
-      content={content}
-    />
+    <div className="max-w-4xl mx-auto">
+      <div className="prose prose-lg max-w-none dark:prose-invert">
+        <Editor
+          id={id}
+          editor={editor}
+          title={title}
+          setTitle={setTitle}
+          content={content}
+        />
+      </div>
+    </div>
   );
 }
