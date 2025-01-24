@@ -63,14 +63,18 @@ export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
 
   const debouncedUpdate = useDebouncedCallback(updateNote, 1000);
 
-  // Initial counts update
+  useEffect(() => {
+    if (editor) {
+      editor.commands.focus();
+    }
+  }, [editor]);
+
   useEffect(() => {
     if (editor && content) {
       updateCounts();
     }
   }, [editor, content, updateCounts]);
 
-  // Editor update handler
   useEffect(() => {
     if (!editor) return;
 
@@ -113,33 +117,20 @@ export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
     return () => window.removeEventListener("keydown", handleKeyboard);
   }, [editor, updateNote]);
 
+  if (!editor) {
+    return null;
+  }
+
   const editorContainerClass = cn(
-    // Container width constraints
-    "mx-auto",
-    "container",
+    "mx-auto container",
     isZenMode
       ? ["max-w-2xl sm:max-w-3xl lg:max-w-4xl", "px-4 sm:px-6 md:px-8 lg:px-12"]
       : ["max-w-full", "px-3 sm:px-4 md:px-6"],
-
-    // Scrolling behavior
-    "overflow-y-auto",
-    "scrollbar-thin scrollbar-thumb-muted-foreground/10",
-    "hover:scrollbar-thumb-muted-foreground/20",
-
-    // Transitions
+    "overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/10 hover:scrollbar-thumb-muted-foreground/20",
     "transition-all duration-300 ease-in-out",
-
-    // Focus & Interaction
-    "focus-within:ring-0",
-    "selection:bg-primary/20",
-
-    // Dark mode adjustments
-    "dark:prose-invert",
-    "dark:prose-pre:bg-muted/50",
-
-    // Mobile optimizations
-    "touch-manipulation",
-    "sm:touch-auto"
+    "focus-within:ring-0 selection:bg-primary/20",
+    "dark:prose-invert dark:prose-pre:bg-muted/50",
+    "touch-manipulation sm:touch-auto"
   );
 
   return (
@@ -227,21 +218,22 @@ export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
           </div>
         </div>
 
-        {editor && (
-          <EditorContextMenu editor={editor}>
-            <div
-              className={cn(
-                "!pt-0 !px-0",
-                "h-[calc(100vh-20rem)] sm:h-[calc(100vh-22rem)] md:h-[calc(100vh-24rem)]",
-                "cursor-text prose prose-sm sm:prose-base max-w-none",
-                "overflow-auto"
-              )}
-              onClick={() => editor?.commands.focus()}
-            >
-              <EditorContent editor={editor} />
-            </div>
-          </EditorContextMenu>
-        )}
+        <EditorContextMenu editor={editor}>
+          <div
+            className={cn(
+              "flex flex-col flex-1",
+              "min-h-[calc(100vh-18rem)]",
+              "cursor-text prose prose-sm sm:prose-base max-w-none",
+              "overflow-auto scroll-smooth",
+              "prose-p:my-2",
+              "prose-headings:my-4",
+              "leading-relaxed"
+            )}
+            onClick={() => editor?.commands.focus()}
+          >
+            <EditorContent editor={editor} />
+          </div>
+        </EditorContextMenu>
       </div>
     </div>
   );
