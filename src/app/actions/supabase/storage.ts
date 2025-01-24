@@ -27,8 +27,12 @@ const createUniqueFileName = (name: string): string => {
  * @param path - The path of the file.
  * @returns The public URL of the file.
  */
-const getPublicUrl = (supabase: SupabaseClient, path: string): string => {
-  return supabase.storage.from("images").getPublicUrl(path, {}).data.publicUrl;
+const getPublicUrl = (
+  supabase: SupabaseClient,
+  path: string,
+  bucket: Bucket
+): string => {
+  return supabase.storage.from(bucket).getPublicUrl(path, {}).data.publicUrl;
 };
 
 /**
@@ -106,7 +110,7 @@ export const upload = async (file: File, userId: string, bucket: Bucket) => {
   if (error) {
     throw new Error(error.message);
   }
-  const url = getPublicUrl(supabase, path);
+  const url = getPublicUrl(supabase, path, bucket);
 
   return {
     url,
