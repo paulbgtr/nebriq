@@ -715,12 +715,12 @@ export default function Home() {
             </span>
 
             <div className="flex items-center space-x-6">
-              <a
+              <Link
                 href="mailto:hi@nebriq.com"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Email Us
-              </a>
+              </Link>
 
               {/* Social media links */}
               <Link
@@ -737,7 +737,13 @@ export default function Home() {
           <div className="mt-8 text-center text-sm text-muted-foreground">
             <p>
               Built with ❤️ by{" "}
-              <Link href="https://paulbg.dev">Paul Bogatyr</Link>.
+              <Link
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                href="https://paulbg.dev"
+              >
+                Paul Bogatyr
+              </Link>
+              .
             </p>
           </div>
         </div>
