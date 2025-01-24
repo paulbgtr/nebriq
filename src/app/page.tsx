@@ -709,16 +709,36 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t">
         <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground"> 2024 nebriq</span>
-            <div className="space-x-6">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+            <span className="text-muted-foreground">
+              © 2025 Nebriq. All rights reserved.
+            </span>
+
+            <div className="flex items-center space-x-6">
+              <a
+                href="mailto:hi@nebriq.com"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Email Us
+              </a>
+
+              {/* Social media links */}
               <Link
-                href="https://x.com/paulbgtr"
-                className="text-muted-foreground hover:text-foreground"
+                href="https://x.com/getnebriq"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Twitter
               </Link>
             </div>
+          </div>
+
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            <p>
+              Built with ❤️ by{" "}
+              <Link href="https://paulbg.dev">Paul Bogatyr</Link>.
+            </p>
           </div>
         </div>
       </footer>
