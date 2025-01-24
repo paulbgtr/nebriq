@@ -4,8 +4,9 @@ import { formatFileSize } from "../utils";
 import { createClient } from "../supabase/client";
 import { useToast } from "@/shared/hooks/use-toast";
 import { saveAs } from "file-saver";
+import { NodeViewProps } from "@tiptap/react";
 
-export const FileElement = ({ node }: any) => {
+export const FileElement = ({ node }: NodeViewProps) => {
   const { toast } = useToast();
 
   const { fileName, filePath, fileSize, fileType } = node.attrs;
