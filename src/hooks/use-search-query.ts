@@ -48,7 +48,7 @@ const combineSearchResults = (
 
   return Array.from(uniqueResults.values())
     .sort((a, b) => b.score - a.score)
-    .map(({ score, ...note }) => note);
+    .map(({ ...note }) => note);
 };
 
 export const useSearchQuery = (): ReturnType | null => {
