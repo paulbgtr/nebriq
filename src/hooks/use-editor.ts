@@ -7,6 +7,7 @@ import { useUser } from "./use-user";
 import { useNotes } from "./use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { all, createLowlight } from "lowlight";
+import { useSyncNoteConnections } from "./useSyncNoteConnections";
 
 import Image from "@tiptap/extension-image";
 import Mathematics, {
@@ -89,6 +90,8 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   const [title, setTitle] = useState("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
 
+  useSyncNoteConnections(id, content);
+
   useEffect(() => {
     if (id && !openNotes.find((note) => note.id === id)) {
       setOpenNotes([
@@ -104,7 +107,6 @@ export const useCustomEditor = (initialNoteId: string | null) => {
 
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
-  // useNoteConnections({ noteId: id, content });
 
   const createNote = async () => {
     if (!user || id || initialNoteId) return;
