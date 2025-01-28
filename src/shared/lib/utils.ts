@@ -40,16 +40,23 @@ export function formatDate(date: Date) {
  */
 export const extractNoteConnectionsFromContent = (
   content: string
-): string[] => {
-  const regex = /@(\w+)/g;
-  const matches = content.matchAll(regex);
-  const noteConnections: string[] = [];
+): string[] | null => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, "text/html");
 
-  for (const match of matches) {
-    noteConnections.push(match[1]);
-  }
+  const mentionSpans = doc.querySelectorAll(
+    'span.mention[data-type="mention"]'
+  );
 
-  return noteConnections;
+  const mentions: string[] = [];
+
+  mentionSpans.forEach((span) => {
+    const text = span.textContent;
+    if (text) {
+      mentions.push(text.substring(1));
+    }
+  });
+  return mentions.length ? mentions : null;
 };
 
 /**
