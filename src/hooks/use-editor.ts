@@ -1,6 +1,6 @@
 import "katex/dist/katex.min.css";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useEditor } from "@tiptap/react";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
 import { useUser } from "./use-user";
@@ -8,6 +8,8 @@ import { useNotes } from "./use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { all, createLowlight } from "lowlight";
 import { useSyncNoteConnections } from "./useSyncNoteConnections";
+import { useDebouncedCallback } from "use-debounce";
+import { useToast } from "@/shared/hooks/use-toast";
 
 import Image from "@tiptap/extension-image";
 import Mathematics, {
@@ -20,75 +22,19 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
-import { Node } from "@tiptap/core";
-import { ReactNodeViewRenderer } from "@tiptap/react";
-import { FileElement as FileElementComponent } from "@/shared/lib/tiptap/file-element";
-
-const FileElement = Node.create({
-  name: "fileElement",
-  group: "block",
-  inline: false,
-  selectable: true,
-  draggable: true,
-  addAttributes() {
-    return {
-      fileName: {
-        default: "",
-        parseHTML: (element) => element.getAttribute("data-filename"),
-        renderHTML: (attributes) => ({
-          "data-filename": attributes.fileName,
-        }),
-      },
-      filePath: {
-        default: "",
-        parseHTML: (element) => element.getAttribute("data-filepath"),
-        renderHTML: (attributes) => ({
-          "data-filepath": attributes.filePath,
-        }),
-      },
-      fileSize: {
-        default: "",
-        parseHTML: (element) => element.getAttribute("data-filesize"),
-        renderHTML: (attributes) => ({
-          "data-filesize": attributes.fileSize,
-        }),
-      },
-    };
-  },
-
-  parseHTML() {
-    return [
-      {
-        tag: 'div[data-type="fileElement"]',
-      },
-    ];
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      "div",
-      {
-        "data-type": "fileElement",
-        ...HTMLAttributes,
-        class: "file-element",
-      },
-    ];
-  },
-
-  addNodeView() {
-    return ReactNodeViewRenderer(FileElementComponent);
-  },
-});
+import { FileElement } from "@/shared/lib/tippy/nodes/file-element";
 
 export const useCustomEditor = (initialNoteId: string | null) => {
   const lowlight = createLowlight(all);
   const { getNotesQuery } = useNotes();
   const { openNotes, setOpenNotes } = useNoteTabsStore();
+  const { toast } = useToast();
 
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useSyncNoteConnections(id, content);
 
@@ -125,19 +71,91 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         },
         onError: () => {
           setIsCreatingNote(false);
+          toast({
+            title: "Error creating note",
+            description: "Please try again",
+            variant: "destructive",
+          });
         },
       }
     );
   };
 
+  const updateNote = useDebouncedCallback(
+    useCallback(
+      (newTitle?: string, newContent?: string) => {
+        if (!id) return;
+
+        setIsSaving(true);
+        updateNoteMutation.mutate(
+          {
+            id,
+            title: newTitle ?? title,
+            content: newContent ?? content,
+          },
+          {
+            onSuccess: () => setIsSaving(false),
+            onError: () => {
+              setIsSaving(false);
+              toast({
+                title: "Error saving changes",
+                description: "Please try again",
+                variant: "destructive",
+              });
+            },
+          }
+        );
+      },
+      [id, title, content, updateNoteMutation, toast]
+    ),
+    1000
+  );
+
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle);
 
-    // Create note if this is the first title input
     if (!id && !isCreatingNote) {
       createNote();
     }
+
+    updateNote(newTitle);
   };
+
+  const handleEditorUpdate = useDebouncedCallback((newContent: string) => {
+    if (!id) return;
+
+    setIsSaving(true);
+
+    updateNoteMutation.mutate(
+      { id, title, content: newContent },
+      {
+        onSuccess: (updatedNote) => {
+          if (
+            updatedNote.content &&
+            updatedNote.content !== newContent &&
+            editor &&
+            !editor.isDestroyed
+          ) {
+            editor
+              .chain()
+              .setContent(updatedNote.content, true, {
+                preserveWhitespace: "full",
+              })
+              .run();
+          }
+          setIsSaving(false);
+        },
+        onError: () => {
+          toast({
+            title: "Error saving changes",
+            description: "Please try again",
+            variant: "destructive",
+          });
+          setIsSaving(false);
+        },
+      }
+    );
+  }, 800);
 
   const editor = useEditor(
     {
@@ -253,31 +271,35 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       enableInputRules: true,
       enablePasteRules: true,
       content,
-      onUpdate: ({ editor }) => {
+      onUpdate: ({ editor, transaction }) => {
+        if (transaction.getMeta("avoidSave")) return;
+
         const newContent = editor.getHTML();
+        const cursorPos = editor.state.selection.anchor;
+
         setContent(newContent);
+        handleEditorUpdate(newContent);
 
         if (!id && !isCreatingNote) {
           createNote();
         }
 
-        const timeoutId = setTimeout(() => {
-          if (!id) return;
-          updateNoteMutation.mutate({
-            id,
-            title,
-            content: newContent,
-          });
-        }, 500);
-
-        return () => clearTimeout(timeoutId);
+        requestAnimationFrame(() => {
+          editor.commands.focus(cursorPos);
+        });
       },
     },
-    [id]
+    [id, handleEditorUpdate]
   );
 
   useEffect(() => {
     if (editor && content && editor.getHTML() !== content) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
+
+  useEffect(() => {
+    if (editor && content && editor.isEmpty && !editor.isDestroyed) {
       editor.commands.setContent(content);
     }
   }, [editor, content]);
@@ -304,11 +326,13 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     setId,
     editor,
     title,
-    setTitle: handleTitleChange,
+    handleTitleChange,
     content,
     setContent,
     isCreatingNote,
     setIsCreatingNote,
     isPending,
+    updateNote,
+    isSaving,
   };
 };
