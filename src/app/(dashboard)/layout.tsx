@@ -6,7 +6,7 @@ import AIChat from "@/shared/components/features/chat";
 import Command from "@/shared/components/features/command";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Notes App",
+  title: "Dashboard | Nebriq",
   description: "Manage your notes efficiently",
 };
 
