@@ -1,121 +1,30 @@
 import { EditorContent } from "@tiptap/react";
-import { useNotes } from "@/hooks/use-notes";
-import { Editor as TiptapEditor } from "@tiptap/react";
-import { useEffect, useState, useCallback } from "react";
-import { Expand, Shrink, Save, Undo, Redo } from "lucide-react";
+import { useState } from "react";
+import { Expand, Shrink, Save } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { useDebouncedCallback } from "use-debounce";
 import { TagManager } from "./tag-manager";
 import { EditorContextMenu } from "./context-menu";
-import { useToast } from "@/shared/hooks/use-toast";
 import { cn } from "@/shared/lib/utils";
+import { useEditorCounts } from "@/hooks/use-editor-counts";
+import { useCustomEditor } from "@/hooks/use-editor";
 
-type EditorProps = {
-  id: string;
-  editor: TiptapEditor | null;
-  title: string;
-  setTitle: (title: string) => void;
-  content: string;
-};
+export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
+  const {
+    id,
+    title,
+    content,
+    handleTitleChange,
+    editor,
+    updateNote,
+    isSaving,
+  } = useCustomEditor(initialNoteId);
 
-export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
-  const { updateNoteMutation } = useNotes();
-  const { toast } = useToast();
+  const { wordCount, characterCount } = useEditorCounts({
+    editor,
+    content,
+  });
+
   const [isZenMode, setIsZenMode] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [wordCount, setWordCount] = useState(0);
-  const [characterCount, setCharacterCount] = useState(0);
-  const [hasContentChanged, setHasContentChanged] = useState(false);
-
-  const updateCounts = useCallback(() => {
-    if (!editor) return;
-    const text = editor.state.doc.textContent;
-    setCharacterCount(text.length);
-    setWordCount(text.split(/\s+/).filter(Boolean).length);
-  }, [editor]);
-
-  const updateNote = useCallback(
-    (newTitle?: string, newContent?: string) => {
-      if (!id) return;
-
-      setIsSaving(true);
-      updateNoteMutation.mutate(
-        {
-          id,
-          title: newTitle ?? title,
-          content: newContent ?? content,
-        },
-        {
-          onSuccess: () => setIsSaving(false),
-          onError: () => {
-            setIsSaving(false);
-            toast({
-              title: "Error saving changes",
-              description: "Please try again",
-              variant: "destructive",
-            });
-          },
-        }
-      );
-    },
-    [id, title, content, updateNoteMutation, toast]
-  );
-
-  const debouncedUpdate = useDebouncedCallback(updateNote, 1000);
-
-  useEffect(() => {
-    if (editor) {
-      editor.commands.focus();
-    }
-  }, [editor]);
-
-  useEffect(() => {
-    if (editor && content) {
-      updateCounts();
-    }
-  }, [editor, content, updateCounts]);
-
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleUpdate = () => {
-      const newContent = editor.getHTML();
-      debouncedUpdate(undefined, newContent);
-      updateCounts();
-      setHasContentChanged(true);
-    };
-
-    editor.on("update", handleUpdate);
-    return () => {
-      editor.off("update", handleUpdate);
-    };
-  }, [editor, debouncedUpdate, updateCounts]);
-
-  useEffect(() => {
-    const handleKeyboard = (e: KeyboardEvent) => {
-      if (!editor) return;
-
-      if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
-          case "s":
-            e.preventDefault();
-            updateNote();
-            break;
-          case "z":
-            e.preventDefault();
-            if (e.shiftKey) {
-              editor.commands.redo();
-            } else {
-              editor.commands.undo();
-            }
-            break;
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyboard);
-    return () => window.removeEventListener("keydown", handleKeyboard);
-  }, [editor, updateNote]);
 
   if (!editor) {
     return null;
@@ -147,8 +56,7 @@ export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
               type="text"
               value={title}
               onChange={(e) => {
-                setTitle(e.target.value);
-                debouncedUpdate(e.target.value);
+                handleTitleChange(e.target.value);
               }}
               placeholder="Untitled"
               className={cn(
@@ -167,26 +75,6 @@ export function Editor({ id, editor, title, setTitle, content }: EditorProps) {
             </div>
 
             <div className="flex items-center gap-0.5 sm:gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 sm:h-9 sm:w-9"
-                onClick={() => editor?.commands.undo()}
-                disabled={!hasContentChanged || !editor?.can().undo()}
-              >
-                <Undo className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 sm:h-9 sm:w-9"
-                onClick={() => editor?.commands.redo()}
-                disabled={!editor?.can().redo()}
-              >
-                <Redo className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              </Button>
-
               <Button
                 variant="ghost"
                 size="sm"
