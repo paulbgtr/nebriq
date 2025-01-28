@@ -21,7 +21,7 @@ export const useNoteConnections = ({
   const { getNotesQuery } = useNotes();
 
   const noteConnectionsQuery = useQuery({
-    queryKey: ["noteConnections"],
+    queryKey: ["noteConnections", noteId],
     queryFn: () => getNoteConnections(noteId),
     enabled: !!noteId,
   });
@@ -41,31 +41,38 @@ export const useNoteConnections = ({
   });
 
   useEffect(() => {
-    if (!content) return;
+    if (!content || !noteConnectionsQuery.data) return;
+
+    const { data: noteConnections } = noteConnectionsQuery;
 
     const mentionsInContent = extractNoteConnectionsFromContent(content);
 
+    if (!mentionsInContent) {
+      return noteConnections.forEach((connection) => {
+        deleteNoteConnectionMutation.mutate(connection.id);
+      });
+    }
+
     const currentConnectionIds = mentionsInContent
       .map((mention) => {
-        const note = getNotesQuery.data?.find(
-          (note) =>
-            note.content?.toLowerCase().startsWith(mention.toLowerCase())
+        if (!mention || !getNotesQuery.data) return null;
+        const note = getNotesQuery.data.find(
+          (note) => note?.title?.toLowerCase() === mention.toLowerCase()
         );
-        return note?.id;
+        return note?.id ?? null;
       })
       .filter(Boolean) as string[];
 
-    const existingConnectionIds =
-      noteConnectionsQuery.data?.map((connection) => connection.id) || [];
-
-    const connectionsToRemove = existingConnectionIds.filter(
-      (connectionId) => !currentConnectionIds.includes(connectionId)
-    );
+    const connectionsToRemove = noteConnections
+      .filter(
+        (connection) => !currentConnectionIds.includes(connection.note_id_to)
+      )
+      .map((connection) => connection.id);
 
     connectionsToRemove.forEach((connectionId) => {
       deleteNoteConnectionMutation.mutate(connectionId);
     });
-  }, [content]);
+  }, [content, noteConnectionsQuery.data, getNotesQuery.data]);
 
   return {
     noteConnectionsQuery,
