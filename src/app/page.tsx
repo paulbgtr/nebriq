@@ -10,6 +10,8 @@ import Image from "next/image";
 import {
   Sparkles,
   Search,
+  Twitter,
+  Heart,
   Clock,
   Shield,
   Settings,
@@ -39,6 +41,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/shared/lib/supabase/client";
 import { sendEmail } from "./actions/emails/send-email";
+import { Separator } from "@/shared/components/ui/separator";
 
 const wishListSchema = z.object({
   email: z
@@ -707,53 +710,104 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t">
+      <footer className="border-t bg-background">
         <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-            <span className="text-muted-foreground">
-              © 2025 Nebriq. All rights reserved.
-            </span>
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Company Info */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">About</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="https://microlaunch.net/p/nebriq"
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    Microlaunch
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-            <div className="flex items-center space-x-6">
-              <Link
-                href="mailto:hi@nebriq.com"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Email Us
-              </Link>
+            {/* Legal */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Legal</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/terms"
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/privacy"
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-              <Link
-                href="https://microlaunch.net/p/nebriq"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Microlaunch
-              </Link>
+            {/* Support */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Support</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/help"
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    Help Center
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-              {/* Social media links */}
-              <Link
-                href="https://x.com/getnebriq"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Twitter
-              </Link>
+            {/* Connect */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Connect</h3>
+              <div className="flex space-x-4">
+                <Link
+                  href="https://x.com/getnebriq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Twitter className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="mailto:hi@nebriq.com"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-5 w-5" />
+                </Link>
+              </div>
             </div>
           </div>
 
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            <p>
-              Built with ❤️ by{" "}
+          <Separator className="my-8" />
+
+          {/* Bottom Footer */}
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <span className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Nebriq. All rights reserved.
+            </span>
+
+            <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+              <span>Built with</span>
+              <Heart className="h-4 w-4 text-red-500 mx-1" />
+              <span>by</span>
               <Link
-                className="text-muted-foreground hover:text-foreground transition-colors"
                 href="https://paulbg.dev"
+                className="text-muted-foreground hover:text-foreground transition-colors ml-1"
               >
                 Paul Bogatyr
               </Link>
-              .
-            </p>
+            </div>
           </div>
         </div>
       </footer>
