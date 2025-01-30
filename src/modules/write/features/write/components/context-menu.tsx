@@ -128,8 +128,6 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
         return;
       }
 
-      console.log(file.size);
-
       editor
         .chain()
         .focus()

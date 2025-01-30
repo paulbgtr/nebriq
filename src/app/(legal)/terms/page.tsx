@@ -53,9 +53,8 @@ export default function TermsOfService() {
               <Separator className="mb-4" />
               <p className="text-muted-foreground leading-relaxed">
                 Welcome to Nebriq. By accessing or using our web application,
-                you agree to be bound by these Terms of Service ("Terms"). If
-                you disagree with any part of these terms, you may not access
-                our service.
+                you agree to be bound by these Terms of Service. If you disagree
+                with any part of these terms, you may not access our service.
               </p>
             </section>
 
@@ -228,8 +227,8 @@ export default function TermsOfService() {
                   <AccordionTrigger>Disclaimer of Warranties</AccordionTrigger>
                   <AccordionContent>
                     <p className="text-muted-foreground">
-                      The service is provided "as is" without warranties of any
-                      kind, either express or implied.
+                      The service is provided &quot;as is&quot; without
+                      warranties of any kind, either express or implied.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
