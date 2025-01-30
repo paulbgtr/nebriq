@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -92,6 +92,7 @@ export default function Home() {
 
   const { toast } = useToast();
   const { theme } = useTheme();
+  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -153,6 +154,12 @@ export default function Home() {
     }
   };
 
+  const scrollToHero = () => {
+    if (heroRef.current) {
+      heroRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background relative overflow-hidden">
       {/* Background decorative elements remain unchanged */}
@@ -167,7 +174,11 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section id="hero" className="relative min-h-[90vh] flex items-center">
+      <section
+        id="hero"
+        className="relative min-h-[90vh] flex items-center"
+        ref={heroRef}
+      >
         {/* Enhanced gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-muted/60 via-muted/30 to-transparent" />
 
@@ -699,11 +710,11 @@ export default function Home() {
               think clearly.
             </p>
             <Button
-              asChild
               size="lg"
               className="bg-gradient-to-r from-primary to-primary/80"
+              onClick={scrollToHero}
             >
-              <Link href="/signup">Join Waitlist</Link>
+              Join Waitlist
             </Button>
           </motion.div>
         </div>
