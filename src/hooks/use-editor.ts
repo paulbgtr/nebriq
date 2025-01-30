@@ -294,7 +294,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
 
   useEffect(() => {
     if (!editor) return;
-    let { from, to } = editor.state.selection;
+    const { from, to } = editor.state.selection;
     editor.commands.setContent(content, false, {
       preserveWhitespace: "full",
     });
