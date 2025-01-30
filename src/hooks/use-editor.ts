@@ -293,15 +293,12 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   );
 
   useEffect(() => {
-    if (editor && content && editor.getHTML() !== content) {
-      editor.commands.setContent(content);
-    }
-  }, [editor, content]);
-
-  useEffect(() => {
-    if (editor && content && editor.isEmpty && !editor.isDestroyed) {
-      editor.commands.setContent(content);
-    }
+    if (!editor) return;
+    let { from, to } = editor.state.selection;
+    editor.commands.setContent(content, false, {
+      preserveWhitespace: "full",
+    });
+    editor.commands.setTextSelection({ from, to });
   }, [editor, content]);
 
   useEffect(() => {
@@ -311,13 +308,12 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       );
 
       if (note) {
-        setContent(note.content || "");
         setTitle(note.title || "");
         setId(note.id);
-        editor?.commands.setContent(note.content || "");
+        setContent(note.content || "");
       }
     }
-  }, [initialNoteId, getNotesQuery.data, editor]);
+  }, [initialNoteId, getNotesQuery.data]);
 
   const { isPending } = createNoteMutation;
 
