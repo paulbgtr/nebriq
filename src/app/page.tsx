@@ -42,6 +42,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/shared/lib/supabase/client";
 import { sendEmail } from "./actions/emails/send-email";
 import { Separator } from "@/shared/components/ui/separator";
+import { AddToWaitlist } from "@/shared/components/emails/add-to-waitlist";
+import { extractFirstName } from "@/shared/lib/utils";
 
 const wishListSchema = z.object({
   email: z
@@ -129,7 +131,12 @@ export default function Home() {
         throw new Error(error.message);
       }
 
-      await sendEmail("You're on our wish list!", email);
+      await sendEmail(
+        "You're on our wish list!",
+        "waitlist@nebriq.com",
+        email,
+        <AddToWaitlist firstName={extractFirstName(email)} />
+      );
 
       form.reset();
 
