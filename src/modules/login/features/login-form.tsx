@@ -20,6 +20,8 @@ import { useForm } from "react-hook-form";
 import { loginSchema } from "@/shared/lib/schemas/auth/login";
 import { z } from "zod";
 import { cn } from "@/shared/lib/utils";
+import { getAuthErrorMessage } from "@/shared/lib/utils/auth-errors";
+import { AuthError } from "@supabase/supabase-js";
 
 export default function LoginForm() {
   const { toast } = useToast();
@@ -37,11 +39,11 @@ export default function LoginForm() {
     startTransition(async () => {
       try {
         await login(values.email, values.password);
-      } catch {
+      } catch (error) {
         toast({
           variant: "destructive",
           title: "Login failed",
-          description: "Something went wrong. Please try again.",
+          description: getAuthErrorMessage(error as AuthError),
         });
       }
     });
