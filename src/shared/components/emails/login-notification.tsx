@@ -121,7 +121,7 @@ export const LoginNotification = ({
             fontSize: "14px",
           }}
         >
-          ⚠️ Wasn't you? Reset your password immediately
+          ⚠️ Wasn&apos;t you? Reset your password immediately
         </span>
       </div>
 
