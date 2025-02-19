@@ -13,7 +13,6 @@ import {
   Twitter,
   Heart,
   Clock,
-  Shield,
   Settings,
   Folders,
   FolderX,
