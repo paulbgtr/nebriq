@@ -9,7 +9,7 @@ export function getAuthErrorMessage(error: AuthError): string {
       return "Invalid email or password. Please check your credentials and try again.";
 
     case "Email not confirmed":
-      return "Please check your email to confirm your account before signing in.";
+      return "Please check your email and click the confirmation link to complete signup.";
 
     case "User already registered":
       return "This email is already registered. Please try signing in instead.";
@@ -22,6 +22,9 @@ export function getAuthErrorMessage(error: AuthError): string {
 
     case "Email rate limit exceeded":
       return "Too many signup attempts. Please try again later.";
+
+    case "Email link is invalid or has expired":
+      return "The confirmation link is invalid or has expired. Please try signing up again.";
 
     // Network errors
     case "NetworkError":
