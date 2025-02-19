@@ -1,18 +1,19 @@
 "use server";
 
-import { AddToWaitlist } from "@/shared/components/emails/add-to-waitlist";
 import { client } from "@/shared/lib/resend/client";
-import { extractFirstName } from "@/shared/lib/utils";
 
-export const sendEmail = async (subject: string, email: string) => {
-  const firstName = extractFirstName(email);
-
+export const sendEmail = async (
+  subject: string,
+  emailFrom: string,
+  emailTo: string,
+  template: React.ReactNode
+) => {
   try {
     const { data, error } = await client.emails.send({
-      from: "waitlist@nebriq.com",
-      to: [email],
+      from: emailFrom,
+      to: [emailTo],
       subject,
-      react: AddToWaitlist({ firstName }),
+      react: template,
     });
 
     if (error) {
