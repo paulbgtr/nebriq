@@ -58,16 +58,34 @@ export async function login(email: string, password: string) {
 export async function signup(email: string, password: string) {
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+    },
   });
 
   if (error) {
     throw error;
   }
 
-  redirect("/login");
+  // Case 1: User exists (identities will be empty array)
+  if (data.user && data.user.identities?.length === 0) {
+    throw new Error("User already registered");
+  }
+
+  // Case 2: New signup (identities will have one entry)
+  if (
+    data.user &&
+    data.user.identities?.length &&
+    data.user.identities.length > 0
+  ) {
+    return { success: true };
+  }
+
+  // Case 3: Unexpected state
+  throw new Error("Something went wrong. Please try again.");
 }
 
 export async function logout() {
