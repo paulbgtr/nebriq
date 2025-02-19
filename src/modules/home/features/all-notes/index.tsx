@@ -55,33 +55,11 @@ export default function AllNotes() {
 
   if (!notes?.length) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center gap-4 text-center">
-        <svg
-          className="w-6 h-6 text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-          />
-        </svg>
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <h3 className="text-base font-medium">No notes yet</h3>
-            <p className="text-sm text-gray-500">
-              Start writing your first note
-            </p>
-          </div>
-          <Button variant="ghost" asChild>
-            <Link href="/write">
-              <Pen />
-              <span>compose</span> <span className="sr-only">Note</span>
-            </Link>
-          </Button>
+      <div className="min-h-[400px] flex flex-col items-center justify-center">
+        <div className="space-y-1.5">
+          <p className="text-sm text-muted-foreground/70">
+            Start composing and your notes will appear here
+          </p>
         </div>
       </div>
     );
