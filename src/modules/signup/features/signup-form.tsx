@@ -38,7 +38,16 @@ export default function SignupForm() {
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     startTransition(async () => {
       try {
-        await signup(values.email, values.password);
+        const result = await signup(values.email, values.password);
+
+        if (result.success) {
+          toast({
+            title: "Check your email",
+            description:
+              "We sent you a confirmation link to complete your registration.",
+          });
+          form.reset();
+        }
       } catch (error) {
         toast({
           variant: "destructive",
