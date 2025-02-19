@@ -10,23 +10,16 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-} from "@/shared/components/ui/card";
 import { login } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useTransition } from "react";
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, ArrowRight } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "@/shared/lib/schemas/auth/login";
 import { z } from "zod";
+import { cn } from "@/shared/lib/utils";
 
 export default function LoginForm() {
   const { toast } = useToast();
@@ -43,7 +36,7 @@ export default function LoginForm() {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     startTransition(async () => {
       try {
-        await login(values.email, values.password); //todo: fix
+        await login(values.email, values.password);
       } catch {
         toast({
           variant: "destructive",
@@ -55,30 +48,35 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="w-[400px] shadow-lg">
-      <CardHeader className="space-y-3 text-center">
-        <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-        <CardDescription className="text-base">
+    <>
+      <div className="flex flex-col space-y-2 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+        <p className="text-sm text-muted-foreground">
           Enter your credentials to access your account
-        </CardDescription>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
+        </p>
+      </div>
+
+      <div className="grid gap-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel className="text-sm font-medium">Email</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
                       <Input
                         {...field}
                         type="email"
-                        placeholder="n4A7o@example.com"
-                        className="pl-10"
+                        placeholder="name@example.com"
+                        className={cn(
+                          "pl-9 pr-4 py-5 text-sm",
+                          "bg-background/50 hover:bg-background/80 focus:bg-background",
+                          "transition-colors duration-200"
+                        )}
                       />
                     </div>
                   </FormControl>
@@ -92,15 +90,21 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-sm font-medium">
+                    Password
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
                       <Input
                         {...field}
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10"
+                        className={cn(
+                          "pl-9 pr-4 py-5 text-sm",
+                          "bg-background/50 hover:bg-background/80 focus:bg-background",
+                          "transition-colors duration-200"
+                        )}
                       />
                     </div>
                   </FormControl>
@@ -108,35 +112,42 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <div className="flex items-center justify-between">
+
+            <div className="flex items-center justify-end">
               <Link
                 href="/forgot-password"
-                className="text-sm text-primary hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 Forgot password?
               </Link>
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-6 pb-6">
+
             <Button
-              className="w-full h-11 text-base font-medium"
+              className={cn(
+                "w-full relative group h-11",
+                "bg-gradient-to-r from-primary to-primary/90"
+              )}
               type="submit"
               disabled={isPending}
             >
-              {isPending ? "Logging in..." : "Sign In"}
+              <span className="flex items-center justify-center gap-2">
+                {isPending ? "Signing in..." : "Sign in"}
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </span>
             </Button>
-            <div className="text-sm text-center text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/signup"
-                className="text-primary hover:underline font-medium"
-              >
-                Create an account
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+          </form>
+        </Form>
+      </div>
+
+      <p className="px-8 text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link
+          href="/signup"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Create an account
+        </Link>
+      </p>
+    </>
   );
 }

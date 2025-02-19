@@ -10,23 +10,16 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-} from "@/shared/components/ui/card";
 import { signup } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useTransition } from "react";
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, ArrowRight } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signupSchema } from "@/shared/lib/schemas/auth/signup";
 import { z } from "zod";
+import { cn } from "@/shared/lib/utils";
 
 export default function SignupForm() {
   const { toast } = useToast();
@@ -56,30 +49,37 @@ export default function SignupForm() {
   };
 
   return (
-    <Card className="w-[400px] shadow-lg">
-      <CardHeader className="space-y-3 text-center">
-        <CardTitle className="text-2xl font-bold">Create an Account</CardTitle>
-        <CardDescription className="text-base">
-          Enter your details to create your account
-        </CardDescription>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
+    <>
+      <div className="flex flex-col space-y-2 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Create an account
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Enter your details to get started
+        </p>
+      </div>
+
+      <div className="grid gap-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel className="text-sm font-medium">Email</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
                       <Input
                         {...field}
                         type="email"
-                        placeholder="n4A7o@example.com"
-                        className="pl-10"
+                        placeholder="name@example.com"
+                        className={cn(
+                          "pl-9 pr-4 py-5 text-sm",
+                          "bg-background/50 hover:bg-background/80 focus:bg-background",
+                          "transition-colors duration-200"
+                        )}
                       />
                     </div>
                   </FormControl>
@@ -93,15 +93,21 @@ export default function SignupForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-sm font-medium">
+                    Password
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
                       <Input
                         {...field}
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10"
+                        className={cn(
+                          "pl-9 pr-4 py-5 text-sm",
+                          "bg-background/50 hover:bg-background/80 focus:bg-background",
+                          "transition-colors duration-200"
+                        )}
                       />
                     </div>
                   </FormControl>
@@ -115,15 +121,21 @@ export default function SignupForm() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="text-sm font-medium">
+                    Confirm Password
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
                       <Input
                         {...field}
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10"
+                        className={cn(
+                          "pl-9 pr-4 py-5 text-sm",
+                          "bg-background/50 hover:bg-background/80 focus:bg-background",
+                          "transition-colors duration-200"
+                        )}
                       />
                     </div>
                   </FormControl>
@@ -131,27 +143,33 @@ export default function SignupForm() {
                 </FormItem>
               )}
             />
-          </CardContent>
-          <CardFooter className="flex flex-col gap-6 pb-6">
+
             <Button
-              className="w-full h-11 text-base font-medium"
+              className={cn(
+                "w-full relative group h-11",
+                "bg-gradient-to-r from-primary to-primary/90"
+              )}
               type="submit"
               disabled={isPending}
             >
-              {isPending ? "Creating account..." : "Create Account"}
+              <span className="flex items-center justify-center gap-2">
+                {isPending ? "Creating account..." : "Create account"}
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </span>
             </Button>
-            <div className="text-sm text-center text-muted-foreground">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="text-primary hover:underline font-medium"
-              >
-                Sign in
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+          </form>
+        </Form>
+      </div>
+
+      <p className="px-8 text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link
+          href="/login"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Sign in
+        </Link>
+      </p>
+    </>
   );
 }
