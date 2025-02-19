@@ -522,7 +522,7 @@ export default function Home() {
                     AI-Powered
                   </Badge>
                   <h3 className="text-xl font-bold">
-                    Find any note instantly, even if you don't remember the
+                    Find any note instantly, even if you don&apos;t remember the
                     exact words
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
