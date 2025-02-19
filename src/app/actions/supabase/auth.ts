@@ -22,10 +22,15 @@ const createTokenLimitIfNotExists = async (userId: string) => {
 export async function login(email: string, password: string) {
   const supabase = await createClient();
 
+  const cleanEmail = email.toLowerCase().trim();
+
   const {
     data: { user },
     error,
-  } = await supabase.auth.signInWithPassword({ email, password });
+  } = await supabase.auth.signInWithPassword({
+    email: cleanEmail,
+    password,
+  });
 
   if (error || !user) {
     throw new Error(error?.message);
@@ -58,8 +63,20 @@ export async function login(email: string, password: string) {
 export async function signup(email: string, password: string) {
   const supabase = await createClient();
 
+  const cleanEmail = email.toLowerCase().trim();
+
+  const { data: betaUser, error: betaError } = await supabase
+    .from("beta_users")
+    .select("*")
+    .eq("email", cleanEmail)
+    .single();
+
+  if (betaError || !betaUser) {
+    throw new Error("Beta access required");
+  }
+
   const { data, error } = await supabase.auth.signUp({
-    email,
+    email: cleanEmail,
     password,
     options: {
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
@@ -70,12 +87,10 @@ export async function signup(email: string, password: string) {
     throw error;
   }
 
-  // Case 1: User exists (identities will be empty array)
   if (data.user && data.user.identities?.length === 0) {
     throw new Error("User already registered");
   }
 
-  // Case 2: New signup (identities will have one entry)
   if (
     data.user &&
     data.user.identities?.length &&
@@ -84,7 +99,6 @@ export async function signup(email: string, password: string) {
     return { success: true };
   }
 
-  // Case 3: Unexpected state
   throw new Error("Something went wrong. Please try again.");
 }
 
