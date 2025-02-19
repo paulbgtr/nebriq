@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nebriq
+
+## Overview
+
+Nebriq is an AI-powered writing workspace designed to enhance your writing process. It helps you organize thoughts, connect ideas, and produce better content efficiently. With a clean and intuitive interface, Nebriq allows you to focus on what truly matters—your ideas.
+
+## Features
+
+- **AI Insights**: Generate quizzes and get fresh perspectives on your notes.
+- **Smart Search**: Find any note instantly, even if you don't remember the exact words.
+- **Dynamic Connections**: Link related notes with a simple click, revealing new insights.
+- **Rich Formatting**: Style your notes exactly how you want with Markdown and LaTeX support.
+- **Collaboration Tools**: Share your notes and collaborate with others seamlessly.
 
 ## Getting Started
 
-First, run the development server:
+To get started with Nebriq, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the Repository**:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   git clone https://github.com/yourusername/nebriq.git
+   cd nebriq
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Install Dependencies**:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-## Learn More
+3. **Run the Development Server**:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Open in Browser**:
+   Navigate to [http://localhost:3000](http://localhost:3000) to see your application in action.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file. Nebriq uses `next/font` to automatically optimize and load fonts, ensuring a smooth user experience.
