@@ -41,6 +41,12 @@ export function getAuthErrorMessage(error: AuthError): string {
       }
       break;
 
+    case "Beta access required":
+      return "This is a closed beta. You need an invitation to sign up.";
+
+    case "Beta invite already used":
+      return "This beta invitation has already been used.";
+
     default:
       if (error.message.includes("duplicate key")) {
         return "This email is already registered. Please try signing in instead.";
