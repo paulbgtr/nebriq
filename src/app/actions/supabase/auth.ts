@@ -2,9 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { getUserTokenLimits, createTokenLimit } from "./token_limits";
+import { sendEmail } from "@/app/actions/emails/send-email";
+import { LoginNotification } from "@/shared/components/emails/login-notification";
 
 const createTokenLimitIfNotExists = async (userId: string) => {
   const tokenLimit = await getUserTokenLimits(userId);
@@ -19,15 +22,10 @@ const createTokenLimitIfNotExists = async (userId: string) => {
 export async function login(email: string, password: string) {
   const supabase = await createClient();
 
-  const data = {
-    email,
-    password,
-  };
-
   const {
     data: { user },
     error,
-  } = await supabase.auth.signInWithPassword(data);
+  } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error || !user) {
     throw new Error(error?.message);
@@ -35,38 +33,41 @@ export async function login(email: string, password: string) {
 
   await createTokenLimitIfNotExists(user.id);
 
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") || "Unknown browser";
+  const timestamp = new Date().toLocaleString("en-US", {
+    timeZone: "UTC",
+    timeStyle: "long",
+    dateStyle: "long",
+  });
+
+  await sendEmail(
+    "New Login to Your Nebriq Account",
+    "hi@nebriq.com",
+    user.email!,
+    LoginNotification({
+      email: user.email!,
+      timestamp,
+      browserInfo: userAgent,
+    })
+  );
+
   revalidatePath("/", "layout");
 }
 
-export async function signup(
-  email: string,
-  password: string,
-  confirmPassword: string
-) {
+export async function signup(email: string, password: string) {
   const supabase = await createClient();
 
-  const data = {
+  const { error } = await supabase.auth.signUp({
     email,
     password,
-    confirmPassword,
-  };
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.signUp(data);
-
-  if (!user) {
-    throw new Error("User not found");
-  }
+  });
 
   if (error) {
-    throw new Error(error?.message);
+    throw error;
   }
 
-  await createTokenLimitIfNotExists(user.id);
-
-  revalidatePath("/", "layout");
+  redirect("/login");
 }
 
 export async function logout() {
