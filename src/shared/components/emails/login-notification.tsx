@@ -68,7 +68,7 @@ export const LoginNotification = ({
           marginBottom: "32px",
         }}
       >
-        We detected a new login to your nebriq account.
+        We detected a new login to your Nebriq account.
       </p>
 
       <div
