@@ -7,8 +7,6 @@ import { useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { CheckSquare } from "lucide-react";
 import { Trash2 } from "lucide-react";
-import { Pen } from "lucide-react";
-import Link from "next/link";
 import {
   AlertDialog,
   AlertDialogAction,
