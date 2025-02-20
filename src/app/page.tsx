@@ -174,7 +174,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       {/* Beta Status Banner */}
       <div className="fixed top-0 inset-x-0 bg-background/80 backdrop-blur-sm border-b z-40">
-        <div className="flex items-center justify-around h-10 px-4">
+        <div className="flex items-center justify-around h-10 px-4 sm:px-2">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/[0.08] border border-primary/10">
               <span className="relative flex h-2 w-2">
@@ -187,7 +187,7 @@ export default function Home() {
               Currently in closed beta
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 sm:gap-2">
             <Link
               href="/signup"
               className="text-xs font-medium text-primary hover:text-primary/90"
