@@ -92,7 +92,7 @@ export const InputArea = ({
   };
 
   return (
-    <div className="relative px-4 py-3 bg-background/95 backdrop-blur-md border-t">
+    <div className="relative px-4 py-4 bg-background/95 backdrop-blur-lg border-t">
       <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto">
         <div className="relative group">
           <div className="relative flex items-start">
@@ -101,43 +101,44 @@ export const InputArea = ({
               onChange={(e) => setFollowUp(e.target.value)}
               onKeyDown={handleKeyDown}
               maxLength={maxLength}
-              placeholder="Message Briq"
+              placeholder="Message Briq..."
               rows={1}
               className={cn(
                 // Base styles
-                "min-h-[52px] max-h-[200px] w-full py-3.5 px-4 pr-24",
+                "min-h-[56px] max-h-[200px] w-full py-4 px-5 pr-24",
                 "text-base leading-relaxed resize-none",
 
                 // Border and background
                 "rounded-2xl border-[1.5px]",
-                "bg-background/80 backdrop-blur-sm",
-                "border-input/50 hover:border-primary/40",
+                "bg-background/60 backdrop-blur-lg",
+                "border-input/40 hover:border-primary/30",
 
                 // Focus states
-                "focus:border-primary focus:ring-2 focus:ring-primary/20",
+                "focus:border-primary/50 focus:ring-2 focus:ring-primary/20",
                 "focus:outline-none",
 
                 // Transitions
-                "transition-all duration-200 ease-in-out",
+                "transition-all duration-300 ease-out",
 
                 // Placeholder
-                "placeholder:text-muted-foreground/50",
+                "placeholder:text-muted-foreground/40",
 
-                "scrollbar-thin scrollbar-thumb-primary/10",
-                "scrollbar-track-transparent hover:scrollbar-thumb-primary/20",
+                // Scrollbar
+                "scrollbar-thin scrollbar-thumb-primary/20",
+                "scrollbar-track-transparent hover:scrollbar-thumb-primary/30",
 
                 // Shadow effects
                 "shadow-sm hover:shadow-md",
+                "focus:shadow-lg",
 
                 // Dark mode adjustments
-                "dark:bg-background/60 dark:hover:bg-background/70",
-                "dark:border-input/30 dark:hover:border-primary/30"
+                "dark:bg-background/50 dark:hover:bg-background/60",
+                "dark:border-input/20 dark:hover:border-primary/20"
               )}
             />
 
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-3">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
               <CharCounter />
-
               <Submit />
             </div>
           </div>

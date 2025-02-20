@@ -88,8 +88,8 @@ export default function AIChat() {
     <TooltipProvider>
       <div
         className={cn(
-          "fixed z-50",
-          isFullscreen ? "inset-0" : "bottom-5 right-5 w-[90vw] sm:w-[400px]"
+          "fixed z-50 transition-all duration-500 ease-out",
+          isFullscreen ? "inset-0" : "bottom-6 right-6 w-[95vw] sm:w-[450px]"
         )}
       >
         {isAllNotesLoading ? (
@@ -101,13 +101,14 @@ export default function AIChat() {
             ref={chatContainerRef}
             className={cn(
               "flex flex-col",
-              "bg-background/95 backdrop-blur-sm",
-              "border border-border/50",
+              "bg-background/90 backdrop-blur-md",
+              "border border-border/30",
               "transition-all duration-500 ease-out",
               "animate-in slide-in-from-bottom-3 zoom-in-95",
               isFullscreen
                 ? "fixed inset-0 w-full h-full"
-                : "h-[80vh] sm:h-[600px] rounded-2xl shadow-2xl hover:shadow-3xl"
+                : "h-[85vh] sm:h-[650px] rounded-3xl shadow-2xl hover:shadow-3xl",
+              "motion-safe:animate-in motion-safe:fade-in-0"
             )}
           >
             <ChatHeader

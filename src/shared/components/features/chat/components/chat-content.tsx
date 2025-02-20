@@ -47,20 +47,26 @@ const MessageBubble = ({
 }: MessageProps & Pick<ChatContentProps, "displayedText" | "chatContext">) => (
   <div
     className={cn(
-      "flex-1 px-2 text-sm rounded-lg relative",
-      "transition-all duration-200",
-      message.role === "user"
-        ? "bg-primary/10 ml-8 border-primary/20"
-        : "bg-muted mr-8 border-border"
+      "flex-1 px-1 text-sm rounded-2xl relative",
+      "transition-all duration-300 ease-out",
+      "hover:shadow-lg",
+      message.role === "user" &&
+        "bg-primary/10 ml-8 border-primary/20 hover:bg-primary/15"
     )}
   >
     <MessageActions message={message} />
     <ReactMarkdown
-      className={cn("prose prose-sm max-w-none")}
+      className={cn(
+        "prose prose-sm max-w-none",
+        "prose-p:leading-relaxed prose-p:my-1",
+        "prose-code:bg-muted/70 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md"
+      )}
       components={{
-        p: ({ children }) => <p className="text-foreground">{children}</p>,
+        p: ({ children }) => <p className="text-foreground/90">{children}</p>,
         code: ({ children }) => (
-          <code className="bg-muted px-1 py-0.5 rounded">{children}</code>
+          <code className="bg-muted/70 px-1.5 py-0.5 rounded-md">
+            {children}
+          </code>
         ),
       }}
     >
