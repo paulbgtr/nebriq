@@ -14,15 +14,19 @@ type SearchBarProps = {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   handleSearch: (e: React.FormEvent) => void;
+  variant?: "default" | "minimal";
 };
 
 export default function SearchBar({
   searchQuery,
   setSearchQuery,
   handleSearch,
+  variant = "default",
 }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
   const { isAiSearch } = useSearchStore();
+
+  const isMinimal = variant === "minimal";
 
   return (
     <motion.article
@@ -30,17 +34,17 @@ export default function SearchBar({
       animate={{ opacity: 1, y: 0 }}
       className={cn(
         "flex flex-col gap-2 sm:gap-3 justify-end rounded-lg sm:rounded-xl",
-        "p-3 sm:p-4 md:p-5",
-        "backdrop-blur-xl shadow-md sm:shadow-xl",
-        "border border-white/10",
         "relative overflow-hidden",
-        "w-full max-w-3xl mx-auto"
+        "w-full max-w-3xl mx-auto",
+        isMinimal ? "p-2" : "p-3 sm:p-4 md:p-5",
+        !isMinimal && ["backdrop-blur-xl shadow-md", "border border-white/10"],
+        isMinimal && ["bg-muted/5 backdrop-blur-sm", "border border-border/40"]
       )}
     >
       <motion.div
         initial={false}
         animate={{
-          opacity: isAiSearch ? 1 : 0,
+          opacity: isAiSearch && !isMinimal ? 1 : 0,
         }}
         transition={{
           duration: 0.6,
@@ -55,16 +59,16 @@ export default function SearchBar({
       <div
         className={cn(
           "absolute inset-0",
-          "bg-background/50 backdrop-blur-sm",
           "transition-opacity duration-500",
-          isAiSearch ? "opacity-90" : "opacity-100"
+          isMinimal ? "bg-background/30" : "bg-background/50 backdrop-blur-sm",
+          isAiSearch && !isMinimal ? "opacity-90" : "opacity-100"
         )}
       />
 
       <form onSubmit={handleSearch} className="relative z-10">
         <motion.div
           animate={{
-            scale: isFocused ? 1.02 : 1,
+            scale: isFocused ? 1.01 : 1,
           }}
           transition={{
             duration: 0.2,
@@ -74,7 +78,9 @@ export default function SearchBar({
             "relative group rounded-md sm:rounded-lg",
             isFocused && "ring-2 ring-primary/20",
             "transition-shadow duration-200",
-            isFocused ? "shadow-lg" : "shadow-md hover:shadow-lg"
+            isMinimal
+              ? "shadow-none hover:shadow-sm"
+              : "shadow-md hover:shadow-lg"
           )}
         >
           <div className="relative flex items-center">
@@ -87,7 +93,7 @@ export default function SearchBar({
               className={cn(
                 "absolute left-3 sm:left-4",
                 "transition-colors duration-300",
-                isFocused ? "text-primary" : "text-muted-foreground"
+                isFocused ? "text-primary" : "text-muted-foreground/70"
               )}
             >
               <FaSearch className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -103,13 +109,13 @@ export default function SearchBar({
               placeholder="Search anything..."
               className={cn(
                 "pl-9 sm:pl-11 pr-12 sm:pr-20",
-                "h-12 sm:h-14",
+                "h-11 sm:h-12",
                 "transition-all duration-300",
-                "bg-background/80",
-                "border-muted/50 hover:border-primary/30",
-                isFocused && "ring-2 ring-primary/20 border-primary",
-                "placeholder:text-muted-foreground/60",
-                "text-sm sm:text-base font-medium",
+                isMinimal ? "bg-background/50" : "bg-background/80",
+                "border-border/40 hover:border-primary/30",
+                isFocused && "ring-2 ring-primary/20 border-primary/50",
+                "placeholder:text-muted-foreground/50",
+                "text-sm sm:text-base",
                 "rounded-md sm:rounded-lg"
               )}
             />
@@ -130,8 +136,10 @@ export default function SearchBar({
                     className={cn(
                       "transition-all duration-200",
                       "rounded-full w-8 h-8 sm:w-9 sm:h-9 p-0",
-                      "bg-primary/10 hover:bg-primary/20",
-                      "text-primary hover:text-primary/90",
+                      isMinimal
+                        ? "bg-primary/5 hover:bg-primary/10"
+                        : "bg-primary/10 hover:bg-primary/20",
+                      "text-primary/70 hover:text-primary",
                       "hover:scale-105 transform"
                     )}
                   >
@@ -144,7 +152,7 @@ export default function SearchBar({
         </motion.div>
       </form>
 
-      <AISearch />
+      {!isMinimal && <AISearch />}
     </motion.article>
   );
 }
