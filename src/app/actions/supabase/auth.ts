@@ -21,7 +21,6 @@ const createTokenLimitIfNotExists = async (userId: string) => {
 
 export async function login(email: string, password: string) {
   const supabase = await createClient();
-
   const cleanEmail = email.toLowerCase().trim();
 
   const {
@@ -33,7 +32,7 @@ export async function login(email: string, password: string) {
   });
 
   if (error || !user) {
-    throw new Error(error?.message);
+    throw new Error(error?.message || "Invalid login credentials");
   }
 
   await createTokenLimitIfNotExists(user.id);
@@ -75,7 +74,10 @@ export async function signup(email: string, password: string) {
     throw new Error("Beta access required");
   }
 
-  const { data, error } = await supabase.auth.signUp({
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.signUp({
     email: cleanEmail,
     password,
     options: {
@@ -87,15 +89,13 @@ export async function signup(email: string, password: string) {
     throw error;
   }
 
-  if (data.user && data.user.identities?.length === 0) {
+  if (user && user.identities?.length === 0) {
     throw new Error("User already registered");
   }
 
-  if (
-    data.user &&
-    data.user.identities?.length &&
-    data.user.identities.length > 0
-  ) {
+  if (user && user.identities?.length && user.identities.length > 0) {
+    await createTokenLimitIfNotExists(user.id);
+
     return { success: true };
   }
 
