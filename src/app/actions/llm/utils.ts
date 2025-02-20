@@ -15,7 +15,7 @@ export const handleTokenLimits = async (
   const tokensUsed = tokenLimit.tokens_used;
   const tokensLimit = tokenLimit.token_limit;
 
-  if (!tokensLimit || !tokensUsed || !resetDate) {
+  if (tokensLimit == null || tokensUsed == null || resetDate == null) {
     throw new Error(
       "One or more of these parameters are missing: reset_date, tokens_used, token_limit"
     );
@@ -37,16 +37,14 @@ export const handleTokenLimits = async (
     return;
   }
 
-  if (!tokensUsed || !tokensLimit) {
-    const totalTokens = tokensUsed + newTokens;
-    if (totalTokens > tokensLimit) {
-      throw new Error("Token limit exceeded");
-    }
-
-    await updateTokenLimit({
-      user_id: userId,
-      tokens_used: totalTokens,
-      reset_date: resetDate,
-    });
+  const totalTokens = tokensUsed + newTokens;
+  if (totalTokens > tokensLimit) {
+    throw new Error("Token limit exceeded");
   }
+
+  await updateTokenLimit({
+    user_id: userId,
+    tokens_used: totalTokens,
+    reset_date: resetDate,
+  });
 };

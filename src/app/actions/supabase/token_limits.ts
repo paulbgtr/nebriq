@@ -2,25 +2,29 @@ import { createClient } from "@/shared/lib/supabase/server";
 import { z } from "zod";
 import { tokenLimitSchema } from "@/shared/lib/schemas/token-limit";
 
-export const getUserTokenLimits = async (
+export async function getUserTokenLimits(
   userId: string
-): Promise<z.infer<typeof tokenLimitSchema>> => {
+): Promise<z.infer<typeof tokenLimitSchema>> {
   const supabase = await createClient();
-  const { data: tokenLimits, error } = await supabase
+
+  const { data, error } = await supabase
     .from("token_limits")
     .select("*")
     .eq("user_id", userId)
     .single();
 
   if (error) {
-    throw error;
+    throw new Error("Failed to get token limits");
   }
 
-  return tokenLimitSchema.parse({
-    ...tokenLimits,
-    reset_date: new Date(tokenLimits.reset_date),
-  });
-};
+  const tokenLimit = {
+    ...data,
+    reset_date: new Date(data.reset_date),
+    created_at: new Date(data.created_at),
+  };
+
+  return tokenLimitSchema.parse(tokenLimit);
+}
 
 export const createTokenLimit = async (
   tokenLimit: z.infer<typeof tokenLimitSchema>
@@ -55,5 +59,12 @@ export const updateTokenLimit = async (
   if (error) {
     throw error;
   }
-  return tokenLimitSchema.parse(updatedTokenLimit);
+
+  const tokenLimitResponse = {
+    ...updatedTokenLimit,
+    reset_date: new Date(updatedTokenLimit.reset_date),
+    created_at: new Date(updatedTokenLimit.created_at),
+  };
+
+  return tokenLimitSchema.parse(tokenLimitResponse);
 };
