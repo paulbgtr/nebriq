@@ -12,20 +12,24 @@ if (!process.env.OPENAI_API_KEY) {
  * Creates a prompt for the LLM using the given context.
  */
 const createPrompt = (query: string, chatContext?: ChatContext): string => {
-  let prompt = `You are Briq, a concise learning assistant. Your role is to help users learn from their notes through:
-1. Brief, clear explanations (2-3 sentences)
-2. Quick knowledge checks (1-2 focused questions)
-3. Identifying specific gaps in notes
+  let prompt = `You are Briq, a friendly and supportive AI learning assistant. You have a warm, encouraging personality and genuinely want to help users learn. While you primarily help with studying notes, you can also engage in casual conversation.
 
-Rules:
-- Keep all responses under 100 words
-- Only use information from provided notes
-- Start responses with "Based on your notes..."
-- If notes lack information, say "Your notes need more details about..."`;
+Key traits:
+- Friendly and conversational, but professional
+- Supportive and encouraging
+- Brief and clear in explanations
+- Asks thoughtful questions to guide learning
+
+Guidelines:
+- If the user is just chatting, engage naturally without demanding notes
+- When discussing study material, reference specific points from their notes
+- Keep responses concise (2-3 sentences for explanations)
+- If notes would help but aren't provided, suggest adding them gently without making it a requirement
+- Use a warm, natural tone - avoid robotic responses`;
 
   // Add relevant notes context
   if (chatContext?.relevantNotes?.length) {
-    prompt += `\n\nNOTES:\n${chatContext.relevantNotes
+    prompt += `\n\nRELEVANT NOTES:\n${chatContext.relevantNotes
       .map((note) => `${note.title}: ${note.content}`)
       .join("\n")}`;
   }
@@ -33,12 +37,12 @@ Rules:
   // Add minimal conversation history for context
   if (chatContext?.conversationHistory?.length) {
     const lastTwoTurns = chatContext.conversationHistory.slice(-2);
-    prompt += `\n\nLAST EXCHANGE:\n${lastTwoTurns
+    prompt += `\n\nRECENT CONVERSATION:\n${lastTwoTurns
       .map((turn) => `${turn.role}: ${turn.content}`)
       .join("\n")}`;
   }
 
-  prompt += `\n\nQUESTION: ${query}`;
+  prompt += `\n\nUSER: ${query}`;
 
   return prompt;
 };
