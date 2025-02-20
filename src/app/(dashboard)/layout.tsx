@@ -24,17 +24,25 @@ export default async function DashboardLayout({
   }
 
   return (
-    <main className="flex w-full flex-col overflow-hidden">
-      <div className="fixed top-0 left-0 w-full z-50">
-        <Navbar />
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
+      <div className="fixed inset-0 bg-grid-gray-900/[0.04] dark:bg-grid-white/[0.02] bg-[size:20px_20px] pointer-events-none" />
+
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+          <Navbar />
+        </div>
       </div>
 
-      <div className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full mt-28 sm:mt-32">
-        {children}
-      </div>
+      <main className="relative flex min-h-screen flex-col">
+        <div className="flex-1 w-full">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-10">
+            {children}
+          </div>
+        </div>
+      </main>
 
       <AIChat />
       <Command />
-    </main>
+    </div>
   );
 }
