@@ -5,20 +5,9 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 import { createClient } from "@/shared/lib/supabase/server";
-import { getUserTokenLimits, createTokenLimit } from "./token_limits";
 import { sendEmail } from "@/app/actions/emails/send-email";
 import { LoginNotification } from "@/shared/components/emails/login-notification";
-
-const createTokenLimitIfNotExists = async (userId: string) => {
-  const tokenLimit = await getUserTokenLimits(userId);
-  if (!tokenLimit) {
-    await createTokenLimit({
-      user_id: userId,
-      token_limit: 5000,
-    });
-  }
-};
-
+import { createTokenLimitIfNotExists } from "@/shared/lib/utils";
 export async function login(email: string, password: string) {
   const supabase = await createClient();
   const cleanEmail = email.toLowerCase().trim();
@@ -94,8 +83,6 @@ export async function signup(email: string, password: string) {
   }
 
   if (user && user.identities?.length && user.identities.length > 0) {
-    await createTokenLimitIfNotExists(user.id);
-
     return { success: true };
   }
 
