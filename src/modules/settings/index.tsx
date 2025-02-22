@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useUser } from "@/hooks/use-user";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/shared/hooks/use-toast";
+import { VERSION } from "@/shared/config/version";
 
 import { SettingsHeader } from "../../shared/components/settings-header";
 import { SkeletonSettings } from "./features/skeleton";
@@ -25,6 +26,16 @@ export default function SettingsModule() {
     }
   }, [searchParams]);
 
+  const Version = () => {
+    return (
+      <div className="mt-8 pt-6 border-t">
+        <p className="text-xs text-muted-foreground/60 text-center">
+          Nebriq {VERSION.number}
+        </p>
+      </div>
+    );
+  };
+
   return (
     <>
       <SettingsHeader
@@ -42,6 +53,8 @@ export default function SettingsModule() {
           </section>
 
           <DangerZone />
+
+          <Version />
         </>
       )}
     </>
