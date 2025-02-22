@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { cn } from "@/shared/lib/utils";
 import Link from "next/link";
 import { Button } from "@/shared/components/ui/button";
-import { Library, Menu, Pen, House, Waypoints } from "lucide-react";
+import {
+  Library,
+  Menu,
+  Pen,
+  House,
+  Waypoints,
+  MessageSquarePlus,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -11,6 +18,7 @@ import {
 import { UserActions } from "./user-actions";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { FeedbackPopover } from "../feedback/feedback-popover";
 
 const navItems = [
   {
@@ -30,6 +38,13 @@ const navItems = [
     name: "library",
     href: "/library",
     tooltip: "Browse Library",
+  },
+  {
+    icon: MessageSquarePlus,
+    name: "feedback",
+    href: "#",
+    tooltip: "Share Feedback",
+    isPopover: true,
   },
 ];
 
@@ -83,37 +98,55 @@ export const Navigation = ({ email }: Props) => {
             <ul className="flex space-x-1">
               {navItems.map((item) => (
                 <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-200",
-                      pathname === item.href
-                        ? "text-primary bg-primary/10"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
-                      "group flex items-center gap-2 hover:scale-105"
-                    )}
-                    aria-current={pathname === item.href ? "page" : undefined}
-                  >
-                    <item.icon
+                  {item.isPopover ? (
+                    <FeedbackPopover>
+                      <button
+                        className={cn(
+                          "relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-200",
+                          "text-muted-foreground hover:text-foreground hover:bg-muted",
+                          "group flex items-center gap-2 hover:scale-105"
+                        )}
+                      >
+                        <item.icon
+                          className="text-muted-foreground"
+                          size={16}
+                        />
+                        {item.name}
+                      </button>
+                    </FeedbackPopover>
+                  ) : (
+                    <Link
+                      href={item.href}
                       className={cn(
-                        "transition-colors duration-200",
+                        "relative rounded-md px-4 py-2 text-sm font-medium transition-all duration-200",
                         pathname === item.href
-                          ? "text-primary"
-                          : "text-muted-foreground"
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                        "group flex items-center gap-2 hover:scale-105"
                       )}
-                      size={16}
-                    />
-                    {item.name}
-                    {pathname === item.href && (
-                      <motion.span
-                        layoutId="activeTab"
-                        className="absolute bottom-0 left-0 h-0.5 w-full bg-primary"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
+                      aria-current={pathname === item.href ? "page" : undefined}
+                    >
+                      <item.icon
+                        className={cn(
+                          "transition-colors duration-200",
+                          pathname === item.href
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                        )}
+                        size={16}
                       />
-                    )}
-                  </Link>
+                      {item.name}
+                      {pathname === item.href && (
+                        <motion.span
+                          layoutId="activeTab"
+                          className="absolute bottom-0 left-0 h-0.5 w-full bg-primary"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      )}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
