@@ -1,0 +1,5 @@
+export enum EmailTemplate {
+  WAITLIST = "WAITLIST",
+  LOGIN_NOTIFICATION = "LOGIN_NOTIFICATION",
+  FEEDBACK = "FEEDBACK",
+}
