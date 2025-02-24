@@ -6,8 +6,9 @@ import { headers } from "next/headers";
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { sendEmail } from "@/app/actions/emails/send-email";
-import { LoginNotification } from "@/shared/components/emails/login-notification";
+import { EmailTemplate } from "@/enums/email-template";
 import { createTokenLimitIfNotExists } from "@/shared/lib/utils";
+
 export async function login(email: string, password: string) {
   const supabase = await createClient();
   const cleanEmail = email.toLowerCase().trim();
@@ -36,13 +37,14 @@ export async function login(email: string, password: string) {
 
   await sendEmail(
     "New Login to Your Nebriq Account",
-    "hi@nebriq.com",
+    "noreply@nebriq.com",
     user.email!,
-    LoginNotification({
+    EmailTemplate.LOGIN_NOTIFICATION,
+    {
       email: user.email!,
       timestamp,
       browserInfo: userAgent,
-    })
+    }
   );
 
   revalidatePath("/", "layout");
