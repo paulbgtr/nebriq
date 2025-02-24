@@ -7,6 +7,11 @@ import {
   getUserTokenLimits,
   createTokenLimit,
 } from "@/app/actions/supabase/token_limits";
+import { AddToWaitlist } from "@/shared/components/emails/add-to-waitlist";
+import { LoginNotification } from "@/shared/components/emails/login-notification";
+import { FeedbackEmail } from "@/shared/components/emails/feedback";
+import { EmailTemplate } from "@/enums/email-template";
+import { EmailData } from "@/types/email-data";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -111,3 +116,41 @@ export const createTokenLimitIfNotExists = async (userId: string) => {
     });
   }
 };
+
+/**
+ * Generates an email template based on the provided template type and data.
+ *
+ * This function dynamically selects and returns an email template component based on the given `template` and `data`.
+ * It supports types of emails declared in the `EmailTemplate` enum.
+ *
+ * @param template - The type of email template to generate.
+ * @param data - The data required to populate the email template.
+ * @returns The generated email template component.
+ */
+export function getEmailTemplate<T extends EmailTemplate>(
+  template: T,
+  data: EmailData[T]
+) {
+  switch (template) {
+    case EmailTemplate.WAITLIST:
+      return AddToWaitlist({
+        firstName: (data as EmailData[EmailTemplate.WAITLIST]).firstName,
+      });
+    case EmailTemplate.LOGIN_NOTIFICATION:
+      const loginData = data as EmailData[EmailTemplate.LOGIN_NOTIFICATION];
+      return LoginNotification({
+        email: loginData.email,
+        timestamp: loginData.timestamp,
+        browserInfo: loginData.browserInfo,
+      });
+    case EmailTemplate.FEEDBACK:
+      const feedbackData = data as EmailData[EmailTemplate.FEEDBACK];
+      return FeedbackEmail({
+        email: feedbackData.email,
+        message: feedbackData.message,
+        emoji: feedbackData.emoji,
+      });
+    default:
+      throw new Error(`Unknown email template: ${template}`);
+  }
+}
