@@ -1,0 +1,17 @@
+import { EmailTemplate } from "@/enums/email-template";
+
+export type EmailData = {
+  [EmailTemplate.WAITLIST]: {
+    firstName: string;
+  };
+  [EmailTemplate.LOGIN_NOTIFICATION]: {
+    email: string;
+    timestamp: string;
+    browserInfo: string;
+  };
+  [EmailTemplate.FEEDBACK]: {
+    email: string;
+    message: string;
+    emoji?: string;
+  };
+};
