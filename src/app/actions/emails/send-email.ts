@@ -1,7 +1,9 @@
 "use server";
 
 import { client } from "@/shared/lib/resend/client";
-import { getEmailTemplate, EmailTemplate, EmailData } from "@/shared/lib/utils";
+import { getEmailTemplate } from "@/shared/lib/utils";
+import { EmailTemplate } from "@/enums/email-template";
+import { EmailData } from "@/types/email-data";
 
 export const sendEmail = async <T extends EmailTemplate>(
   subject: string,
