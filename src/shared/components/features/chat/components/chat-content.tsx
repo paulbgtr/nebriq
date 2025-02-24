@@ -19,6 +19,43 @@ type MessageProps = {
   message: ChatContext["conversationHistory"][0];
 };
 
+export const ChatContent = ({
+  scrollContainerRef,
+  chatContext,
+  setFollowUp,
+  email,
+  displayedText,
+  isLoading,
+}: ChatContentProps) => (
+  <div ref={scrollContainerRef} className="flex-1 p-6 overflow-y-auto">
+    {!chatContext.conversationHistory.length ? (
+      <QueryExamples setFollowUp={setFollowUp} />
+    ) : (
+      <div className="space-y-6">
+        {chatContext.conversationHistory.map((message, index) => (
+          <div
+            key={index}
+            className={cn(
+              "flex items-start gap-4 group",
+              "animate-in slide-in-from-bottom-2",
+              message.role === "user" ? "flex-row-reverse" : "flex-row"
+            )}
+          >
+            <Avatar message={message} email={email} />
+            <MessageBubble
+              message={message}
+              displayedText={displayedText}
+              chatContext={chatContext}
+            />
+          </div>
+        ))}
+        {isLoading && <LoadingIndicator />}
+      </div>
+    )}
+  </div>
+);
+
+// Updated Avatar Component
 const Avatar = ({ message, email }: MessageProps & { email?: string }) => (
   <div
     className={cn(
@@ -26,8 +63,8 @@ const Avatar = ({ message, email }: MessageProps & { email?: string }) => (
       "flex items-center justify-center relative",
       "transition-all duration-300 group-hover:scale-110",
       message.role === "user"
-        ? "bg-primary/10 shadow-primary/10"
-        : "bg-secondary/10 shadow-secondary/10"
+        ? "bg-primary/10 border border-primary/20 hover:shadow-md"
+        : "bg-secondary/10 border border-secondary/20 hover:shadow-md"
     )}
   >
     {message.role === "user" ? (
@@ -40,6 +77,7 @@ const Avatar = ({ message, email }: MessageProps & { email?: string }) => (
   </div>
 );
 
+// Updated MessageBubble Component
 const MessageBubble = ({
   message,
   displayedText,
@@ -47,11 +85,12 @@ const MessageBubble = ({
 }: MessageProps & Pick<ChatContentProps, "displayedText" | "chatContext">) => (
   <div
     className={cn(
-      "flex-1 px-1 text-sm rounded-2xl relative",
+      "flex-1 px-2 text-sm rounded-3xl relative shadow-sm",
       "transition-all duration-300 ease-out",
       "hover:shadow-lg",
-      message.role === "user" &&
-        "bg-primary/10 ml-8 border-primary/20 hover:bg-primary/15"
+      message.role === "user"
+        ? "bg-primary/10 ml-8 border border-primary/20 hover:bg-primary/15"
+        : "bg-secondary/5 mr-8 border border-secondary/10 hover:bg-secondary/10"
     )}
   >
     <MessageActions message={message} />
@@ -78,41 +117,5 @@ const MessageBubble = ({
         ? displayedText
         : message.content}
     </ReactMarkdown>
-  </div>
-);
-
-export const ChatContent = ({
-  scrollContainerRef,
-  chatContext,
-  setFollowUp,
-  email,
-  displayedText,
-  isLoading,
-}: ChatContentProps) => (
-  <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4">
-    {!chatContext.conversationHistory.length ? (
-      <QueryExamples setFollowUp={setFollowUp} />
-    ) : (
-      <div className="space-y-6">
-        {chatContext.conversationHistory.map((message, index) => (
-          <div
-            key={index}
-            className={cn(
-              "flex items-start gap-3 group",
-              "animate-in slide-in-from-bottom-2",
-              message.role === "user" ? "flex-row-reverse" : "flex-row"
-            )}
-          >
-            <Avatar message={message} email={email} />
-            <MessageBubble
-              message={message}
-              displayedText={displayedText}
-              chatContext={chatContext}
-            />
-          </div>
-        ))}
-        {isLoading && <LoadingIndicator />}
-      </div>
-    )}
   </div>
 );

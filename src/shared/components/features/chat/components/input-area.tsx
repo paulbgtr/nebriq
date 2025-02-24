@@ -27,7 +27,7 @@ export const InputArea = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (followUp.trim()) {
       setQuery(followUp);
@@ -39,10 +39,7 @@ export const InputArea = ({
     return (
       <span
         className={cn(
-          "text-xs font-medium",
-          "text-muted-foreground/60",
-          "transition-all duration-200",
-          followUp.length > 0 ? "opacity-100" : "opacity-0",
+          "text-xs font-medium text-muted-foreground/50",
           followUp.length > maxLength * 0.8 && "text-yellow-500",
           followUp.length === maxLength && "text-red-500"
         )}
@@ -58,89 +55,47 @@ export const InputArea = ({
         type="submit"
         disabled={followUp.length === 0}
         className={cn(
-          // Base styles
-          "rounded-xl w-10 h-10 p-0",
+          "rounded-full w-8 h-8 p-0",
           "flex items-center justify-center",
-
-          // Transitions
-          "transition-all duration-200",
-
-          // Active state
+          "transition-colors duration-200",
           followUp.length > 0
-            ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl"
-            : "bg-secondary/10 text-muted-foreground hover:bg-secondary/20",
-
-          // Disabled state
-          "disabled:opacity-40 disabled:cursor-not-allowed",
-
-          // Hover effects
-          "hover:scale-105 active:scale-95",
-
-          // Dark mode
-          "dark:disabled:opacity-30"
+            ? "bg-primary text-primary-foreground hover:bg-primary/80"
+            : "bg-transparent text-muted-foreground",
+          "disabled:opacity-40 disabled:cursor-not-allowed"
         )}
       >
-        <FaArrowUp
-          className={cn(
-            "h-4 w-4",
-            "transition-transform duration-200",
-            followUp.length > 0 && "transform -translate-y-[1px]"
-          )}
-        />
+        <FaArrowUp className="w-4 h-4" />
       </Button>
     );
   };
 
   return (
-    <div className="relative px-4 py-4 bg-background/95 backdrop-blur-lg border-t">
+    <div className="px-6 py-4 border-t bg-background">
       <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto">
-        <div className="relative group">
-          <div className="relative flex items-start">
-            <Textarea
-              value={followUp}
-              onChange={(e) => setFollowUp(e.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={maxLength}
-              placeholder="Message Briq..."
-              rows={1}
-              className={cn(
-                // Base styles
-                "min-h-[56px] max-h-[200px] w-full py-4 px-5 pr-24",
-                "text-base leading-relaxed resize-none",
-
-                // Border and background
-                "rounded-2xl border-[1.5px]",
-                "bg-background/60 backdrop-blur-lg",
-                "border-input/40 hover:border-primary/30",
-
-                // Focus states
-                "focus:border-primary/50 focus:ring-2 focus:ring-primary/20",
-                "focus:outline-none",
-
-                // Transitions
-                "transition-all duration-300 ease-out",
-
-                // Placeholder
-                "placeholder:text-muted-foreground/40",
-
-                // Scrollbar
-                "scrollbar-thin scrollbar-thumb-primary/20",
-                "scrollbar-track-transparent hover:scrollbar-thumb-primary/30",
-
-                // Shadow effects
-                "shadow-sm hover:shadow-md",
-                "focus:shadow-lg",
-
-                // Dark mode adjustments
-                "dark:bg-background/50 dark:hover:bg-background/60",
-                "dark:border-input/20 dark:hover:border-primary/20"
-              )}
-            />
-
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-              <CharCounter />
-              <Submit />
-            </div>
+        <div className="relative">
+          <Textarea
+            value={followUp}
+            onChange={(e) => setFollowUp(e.target.value)}
+            onKeyDown={handleKeyDown}
+            maxLength={maxLength}
+            placeholder="Message Briq..."
+            rows={1}
+            aria-label="Type your message"
+            className={cn(
+              "min-h-[48px] max-h-[200px] w-full py-3 px-4 pr-24",
+              "text-base leading-relaxed resize-none",
+              "rounded-xl border border-input",
+              "bg-background",
+              "focus:border-primary focus:ring-1 focus:ring-primary",
+              "transition-all duration-300 ease-out",
+              "placeholder:text-muted-foreground/40",
+              "scrollbar-thin scrollbar-thumb-primary/20",
+              "scrollbar-track-transparent"
+            )}
+          />
+          <div className="absolute flex items-center gap-2 bottom-2 right-3">
+            <CharCounter />
+            <Submit />
           </div>
         </div>
       </form>

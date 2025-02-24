@@ -70,11 +70,10 @@ export default function AIChat() {
     () => (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-5 right-5 h-12 w-12 rounded-full shadow-lg 
-          hover:shadow-xl transition-shadow duration-200
-          md:h-14 md:w-14"
+        className="fixed w-12 h-12 transition-shadow duration-200 rounded-full shadow-lg bottom-5 right-5 hover:shadow-xl md:h-14 md:w-14 animate-in fade-in zoom-in-95"
+        aria-label="Open chat"
       >
-        <Box className="h-5 w-5 md:h-6 md:w-6" />
+        <Box className="w-5 h-5 md:h-6 md:w-6" />
       </Button>
     ),
     []
@@ -89,27 +88,31 @@ export default function AIChat() {
       <div
         className={cn(
           "fixed z-50 transition-all duration-500 ease-out",
-          isFullscreen ? "inset-0" : "bottom-6 right-6 w-[95vw] sm:w-[450px]"
+          isFullscreen
+            ? "inset-0"
+            : "bottom-6 right-6 w-[95vw] sm:w-[450px] h-[85vh] sm:h-[650px]"
         )}
       >
         {isAllNotesLoading ? (
-          <div className="flex justify-center items-center h-full">
+          <div className="flex items-center justify-center h-full">
             <Spinner />
           </div>
         ) : (
           <article
             ref={chatContainerRef}
             className={cn(
-              "flex flex-col",
-              "bg-background/90 backdrop-blur-md",
-              "border border-border/30",
+              "flex flex-col w-full h-full",
+              "bg-background/90 backdrop-blur-md border border-border/30",
+              isFullscreen ? "rounded-none" : "rounded-3xl",
               "transition-all duration-500 ease-out",
               "animate-in slide-in-from-bottom-3 zoom-in-95",
-              isFullscreen
-                ? "fixed inset-0 w-full h-full"
-                : "h-[85vh] sm:h-[650px] rounded-3xl shadow-2xl hover:shadow-3xl",
-              "motion-safe:animate-in motion-safe:fade-in-0"
+              "shadow-2xl hover:shadow-3xl",
+              "motion-safe:animate-in motion-safe:fade-in-0",
+              "overflow-clip"
             )}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="chat-header"
           >
             <ChatHeader
               chatContext={chatContext}
@@ -119,9 +122,14 @@ export default function AIChat() {
               toggleFullscreen={toggleFullscreen}
             />
 
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div
+              className={cn(
+                "flex-1 flex flex-col overflow-hidden",
+                !isFullscreen && "rounded-b-3xl"
+              )}
+            >
               {isAllNotesLoading ? (
-                <div className="flex-1 flex justify-center items-center">
+                <div className="flex items-center justify-center flex-1">
                   <Spinner size="sm" />
                 </div>
               ) : (
