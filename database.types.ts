@@ -27,6 +27,27 @@ export type Database = {
         }
         Relationships: []
       }
+      deletion_requests: {
+        Row: {
+          created_at: string
+          id: number
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       note_connections: {
         Row: {
           created_at: string
