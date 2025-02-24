@@ -45,8 +45,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/shared/lib/supabase/client";
 import { sendEmail } from "./actions/emails/send-email";
 import { Separator } from "@/shared/components/ui/separator";
-import { AddToWaitlist } from "@/shared/components/emails/add-to-waitlist";
 import { extractFirstName } from "@/shared/lib/utils";
+import { EmailTemplate } from "@/enums/email-template";
 
 const wishListSchema = z.object({
   email: z
@@ -138,7 +138,10 @@ export default function Home() {
         "You're on our wish list!",
         "waitlist@nebriq.com",
         email,
-        <AddToWaitlist firstName={extractFirstName(email)} />
+        EmailTemplate.WAITLIST,
+        {
+          firstName: extractFirstName(email),
+        }
       );
 
       form.reset();
@@ -774,22 +777,6 @@ export default function Home() {
                 Join Waitlist
               </Button>
             </motion.div>
-          </div>
-        </section>
-
-        {/* Waitlist Section - Move to before footer */}
-        <section className="py-20 bg-primary/5">
-          <div className="container">
-            <div className="max-w-xl mx-auto text-center space-y-8">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Join Closed Beta
-              </h2>
-              <p className="text-muted-foreground">
-                We&apos;re reviewing applications for our closed beta. Join the
-                waitlist to get access when approved.
-              </p>
-              {/* Your existing waitlist form */}
-            </div>
           </div>
         </section>
 
