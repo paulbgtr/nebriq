@@ -10,6 +10,7 @@ import { MessageSquarePlus } from "lucide-react";
 import { sendEmail } from "@/app/actions/emails/send-email";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/shared/hooks/use-toast";
+import { EmailTemplate } from "@/enums/email-template";
 
 const EMOJI_OPTIONS = [
   { emoji: "😊", label: "Happy" },
@@ -23,14 +24,50 @@ type FeedbackPopoverProps = {
   children?: React.ReactNode;
 };
 
+const STORAGE_KEY = "feedback_last_submission_time";
+
 export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
   const { user } = useUser();
   const { toast } = useToast();
 
   const [feedback, setFeedback] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastSubmissionTime, setLastSubmissionTime] = useState(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? parseInt(stored, 10) : 0;
+    }
+    return 0;
+  });
 
   const handleSubmit = async () => {
+    const now = Date.now();
+    if (now - lastSubmissionTime < 60000) {
+      const remainingSeconds = Math.ceil(
+        (60000 - (now - lastSubmissionTime)) / 1000
+      );
+      toast({
+        title: "Please wait",
+        description: `You can submit feedback again in ${remainingSeconds} seconds`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (feedback.trim().length < 10) {
+      toast({
+        title: "Feedback too short",
+        description:
+          "Please provide more detailed feedback (minimum 10 characters)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const emailTitle = "Feedback on Nebriq";
     const projectEmail = "hi@nebriq.com";
 
@@ -39,11 +76,17 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
         emailTitle,
         projectEmail,
         projectEmail,
-        <div>
-          <h1>Feedback from {user?.email || "Anonymous User"}</h1>
-          <p>{feedback}</p>
-        </div>
+        EmailTemplate.FEEDBACK,
+        {
+          email: user?.email || "Anonymous User",
+          message: feedback,
+          emoji: selectedEmoji || undefined,
+        }
       );
+
+      const newSubmissionTime = Date.now();
+      setLastSubmissionTime(newSubmissionTime);
+      localStorage.setItem(STORAGE_KEY, newSubmissionTime.toString());
 
       setFeedback("");
       setSelectedEmoji(null);
@@ -59,6 +102,8 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
         description: "Please try again later.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -89,7 +134,7 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
             ))}
           </div>
           <Textarea
-            placeholder="Share your thoughts with us..."
+            placeholder="Share your thoughts with us... (minimum 10 characters)"
             value={feedback}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               setFeedback(e.target.value)
@@ -99,9 +144,11 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
           <Button
             className="w-full"
             onClick={handleSubmit}
-            disabled={!feedback.trim()}
+            disabled={
+              !feedback.trim() || isSubmitting || feedback.trim().length < 10
+            }
           >
-            Send Feedback
+            {isSubmitting ? "Sending..." : "Send Feedback"}
           </Button>
         </div>
       </PopoverContent>
