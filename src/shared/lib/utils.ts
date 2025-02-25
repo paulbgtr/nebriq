@@ -12,6 +12,8 @@ import { LoginNotification } from "@/shared/components/emails/login-notification
 import { FeedbackEmail } from "@/shared/components/emails/feedback";
 import { EmailTemplate } from "@/enums/email-template";
 import { EmailData } from "@/types/email-data";
+import { DeletionRequestAdmin } from "@/shared/components/emails/deletion-request-admin";
+import { DeletionRequestUser } from "../components/emails/deletion-request-user";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -149,6 +151,19 @@ export function getEmailTemplate<T extends EmailTemplate>(
         email: feedbackData.email,
         message: feedbackData.message,
         emoji: feedbackData.emoji,
+      });
+    case EmailTemplate.DELETION_REQUEST_ADMIN:
+      const adminData = data as EmailData[EmailTemplate.DELETION_REQUEST_ADMIN];
+      return DeletionRequestAdmin({
+        userId: adminData.userId,
+        userEmail: adminData.userEmail,
+        reason: adminData.reason,
+        details: adminData.details,
+      });
+    case EmailTemplate.DELETION_REQUEST_USER:
+      const userData = data as EmailData[EmailTemplate.DELETION_REQUEST_USER];
+      return DeletionRequestUser({
+        reason: userData.reason,
       });
     default:
       throw new Error(`Unknown email template: ${template}`);

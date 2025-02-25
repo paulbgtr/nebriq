@@ -14,4 +14,13 @@ export type EmailData = {
     message: string;
     emoji?: string;
   };
+  [EmailTemplate.DELETION_REQUEST_ADMIN]: {
+    userId: string;
+    userEmail: string;
+    reason: string;
+    details?: string;
+  };
+  [EmailTemplate.DELETION_REQUEST_USER]: {
+    reason: string;
+  };
 };
