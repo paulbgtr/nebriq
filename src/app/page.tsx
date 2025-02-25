@@ -848,8 +848,8 @@ export default function Home() {
             />
           </div>
 
-          <div className="relative z-10 px-6 mx-auto max-w-7xl">
-            <div className="mb-16 text-center">
+          <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
+            <div className="mb-12 sm:mb-16 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -862,10 +862,10 @@ export default function Home() {
                   Powerful Editor
                 </span>
               </motion.div>
-              <h2 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold md:text-4xl lg:text-5xl">
                 Write Without Limits
               </h2>
-              <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
+              <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
                 A powerful editor that stays out of your way. Focus on writing
                 while AI works in the background.
               </p>
@@ -877,7 +877,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl shadow-primary/10"
+                className="relative aspect-[16/10] sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl shadow-primary/10"
               >
                 <Image
                   src={getImageUrl("editor")}
@@ -885,23 +885,23 @@ export default function Home() {
                   fill
                   className="object-cover"
                   loading="lazy"
-                  sizes="100vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-background/90" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-                  <div className="max-w-3xl mx-auto space-y-6">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 backdrop-blur-md">
-                      <Maximize className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 lg:p-12">
+                  <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4 md:space-y-6">
+                    <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-primary/10 backdrop-blur-md">
+                      <Maximize className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">
                         Distraction Free
                       </span>
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                    <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground">
                       Focus on Writing
                     </h3>
-                    <p className="text-lg text-muted-foreground/90 max-w-2xl">
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground/90 max-w-2xl">
                       A clean, minimal interface that lets you focus on what
                       matters most - your ideas. No cluttered toolbars, just
                       pure writing bliss.
