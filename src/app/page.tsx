@@ -830,8 +830,23 @@ export default function Home() {
         </section>
 
         {/* Powerful Editor Section */}
-        <section className="relative py-24">
+        <section className="relative py-24 overflow-hidden">
+          {/* Atmospheric background effects */}
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+          <div className="absolute inset-0">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.1, 0.2, 0.1] }}
+              transition={{ duration: 5, repeat: Infinity }}
+              className="absolute -left-1/4 top-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-[100px]"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.1, 0.2, 0.1] }}
+              transition={{ duration: 7, repeat: Infinity, delay: 1 }}
+              className="absolute -right-1/4 bottom-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-[100px]"
+            />
+          </div>
 
           <div className="relative z-10 px-6 mx-auto max-w-7xl">
             <div className="mb-16 text-center">
@@ -840,9 +855,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1 mb-4 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-primary/10 backdrop-blur-sm"
               >
-                <Sparkles className="w-4 h-4 text-primary" />
+                <Type className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
                   Powerful Editor
                 </span>
@@ -856,18 +871,44 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="relative mt-12">
-              <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+            <div className="relative">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl shadow-primary/10"
+              >
                 <Image
                   src={getImageUrl("editor")}
                   alt="Nebriq Editor"
                   fill
-                  className="object-cover rounded-xl"
+                  className="object-cover"
                   loading="lazy"
-                  sizes="(max-width: 1280px) 100vw, 1280px"
+                  sizes="100vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-background/90" />
+
+                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+                  <div className="max-w-3xl mx-auto space-y-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 backdrop-blur-md">
+                      <Maximize className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">
+                        Distraction Free
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                      Focus on Writing
+                    </h3>
+                    <p className="text-lg text-muted-foreground/90 max-w-2xl">
+                      A clean, minimal interface that lets you focus on what
+                      matters most - your ideas. No cluttered toolbars, just
+                      pure writing bliss.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
