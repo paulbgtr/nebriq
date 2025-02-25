@@ -594,96 +594,144 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
-              <FuturisticCard
-                variant="neon"
-                className="backdrop-blur-lg"
-                glowColor="rgba(99, 102, 241, 0.2)"
-              >
-                <div className="relative z-10 space-y-4">
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+            <div className="space-y-24">
+              {/* AI-Powered Insights */}
+              <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+                <div className="w-full md:w-3/5">
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
                     <Image
                       src={getImageUrl("intelligentSearch")}
                       alt="AI-powered search and insights"
                       fill
-                      className="object-cover transition-all duration-500 group-hover:scale-105"
+                      className="object-cover"
                       loading="lazy"
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      sizes="(max-width: 768px) 100vw, 60vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-primary" />
-                      <h3 className="text-lg font-semibold">
-                        AI-Powered Insights
-                      </h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Write naturally. AI understands your notes and suggests
-                      relevant connections as you work.
-                    </p>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
                   </div>
                 </div>
-              </FuturisticCard>
+                <div className="w-full md:w-2/5 space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      Smart Analysis
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold">AI-Powered Insights</h3>
+                  <p className="text-lg text-muted-foreground">
+                    Write naturally while our AI works behind the scenes. It
+                    understands your notes, suggests relevant connections, and
+                    helps you discover insights you might have missed.
+                  </p>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Automatic note linking
+                    </li>
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Smart suggestions
+                    </li>
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Content analysis
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
               {/* Knowledge Graph */}
-              <FuturisticCard
-                variant="neon"
-                className="backdrop-blur-lg"
-                glowColor="rgba(99, 102, 241, 0.2)"
-              >
-                <div className="relative z-10 space-y-4">
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+              <div className="flex flex-col md:flex-row-reverse gap-8 md:gap-12 items-center">
+                <div className="w-full md:w-3/5">
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
                     <Image
                       src={getImageUrl("graph")}
                       alt="Interactive knowledge graph"
                       fill
-                      className="object-cover transition-all duration-500 group-hover:scale-105"
+                      className="object-cover"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 100vw, 60vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Waypoints className="w-5 h-5 text-primary" />
-                      <h3 className="text-lg font-semibold">Knowledge Graph</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      See how your ideas connect. Explore your notes visually
-                      and discover new insights.
-                    </p>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
                   </div>
                 </div>
-              </FuturisticCard>
+                <div className="w-full md:w-2/5 space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                    <Waypoints className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      Visual Connections
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold">Knowledge Graph</h3>
+                  <p className="text-lg text-muted-foreground">
+                    Visualize how your ideas connect. Our interactive knowledge
+                    graph helps you explore relationships between notes and
+                    discover new patterns in your thinking.
+                  </p>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Interactive visualization
+                    </li>
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Pattern discovery
+                    </li>
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Relationship mapping
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
               {/* Smart Assistant */}
-              <FuturisticCard
-                variant="neon"
-                className="backdrop-blur-lg"
-                glowColor="rgba(99, 102, 241, 0.2)"
-              >
-                <div className="relative z-10 space-y-4">
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+              <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+                <div className="w-full md:w-3/5">
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
                     <Image
                       src={getImageUrl("briq")}
                       alt="Briq AI Assistant"
                       fill
-                      className="object-cover transition-all duration-500 group-hover:scale-105"
+                      className="object-cover"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 100vw, 60vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <BotMessageSquare className="w-5 h-5 text-primary" />
-                      <h3 className="text-lg font-semibold">Smart Assistant</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Ask questions about your notes. Get summaries and find
-                      information instantly.
-                    </p>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
                   </div>
                 </div>
-              </FuturisticCard>
+                <div className="w-full md:w-2/5 space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                    <BotMessageSquare className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      AI Assistant
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold">Smart Assistant</h3>
+                  <p className="text-lg text-muted-foreground">
+                    Your personal AI research assistant. Ask questions about
+                    your notes, get instant summaries, and find information
+                    quickly without manual searching.
+                  </p>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Natural language queries
+                    </li>
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Instant summaries
+                    </li>
+                    <li className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Smart search
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </section>
