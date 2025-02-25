@@ -18,7 +18,24 @@ import {
   AlertDialogTitle,
   AlertDialogDescription,
 } from "@/shared/components/ui/alert-dialog";
-import { deleteAccount } from "@/app/actions/supabase/auth";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
+import { Label } from "@/shared/components/ui/label";
+import { Textarea } from "@/shared/components/ui/textarea";
+import { requestAccountDeletion } from "@/app/actions/supabase/auth";
+
+const DELETION_REASONS = [
+  { value: "not_useful", label: "Not useful for me" },
+  { value: "too_expensive", label: "Too expensive" },
+  { value: "privacy_concerns", label: "Privacy concerns" },
+  { value: "found_alternative", label: "Found an alternative" },
+  { value: "other", label: "Other" },
+] as const;
 
 export const DangerZone = () => {
   return (
@@ -29,8 +46,8 @@ export const DangerZone = () => {
           <CardTitle className="text-destructive">Danger Zone</CardTitle>
         </div>
         <CardDescription>
-          Once you delete your account, there is no going back. Please be
-          certain.
+          Once you request account deletion, we&apos;ll review your request and
+          process it within 24 hours.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -38,29 +55,55 @@ export const DangerZone = () => {
           <AlertDialogTrigger asChild>
             <Button variant="destructive" className="inline-flex items-center">
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete Account
+              Request Account Deletion
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove all your data from our servers.
+                This action cannot be undone. Once approved, this will
+                permanently delete your account and remove all your data from
+                our servers.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <form>
+            <form action={requestAccountDeletion}>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reason">Reason for leaving</Label>
+                  <Select name="reason" required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a reason" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DELETION_REASONS.map((reason) => (
+                        <SelectItem key={reason.value} value={reason.value}>
+                          {reason.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="details">Additional details (optional)</Label>
+                  <Textarea
+                    id="details"
+                    name="details"
+                    placeholder="Please tell us more about why you're leaving..."
+                    className="h-24"
+                  />
+                </div>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   type="submit"
-                  formAction={deleteAccount}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
-                  Delete Account
+                  Request Deletion
                 </AlertDialogAction>
-              </form>
-            </AlertDialogFooter>
+              </AlertDialogFooter>
+            </form>
           </AlertDialogContent>
         </AlertDialog>
       </CardContent>

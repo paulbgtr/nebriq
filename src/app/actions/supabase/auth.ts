@@ -136,17 +136,62 @@ export async function updatePassword(formData: FormData) {
   redirect("/settings?message=password_updated");
 }
 
-export async function deleteAccount() {
+export async function requestAccountDeletion(formData: FormData) {
   const supabase = await createClient();
+  const reason = formData.get("reason") as string;
+  const details = formData.get("details") as string;
 
-  const { error } = await supabase.auth.admin.deleteUser(
-    (await supabase.auth.getUser()).data.user?.id as string
-  );
+  const {
+    data: { user },
+    error: errorUser,
+  } = await supabase.auth.getUser();
 
-  if (error) {
+  if (errorUser || !user) {
     redirect("/error");
   }
 
-  revalidatePath("/", "layout");
-  redirect("/");
+  const { data: existingRequest } = await supabase
+    .from("deletion_requests")
+    .select()
+    .eq("user_id", user.id)
+    .single();
+
+  if (existingRequest) {
+    redirect("/settings?message=deletion_request_exists");
+  }
+
+  const { error } = await supabase.from("deletion_requests").insert({
+    user_id: user.id,
+    reason,
+  });
+
+  if (error) {
+    console.error("Error creating deletion request:", error);
+    redirect("/error");
+  }
+
+  await sendEmail(
+    "New Account Deletion Request",
+    "noreply@nebriq.com",
+    "hi@nebriq.com",
+    EmailTemplate.DELETION_REQUEST_ADMIN,
+    {
+      userId: user.id,
+      userEmail: user.email!,
+      reason,
+      details,
+    }
+  );
+
+  await sendEmail(
+    "Account Deletion Request Received",
+    "noreply@nebriq.com",
+    user.email!,
+    EmailTemplate.DELETION_REQUEST_USER,
+    {
+      reason,
+    }
+  );
+
+  logout();
 }
