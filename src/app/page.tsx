@@ -25,6 +25,7 @@ import {
   Sigma,
   Code,
   Tag,
+  Compass,
 } from "lucide-react";
 import { ModeToggle } from "@/modules/landing-page/features/theme-switcher";
 import { useTheme } from "next-themes";
@@ -182,6 +183,24 @@ export default function Home() {
       >
         <div className="max-w-7xl mx-auto flex justify-center">
           <div className="relative flex items-center gap-4 px-4 py-2.5 rounded-full border bg-background/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/5">
+            {/* Logo */}
+            <div className="flex items-center gap-3 pr-4 border-r border-border/60">
+              <div className="flex items-center gap-2">
+                <div className="relative w-8 h-8">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
+                  <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
+                    <Compass
+                      className="w-5 h-5 text-primary"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                </div>
+                <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+                  Nebriq
+                </span>
+              </div>
+            </div>
+
             {/* Beta Badge */}
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/[0.08] border border-primary/10">
@@ -246,7 +265,7 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="relative flex items-center justify-center min-h-[90vh] pt-40 pb-24 md:pb-12 lg:pb-6 overflow-hidden"
+          className="relative flex items-center justify-center min-h-[90vh] pt-32 pb-24 md:pb-12 lg:pb-6 overflow-hidden"
         >
           {/* Floating elements */}
           <div className="absolute inset-0">
@@ -254,13 +273,13 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: [0.1, 0.3, 0.1] }}
               transition={{ duration: 5, repeat: Infinity }}
-              className="absolute rounded-full top-1/4 -left-20 w-60 h-60 bg-primary/20 blur-3xl"
+              className="absolute rounded-full top-1/4 -left-20 w-60 h-60 bg-primary/20 blur-[100px]"
             />
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: [0.1, 0.2, 0.1] }}
               transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-              className="absolute rounded-full bottom-1/4 -right-20 w-80 h-80 bg-secondary/20 blur-3xl"
+              className="absolute rounded-full bottom-1/4 -right-20 w-80 h-80 bg-secondary/20 blur-[100px]"
             />
           </div>
 
@@ -270,12 +289,12 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="text-center space-y-8"
+              className="text-center space-y-12"
             >
-              {/* Sci-fi badge */}
+              {/* Hero title */}
               <motion.div
-                className="inline-flex items-center gap-2 px-3 py-1 border rounded-full border-primary/20 bg-background/50 backdrop-blur-sm"
-                initial={{ opacity: 0, y: -20 }}
+                className="relative space-y-4"
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.8,
@@ -283,39 +302,10 @@ export default function Home() {
                   ease: [0.21, 0.45, 0.27, 0.99],
                 }}
               >
-                <span className="relative flex w-2 h-2">
-                  <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-primary"></span>
-                  <span className="relative inline-flex w-2 h-2 rounded-full bg-primary"></span>
-                </span>
-                <span className="text-sm font-medium text-primary">
-                  AI-Powered Workspace
-                </span>
-              </motion.div>
-
-              {/* Hero title */}
-              <motion.div
-                className="relative mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.4,
-                  ease: [0.21, 0.45, 0.27, 0.99],
-                }}
-              >
                 <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
-                  <motion.span
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.8,
-                      delay: 0.6,
-                      ease: [0.21, 0.45, 0.27, 0.99],
-                    }}
-                    className="block leading-[1.1] pb-2 text-transparent bg-clip-text bg-gradient-to-r from-foreground/80 via-foreground to-foreground/80"
-                  >
+                  <span className="block leading-[1.1] pb-2 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/80">
                     Start Writing.
-                  </motion.span>
+                  </span>
                   <div className="relative mt-2">
                     <motion.span
                       className="absolute inset-0 bg-primary/20 blur-3xl"
@@ -325,57 +315,37 @@ export default function Home() {
                         duration: 4,
                         repeat: Infinity,
                         repeatType: "reverse",
-                        ease: "easeInOut",
-                        delay: 1,
                       }}
                     />
-                    <motion.span
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.8,
-                        delay: 0.8,
-                        ease: [0.21, 0.45, 0.27, 0.99],
-                      }}
-                      className="block leading-[1.1] pb-2 text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/90 to-primary/80"
-                    >
+                    <span className="block leading-[1.1] pb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/90 to-primary/80">
                       Stop Organizing.
-                    </motion.span>
+                    </span>
                   </div>
                 </h1>
+
+                <p className="max-w-2xl mx-auto text-xl text-muted-foreground">
+                  A simple writing space that uses AI to keep your notes
+                  organized.
+                  <span className="hidden sm:inline">
+                    {" "}
+                    No folders, no tags, just write.
+                  </span>
+                </p>
               </motion.div>
 
-              {/* Description */}
-              <motion.p
-                className="max-w-2xl mx-auto mb-12 text-lg sm:text-xl text-muted-foreground px-4 sm:px-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 1,
-                  ease: [0.21, 0.45, 0.27, 0.99],
-                }}
-              >
-                A simple writing space that uses AI to keep your notes
-                organized. No folders, no tags, just write.
-              </motion.p>
-
+              {/* CTA Form */}
               <motion.div
-                className="flex flex-col items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 1.2,
-                  ease: [0.21, 0.45, 0.27, 0.99],
-                }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="max-w-xl mx-auto"
               >
-                <div className="relative group w-full max-w-xl mb-16">
-                  <div className="absolute transition-all duration-500 rounded-lg -inset-1 bg-gradient-to-r from-primary/50 to-primary/30 blur-lg group-hover:blur-xl" />
+                <div className="relative group">
+                  <div className="absolute transition-all duration-500 rounded-lg -inset-1 bg-gradient-to-r from-primary/50 via-primary/30 to-primary/50 blur-lg group-hover:blur-xl" />
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="relative flex gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm w-full"
+                      className="relative flex gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm"
                     >
                       <FormField
                         control={form.control}
@@ -403,58 +373,57 @@ export default function Home() {
                     </form>
                   </Form>
                 </div>
+              </motion.div>
 
-                {/* Hero Image */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 1.4 }}
-                  className="relative w-full max-w-[80vw] -mx-4 sm:-mx-8 lg:-mx-16"
-                >
-                  <div className="relative aspect-[16/8] rounded-xl overflow-hidden border border-primary/20">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl" />
+              {/* Feature Tags */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="flex flex-wrap justify-center gap-3 px-4"
+              >
+                {[
+                  { icon: Sparkles, text: "AI-Powered" },
+                  { icon: Search, text: "Smart Search" },
+                  { icon: FolderX, text: "No Folders" },
+                ].map((feature, index) => (
+                  <motion.div
+                    key={feature.text}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 1 + index * 0.1,
+                      ease: "easeOut",
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
+                  >
+                    <feature.icon className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">{feature.text}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
 
-                    <Image
-                      src={getImageUrl("hero")}
-                      alt="Nebriq Dashboard"
-                      fill
-                      className="object-cover rounded-xl"
-                      priority
-                      sizes="(max-width: 1280px) 100vw, 1280px"
-                    />
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
-                  </div>
-
-                  {/* Adjust the tags positioning and sizing */}
-                  <div className="absolute -bottom-12 sm:-bottom-4 left-1/2 transform -translate-x-1/2 w-full sm:w-auto">
-                    <div className="flex flex-wrap justify-center gap-2 px-4 sm:px-0 max-w-[90vw] mx-auto">
-                      {[
-                        { icon: Sparkles, text: "AI-Powered" },
-                        { icon: Search, text: "Smart Search" },
-                        { icon: FolderX, text: "No Folders" },
-                      ].map((feature, index) => (
-                        <motion.div
-                          key={feature.text}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            duration: 0.5,
-                            delay: 1.6 + index * 0.1,
-                          }}
-                          className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
-                        >
-                          <feature.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                          <span className="text-xs sm:text-sm font-medium">
-                            {feature.text}
-                          </span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
+              {/* Hero Image */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1 }}
+                className="relative w-full max-w-[90vw] mx-auto mt-8"
+              >
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl" />
+                  <Image
+                    src={getImageUrl("hero")}
+                    alt="Nebriq Dashboard"
+                    fill
+                    className="object-cover rounded-xl"
+                    priority
+                    sizes="(max-width: 1280px) 90vw, 1280px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
+                </div>
               </motion.div>
             </motion.div>
           </div>
