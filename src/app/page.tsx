@@ -405,25 +405,31 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
                   </div>
 
-                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-2 sm:gap-4 px-4 sm:px-0">
-                    {[
-                      { icon: Sparkles, text: "AI-Powered" },
-                      { icon: Search, text: "Smart Search" },
-                      { icon: FolderX, text: "No Folders" },
-                    ].map((feature, index) => (
-                      <motion.div
-                        key={feature.text}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 1.6 + index * 0.1 }}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
-                      >
-                        <feature.icon className="w-4 h-4 text-primary" />
-                        <span className="text-sm font-medium">
-                          {feature.text}
-                        </span>
-                      </motion.div>
-                    ))}
+                  {/* Adjust the tags positioning and sizing */}
+                  <div className="absolute -bottom-12 sm:-bottom-4 left-1/2 transform -translate-x-1/2 w-full sm:w-auto">
+                    <div className="flex flex-wrap justify-center gap-2 px-4 sm:px-0 max-w-[90vw] mx-auto">
+                      {[
+                        { icon: Sparkles, text: "AI-Powered" },
+                        { icon: Search, text: "Smart Search" },
+                        { icon: FolderX, text: "No Folders" },
+                      ].map((feature, index) => (
+                        <motion.div
+                          key={feature.text}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.5,
+                            delay: 1.6 + index * 0.1,
+                          }}
+                          className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
+                        >
+                          <feature.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                          <span className="text-xs sm:text-sm font-medium">
+                            {feature.text}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </motion.div>
