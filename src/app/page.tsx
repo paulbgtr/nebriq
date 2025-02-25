@@ -175,8 +175,8 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       {/* Beta Status Banner */}
       <div className="fixed inset-x-0 top-0 z-40 border-b bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center justify-around h-10 px-4 sm:px-2">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between h-10 px-4 sm:px-6">
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/[0.08] border border-primary/10">
               <span className="relative flex w-2 h-2">
                 <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-primary/40"></span>
@@ -184,11 +184,11 @@ export default function Home() {
               </span>
               <span className="text-xs font-medium text-primary">BETA</span>
             </div>
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className="hidden sm:inline text-xs font-medium text-muted-foreground">
               Currently in closed beta
             </span>
           </div>
-          <div className="flex items-center gap-4 sm:gap-2">
+          <div className="flex items-center gap-4">
             <Link
               href="/signup"
               className="text-xs font-medium text-primary hover:text-primary/90"
@@ -280,7 +280,7 @@ export default function Home() {
                   ease: [0.21, 0.45, 0.27, 0.99],
                 }}
               >
-                <h1 className="text-6xl font-bold tracking-tight md:text-8xl">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
                   <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -324,7 +324,7 @@ export default function Home() {
 
               {/* Description */}
               <motion.p
-                className="max-w-2xl mx-auto mb-12 text-xl text-muted-foreground"
+                className="max-w-2xl mx-auto mb-12 text-lg sm:text-xl text-muted-foreground px-4 sm:px-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -405,7 +405,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
                   </div>
 
-                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-2 sm:gap-4 px-4 sm:px-0">
                     {[
                       { icon: Sparkles, text: "AI-Powered" },
                       { icon: Search, text: "Smart Search" },
@@ -434,10 +434,7 @@ export default function Home() {
         {/* Problem Statement Section */}
         <section
           id="problem"
-          className="relative py-24 mt-32"
-          style={{
-            background: "linear-gradient(, var(--background))",
-          }}
+          className="relative py-16 sm:py-24 mt-16 sm:mt-32"
         >
           {/* Add a subtle backdrop for better readability */}
           <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px]" />
@@ -829,9 +826,9 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="border-t bg-background">
-          <div className="px-6 py-12 mx-auto max-w-7xl">
+          <div className="px-4 sm:px-6 py-8 sm:py-12 mx-auto max-w-7xl">
             {/* Main Footer Content */}
-            <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 mb-8 sm:grid-cols-2 md:grid-cols-3">
               {/* Company Info */}
               <div className="space-y-4">
                 <h3 className="font-semibold">About</h3>
@@ -892,10 +889,10 @@ export default function Home() {
               </div>
             </div>
 
-            <Separator className="my-8" />
+            <Separator className="my-6 sm:my-8" />
 
             {/* Bottom Footer */}
-            <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
+            <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 text-center md:text-left">
               <span className="text-sm text-muted-foreground">
                 © {new Date().getFullYear()} Nebriq. All rights reserved.
               </span>
