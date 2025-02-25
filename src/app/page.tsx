@@ -57,11 +57,6 @@ const wishListSchema = z.object({
     .toLowerCase(),
 });
 
-type ImageConfig = {
-  light: string;
-  dark: string;
-};
-
 const imagePaths = {
   hero: {
     light: "/hero-image.png",
