@@ -270,9 +270,9 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="relative flex items-center justify-center min-h-[90vh] pt-32 pb-24 md:pb-12 lg:pb-6 overflow-hidden"
+          className="relative min-h-screen pt-32 pb-16 overflow-hidden"
         >
-          {/* Floating elements */}
+          {/* Floating Elements */}
           <div className="absolute inset-0">
             <motion.div
               initial={{ opacity: 0 }}
@@ -288,17 +288,17 @@ export default function Home() {
             />
           </div>
 
-          {/* Main content */}
+          {/* Centered Text Content */}
           <div className="relative z-10 px-4 mx-auto max-w-7xl">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="text-center space-y-12"
+              className="text-center space-y-6"
             >
-              {/* Hero title */}
+              {/* Hero Title */}
               <motion.div
-                className="relative space-y-4"
+                className="relative space-y-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -327,7 +327,6 @@ export default function Home() {
                     </span>
                   </div>
                 </h1>
-
                 <p className="max-w-2xl mx-auto text-xl text-muted-foreground">
                   A simple writing space that uses AI to keep your notes
                   organized.
@@ -408,28 +407,48 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
+            </motion.div>
+          </div>
 
-              {/* Hero Image */}
+          {/* Full-Width Hero Image */}
+          <div className="relative z-10 w-full mt-8 px-6 sm:px-12 md:px-24 lg:px-32">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1 }}
+              className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20 shadow-2xl shadow-primary/10"
+            >
+              {/* Enhanced glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl opacity-75" />
+
+              {/* Subtle pattern overlay */}
+              <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.015]" />
+
+              <Image
+                src={getImageUrl("hero")}
+                alt="Nebriq Dashboard"
+                fill
+                className="object-cover rounded-xl transition-transform duration-700 hover:scale-105"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
+              />
+
+              {/* Enhanced gradient overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent opacity-90" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-primary/10 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-secondary/5 to-secondary/10" />
+
+              {/* Shine effect */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1 }}
-                className="relative w-full max-w-[90vw] mx-auto mt-8"
-              >
-                <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl" />
-                  <Image
-                    src={getImageUrl("hero")}
-                    alt="Nebriq Dashboard"
-                    fill
-                    className="object-cover rounded-xl"
-                    priority
-                    sizes="(max-width: 1280px) 90vw, 1280px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
-                </div>
-              </motion.div>
+                initial={{ opacity: 0, x: "-100%" }}
+                animate={{ opacity: [0, 1, 0], x: ["100%", "100%", "300%"] }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  repeatDelay: 5,
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+              />
             </motion.div>
           </div>
         </section>
