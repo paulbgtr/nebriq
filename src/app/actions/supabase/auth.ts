@@ -170,6 +170,8 @@ export async function requestAccountDeletion(formData: FormData) {
     redirect("/error");
   }
 
+  await logout();
+
   await sendEmail(
     "New Account Deletion Request",
     "noreply@nebriq.com",
@@ -192,6 +194,4 @@ export async function requestAccountDeletion(formData: FormData) {
       reason,
     }
   );
-
-  logout();
 }
