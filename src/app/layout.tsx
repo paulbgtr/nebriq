@@ -30,6 +30,14 @@ export const metadata: Metadata = {
     title: "Nebriq - AI-Powered Note Taking",
     description: "Write freely while AI handles organization",
     siteName: "Nebriq",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Nebriq - AI-Powered Note Taking",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -37,6 +45,7 @@ export const metadata: Metadata = {
     description:
       "A simple writing space that uses AI to keep your notes organized. No folders, no tags, just write.",
     creator: "@nebriq",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
