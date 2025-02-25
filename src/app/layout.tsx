@@ -10,9 +10,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Nebriq - Write Better, Think Clearer | AI-Powered Writing Workspace",
+  title: "Nebriq - AI-Powered Note Taking",
   description:
-    "Transform your writing process with Nebriq, an all-in-one AI writing workspace that helps you organize thoughts, connect ideas, and produce better content in half the time.",
+    "A simple writing space that uses AI to keep your notes organized. No folders, no tags, just write.",
   keywords: [
     "writing tool",
     "note-taking",
@@ -27,16 +27,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://nebriq.com",
-    title: "Nebriq - Write Better, Think Clearer",
-    description:
-      "Transform your writing process with Nebriq, an all-in-one AI writing workspace that helps you organize thoughts, connect ideas, and produce better content in half the time.",
+    title: "Nebriq - AI-Powered Note Taking",
+    description: "Write freely while AI handles organization",
     siteName: "Nebriq",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nebriq - Write Better, Think Clearer",
+    title: "Nebriq - AI-Powered Note Taking",
     description:
-      "Transform your writing process with Nebriq, an all-in-one AI writing workspace.",
+      "A simple writing space that uses AI to keep your notes organized. No folders, no tags, just write.",
     creator: "@nebriq",
   },
   robots: {
