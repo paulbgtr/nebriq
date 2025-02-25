@@ -251,7 +251,7 @@ export default function Home() {
             >
               {/* Sci-fi badge */}
               <motion.div
-                className="inline-flex items-center gap-2 px-3 py-1 mb-8 border rounded-full border-primary/20 bg-background/50 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-3 py-1 border rounded-full border-primary/20 bg-background/50 backdrop-blur-sm"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -386,21 +386,25 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 1.4 }}
-                  className="relative w-full max-w-5xl"
+                  className="relative w-full max-w-[80vw] -mx-4 sm:-mx-8 lg:-mx-16"
                 >
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+                  <div className="relative aspect-[16/8] rounded-xl overflow-hidden border border-primary/20">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl" />
+
                     <Image
                       src={getImageUrl("hero")}
                       alt="Nebriq Dashboard"
                       fill
-                      className="object-cover"
+                      className="object-cover rounded-xl"
                       priority
                       sizes="(max-width: 1280px) 100vw, 1280px"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
                   </div>
 
-                  {/* Small feature badges */}
                   <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
                     {[
                       { icon: Sparkles, text: "AI-Powered" },
@@ -430,7 +434,7 @@ export default function Home() {
         {/* Problem Statement Section */}
         <section
           id="problem"
-          className="relative py-24mt-0"
+          className="relative py-24 mt-32"
           style={{
             background: "linear-gradient(, var(--background))",
           }}
@@ -735,7 +739,6 @@ export default function Home() {
               ].map((feature, index) => (
                 <FuturisticCard
                   key={feature.title}
-                  variant="cyber"
                   delay={index * 0.1}
                   className="backdrop-blur-sm"
                 >
@@ -785,7 +788,7 @@ export default function Home() {
                   src={getImageUrl("editor")}
                   alt="Nebriq Editor"
                   fill
-                  className="object-cover"
+                  className="object-cover rounded-xl"
                   loading="lazy"
                   sizes="(max-width: 1280px) 100vw, 1280px"
                 />
