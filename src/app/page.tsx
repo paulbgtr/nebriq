@@ -67,8 +67,8 @@ const imagePaths = {
     dark: "/hero-image-dark.png",
   },
   intelligentSearch: {
-    light: "/intelligent-search.webp",
-    dark: "/intelligent-search-dark.webp",
+    light: "/intelligent-search.png",
+    dark: "/intelligent-search-dark.png",
   },
   graph: {
     light: "/graph.png",
@@ -223,7 +223,7 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="relative flex items-center justify-center min-h-screen overflow-hidden"
+          className="relative flex items-center justify-center min-h-[90vh] pt-32 pb-24 overflow-hidden"
         >
           {/* Floating elements */}
           <div className="absolute inset-0">
@@ -247,7 +247,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="text-center"
+              className="text-center space-y-8"
             >
               {/* Sci-fi badge */}
               <motion.div
@@ -338,7 +338,7 @@ export default function Home() {
               </motion.p>
 
               <motion.div
-                className="flex flex-col items-center gap-8"
+                className="flex flex-col items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -347,12 +347,12 @@ export default function Home() {
                   ease: [0.21, 0.45, 0.27, 0.99],
                 }}
               >
-                <div className="relative group">
+                <div className="relative group w-full max-w-xl mb-16">
                   <div className="absolute transition-all duration-500 rounded-lg -inset-1 bg-gradient-to-r from-primary/50 to-primary/30 blur-lg group-hover:blur-xl" />
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="relative flex gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm"
+                      className="relative flex gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm w-full"
                     >
                       <FormField
                         control={form.control}
@@ -381,29 +381,47 @@ export default function Home() {
                   </Form>
                 </div>
 
-                {/* Floating feature cards */}
-                <div className="grid grid-cols-3 gap-6 mt-12">
-                  <FuturisticCard delay={1}>
-                    <div className="flex flex-col items-center gap-3">
-                      <Sparkles className="w-6 h-6 text-primary" />
-                      <p className="text-sm font-medium">AI-Powered Insights</p>
-                    </div>
-                  </FuturisticCard>
+                {/* Hero Image */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 1.4 }}
+                  className="relative w-full max-w-5xl"
+                >
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+                    <Image
+                      src={getImageUrl("hero")}
+                      alt="Nebriq Dashboard"
+                      fill
+                      className="object-cover"
+                      priority
+                      sizes="(max-width: 1280px) 100vw, 1280px"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+                  </div>
 
-                  <FuturisticCard delay={1.2}>
-                    <div className="flex flex-col items-center gap-3">
-                      <Search className="w-6 h-6 text-primary" />
-                      <p className="text-sm font-medium">Semantic Search</p>
-                    </div>
-                  </FuturisticCard>
-
-                  <FuturisticCard delay={1.4}>
-                    <div className="flex flex-col items-center gap-3">
-                      <FolderX className="w-6 h-6 text-primary" />
-                      <p className="text-sm font-medium">No Folders Needed</p>
-                    </div>
-                  </FuturisticCard>
-                </div>
+                  {/* Small feature badges */}
+                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+                    {[
+                      { icon: Sparkles, text: "AI-Powered" },
+                      { icon: Search, text: "Smart Search" },
+                      { icon: FolderX, text: "No Folders" },
+                    ].map((feature, index) => (
+                      <motion.div
+                        key={feature.text}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.6 + index * 0.1 }}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
+                      >
+                        <feature.icon className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">
+                          {feature.text}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               </motion.div>
             </motion.div>
           </div>
@@ -412,10 +430,9 @@ export default function Home() {
         {/* Problem Statement Section */}
         <section
           id="problem"
-          className="relative py-24"
+          className="relative py-24mt-0"
           style={{
-            background:
-              "linear-gradient(to bottom, var(--background), rgba(var(--primary) / 0.05), var(--background))",
+            background: "linear-gradient(, var(--background))",
           }}
         >
           {/* Add a subtle backdrop for better readability */}
@@ -549,7 +566,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
               <FuturisticCard
-                variant="cyber"
+                variant="neon"
                 className="backdrop-blur-lg"
                 glowColor="rgba(99, 102, 241, 0.2)"
               >
@@ -582,7 +599,7 @@ export default function Home() {
 
               {/* Knowledge Graph */}
               <FuturisticCard
-                variant="cyber"
+                variant="neon"
                 className="backdrop-blur-lg"
                 glowColor="rgba(99, 102, 241, 0.2)"
               >
@@ -611,7 +628,7 @@ export default function Home() {
 
               {/* Smart Assistant */}
               <FuturisticCard
-                variant="cyber"
+                variant="neon"
                 className="backdrop-blur-lg"
                 glowColor="rgba(99, 102, 241, 0.2)"
               >
