@@ -246,7 +246,7 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="relative flex items-center justify-center min-h-[90vh] pt-40 pb-24 overflow-hidden"
+          className="relative flex items-center justify-center min-h-[90vh] pt-40 pb-6 overflow-hidden"
         >
           {/* Floating elements */}
           <div className="absolute inset-0">
