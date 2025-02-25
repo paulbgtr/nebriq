@@ -173,43 +173,66 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Beta Status Banner */}
-      <div className="fixed inset-x-0 top-0 z-40 border-b bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center justify-between h-10 px-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/[0.08] border border-primary/10">
-              <span className="relative flex w-2 h-2">
-                <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-primary/40"></span>
-                <span className="relative inline-flex w-2 h-2 rounded-full bg-primary"></span>
-              </span>
-              <span className="text-xs font-medium text-primary">BETA</span>
+      {/* Floating Navbar */}
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="fixed top-6 inset-x-0 z-50 px-4"
+      >
+        <div className="max-w-7xl mx-auto flex justify-center">
+          <div className="relative flex items-center gap-4 px-4 py-2.5 rounded-full border bg-background/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/5">
+            {/* Beta Badge */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/[0.08] border border-primary/10">
+                <span className="relative flex w-2 h-2">
+                  <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-primary/40"></span>
+                  <span className="relative inline-flex w-2 h-2 rounded-full bg-primary"></span>
+                </span>
+                <span className="text-xs font-medium text-primary">BETA</span>
+              </div>
             </div>
-            <span className="hidden sm:inline text-xs font-medium text-muted-foreground">
-              Currently in closed beta
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/signup"
-              className="text-xs font-medium text-primary hover:text-primary/90"
-            >
-              Create Beta Account
-            </Link>
-            <div className="w-px h-3 bg-border" />
-            <Link
-              href="/login"
-              className="text-xs font-medium transition-colors text-muted-foreground hover:text-foreground"
-            >
-              Sign in
-            </Link>
+
+            {/* Center Links */}
+            <div className="hidden sm:flex items-center gap-6 px-4">
+              <Link
+                href="/signup"
+                className="text-sm font-medium transition-colors text-muted-foreground hover:text-foreground"
+              >
+                Create Account
+              </Link>
+              <div className="w-px h-4 bg-border/60" />
+              <Link
+                href="/login"
+                className="text-sm font-medium transition-colors text-muted-foreground hover:text-foreground"
+              >
+                Sign in
+              </Link>
+            </div>
+
+            {/* Theme Toggle */}
+            <div className="flex items-center">
+              <div className="w-px h-4 bg-border/60 mr-4 hidden sm:block" />
+              <ModeToggle />
+            </div>
+
+            {/* Mobile Menu (only shows login/signup) */}
+            <div className="sm:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="px-2 text-muted-foreground"
+                asChild
+              >
+                <Link href="/login">
+                  <span className="sr-only">Menu</span>
+                  Sign in
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Theme Switcher */}
-      <div className="fixed z-50 top-14 right-8">
-        <ModeToggle />
-      </div>
+      </motion.div>
 
       {/* Main Content */}
       <main className="flex-1">
@@ -223,7 +246,7 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="relative flex items-center justify-center min-h-[90vh] pt-32 pb-24 overflow-hidden"
+          className="relative flex items-center justify-center min-h-[90vh] pt-40 pb-24 overflow-hidden"
         >
           {/* Floating elements */}
           <div className="absolute inset-0">
