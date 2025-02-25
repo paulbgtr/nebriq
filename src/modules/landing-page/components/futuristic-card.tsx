@@ -7,7 +7,7 @@ interface FuturisticCardProps {
   delay?: number;
   className?: string;
   glowColor?: string;
-  variant?: "default" | "cyber" | "glass" | "neon";
+  variant?: "default" | "neon";
 }
 
 export const FuturisticCard = ({
@@ -37,15 +37,6 @@ export const FuturisticCard = ({
       transition={{ duration: 0.5, delay }}
       className={cn("relative group", className)}
     >
-      {variant === "cyber" && (
-        <>
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary" />
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary" />
-          <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary" />
-        </>
-      )}
-
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{
@@ -69,7 +60,13 @@ export const FuturisticCard = ({
         </div>
       )}
 
-      <div className="relative h-full p-6 transition-all duration-700 border rounded-xl bg-background/80 backdrop-blur-md border-primary/20 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10">
+      <div
+        className={cn(
+          "relative h-full p-6 transition-all duration-700 rounded-xl bg-background/80 backdrop-blur-md",
+          "border border-primary/20 hover:border-primary/30",
+          "hover:shadow-lg hover:shadow-primary/10"
+        )}
+      >
         <div className="absolute inset-0 overflow-hidden rounded-xl">
           <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
         </div>
