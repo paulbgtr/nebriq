@@ -9,6 +9,7 @@ type Props = {
   setFollowUp: (followUp: string) => void;
   setQuery: (query: string) => void;
   maxLength: number;
+  isFullscreen?: boolean;
 };
 
 export const InputArea = ({
@@ -16,6 +17,7 @@ export const InputArea = ({
   setFollowUp,
   setQuery,
   maxLength,
+  isFullscreen = false,
 }: Props) => {
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -70,8 +72,14 @@ export const InputArea = ({
   };
 
   return (
-    <div className="px-6 py-4 border-t bg-background">
-      <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto">
+    <div className={isFullscreen ? "px-8 py-6" : "px-6 py-4"}>
+      <form
+        onSubmit={handleSubmit}
+        className={cn(
+          "relative",
+          isFullscreen ? "max-w-4xl mx-auto" : "max-w-3xl mx-auto"
+        )}
+      >
         <div className="relative">
           <Textarea
             value={followUp}
@@ -90,10 +98,16 @@ export const InputArea = ({
               "transition-all duration-300 ease-out",
               "placeholder:text-muted-foreground/40",
               "scrollbar-thin scrollbar-thumb-primary/20",
-              "scrollbar-track-transparent"
+              "scrollbar-track-transparent",
+              isFullscreen && "min-h-[56px] text-lg"
             )}
           />
-          <div className="absolute flex items-center gap-2 bottom-2 right-3">
+          <div
+            className={cn(
+              "absolute flex items-center gap-2 right-3",
+              isFullscreen ? "bottom-3" : "bottom-2"
+            )}
+          >
             <CharCounter />
             <Submit />
           </div>

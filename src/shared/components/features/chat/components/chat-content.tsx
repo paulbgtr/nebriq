@@ -1,5 +1,5 @@
 import { ChatContext } from "@/types/chat";
-import { Box } from "lucide-react";
+import { Box, MessageCircle, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/shared/lib/utils";
 import { QueryExamples } from "./query-examples";
@@ -13,6 +13,7 @@ type ChatContentProps = {
   email?: string;
   displayedText: string;
   isLoading: boolean;
+  isFullscreen?: boolean;
 };
 
 type MessageProps = {
@@ -26,8 +27,12 @@ export const ChatContent = ({
   email,
   displayedText,
   isLoading,
+  isFullscreen = false,
 }: ChatContentProps) => (
-  <div ref={scrollContainerRef} className="flex-1 p-6 overflow-y-auto">
+  <div
+    ref={scrollContainerRef}
+    className={cn("flex-1 overflow-y-auto", isFullscreen ? "p-8" : "p-6")}
+  >
     {!chatContext.conversationHistory.length ? (
       <QueryExamples setFollowUp={setFollowUp} />
     ) : (
@@ -41,11 +46,16 @@ export const ChatContent = ({
               message.role === "user" ? "flex-row-reverse" : "flex-row"
             )}
           >
-            <Avatar message={message} email={email} />
+            <Avatar
+              message={message}
+              email={email}
+              isFullscreen={isFullscreen}
+            />
             <MessageBubble
               message={message}
               displayedText={displayedText}
               chatContext={chatContext}
+              isFullscreen={isFullscreen}
             />
           </div>
         ))}
@@ -56,23 +66,50 @@ export const ChatContent = ({
 );
 
 // Updated Avatar Component
-const Avatar = ({ message, email }: MessageProps & { email?: string }) => (
+const Avatar = ({
+  message,
+  email,
+  isFullscreen = false,
+}: MessageProps & { email?: string; isFullscreen?: boolean }) => (
   <div
     className={cn(
-      "flex-shrink-0 w-10 h-10 rounded-full",
+      "flex-shrink-0 rounded-full",
       "flex items-center justify-center relative",
-      "transition-all duration-300 group-hover:scale-110",
+      "transition-all duration-300",
+      "group-hover:shadow-sm",
+      isFullscreen ? "w-12 h-12" : "w-10 h-10",
       message.role === "user"
-        ? "bg-primary/10 border border-primary/20 hover:shadow-md"
-        : "bg-secondary/10 border border-secondary/20 hover:shadow-md"
+        ? "bg-primary/10 border border-primary/20"
+        : "bg-secondary/10 border border-secondary/20"
     )}
   >
     {message.role === "user" ? (
-      <span className="text-base font-semibold text-primary-foreground">
+      <span
+        className={cn(
+          "font-semibold text-primary-foreground",
+          isFullscreen ? "text-lg" : "text-base"
+        )}
+      >
         {email?.[0].toUpperCase() ?? "?"}
       </span>
     ) : (
-      <Box className="w-6 h-6 text-secondary-foreground" />
+      <div className="relative">
+        <MessageCircle
+          className={cn(
+            "text-secondary-foreground",
+            isFullscreen ? "w-7 h-7" : "w-6 h-6"
+          )}
+        />
+        <Sparkles
+          className={cn(
+            "absolute text-yellow-300/80",
+            "opacity-70",
+            isFullscreen
+              ? "w-2.5 h-2.5 -top-1 -right-1"
+              : "w-2 h-2 -top-0.5 -right-0.5"
+          )}
+        />
+      </div>
     )}
   </div>
 );
@@ -82,15 +119,19 @@ const MessageBubble = ({
   message,
   displayedText,
   chatContext,
-}: MessageProps & Pick<ChatContentProps, "displayedText" | "chatContext">) => (
+  isFullscreen = false,
+}: MessageProps &
+  Pick<ChatContentProps, "displayedText" | "chatContext" | "isFullscreen">) => (
   <div
     className={cn(
-      "flex-1 px-2 text-sm rounded-3xl relative shadow-sm",
+      "flex-1 text-sm rounded-2xl relative",
       "transition-all duration-300 ease-out",
-      "hover:shadow-lg",
+      "border",
       message.role === "user"
-        ? "bg-primary/10 ml-8 border border-primary/20 hover:bg-primary/15"
-        : "bg-secondary/5 mr-8 border border-secondary/10 hover:bg-secondary/10"
+        ? "bg-primary/5 border-primary/10 hover:bg-primary/10"
+        : "bg-secondary/5 border-secondary/10 hover:bg-secondary/10",
+      message.role === "user" ? "ml-8" : "mr-8",
+      isFullscreen ? "px-5 py-3" : "px-4 py-2"
     )}
   >
     <MessageActions message={message} />
@@ -98,12 +139,13 @@ const MessageBubble = ({
       className={cn(
         "prose prose-sm max-w-none",
         "prose-p:leading-relaxed prose-p:my-1",
-        "prose-code:bg-muted/70 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md"
+        "prose-code:bg-muted/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md",
+        isFullscreen && "prose-sm md:prose"
       )}
       components={{
         p: ({ children }) => <p className="text-foreground/90">{children}</p>,
         code: ({ children }) => (
-          <code className="bg-muted/70 px-1.5 py-0.5 rounded-md">
+          <code className="bg-muted/50 px-1.5 py-0.5 rounded-md">
             {children}
           </code>
         ),

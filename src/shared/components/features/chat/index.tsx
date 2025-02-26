@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-import { Box } from "lucide-react";
+import { Box, MessageCircle, Sparkles } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { useUser } from "@/hooks/use-user";
@@ -70,10 +70,41 @@ export default function AIChat() {
     () => (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed w-12 h-12 transition-shadow duration-200 rounded-full shadow-lg bottom-5 right-5 hover:shadow-xl md:h-14 md:w-14 animate-in fade-in zoom-in-95"
-        aria-label="Open chat"
+        className={cn(
+          "fixed bottom-5 right-5 z-50",
+          "flex items-center justify-center gap-2.5",
+          "bg-primary/90 backdrop-blur-sm",
+          "text-primary-foreground",
+          "shadow-md",
+          "transition-all duration-300 ease-out",
+          "rounded-full",
+          "animate-in fade-in zoom-in-95",
+          "group",
+          "md:px-6",
+          "h-12 w-12 md:h-14 md:w-auto",
+          "hover:bg-primary hover:translate-y-[-2px]"
+        )}
+        aria-label="Chat with Briq AI"
       >
-        <Box className="w-5 h-5 md:h-6 md:w-6" />
+        <div className="relative flex items-center justify-center">
+          <MessageCircle className="w-5 h-5 md:h-6 md:w-6" />
+          <Sparkles
+            className={cn(
+              "absolute w-3 h-3 text-yellow-300/80 -top-1 -right-1",
+              "opacity-70 group-hover:opacity-100",
+              "transition-opacity duration-300"
+            )}
+          />
+        </div>
+        <span
+          className={cn(
+            "hidden md:inline font-medium",
+            "transition-all duration-300",
+            "opacity-90 group-hover:opacity-100"
+          )}
+        >
+          Chat with Briq
+        </span>
       </Button>
     ),
     []
@@ -108,7 +139,8 @@ export default function AIChat() {
               "animate-in slide-in-from-bottom-3 zoom-in-95",
               "shadow-2xl hover:shadow-3xl",
               "motion-safe:animate-in motion-safe:fade-in-0",
-              "overflow-clip"
+              "overflow-clip",
+              isFullscreen && "md:px-8 lg:px-16 xl:px-32 2xl:px-64"
             )}
             role="dialog"
             aria-modal="true"
@@ -125,7 +157,8 @@ export default function AIChat() {
             <div
               className={cn(
                 "flex-1 flex flex-col overflow-hidden",
-                !isFullscreen && "rounded-b-3xl"
+                !isFullscreen && "rounded-b-3xl",
+                isFullscreen && "max-w-5xl mx-auto w-full"
               )}
             >
               {isAllNotesLoading ? (
@@ -141,6 +174,7 @@ export default function AIChat() {
                     email={user?.email ?? ""}
                     displayedText={displayedText}
                     isLoading={isLoading}
+                    isFullscreen={isFullscreen}
                   />
 
                   <InputArea
@@ -148,6 +182,7 @@ export default function AIChat() {
                     setFollowUp={setFollowUp}
                     setQuery={setQuery}
                     maxLength={maxLength}
+                    isFullscreen={isFullscreen}
                   />
                 </>
               )}
