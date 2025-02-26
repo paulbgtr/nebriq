@@ -88,23 +88,33 @@ export const createNoteConnection = async (
 
 export const deleteNoteConnection = async (
   id: string
-): Promise<z.infer<typeof noteConnectionSchema>> => {
+): Promise<z.infer<typeof noteConnectionSchema> | null> => {
   const supabase = await createClient();
 
-  const { data: deletedConnection, error } = await supabase
-    .from("note_connections")
-    .delete()
-    .eq("id", id)
-    .select()
-    .single();
+  try {
+    const { data: deletedConnection, error } = await supabase
+      .from("note_connections")
+      .delete()
+      .eq("id", id)
+      .select()
+      .single();
 
-  if (error) {
-    console.error("Supabase error:", error);
-    throw error;
+    if (error) {
+      console.error("Supabase error in deleteNoteConnection:", error);
+
+      if (error.code === "PGRST116" || error.message.includes("not found")) {
+        return null;
+      }
+
+      throw error;
+    }
+
+    return noteConnectionSchema.parse({
+      ...deletedConnection,
+      created_at: new Date(deletedConnection.created_at),
+    });
+  } catch (error) {
+    console.error("Error in deleteNoteConnection:", error);
+    return null;
   }
-
-  return noteConnectionSchema.parse({
-    ...deletedConnection,
-    created_at: new Date(deletedConnection.created_at),
-  });
 };
