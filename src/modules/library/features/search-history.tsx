@@ -7,14 +7,7 @@ import { SearchHistoryList } from "./components/search-history-list";
 import { SkeletonHistory } from "./components/skeleton";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import {
-  Calendar,
-  Clock,
-  Filter,
-  Search,
-  TrendingUp,
-  BookOpen,
-} from "lucide-react";
+import { Calendar, Clock, Search, BookOpen } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -99,14 +92,6 @@ export const SearchHistory = ({ searchHistory }: Props) => {
     },
     {} as Record<TimeGroup, typeof searchHistory>
   );
-
-  const stats = {
-    total: searchHistory.length,
-    today: groupedHistory.today?.length || 0,
-    thisWeek:
-      (groupedHistory.thisWeek?.length || 0) +
-      (groupedHistory.today?.length || 0),
-  };
 
   return (
     <div className="space-y-8">

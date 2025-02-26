@@ -3,14 +3,7 @@ import { searchHistoryItemSchema } from "@/shared/lib/schemas/search-history-ite
 import { motion } from "framer-motion";
 import { Badge } from "@/shared/components/ui/badge";
 import { Card } from "@/shared/components/ui/card";
-import {
-  Clock,
-  Search,
-  Tag,
-  Sparkles,
-  ArrowRight,
-  BookOpen,
-} from "lucide-react";
+import { Clock, Sparkles, ArrowRight, BookOpen } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import Link from "next/link";
 
