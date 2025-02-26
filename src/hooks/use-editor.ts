@@ -1,6 +1,6 @@
 import "katex/dist/katex.min.css";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useEditor } from "@tiptap/react";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
 import { useUser } from "./use-user";
@@ -10,6 +10,8 @@ import { all, createLowlight } from "lowlight";
 import { useSyncNoteConnections } from "./useSyncNoteConnections";
 import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "@/shared/hooks/use-toast";
+import { useNoteConnections } from "./use-note-connections";
+import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
 
 import Image from "@tiptap/extension-image";
 import Mathematics, {
@@ -29,30 +31,20 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   const { getNotesQuery } = useNotes();
   const { openNotes, setOpenNotes } = useNoteTabsStore();
   const { toast } = useToast();
+  const { user } = useUser();
+  const { createNoteMutation, updateNoteMutation } = useNotes();
+  const initialLoadRef = useRef(false);
 
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [lastSavedContent, setLastSavedContent] = useState("");
 
   useSyncNoteConnections(id, content);
 
-  useEffect(() => {
-    if (id && !openNotes.find((note) => note.id === id)) {
-      setOpenNotes([
-        ...openNotes,
-        {
-          id,
-          title,
-          content,
-        },
-      ]);
-    }
-  }, [id, setOpenNotes]);
-
-  const { user } = useUser();
-  const { createNoteMutation, updateNoteMutation } = useNotes();
+  const { noteConnectionsQuery } = useNoteConnections(id);
 
   const createNote = async () => {
     if (!user || id || initialNoteId) return;
@@ -94,7 +86,12 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             content: newContent ?? content,
           },
           {
-            onSuccess: () => setIsSaving(false),
+            onSuccess: (updatedNote) => {
+              setIsSaving(false);
+              if (newContent) {
+                setLastSavedContent(newContent);
+              }
+            },
             onError: () => {
               setIsSaving(false);
               toast({
@@ -130,19 +127,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
       { id, title, content: newContent },
       {
         onSuccess: (updatedNote) => {
-          if (
-            updatedNote.content &&
-            updatedNote.content !== newContent &&
-            editor &&
-            !editor.isDestroyed
-          ) {
-            editor
-              .chain()
-              .setContent(updatedNote.content, true, {
-                preserveWhitespace: "full",
-              })
-              .run();
-          }
+          setLastSavedContent(newContent);
           setIsSaving(false);
         },
         onError: () => {
@@ -293,6 +278,60 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   );
 
   useEffect(() => {
+    if (!editor || !id || !getNotesQuery.data || initialLoadRef.current) return;
+
+    const loadedNote = getNotesQuery.data.find((note) => note.id === id);
+    if (loadedNote?.content) {
+      editor.commands.setContent(loadedNote.content, false, {
+        preserveWhitespace: "full",
+      });
+      setContent(loadedNote.content);
+      setLastSavedContent(loadedNote.content);
+      initialLoadRef.current = true;
+    }
+  }, [id, editor, getNotesQuery.data]);
+
+  useEffect(() => {
+    if (!editor || !id || !noteConnectionsQuery.data || !lastSavedContent)
+      return;
+
+    if (noteConnectionsQuery.isSuccess && lastSavedContent) {
+      const currentMentions = extractNoteConnectionsFromContent(content);
+      const savedMentions = extractNoteConnectionsFromContent(lastSavedContent);
+
+      if (currentMentions?.length !== savedMentions?.length) {
+        const cursorPos = editor.state.selection.anchor;
+
+        editor.commands.setContent(lastSavedContent, false, {
+          preserveWhitespace: "full",
+        });
+
+        editor.commands.setTextSelection(cursorPos);
+      }
+    }
+  }, [
+    noteConnectionsQuery.data,
+    noteConnectionsQuery.isSuccess,
+    editor,
+    id,
+    lastSavedContent,
+    content,
+  ]);
+
+  useEffect(() => {
+    if (id && !openNotes.find((note) => note.id === id)) {
+      setOpenNotes([
+        ...openNotes,
+        {
+          id,
+          title,
+          content,
+        },
+      ]);
+    }
+  }, [id, setOpenNotes]);
+
+  useEffect(() => {
     if (!editor) return;
     const { from, to } = editor.state.selection;
     editor.commands.setContent(content, false, {
@@ -311,6 +350,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         setTitle(note.title || "");
         setId(note.id);
         setContent(note.content || "");
+        setLastSavedContent(note.content || "");
       }
     }
   }, [initialNoteId, getNotesQuery.data]);
