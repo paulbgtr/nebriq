@@ -9,17 +9,19 @@ import { useRouter } from "next/navigation";
 import { useNotes } from "@/hooks/use-notes";
 import { useQuery } from "@tanstack/react-query";
 import { getAllNoteConnections } from "@/app/actions/supabase/note_connections";
-import { FolderPlus } from "lucide-react";
+import { FolderPlus, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 type GraphNode = d3.SimulationNodeDatum & {
   id: string;
   title: string | undefined;
   isHovered?: boolean;
+  connections?: number;
 };
 
 type GraphLink = d3.SimulationLinkDatum<GraphNode> & {
   source: string;
   target: string;
+  strength?: number;
 };
 
 type LinePlotProps = {
@@ -37,7 +39,11 @@ const ForceGraph = memo(
       null
     );
     const tooltipTimeoutRef = useRef<number | null>(null);
-    const isDraggingRef = useRef<boolean>(false);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const zoomBehaviorRef = useRef<d3.ZoomBehavior<
+      SVGSVGElement,
+      unknown
+    > | null>(null);
 
     const colors = useMemo(
       () => ({
@@ -46,30 +52,57 @@ const ForceGraph = memo(
           hover: "hsl(var(--primary) / 0.8)", // 80% opacity
           connected: "hsl(var(--primary) / 0.6)", // 60% opacity
           dimmed: "hsl(var(--primary) / 0.4)", // 40% opacity
+          glow: "hsl(var(--primary) / 0.2)", // 20% opacity for glow effect
         },
         link: {
-          default: "hsl(var(--muted-foreground))",
+          default: "hsl(var(--muted-foreground) / 0.5)",
           hover: "hsl(var(--primary))",
-          dimmed: "hsl(var(--muted))",
+          dimmed: "hsl(var(--muted) / 0.3)",
+          gradient: {
+            start: "hsl(var(--primary) / 0.7)",
+            end: "hsl(var(--secondary) / 0.7)",
+          },
         },
         text: {
           default: "hsl(var(--foreground))", // Theme text color
           tooltip: "hsl(var(--foreground))",
+        },
+        background: {
+          gradient: {
+            start: "hsl(var(--background) / 0.5)",
+            end: "hsl(var(--muted) / 0.1)",
+          },
         },
       }),
       []
     );
 
     const { nodes, links } = useMemo(() => {
+      // Count connections for each node to determine size
+      const connectionCounts = new Map<string, number>();
+
+      connections.forEach((conn) => {
+        connectionCounts.set(
+          conn.note_id_from,
+          (connectionCounts.get(conn.note_id_from) || 0) + 1
+        );
+        connectionCounts.set(
+          conn.note_id_to,
+          (connectionCounts.get(conn.note_id_to) || 0) + 1
+        );
+      });
+
       const nodes: GraphNode[] = notes.map((note) => ({
         id: note.id,
         title: note.title,
         isHovered: false,
+        connections: connectionCounts.get(note.id) || 0,
       }));
 
       const links: GraphLink[] = connections.map((conn) => ({
         source: conn.note_id_from,
         target: conn.note_id_to,
+        strength: 0.5, // Default link strength
       }));
 
       return { nodes, links };
@@ -78,14 +111,6 @@ const ForceGraph = memo(
     const dragHandlers = useMemo(() => {
       const dragstarted = (event: any) => {
         if (!simulationRef.current) return;
-        // Set dragging flag to true
-        isDraggingRef.current = true;
-
-        // Remove any existing tooltips when drag starts
-        if (svgRef.current) {
-          d3.select(svgRef.current).selectAll(".tooltip").remove();
-        }
-
         if (!event.active) simulationRef.current.alphaTarget(0.3).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
@@ -98,9 +123,6 @@ const ForceGraph = memo(
 
       const dragended = (event: any) => {
         if (!simulationRef.current) return;
-        // Reset dragging flag when drag ends
-        isDraggingRef.current = false;
-
         if (!event.active) simulationRef.current.alphaTarget(0);
         event.subject.fx = null;
         event.subject.fy = null;
@@ -117,6 +139,36 @@ const ForceGraph = memo(
       [router]
     );
 
+    const resetZoom = useCallback(() => {
+      if (svgRef.current && zoomBehaviorRef.current) {
+        d3.select(svgRef.current)
+          .transition()
+          .duration(750)
+          .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
+        setZoomLevel(1);
+      }
+    }, []);
+
+    const zoomIn = useCallback(() => {
+      if (svgRef.current && zoomBehaviorRef.current) {
+        d3.select(svgRef.current)
+          .transition()
+          .duration(300)
+          .call(zoomBehaviorRef.current.scaleBy, 1.3);
+        setZoomLevel((prev) => Math.min(prev * 1.3, 4));
+      }
+    }, []);
+
+    const zoomOut = useCallback(() => {
+      if (svgRef.current && zoomBehaviorRef.current) {
+        d3.select(svgRef.current)
+          .transition()
+          .duration(300)
+          .call(zoomBehaviorRef.current.scaleBy, 0.7);
+        setZoomLevel((prev) => Math.max(prev * 0.7, 0.1));
+      }
+    }, []);
+
     useEffect(() => {
       if (!svgRef.current || !nodes.length) return;
 
@@ -127,22 +179,93 @@ const ForceGraph = memo(
       const svgSelection = d3.select(svgRef.current);
       svgSelection.selectAll("*").remove();
 
+      // Create a gradient for the background
+      const defs = svgSelection.append("defs");
+
+      // Background gradient
+      const backgroundGradient = defs
+        .append("linearGradient")
+        .attr("id", "background-gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%");
+
+      backgroundGradient
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", colors.background.gradient.start);
+
+      backgroundGradient
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", colors.background.gradient.end);
+
+      // Link gradient
+      const linkGradient = defs
+        .append("linearGradient")
+        .attr("id", "link-gradient")
+        .attr("gradientUnits", "userSpaceOnUse");
+
+      linkGradient
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", colors.link.gradient.start);
+
+      linkGradient
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", colors.link.gradient.end);
+
+      // Node glow filter
+      const filter = defs
+        .append("filter")
+        .attr("id", "glow")
+        .attr("x", "-50%")
+        .attr("y", "-50%")
+        .attr("width", "200%")
+        .attr("height", "200%");
+
+      filter
+        .append("feGaussianBlur")
+        .attr("stdDeviation", "3")
+        .attr("result", "coloredBlur");
+
+      const feMerge = filter.append("feMerge");
+      feMerge.append("feMergeNode").attr("in", "coloredBlur");
+      feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+      // Add background rect with gradient
+      svgSelection
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("fill", "url(#background-gradient)")
+        .attr("rx", 8)
+        .attr("ry", 8)
+        .style("opacity", 0.8);
+
       const simulation = d3
         .forceSimulation(nodes)
-        .force("charge", d3.forceManyBody().strength(-100).distanceMax(300))
+        .force("charge", d3.forceManyBody().strength(-120).distanceMax(350))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .force(
           "link",
           d3
             .forceLink(links)
             .id((d: any) => d.id)
-            .distance(100)
+            .distance(120)
         )
-        .alphaDecay(0.028)
-        .velocityDecay(0.4);
+        .force(
+          "collision",
+          d3.forceCollide().radius((d: any) => getNodeRadius(d) + 10)
+        )
+        .alphaDecay(0.025) // Slightly faster convergence
+        .velocityDecay(0.35); // More damping for stability
 
       simulationRef.current = simulation;
 
+      // Set up SVG and zoom behavior
       const svg = svgSelection.attr("width", width).attr("height", height);
 
       const zoomBehavior = d3
@@ -150,21 +273,45 @@ const ForceGraph = memo(
         .scaleExtent([0.1, 4])
         .on("zoom", (event) => {
           container.attr("transform", event.transform);
+          setZoomLevel(event.transform.k);
         });
 
+      zoomBehaviorRef.current = zoomBehavior;
       svg.call(zoomBehavior);
 
       const container = svg.append("g");
 
+      // Helper function to get node radius based on connections
+      function getNodeRadius(d: GraphNode) {
+        const baseSize = 6;
+        const connectionBonus = Math.min(d.connections || 0, 10) * 0.8;
+        return baseSize + connectionBonus;
+      }
+
+      // Create links with curved paths and gradients
       const link = container
         .append("g")
-        .selectAll("line")
+        .selectAll("path")
         .data(links)
-        .join("line")
-        .style("stroke", colors.link.default)
-        .style("stroke-opacity", 0.6)
-        .style("stroke-width", 1);
+        .join("path")
+        .attr("stroke", "url(#link-gradient)")
+        .attr("stroke-opacity", 0.6)
+        .attr("stroke-width", 1.5)
+        .attr("fill", "none")
+        .style("stroke-dasharray", "4,2")
+        .style("stroke-dashoffset", 0)
+        .style("animation", "dash 30s linear infinite");
 
+      // Add animation for links
+      const linkAnimation = defs.append("style").text(`
+          @keyframes dash {
+            to {
+              stroke-dashoffset: 100;
+            }
+          }
+        `);
+
+      // Create nodes
       const node = container
         .append("g")
         .selectAll<SVGGElement, GraphNode>("g")
@@ -178,99 +325,152 @@ const ForceGraph = memo(
             .on("end", dragHandlers.dragended)
         );
 
+      // Add glow circles behind nodes
       node
         .append("circle")
-        .attr("r", 8)
+        .attr("r", (d) => getNodeRadius(d) * 2.5)
+        .style("fill", colors.node.glow)
+        .style("opacity", 0.4)
+        .style("filter", "url(#glow)");
+
+      // Add circles to nodes
+      node
+        .append("circle")
+        .attr("r", (d) => getNodeRadius(d))
         .style("fill", colors.node.default)
         .style("stroke", "hsl(var(--background))")
         .style("stroke-width", 1.5)
         .style("cursor", "pointer")
         .on("click", handleNodeClick)
         .on("mouseover", function (event, d) {
-          // Skip tooltip creation if currently dragging
-          if (isDraggingRef.current) return;
-
+          // Clear any existing tooltip timeout
           if (tooltipTimeoutRef.current) {
             window.clearTimeout(tooltipTimeoutRef.current);
             tooltipTimeoutRef.current = null;
           }
 
+          // Optimize hover effects
           d3.select(this)
             .transition()
-            .duration(200)
-            .attr("r", 12)
+            .duration(200) // Reduced duration for better responsiveness
+            .attr("r", getNodeRadius(d) * 1.5)
             .style("fill", colors.node.hover)
-            .style("stroke-width", 2.5);
+            .style("stroke-width", 2.5)
+            .style("filter", "url(#glow)");
 
+          // Highlight connected nodes
+          const connectedNodeIds = new Set<string>();
+          links.forEach((l: any) => {
+            if (l.source.id === d.id) connectedNodeIds.add(l.target.id);
+            if (l.target.id === d.id) connectedNodeIds.add(l.source.id);
+          });
+
+          // Optimize link highlighting with curved paths
           link
-            .style("stroke", (l: any) =>
-              l.source.id === d.id || l.target.id === d.id
-                ? colors.link.hover
-                : colors.link.dimmed
-            )
+            .style("stroke", (l: any) => {
+              if (l.source.id === d.id || l.target.id === d.id) {
+                return "url(#link-gradient)";
+              }
+              return colors.link.dimmed;
+            })
             .style("stroke-opacity", (l: any) =>
-              l.source.id === d.id || l.target.id === d.id ? 0.8 : 0.3
+              l.source.id === d.id || l.target.id === d.id ? 0.9 : 0.2
             )
             .style("stroke-width", (l: any) =>
-              l.source.id === d.id || l.target.id === d.id ? 2 : 1
+              l.source.id === d.id || l.target.id === d.id ? 2 : 0.8
+            )
+            .style("stroke-dasharray", (l: any) =>
+              l.source.id === d.id || l.target.id === d.id ? "5,2" : "4,2"
             );
 
-          // Remove any existing tooltips before creating a new one
-          container.selectAll(".tooltip").remove();
+          // Highlight connected nodes
+          node
+            .selectAll("circle")
+            .filter((n: any) => n.id !== d.id)
+            .style("opacity", (n: any) =>
+              connectedNodeIds.has(n.id) ? 0.9 : 0.4
+            );
 
+          // Create enhanced tooltip
           const tooltip = container
             .append("g")
             .attr("class", "tooltip")
             .style("opacity", 0)
             .attr("transform", `translate(${event.x + 15},${event.y - 15})`);
 
+          const tooltipWidth = Math.max((d.title?.length || 0) * 8 + 40, 150);
+
+          // Tooltip background with more elegant shape
           tooltip
             .append("rect")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", (d.title?.length || 0) * 8 + 24)
-            .attr("height", 30)
-            .attr("rx", 6)
-            .style("fill", "hsl(var(--background))")
+            .attr("width", tooltipWidth)
+            .attr("height", 60)
+            .attr("rx", 8)
+            .attr("ry", 8)
+            .style("fill", "hsl(var(--card))")
             .style("stroke", "hsl(var(--border))")
-            .style("stroke-width", 1.5);
+            .style("stroke-width", 1.5)
+            .style("filter", "drop-shadow(0px 2px 4px rgba(0,0,0,0.1))");
 
+          // Title text
           tooltip
             .append("text")
             .style("fill", colors.text.default)
             .attr("x", 12)
             .attr("y", 20)
             .text(d.title ?? "Untitled")
-            .style("font-size", "12px")
-            .style("font-weight", "500");
+            .style("font-size", "14px")
+            .style("font-weight", "600");
 
-          tooltip.transition().duration(150).style("opacity", 1);
+          // Connection count
+          tooltip
+            .append("text")
+            .style("fill", "hsl(var(--muted-foreground))")
+            .attr("x", 12)
+            .attr("y", 42)
+            .text(
+              `${d.connections || 0} connection${
+                d.connections !== 1 ? "s" : ""
+              }`
+            )
+            .style("font-size", "12px");
+
+          // Animate tooltip appearance
+          tooltip.transition().duration(200).style("opacity", 1);
         })
         .on("mouseout", function () {
-          // Skip if currently dragging
-          if (isDraggingRef.current) return;
-
+          // Clear any existing tooltip timeout
           if (tooltipTimeoutRef.current) {
             window.clearTimeout(tooltipTimeoutRef.current);
           }
 
+          // Optimize mouseout effects
           d3.select(this)
             .transition()
-            .duration(200)
-            .attr("r", 8)
+            .duration(200) // Reduced duration
+            .attr("r", (d: any) => getNodeRadius(d))
             .style("fill", colors.node.default)
-            .style("stroke-width", 1.5);
+            .style("stroke-width", 1.5)
+            .style("filter", "none");
 
+          // Reset link styles
           link
-            .style("stroke", colors.link.default)
+            .style("stroke", "url(#link-gradient)")
             .style("stroke-opacity", 0.6)
-            .style("stroke-width", 1);
+            .style("stroke-width", 1.5)
+            .style("stroke-dasharray", "4,2");
 
+          // Reset node styles
           node
             .selectAll("circle")
             .style("opacity", 1)
-            .style("fill", colors.node.default);
+            .style("fill", (d: any, i: number) =>
+              i % 2 === 0 ? colors.node.default : colors.node.default
+            );
 
+          // Remove tooltip with a slight delay to prevent flickering
           tooltipTimeoutRef.current = window.setTimeout(() => {
             container
               .selectAll(".tooltip")
@@ -281,37 +481,53 @@ const ForceGraph = memo(
           }, 50);
         });
 
+      // Add text labels to nodes (only if there are fewer than 50 nodes for performance)
       if (nodes.length < 50) {
         node
           .append("text")
           .text((d) => d.title ?? "Untitled")
-          .attr("x", 12)
+          .attr("x", (d) => getNodeRadius(d) + 8)
           .attr("y", 4)
-          .style("font-size", "10px")
+          .style("font-size", "11px")
           .style("font-weight", "500")
           .style("fill", colors.text.default)
-          .style("opacity", 0.8)
-          .style("pointer-events", "none");
+          .style("opacity", 0.9)
+          .style("pointer-events", "none")
+          .style(
+            "text-shadow",
+            "0 0 3px hsl(var(--background)), 0 0 3px hsl(var(--background))"
+          );
       }
 
+      // Use requestAnimationFrame for smoother animation
       let animationFrameId: number | null = null;
 
+      // Helper function to create curved links
+      function linkArc(d: any) {
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.y;
+        const dr = Math.sqrt(dx * dx + dy * dy) * 1.2;
+        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+      }
+
+      // Optimize the tick function
       simulation.on("tick", () => {
+        // Cancel any existing animation frame
         if (animationFrameId !== null) {
           cancelAnimationFrame(animationFrameId);
         }
 
+        // Schedule the update on the next animation frame
         animationFrameId = requestAnimationFrame(() => {
-          link
-            .attr("x1", (d: any) => d.source.x)
-            .attr("y1", (d: any) => d.source.y)
-            .attr("x2", (d: any) => d.target.x)
-            .attr("y2", (d: any) => d.target.y);
+          // Update link paths with curved lines
+          link.attr("d", linkArc);
 
+          // Update node positions
           node.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
         });
       });
 
+      // Cleanup function
       return () => {
         if (simulationRef.current) {
           simulationRef.current.stop();
@@ -325,20 +541,52 @@ const ForceGraph = memo(
       };
     }, [nodes, links, width, height, colors, dragHandlers, handleNodeClick]);
 
+    // Add display name for the memoized component
     ForceGraph.displayName = "ForceGraph";
 
     return (
       <div className="relative w-full h-full">
         <svg
           ref={svgRef}
-          className="w-full h-full"
+          className="w-full h-full rounded-lg"
           style={{ background: "transparent" }}
         />
+
+        {/* Zoom controls */}
+        <div className="absolute bottom-4 right-4 flex flex-col gap-2 bg-background/80 backdrop-blur-sm p-2 rounded-lg shadow-sm border border-border">
+          <button
+            onClick={zoomIn}
+            className="p-1.5 rounded-md hover:bg-muted transition-colors"
+            title="Zoom in"
+          >
+            <ZoomIn size={18} />
+          </button>
+          <button
+            onClick={zoomOut}
+            className="p-1.5 rounded-md hover:bg-muted transition-colors"
+            title="Zoom out"
+          >
+            <ZoomOut size={18} />
+          </button>
+          <button
+            onClick={resetZoom}
+            className="p-1.5 rounded-md hover:bg-muted transition-colors"
+            title="Reset view"
+          >
+            <RotateCcw size={18} />
+          </button>
+        </div>
+
+        {/* Zoom level indicator */}
+        <div className="absolute bottom-4 left-4 text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded-md">
+          {Math.round(zoomLevel * 100)}%
+        </div>
       </div>
     );
   }
 );
 
+// Memoize the Visualization component
 export const Visualization = memo(() => {
   const { getNotesQuery } = useNotes();
   const notesData = getNotesQuery.data || [];
@@ -355,12 +603,12 @@ export const Visualization = memo(() => {
   if (!isPending && notesData.length === 0) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center p-8 max-w-md">
+        <div className="text-center p-8 max-w-md bg-background/50 backdrop-blur-sm rounded-xl border border-border shadow-sm">
           <div className="mb-4 text-muted-foreground">
-            <FolderPlus className="w-10 h-10 mx-auto" />
+            <FolderPlus className="w-12 h-12 mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-foreground mb-2">
-            No notes yet
+          <h3 className="text-xl font-medium text-foreground mb-3">
+            No notes yet 🔥
           </h3>
           <p className="text-sm text-muted-foreground">
             Create your first note to start building your knowledge graph. Your
@@ -372,8 +620,11 @@ export const Visualization = memo(() => {
   }
 
   return (
-    <div className="absolute inset-0">
-      <div className="h-full w-full" id="graph-container">
+    <div className="absolute inset-0 p-2">
+      <div
+        className="h-full w-full rounded-lg overflow-hidden shadow-sm border border-border"
+        id="graph-container"
+      >
         {noteConnections && (
           <ForceGraph notes={notesData} connections={noteConnections} />
         )}
@@ -382,4 +633,5 @@ export const Visualization = memo(() => {
   );
 });
 
+// Add display name for the memoized component
 Visualization.displayName = "Visualization";
