@@ -53,7 +53,6 @@ export const NoteList = ({
         <EmptyState
           title="No notes found"
           description="Try adjusting your search or create a new note"
-          icon="📝"
         />
       </motion.div>
     );
