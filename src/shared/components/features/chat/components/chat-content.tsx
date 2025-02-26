@@ -65,7 +65,6 @@ export const ChatContent = ({
   </div>
 );
 
-// Updated Avatar Component
 const Avatar = ({
   message,
   email,
@@ -114,7 +113,6 @@ const Avatar = ({
   </div>
 );
 
-// Updated MessageBubble Component
 const MessageBubble = ({
   message,
   displayedText,
@@ -130,8 +128,7 @@ const MessageBubble = ({
       message.role === "user"
         ? "bg-primary/5 border-primary/10 hover:bg-primary/10"
         : "bg-secondary/5 border-secondary/10 hover:bg-secondary/10",
-      message.role === "user" ? "ml-8" : "mr-8",
-      isFullscreen ? "px-5 py-3" : "px-4 py-2"
+      message.role === "user" ? "ml-8" : "mr-8"
     )}
   >
     <MessageActions message={message} />
