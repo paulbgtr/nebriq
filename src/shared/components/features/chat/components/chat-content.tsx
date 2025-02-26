@@ -1,5 +1,5 @@
 import { ChatContext } from "@/types/chat";
-import { Box, MessageCircle, Sparkles } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/shared/lib/utils";
 import { QueryExamples } from "./query-examples";

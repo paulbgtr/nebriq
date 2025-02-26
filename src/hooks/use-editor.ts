@@ -86,7 +86,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             content: newContent ?? content,
           },
           {
-            onSuccess: (updatedNote) => {
+            onSuccess: () => {
               setIsSaving(false);
               if (newContent) {
                 setLastSavedContent(newContent);
@@ -126,7 +126,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     updateNoteMutation.mutate(
       { id, title, content: newContent },
       {
-        onSuccess: (updatedNote) => {
+        onSuccess: () => {
           setLastSavedContent(newContent);
           setIsSaving(false);
         },

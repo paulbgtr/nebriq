@@ -312,15 +312,6 @@ const ForceGraph = memo(
         .style("stroke-dashoffset", 0)
         .style("animation", "dash 30s linear infinite");
 
-      // Add animation for links
-      const linkAnimation = defs.append("style").text(`
-          @keyframes dash {
-            to {
-              stroke-dashoffset: 100;
-            }
-          }
-        `);
-
       // Create nodes
       const node = container
         .append("g")
