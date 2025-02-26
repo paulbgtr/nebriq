@@ -331,6 +331,7 @@ const ForceGraph = memo(
         .attr("r", (d) => getNodeRadius(d) * 2.5)
         .style("fill", colors.node.glow)
         .style("opacity", 0.4)
+        .attr("class", "glow-circle")
         .style("filter", "url(#glow)");
 
       // Add circles to nodes
@@ -355,8 +356,16 @@ const ForceGraph = memo(
             .duration(200) // Reduced duration for better responsiveness
             .attr("r", getNodeRadius(d) * 1.5)
             .style("fill", colors.node.hover)
-            .style("stroke-width", 2.5)
-            .style("filter", "url(#glow)");
+            .style("stroke-width", 2.5);
+
+          // Enhance glow effect on hover
+          node
+            .selectAll(".glow-circle")
+            .filter((n: any) => n.id === d.id)
+            .transition()
+            .duration(200)
+            .attr("r", getNodeRadius(d) * 3)
+            .style("opacity", 0.6);
 
           // Highlight connected nodes
           const connectedNodeIds = new Set<string>();
@@ -452,8 +461,15 @@ const ForceGraph = memo(
             .duration(200) // Reduced duration
             .attr("r", (d: any) => getNodeRadius(d))
             .style("fill", colors.node.default)
-            .style("stroke-width", 1.5)
-            .style("filter", "none");
+            .style("stroke-width", 1.5);
+
+          // Reset glow circles
+          node
+            .selectAll(".glow-circle")
+            .transition()
+            .duration(200)
+            .attr("r", (d: any) => getNodeRadius(d) * 2.5)
+            .style("opacity", 0.4);
 
           // Reset link styles
           link
@@ -464,11 +480,10 @@ const ForceGraph = memo(
 
           // Reset node styles
           node
-            .selectAll("circle")
+            .selectAll("circle:not(.glow-circle)")
             .style("opacity", 1)
-            .style("fill", (d: any, i: number) =>
-              i % 2 === 0 ? colors.node.default : colors.node.default
-            );
+            .style("fill", colors.node.default)
+            .style("filter", "none");
 
           // Remove tooltip with a slight delay to prevent flickering
           tooltipTimeoutRef.current = window.setTimeout(() => {
@@ -553,7 +568,7 @@ const ForceGraph = memo(
         />
 
         {/* Zoom controls */}
-        <div className="absolute bottom-4 right-4 flex flex-col gap-2 bg-background/80 backdrop-blur-sm p-2 rounded-lg shadow-sm border border-border">
+        <div className="absolute bottom-4 right-4 flex flex-col gap-2 bg-background/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
           <button
             onClick={zoomIn}
             className="p-1.5 rounded-md hover:bg-muted transition-colors"
@@ -603,7 +618,7 @@ export const Visualization = memo(() => {
   if (!isPending && notesData.length === 0) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center p-8 max-w-md bg-background/50 backdrop-blur-sm rounded-xl border border-border shadow-sm">
+        <div className="text-center p-8 max-w-md bg-background/50 backdrop-blur-sm rounded-xl shadow-sm">
           <div className="mb-4 text-muted-foreground">
             <FolderPlus className="w-12 h-12 mx-auto" />
           </div>
@@ -622,7 +637,7 @@ export const Visualization = memo(() => {
   return (
     <div className="absolute inset-0 p-2">
       <div
-        className="h-full w-full rounded-lg overflow-hidden shadow-sm border border-border"
+        className="h-full w-full rounded-lg overflow-hidden"
         id="graph-container"
       >
         {noteConnections && (
