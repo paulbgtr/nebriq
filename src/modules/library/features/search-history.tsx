@@ -7,7 +7,14 @@ import { SearchHistoryList } from "./components/search-history-list";
 import { SkeletonHistory } from "./components/skeleton";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { Calendar, Clock, Filter, Search, TrendingUp } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Filter,
+  Search,
+  TrendingUp,
+  BookOpen,
+} from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -18,12 +25,12 @@ type Props = {
 type TimeGroup = "today" | "yesterday" | "thisWeek" | "thisMonth" | "earlier";
 type SortOption = "newest" | "oldest" | "relevance";
 
-const timeGroups: { id: TimeGroup; label: string }[] = [
-  { id: "today", label: "Today" },
-  { id: "yesterday", label: "Yesterday" },
-  { id: "thisWeek", label: "This Week" },
-  { id: "thisMonth", label: "This Month" },
-  { id: "earlier", label: "Earlier" },
+const timeGroups: { id: TimeGroup; label: string; icon: typeof Clock }[] = [
+  { id: "today", label: "Today", icon: Clock },
+  { id: "yesterday", label: "Yesterday", icon: Clock },
+  { id: "thisWeek", label: "This Week", icon: Calendar },
+  { id: "thisMonth", label: "This Month", icon: Calendar },
+  { id: "earlier", label: "Earlier", icon: BookOpen },
 ];
 
 const sortOptions: { id: SortOption; label: string }[] = [
@@ -102,72 +109,87 @@ export const SearchHistory = ({ searchHistory }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:flex-none sm:min-w-[300px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <div className="space-y-8">
+      <div className="grid gap-6 sm:grid-cols-[1fr,auto] items-start">
+        <div className="relative flex-1">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
             <Input
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}
-              placeholder="Filter searches..."
-              className="pl-9"
+              placeholder="Filter your knowledge..."
+              className="pl-9 border-border/40 hover:border-primary/30 focus:border-primary/50 h-11"
             />
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() =>
-              setSelectedTimeGroup(
-                selectedTimeGroup === "all" ? "today" : "all"
-              )
-            }
-          >
-            <Filter className="h-4 w-4" />
-          </Button>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" />
-            <span>{stats.today} today</span>
-          </div>
-          <div className="w-px h-4 bg-border" />
-          <div className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" />
-            <span>{stats.thisWeek} this week</span>
-          </div>
-          <div className="w-px h-4 bg-border" />
-          <div className="flex items-center gap-1.5">
-            <TrendingUp className="h-4 w-4" />
-            <span>{stats.total} total</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-sm">
+            {sortOptions.map((option) => (
+              <Button
+                key={option.id}
+                variant={sortBy === option.id ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setSortBy(option.id)}
+                className={cn(
+                  "text-xs px-3 h-8",
+                  sortBy === option.id &&
+                    "bg-primary/10 text-primary hover:bg-primary/20"
+                )}
+              >
+                {option.label}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2">
-        {timeGroups.map((group) => (
-          <Button
-            key={group.id}
-            variant={selectedTimeGroup === group.id ? "default" : "outline"}
-            size="sm"
-            onClick={() =>
-              setSelectedTimeGroup(
-                selectedTimeGroup === group.id ? "all" : group.id
-              )
-            }
-            className="whitespace-nowrap"
-          >
-            {group.label}
-          </Button>
-        ))}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-none">
+        <Button
+          variant={selectedTimeGroup === "all" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setSelectedTimeGroup("all")}
+          className={cn(
+            "whitespace-nowrap",
+            selectedTimeGroup === "all" &&
+              "bg-primary/10 text-primary hover:bg-primary/20"
+          )}
+        >
+          All Time
+        </Button>
+        {timeGroups.map((group) => {
+          const Icon = group.icon;
+          const hasItems = groupedHistory[group.id]?.length > 0;
+
+          return (
+            <Button
+              key={group.id}
+              variant={selectedTimeGroup === group.id ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setSelectedTimeGroup(group.id)}
+              className={cn(
+                "whitespace-nowrap gap-1.5",
+                !hasItems && "opacity-50",
+                selectedTimeGroup === group.id &&
+                  "bg-primary/10 text-primary hover:bg-primary/20"
+              )}
+              disabled={!hasItems}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {group.label}
+            </Button>
+          );
+        })}
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-12">
         <AnimatePresence mode="wait">
           {Object.entries(filteredAndSortedHistory).map(([group, items]) => {
             if (selectedTimeGroup !== "all" && group !== selectedTimeGroup)
               return null;
+
+            const timeGroup = timeGroups.find((t) => t.id === group);
+            if (!timeGroup) return null;
 
             return (
               <motion.div
@@ -175,11 +197,16 @@ export const SearchHistory = ({ searchHistory }: Props) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-4"
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
               >
-                <h2 className="text-lg font-semibold capitalize">
-                  {timeGroups.find((t) => t.id === group)?.label}
-                </h2>
+                <div className="flex items-center gap-2 text-lg font-medium text-foreground/80">
+                  <timeGroup.icon className="h-5 w-5 text-primary/70" />
+                  <h2>{timeGroup.label}</h2>
+                  <span className="text-sm text-muted-foreground">
+                    ({items.length} entries)
+                  </span>
+                </div>
                 <SearchHistoryList searchHistory={items} />
               </motion.div>
             );
