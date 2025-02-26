@@ -59,31 +59,36 @@ export const useChat = (
       }));
       setIsLoading(true);
 
-      try {
-        const data = await chat(message, userId, chatContext);
+      const data = await chat(message, userId, chatContext);
 
-        if (data) {
-          setChatContext((prev) => ({
-            ...prev,
-            conversationHistory: [
-              ...prev.conversationHistory,
-              { role: "assistant", content: data },
-            ],
-          }));
-        }
-      } catch (err) {
-        console.error(`An error occured when trying to follow up: ${err}`);
-        throw err;
+      if (data) {
+        setChatContext((prev) => ({
+          ...prev,
+          conversationHistory: [
+            ...prev.conversationHistory,
+            { role: "assistant", content: data },
+          ],
+        }));
       }
     } catch (err) {
-      console.error(err);
+      console.error(`Chat error:`, err);
+
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      const isTokenLimitError =
+        errorMessage.toLowerCase().includes("token") &&
+        (errorMessage.toLowerCase().includes("limit") ||
+          errorMessage.toLowerCase().includes("exceed") ||
+          errorMessage.toLowerCase().includes("context length"));
+
       setChatContext((prev) => ({
         ...prev,
         conversationHistory: [
           ...prev.conversationHistory,
           {
             role: "assistant",
-            content: "An error occurred. Please try again.",
+            content: isTokenLimitError
+              ? "The conversation has reached the token limit. Please try again later."
+              : "An error occurred. Please try again.",
           },
         ],
       }));
