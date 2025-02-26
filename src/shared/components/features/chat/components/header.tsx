@@ -34,7 +34,8 @@ export const ChatHeader = ({
     <div
       className={cn(
         "flex items-center justify-between border-b bg-background",
-        isFullscreen ? "px-8 py-4 md:px-12 lg:px-16" : "px-4 py-3"
+        isFullscreen ? "px-8 py-4 md:px-12 lg:px-16" : "px-4 py-3",
+        isFullscreen && "border-0"
       )}
     >
       <div
