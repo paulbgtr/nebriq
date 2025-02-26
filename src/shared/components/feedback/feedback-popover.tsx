@@ -5,12 +5,14 @@ import {
 } from "@/shared/components/ui/popover";
 import { Button } from "@/shared/components/ui/button";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { useState } from "react";
-import { MessageSquarePlus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MessageSquarePlus, Send, Loader2 } from "lucide-react";
 import { sendEmail } from "@/app/actions/emails/send-email";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/shared/hooks/use-toast";
 import { EmailTemplate } from "@/enums/email-template";
+import { Badge } from "@/shared/components/ui/badge";
+import { motion } from "framer-motion";
 
 const EMOJI_OPTIONS = [
   { emoji: "😊", label: "Happy" },
@@ -18,6 +20,7 @@ const EMOJI_OPTIONS = [
   { emoji: "😕", label: "Concerned" },
   { emoji: "💡", label: "Suggestion" },
   { emoji: "🐛", label: "Bug" },
+  { emoji: "🔥", label: "Hot" },
 ] as const;
 
 type FeedbackPopoverProps = {
@@ -25,6 +28,8 @@ type FeedbackPopoverProps = {
 };
 
 const STORAGE_KEY = "feedback_last_submission_time";
+const MIN_CHARS = 10;
+const MAX_CHARS = 500;
 
 export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
   const { user } = useUser();
@@ -33,6 +38,8 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
   const [feedback, setFeedback] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const [lastSubmissionTime, setLastSubmissionTime] = useState(() => {
     // Initialize from localStorage if available
     if (typeof window !== "undefined") {
@@ -42,25 +49,44 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
     return 0;
   });
 
-  const handleSubmit = async () => {
+  // Check and update cooldown timer
+  useEffect(() => {
+    if (!isOpen) return;
+
     const now = Date.now();
-    if (now - lastSubmissionTime < 60000) {
-      const remainingSeconds = Math.ceil(
-        (60000 - (now - lastSubmissionTime)) / 1000
-      );
+    const timeSinceLastSubmission = now - lastSubmissionTime;
+
+    if (timeSinceLastSubmission < 60000) {
+      setCooldownRemaining(Math.ceil((60000 - timeSinceLastSubmission) / 1000));
+
+      const interval = setInterval(() => {
+        setCooldownRemaining((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isOpen, lastSubmissionTime]);
+
+  const handleSubmit = async () => {
+    if (cooldownRemaining > 0) {
       toast({
         title: "Please wait",
-        description: `You can submit feedback again in ${remainingSeconds} seconds`,
+        description: `You can submit feedback again in ${cooldownRemaining} seconds`,
         variant: "destructive",
       });
       return;
     }
 
-    if (feedback.trim().length < 10) {
+    if (feedback.trim().length < MIN_CHARS) {
       toast({
         title: "Feedback too short",
-        description:
-          "Please provide more detailed feedback (minimum 10 characters)",
+        description: `Please provide more detailed feedback (minimum ${MIN_CHARS} characters)`,
         variant: "destructive",
       });
       return;
@@ -90,6 +116,7 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
 
       setFeedback("");
       setSelectedEmoji(null);
+      setIsOpen(false);
 
       toast({
         title: "Feedback submitted",
@@ -107,48 +134,104 @@ export const FeedbackPopover = ({ children }: FeedbackPopoverProps) => {
     }
   };
 
+  const charCount = feedback.trim().length;
+  const isValidLength = charCount >= MIN_CHARS && charCount <= MAX_CHARS;
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         {children || (
-          <Button variant="ghost" size="sm" className="gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 hover:bg-muted/80 transition-colors"
+          >
             <MessageSquarePlus className="w-4 h-4" />
             <span>Feedback</span>
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-4">
-        <div className="space-y-4">
-          <div className="flex gap-2 justify-center">
+      <PopoverContent className="w-96 p-0 overflow-hidden shadow-lg border-muted">
+        <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 p-4 border-b">
+          <h3 className="font-semibold text-lg">Share your feedback</h3>
+          <p className="text-sm text-muted-foreground">
+            Help us improve Nebriq with your thoughts and suggestions
+          </p>
+        </div>
+
+        <div className="p-4 space-y-4">
+          <div className="flex flex-wrap gap-2 justify-center">
             {EMOJI_OPTIONS.map((option) => (
-              <button
+              <motion.button
                 key={option.emoji}
                 onClick={() => setSelectedEmoji(option.emoji)}
-                className={`p-2 rounded-lg hover:bg-muted transition-colors ${
-                  selectedEmoji === option.emoji ? "bg-muted" : ""
+                className={`p-2.5 rounded-full transition-all ${
+                  selectedEmoji === option.emoji
+                    ? "bg-primary/10 ring-2 ring-primary/50 scale-110"
+                    : "hover:bg-muted hover:scale-105"
                 }`}
                 title={option.label}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <span className="text-xl">{option.emoji}</span>
-              </button>
+                <span className="text-2xl">{option.emoji}</span>
+              </motion.button>
             ))}
           </div>
-          <Textarea
-            placeholder="Share your thoughts with us... (minimum 10 characters)"
-            value={feedback}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setFeedback(e.target.value)
-            }
-            className="min-h-[100px]"
-          />
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <label htmlFor="feedback-text" className="text-sm font-medium">
+                Your message
+              </label>
+              <Badge
+                variant={isValidLength ? "outline" : "destructive"}
+                className="text-xs font-normal"
+              >
+                {charCount}/{MAX_CHARS}
+              </Badge>
+            </div>
+            <Textarea
+              id="feedback-text"
+              placeholder="Share your thoughts with us..."
+              value={feedback}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                if (e.target.value.length <= MAX_CHARS) {
+                  setFeedback(e.target.value);
+                }
+              }}
+              className="min-h-[120px] resize-none focus-visible:ring-primary/50"
+            />
+          </div>
+
+          {cooldownRemaining > 0 && (
+            <div className="text-sm text-amber-600 flex items-center gap-2 justify-center">
+              <Loader2 className="w-3 h-3 animate-spin" />
+              Please wait {cooldownRemaining}s before submitting again
+            </div>
+          )}
+
           <Button
-            className="w-full"
+            className="w-full gap-2 group"
             onClick={handleSubmit}
             disabled={
-              !feedback.trim() || isSubmitting || feedback.trim().length < 10
+              !feedback.trim() ||
+              isSubmitting ||
+              !isValidLength ||
+              cooldownRemaining > 0
             }
           >
-            {isSubmitting ? "Sending..." : "Send Feedback"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                Send Feedback
+              </>
+            )}
           </Button>
         </div>
       </PopoverContent>
