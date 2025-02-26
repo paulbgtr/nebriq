@@ -9,6 +9,7 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 import { useSearchStore } from "@/store/search";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
 import { useUser } from "./use-user";
+import { useQuery } from "@tanstack/react-query";
 
 type ReturnType = {
   results: z.infer<typeof noteSchema>[];
@@ -55,7 +56,6 @@ export const useSearchQuery = (): ReturnType | null => {
   const { query } = useParams() as { query: string };
   const router = useRouter();
   const { isAiSearch } = useSearchStore();
-
   const { user } = useUser();
 
   const [searchQuery, setSearchQuery] = useState<string>(
@@ -71,36 +71,42 @@ export const useSearchQuery = (): ReturnType | null => {
 
   const { getNotesQuery } = useNotes();
 
-  useEffect(() => {
-    const notesData = getNotesQuery.data;
+  const searchResultsQuery = useQuery({
+    queryKey: ["search-results", query, isAiSearch],
+    queryFn: async () => {
+      const notesData = getNotesQuery.data;
+      if (!notesData) return [] as z.infer<typeof noteSchema>[];
 
-    if (!notesData) return;
-
-    const fetchResults = async (): Promise<void> => {
       try {
         let notes: z.infer<typeof noteSchema>[] = [];
 
         const tfidfResults = await searchUsingTFIDF(searchQuery, notesData);
+        setResults(tfidfResults);
 
         if (isAiSearch && user) {
           const semanticResults = await semanticSearch(searchQuery, notesData);
-
           notes = combineSearchResults(semanticResults, tfidfResults);
         } else {
           notes = tfidfResults;
         }
 
-        setResults(notes);
-        setHasSearched(true);
+        return notes;
       } catch (error) {
         console.error("Error fetching search results:", error);
-        setResults([]);
-        setHasSearched(true);
+        return [] as z.infer<typeof noteSchema>[];
       }
-    };
+    },
+    enabled: !!query && !!getNotesQuery.data,
+    gcTime: 10 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+  });
 
-    fetchResults();
-  }, [query, isAiSearch, setResults, setHasSearched]);
+  useEffect(() => {
+    if (searchResultsQuery.data) {
+      setResults(searchResultsQuery.data);
+      setHasSearched(true);
+    }
+  }, [searchResultsQuery.data]);
 
   if (!query) return null;
 

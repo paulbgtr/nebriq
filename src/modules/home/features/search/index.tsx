@@ -20,11 +20,12 @@ export default function Search() {
 
     if (!user) return;
 
-    await createSearchHistoryMutation.mutateAsync({
+    router.push(`/search/${encodeURIComponent(searchQuery)}`);
+
+    createSearchHistoryMutation.mutate({
       query: searchQuery,
       user_id: user.id,
     });
-    router.push(`/search/${encodeURIComponent(searchQuery)}`);
   };
 
   const handleSearchQueryChange = (newQuery: string) => {
