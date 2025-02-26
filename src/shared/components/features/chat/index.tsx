@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-import { MessageCircle, Sparkles } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { useUser } from "@/hooks/use-user";
@@ -86,16 +86,7 @@ export default function AIChat() {
         )}
         aria-label="Chat with Briq AI"
       >
-        <div className="relative flex items-center justify-center">
-          <MessageCircle className="w-5 h-5 md:h-6 md:w-6" />
-          <Sparkles
-            className={cn(
-              "absolute w-3 h-3 text-yellow-300/80 -top-1 -right-1",
-              "opacity-70 group-hover:opacity-100",
-              "transition-opacity duration-300"
-            )}
-          />
-        </div>
+        <MessageCircle className="w-5 h-5 md:h-6 md:w-6" />
         <span
           className={cn(
             "hidden md:inline font-medium",
