@@ -231,7 +231,7 @@ export const NeuralNetwork = () => {
         const b = Math.round(255 * f(4));
 
         return `rgba(${r}, ${g}, ${b}, ${a})`;
-      } catch (error) {
+      } catch {
         console.warn("Error in HSL to RGBA conversion, using fallback color");
         return `rgba(100, 149, 237, ${a})`; // Cornflower blue as fallback
       }
@@ -250,7 +250,7 @@ export const NeuralNetwork = () => {
           return [210, 100, 50]; // Default blue fallback
         }
         return [h, s, l];
-      } catch (error) {
+      } catch {
         console.warn(`Error parsing HSL values for ${cssVar}, using fallback`);
         return [210, 100, 50]; // Default blue fallback
       }
@@ -328,7 +328,6 @@ export const NeuralNetwork = () => {
     if (!canvasRef.current) return;
 
     const themeColors = getThemeColors();
-    const canvas = canvasRef.current;
     const nodeCount = isMobile ? 25 : 65; // Slightly increased for more density
     const nodeSpeed = isMobile ? 0.1 : 0.15; // Slower movement for more elegance
     const nodes: Node[] = [];
@@ -434,7 +433,7 @@ export const NeuralNetwork = () => {
         }
 
         return color;
-      } catch (error) {
+      } catch {
         console.warn("Invalid color format, using fallback", color);
         return "rgba(100, 149, 237, 0.7)"; // Fallback color
       }
