@@ -39,6 +39,7 @@ const ForceGraph = memo(
       null
     );
     const tooltipTimeoutRef = useRef<number | null>(null);
+    const isDraggingRef = useRef<boolean>(false);
     const [zoomLevel, setZoomLevel] = useState(1);
     const zoomBehaviorRef = useRef<d3.ZoomBehavior<
       SVGSVGElement,
@@ -114,6 +115,10 @@ const ForceGraph = memo(
         if (!event.active) simulationRef.current.alphaTarget(0.3).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
+        isDraggingRef.current = true;
+
+        // Remove any existing tooltips when drag starts
+        d3.selectAll(".tooltip").remove();
       };
 
       const dragged = (event: any) => {
@@ -126,6 +131,11 @@ const ForceGraph = memo(
         if (!event.active) simulationRef.current.alphaTarget(0);
         event.subject.fx = null;
         event.subject.fy = null;
+
+        // Set a timeout to reset the dragging flag
+        setTimeout(() => {
+          isDraggingRef.current = false;
+        }, 100);
       };
 
       return { dragstarted, dragged, dragended };
@@ -344,11 +354,17 @@ const ForceGraph = memo(
         .style("cursor", "pointer")
         .on("click", handleNodeClick)
         .on("mouseover", function (event, d) {
+          // Skip tooltip creation if currently dragging
+          if (isDraggingRef.current) return;
+
           // Clear any existing tooltip timeout
           if (tooltipTimeoutRef.current) {
             window.clearTimeout(tooltipTimeoutRef.current);
             tooltipTimeoutRef.current = null;
           }
+
+          // Remove any existing tooltips first to prevent duplicates
+          container.selectAll(".tooltip").remove();
 
           // Optimize hover effects
           d3.select(this)
@@ -400,6 +416,9 @@ const ForceGraph = memo(
               connectedNodeIds.has(n.id) ? 0.9 : 0.4
             );
 
+          // Skip tooltip creation if currently dragging
+          if (isDraggingRef.current) return;
+
           // Create enhanced tooltip
           const tooltip = container
             .append("g")
@@ -450,6 +469,9 @@ const ForceGraph = memo(
           tooltip.transition().duration(200).style("opacity", 1);
         })
         .on("mouseout", function () {
+          // Skip if currently dragging
+          if (isDraggingRef.current) return;
+
           // Clear any existing tooltip timeout
           if (tooltipTimeoutRef.current) {
             window.clearTimeout(tooltipTimeoutRef.current);
@@ -623,7 +645,7 @@ export const Visualization = memo(() => {
             <FolderPlus className="w-12 h-12 mx-auto" />
           </div>
           <h3 className="text-xl font-medium text-foreground mb-3">
-            No notes yet 🔥
+            No notes yet
           </h3>
           <p className="text-sm text-muted-foreground">
             Create your first note to start building your knowledge graph. Your
