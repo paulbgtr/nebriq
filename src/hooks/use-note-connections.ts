@@ -25,6 +25,11 @@ export const useNoteConnections = (noteId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["noteConnections"] });
     },
+    onError: (error) => {
+      console.error("Error deleting note connection:", error);
+      queryClient.invalidateQueries({ queryKey: ["noteConnections"] });
+    },
+    retry: false,
   });
 
   return {
