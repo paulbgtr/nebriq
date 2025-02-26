@@ -178,23 +178,23 @@ export default function Home() {
       {mounted && (
         <motion.div
           {...motionConfig}
-          className="fixed top-6 inset-x-0 z-50 px-4"
+          className="fixed top-4 sm:top-6 inset-x-0 z-50 px-2 sm:px-4"
         >
           <div className="max-w-7xl mx-auto flex justify-center">
-            <div className="relative flex items-center gap-4 px-4 py-2.5 rounded-full border bg-background/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/5">
+            <div className="relative flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border bg-background/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/5">
               {/* Logo */}
-              <div className="flex items-center gap-3 pr-4 border-r border-border/60">
-                <div className="flex items-center gap-2">
-                  <div className="relative w-8 h-8">
+              <div className="flex items-center gap-2 sm:gap-3 pr-2 sm:pr-4 border-r border-border/60">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="relative w-6 h-6 sm:w-8 sm:h-8">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
                     <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
                       <Compass
-                        className="w-5 h-5 text-primary"
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-primary"
                         strokeWidth={1.5}
                       />
                     </div>
                   </div>
-                  <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+                  <span className="text-base sm:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
                     Nebriq
                   </span>
                 </div>
@@ -202,12 +202,14 @@ export default function Home() {
 
               {/* Beta Badge */}
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/[0.08] border border-primary/10">
-                  <span className="relative flex w-2 h-2">
+                <div className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-primary/[0.08] border border-primary/10">
+                  <span className="relative flex w-1.5 sm:w-2 h-1.5 sm:h-2">
                     <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-primary/40"></span>
-                    <span className="relative inline-flex w-2 h-2 rounded-full bg-primary"></span>
+                    <span className="relative inline-flex w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-primary"></span>
                   </span>
-                  <span className="text-xs font-medium text-primary">BETA</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-primary">
+                    BETA
+                  </span>
                 </div>
               </div>
 
@@ -265,7 +267,7 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="relative min-h-screen pt-32 pb-16 overflow-hidden"
+          className="relative min-h-screen pt-24 sm:pt-32 pb-12 sm:pb-16 overflow-hidden"
         >
           {/* Floating Elements */}
           <div className="absolute inset-0">
@@ -273,13 +275,13 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: [0.1, 0.3, 0.1] }}
               transition={{ duration: 5, repeat: Infinity }}
-              className="absolute rounded-full top-1/4 -left-20 w-60 h-60 bg-primary/20 blur-[100px]"
+              className="absolute rounded-full top-1/4 -left-20 w-40 sm:w-60 h-40 sm:h-60 bg-primary/20 blur-[100px]"
             />
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: [0.1, 0.2, 0.1] }}
               transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-              className="absolute rounded-full bottom-1/4 -right-20 w-80 h-80 bg-secondary/20 blur-[100px]"
+              className="absolute rounded-full bottom-1/4 -right-20 w-60 sm:w-80 h-60 sm:h-80 bg-secondary/20 blur-[100px]"
             />
           </div>
 
@@ -289,11 +291,11 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="text-center space-y-6"
+              className="text-center space-y-4 sm:space-y-6"
             >
               {/* Hero Title */}
               <motion.div
-                className="relative space-y-3"
+                className="relative space-y-2 sm:space-y-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -302,11 +304,11 @@ export default function Home() {
                   ease: [0.21, 0.45, 0.27, 0.99],
                 }}
               >
-                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
-                  <span className="block leading-[1.1] pb-2 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/80">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
+                  <span className="block leading-[1.1] pb-1 sm:pb-2 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/80">
                     Start Writing.
                   </span>
-                  <div className="relative mt-2">
+                  <div className="relative mt-1 sm:mt-2">
                     <motion.span
                       className="absolute inset-0 bg-primary/20 blur-3xl"
                       initial={{ opacity: 0 }}
@@ -317,12 +319,12 @@ export default function Home() {
                         repeatType: "reverse",
                       }}
                     />
-                    <span className="block leading-[1.1] pb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/90 to-primary/80">
+                    <span className="block leading-[1.1] pb-1 sm:pb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/90 to-primary/80">
                       Stop Organizing.
                     </span>
                   </div>
                 </h1>
-                <p className="max-w-2xl mx-auto text-xl text-muted-foreground">
+                <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground">
                   A simple writing space that uses AI to keep your notes
                   organized.
                   <span className="hidden sm:inline">
@@ -337,14 +339,14 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="max-w-xl mx-auto"
+                className="max-w-xl mx-auto px-2 sm:px-0"
               >
                 <div className="relative group">
                   <div className="absolute transition-all duration-500 rounded-lg -inset-1 bg-gradient-to-r from-primary/50 via-primary/30 to-primary/50 blur-lg group-hover:blur-xl" />
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="relative flex gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm"
+                      className="relative flex flex-col sm:flex-row gap-2 sm:gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm"
                     >
                       <FormField
                         control={form.control}
@@ -356,7 +358,7 @@ export default function Home() {
                                 {...field}
                                 type="email"
                                 placeholder="Enter your email"
-                                className="h-12 bg-transparent border-primary/20"
+                                className="h-10 sm:h-12 bg-transparent border-primary/20"
                               />
                             </FormControl>
                           </FormItem>
@@ -365,7 +367,7 @@ export default function Home() {
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="h-12 px-8 transition-colors duration-300 bg-primary/90 hover:bg-primary"
+                        className="h-10 sm:h-12 px-4 sm:px-8 transition-colors duration-300 bg-primary/90 hover:bg-primary"
                       >
                         Join Waitlist
                       </Button>
@@ -379,7 +381,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
-                className="flex flex-wrap justify-center gap-3 px-4"
+                className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2 sm:px-4"
               >
                 {[
                   { icon: Sparkles, text: "AI-Powered" },
@@ -395,10 +397,12 @@ export default function Home() {
                       delay: 1 + index * 0.1,
                       ease: "easeOut",
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
+                    className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
                   >
-                    <feature.icon className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium">{feature.text}</span>
+                    <feature.icon className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                    <span className="text-xs sm:text-sm font-medium">
+                      {feature.text}
+                    </span>
                   </motion.div>
                 ))}
               </motion.div>
@@ -406,12 +410,12 @@ export default function Home() {
           </div>
 
           {/* Full-Width Hero Image */}
-          <div className="relative z-10 w-full mt-8 px-6 sm:px-12 md:px-24 lg:px-32">
+          <div className="relative z-10 w-full mt-6 sm:mt-8 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1 }}
-              className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20 shadow-2xl shadow-primary/10"
+              className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 shadow-2xl shadow-primary/10"
             >
               {/* Enhanced glow effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl opacity-75" />
@@ -423,9 +427,9 @@ export default function Home() {
                 src={getImageUrl("hero")}
                 alt="Nebriq Dashboard"
                 fill
-                className="object-cover rounded-xl transition-transform duration-700 hover:scale-105"
+                className="object-cover rounded-lg sm:rounded-xl transition-transform duration-700 hover:scale-105"
                 priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
               />
 
               {/* Enhanced gradient overlays */}
@@ -451,13 +455,13 @@ export default function Home() {
         {/* Problem Statement Section */}
         <section
           id="problem"
-          className="relative py-16 sm:py-24 mt-16 sm:mt-32"
+          className="relative py-12 sm:py-16 md:py-24 mt-12 sm:mt-16 md:mt-32"
         >
           {/* Add a subtle backdrop for better readability */}
           <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px]" />
 
           {/* Rest of the content with relative positioning */}
-          <div className="relative z-10 px-6 mx-auto max-w-7xl">
+          <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -471,10 +475,10 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
               >
-                <Badge variant="secondary" className="mb-6">
+                <Badge variant="secondary" className="mb-4 sm:mb-6">
                   The Problem
                 </Badge>
-                <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
                   Note-Taking Has Become Too Complex
                 </h2>
               </motion.div>
@@ -484,14 +488,14 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="mx-auto mt-6 text-lg leading-relaxed text-muted-foreground/90 max-w-prose"
+                className="mx-auto mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-muted-foreground/90 max-w-prose"
               >
                 Most note-taking apps force you to spend time organizing instead
                 of thinking. We believe you should focus on writing, while
                 technology handles the organization.
               </motion.p>
 
-              <div className="grid grid-cols-1 gap-8 mt-12 text-left md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 text-left md:grid-cols-3">
                 {[
                   {
                     title: "Too Many Features",
@@ -520,14 +524,14 @@ export default function Home() {
                     transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                     className="group"
                   >
-                    <div className="p-6 transition-all duration-300 border rounded-lg bg-background/50 border-border/50 hover:bg-background/80 hover:border-primary/20 hover:shadow-lg hover:-translate-y-1">
+                    <div className="p-4 sm:p-6 transition-all duration-300 border rounded-lg bg-background/50 border-border/50 hover:bg-background/80 hover:border-primary/20 hover:shadow-lg hover:-translate-y-1">
                       <div className="mb-3 text-muted-foreground/50">
-                        <item.icon className="w-6 h-6 transition-colors group-hover:text-primary" />
+                        <item.icon className="w-5 h-5 sm:w-6 sm:h-6 transition-colors group-hover:text-primary" />
                       </div>
-                      <h3 className="text-lg font-semibold transition-colors group-hover:text-primary">
+                      <h3 className="text-base sm:text-lg font-semibold transition-colors group-hover:text-primary">
                         {item.title}
                       </h3>
-                      <p className="mt-2 text-muted-foreground">
+                      <p className="mt-2 text-sm sm:text-base text-muted-foreground">
                         {item.description}
                       </p>
                     </div>
@@ -540,12 +544,14 @@ export default function Home() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.6 }}
-                className="mt-16"
+                className="mt-10 sm:mt-16"
               >
-                <div className="p-8 border shadow-lg rounded-2xl from-primary/10 via-secondary/5 to-primary/10 border-primary/20 shadow-primary/5 backdrop-blur-sm">
+                <div className="p-4 sm:p-8 border shadow-lg rounded-xl sm:rounded-2xl from-primary/10 via-secondary/5 to-primary/10 border-primary/20 shadow-primary/5 backdrop-blur-sm">
                   <div className="flex items-start space-x-3">
-                    <span className="text-3xl text-primary/80">❝</span>
-                    <p className="text-xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-blue-500/90 to-sky-600 bg-clip-text">
+                    <span className="text-2xl sm:text-3xl text-primary/80">
+                      ❝
+                    </span>
+                    <p className="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-blue-500/90 to-sky-600 bg-clip-text">
                       Nebriq brings simplicity back to note-taking, letting you
                       focus on what truly matters - your thoughts and ideas.
                     </p>
@@ -556,11 +562,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="features-overview" className="relative py-24">
+        <section
+          id="features-overview"
+          className="relative py-16 sm:py-20 md:py-24"
+        >
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
 
-          <div className="relative z-10 px-6 mx-auto max-w-7xl">
-            <div className="mb-16 text-center">
+          <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
+            <div className="mb-10 sm:mb-16 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -573,20 +582,20 @@ export default function Home() {
                   Core Features
                 </span>
               </motion.div>
-              <h2 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
                 Simple Writing, Smart Organization
               </h2>
-              <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
+              <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
                 Just write. AI automatically connects and organizes your notes
                 behind the scenes.
               </p>
             </div>
 
-            <div className="space-y-24">
+            <div className="space-y-16 sm:space-y-20 md:space-y-24">
               {/* AI-Powered Insights */}
-              <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+              <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-12 items-center">
                 <div className="w-full md:w-3/5">
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20">
                     <Image
                       src={getImageUrl("intelligentSearch")}
                       alt="AI-powered search and insights"
@@ -599,29 +608,31 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
                   </div>
                 </div>
-                <div className="w-full md:w-2/5 space-y-6">
+                <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
                     <Sparkles className="w-4 h-4 text-primary" />
                     <span className="text-sm font-medium text-primary">
                       Smart Analysis
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold">AI-Powered Insights</h3>
-                  <p className="text-lg text-muted-foreground">
+                  <h3 className="text-xl sm:text-2xl font-bold">
+                    AI-Powered Insights
+                  </h3>
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Write naturally while our AI works behind the scenes. It
                     understands your notes, suggests relevant connections, and
                     helps you discover insights you might have missed.
                   </p>
-                  <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                  <ul className="space-y-2 sm:space-y-3">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Automatic note linking
                     </li>
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Smart suggestions
                     </li>
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Content analysis
                     </li>
@@ -630,9 +641,9 @@ export default function Home() {
               </div>
 
               {/* Knowledge Graph */}
-              <div className="flex flex-col md:flex-row-reverse gap-8 md:gap-12 items-center">
+              <div className="flex flex-col md:flex-row-reverse gap-6 sm:gap-8 md:gap-12 items-center">
                 <div className="w-full md:w-3/5">
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20">
                     <Image
                       src={getImageUrl("graph")}
                       alt="Interactive knowledge graph"
@@ -645,29 +656,31 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
                   </div>
                 </div>
-                <div className="w-full md:w-2/5 space-y-6">
+                <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
                     <Waypoints className="w-4 h-4 text-primary" />
                     <span className="text-sm font-medium text-primary">
                       Visual Connections
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold">Knowledge Graph</h3>
-                  <p className="text-lg text-muted-foreground">
+                  <h3 className="text-xl sm:text-2xl font-bold">
+                    Knowledge Graph
+                  </h3>
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Visualize how your ideas connect. Our interactive knowledge
                     graph helps you explore relationships between notes and
                     discover new patterns in your thinking.
                   </p>
-                  <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                  <ul className="space-y-2 sm:space-y-3">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Interactive visualization
                     </li>
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Pattern discovery
                     </li>
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Relationship mapping
                     </li>
@@ -676,9 +689,9 @@ export default function Home() {
               </div>
 
               {/* Smart Assistant */}
-              <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+              <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-12 items-center">
                 <div className="w-full md:w-3/5">
-                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20">
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20">
                     <Image
                       src={getImageUrl("briq")}
                       alt="Briq AI Assistant"
@@ -691,29 +704,31 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
                   </div>
                 </div>
-                <div className="w-full md:w-2/5 space-y-6">
+                <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
                     <BotMessageSquare className="w-4 h-4 text-primary" />
                     <span className="text-sm font-medium text-primary">
                       AI Assistant
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold">Smart Assistant</h3>
-                  <p className="text-lg text-muted-foreground">
+                  <h3 className="text-xl sm:text-2xl font-bold">
+                    Smart Assistant
+                  </h3>
+                  <p className="text-base sm:text-lg text-muted-foreground">
                     Your personal AI research assistant. Ask questions about
                     your notes, get instant summaries, and find information
                     quickly without manual searching.
                   </p>
-                  <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                  <ul className="space-y-2 sm:space-y-3">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Natural language queries
                     </li>
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Instant summaries
                     </li>
-                    <li className="flex items-center gap-2 text-muted-foreground">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Smart search
                     </li>
@@ -725,11 +740,11 @@ export default function Home() {
         </section>
 
         {/* Essential Tools Section */}
-        <section className="relative py-24">
+        <section className="relative py-16 sm:py-20 md:py-24">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
 
-          <div className="relative z-10 px-6 mx-auto max-w-7xl">
-            <div className="mb-16 text-center">
+          <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
+            <div className="mb-10 sm:mb-16 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -742,17 +757,17 @@ export default function Home() {
                   Essential Tools
                 </span>
               </motion.div>
-              <h2 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
                 Powerful, Yet Simple
               </h2>
-              <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
+              <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
                 All the tools you need to write effectively, wrapped in a clean,
                 distraction-free design. No complexity, just smooth writing
                 experience.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 mt-12 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 mt-8 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 {
                   title: "Focus Mode",
@@ -804,10 +819,12 @@ export default function Home() {
                   delay={index * 0.1}
                   className="backdrop-blur-sm"
                 >
-                  <div className="space-y-3">
-                    <feature.icon className="w-6 h-6 text-primary" />
-                    <h3 className="text-lg font-semibold">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="space-y-2 sm:space-y-3">
+                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    <h3 className="text-base sm:text-lg font-semibold">
+                      {feature.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {feature.description}
                     </p>
                   </div>
@@ -818,7 +835,7 @@ export default function Home() {
         </section>
 
         {/* Powerful Editor Section */}
-        <section className="relative py-24 overflow-hidden">
+        <section className="relative py-16 sm:py-24 overflow-hidden">
           {/* Atmospheric background effects */}
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
           <div className="absolute inset-0">
@@ -837,7 +854,7 @@ export default function Home() {
           </div>
 
           <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
-            <div className="mb-12 sm:mb-16 text-center">
+            <div className="mb-8 sm:mb-12 md:mb-16 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -850,10 +867,10 @@ export default function Home() {
                   Powerful Editor
                 </span>
               </motion.div>
-              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold md:text-4xl lg:text-5xl">
+              <h2 className="mb-3 sm:mb-4 md:mb-6 text-2xl sm:text-3xl font-bold md:text-4xl lg:text-5xl">
                 Write Without Limits
               </h2>
-              <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
+              <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-muted-foreground">
                 A powerful editor that stays out of your way. Focus on writing
                 while AI works in the background.
               </p>
@@ -865,7 +882,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="relative aspect-[16/10] sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl shadow-primary/10"
+                className="relative aspect-[16/10] sm:aspect-video rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden shadow-2xl shadow-primary/10"
               >
                 <Image
                   src={getImageUrl("editor")}
@@ -879,14 +896,14 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-background/90" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 lg:p-12">
-                  <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4 md:space-y-6">
-                    <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-primary/10 backdrop-blur-md">
-                      <Maximize className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                  <div className="max-w-3xl mx-auto space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6">
+                    <div className="inline-flex items-center gap-1 sm:gap-1.5 md:gap-2 px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 rounded-full bg-primary/10 backdrop-blur-md">
+                      <Maximize className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-primary" />
                       <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">
                         Distraction Free
                       </span>
                     </div>
-                    <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground">
+                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-foreground">
                       Focus on Writing
                     </h3>
                     <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground/90 max-w-2xl">
@@ -902,21 +919,21 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section id="cta" className="py-24 bg-muted/30">
-          <div className="px-6 mx-auto text-center max-w-7xl">
+        <section id="cta" className="py-16 sm:py-24 bg-muted/30">
+          <div className="px-4 sm:px-6 mx-auto text-center max-w-7xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <Badge variant="secondary" className="mb-6">
+              <Badge variant="secondary" className="mb-4 sm:mb-6">
                 Early Access
               </Badge>
-              <h2 className="mb-6 text-3xl font-bold md:text-4xl">
+              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold">
                 Focus on What Matters
               </h2>
-              <p className="mb-8 text-lg text-muted-foreground">
+              <p className="mb-6 sm:mb-8 text-base sm:text-lg text-muted-foreground">
                 Join us in building a simpler way to write and think.
               </p>
               <Button
@@ -934,15 +951,15 @@ export default function Home() {
         <footer className="border-t bg-background">
           <div className="px-4 sm:px-6 py-8 sm:py-12 mx-auto max-w-7xl">
             {/* Main Footer Content */}
-            <div className="grid grid-cols-1 gap-8 mb-8 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:gap-8 mb-6 sm:mb-8 sm:grid-cols-2 md:grid-cols-3">
               {/* Company Info */}
-              <div className="space-y-4">
-                <h3 className="font-semibold">About</h3>
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-sm sm:text-base font-semibold">About</h3>
                 <ul className="space-y-2">
                   <li>
                     <Link
                       href="https://microlaunch.net/p/nebriq"
-                      className="text-sm transition-colors text-muted-foreground hover:text-foreground"
+                      className="text-xs sm:text-sm transition-colors text-muted-foreground hover:text-foreground"
                     >
                       Microlaunch
                     </Link>
@@ -951,13 +968,13 @@ export default function Home() {
               </div>
 
               {/* Legal */}
-              <div className="space-y-4">
-                <h3 className="font-semibold">Legal</h3>
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-sm sm:text-base font-semibold">Legal</h3>
                 <ul className="space-y-2">
                   <li>
                     <Link
                       href="/terms"
-                      className="text-sm transition-colors text-muted-foreground hover:text-foreground"
+                      className="text-xs sm:text-sm transition-colors text-muted-foreground hover:text-foreground"
                     >
                       Terms of Service
                     </Link>
@@ -965,7 +982,7 @@ export default function Home() {
                   <li>
                     <Link
                       href="/privacy"
-                      className="text-sm transition-colors text-muted-foreground hover:text-foreground"
+                      className="text-xs sm:text-sm transition-colors text-muted-foreground hover:text-foreground"
                     >
                       Privacy Policy
                     </Link>
@@ -974,8 +991,8 @@ export default function Home() {
               </div>
 
               {/* Connect */}
-              <div className="space-y-4">
-                <h3 className="font-semibold">Connect</h3>
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-sm sm:text-base font-semibold">Connect</h3>
                 <div className="flex space-x-4">
                   <Link
                     href="https://x.com/getnebriq"
@@ -983,29 +1000,29 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className="transition-colors text-muted-foreground hover:text-foreground"
                   >
-                    <Twitter className="w-5 h-5" />
+                    <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Link>
                   <Link
                     href="mailto:hi@nebriq.com"
                     className="transition-colors text-muted-foreground hover:text-foreground"
                   >
-                    <Mail className="w-5 h-5" />
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Link>
                 </div>
               </div>
             </div>
 
-            <Separator className="my-6 sm:my-8" />
+            <Separator className="my-4 sm:my-6 md:my-8" />
 
             {/* Bottom Footer */}
-            <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 text-center md:text-left">
-              <span className="text-sm text-muted-foreground">
+            <div className="flex flex-col items-center justify-between space-y-3 md:flex-row md:space-y-0 text-center md:text-left">
+              <span className="text-xs sm:text-sm text-muted-foreground">
                 © {new Date().getFullYear()} Nebriq. All rights reserved.
               </span>
 
-              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+              <div className="flex items-center space-x-1 text-xs sm:text-sm text-muted-foreground">
                 <span>Built with</span>
-                <Heart className="w-4 h-4 mx-1 text-primary/80" />
+                <Heart className="w-3 h-3 sm:w-4 sm:h-4 mx-1 text-primary/80" />
                 <span>by</span>
                 <Link
                   href="https://paulbg.dev"
