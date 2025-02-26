@@ -75,7 +75,15 @@ export const NoteTabs = () => {
                   onClick={() => router.push(`/write?id=${note.id}`)}
                 >
                   <span className="relative z-10 max-w-[120px] truncate">
-                    {note.title || "Untitled"}
+                    <motion.span
+                      key={note.title}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {note.title || "Untitled"}
+                    </motion.span>
                   </span>
 
                   {currentNoteId === note.id && (

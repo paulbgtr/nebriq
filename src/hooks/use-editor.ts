@@ -86,11 +86,17 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             content: newContent ?? content,
           },
           {
-            onSuccess: () => {
+            onSuccess: (updatedNote) => {
               setIsSaving(false);
               if (newContent) {
                 setLastSavedContent(newContent);
               }
+              const updatedNotes = openNotes.map((note) =>
+                note.id === id
+                  ? { ...note, title: updatedNote.title || "Untitled" }
+                  : note
+              );
+              setOpenNotes(updatedNotes);
             },
             onError: () => {
               setIsSaving(false);
@@ -103,7 +109,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           }
         );
       },
-      [id, title, content, updateNoteMutation, toast]
+      [id, title, content, updateNoteMutation, toast, openNotes, setOpenNotes]
     ),
     1000
   );
@@ -114,6 +120,11 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     if (!id && !isCreatingNote) {
       createNote();
     }
+
+    const updatedNotes = openNotes.map((note) =>
+      note.id === id ? { ...note, title: newTitle } : note
+    );
+    setOpenNotes(updatedNotes);
 
     updateNote(newTitle);
   };
