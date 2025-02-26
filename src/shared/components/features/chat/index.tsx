@@ -44,7 +44,7 @@ export default function AIChat() {
   const { user } = useUser();
   const { setQuery, chatContext, isLoading, clearChatContext } = useChat(
     user?.id,
-    relevantNotes
+    allNotes || []
   );
 
   const maxLength = 100;

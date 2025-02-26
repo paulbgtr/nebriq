@@ -27,14 +27,12 @@ Guidelines:
 - If notes would help but aren't provided, suggest adding them gently without making it a requirement
 - Use a warm, natural tone - avoid robotic responses`;
 
-  // Add relevant notes context
   if (chatContext?.relevantNotes?.length) {
     prompt += `\n\nRELEVANT NOTES:\n${chatContext.relevantNotes
       .map((note) => `${note.title}: ${note.content}`)
       .join("\n")}`;
   }
 
-  // Add minimal conversation history for context
   if (chatContext?.conversationHistory?.length) {
     const lastTwoTurns = chatContext.conversationHistory.slice(-2);
     prompt += `\n\nRECENT CONVERSATION:\n${lastTwoTurns
@@ -63,7 +61,7 @@ export const chat = async (
 
     const completion = await openai.chat.completions.create(
       {
-        model: "gpt-4o-mini",
+        model: "gpt-4-turbo-preview",
         messages: [{ role: "user", content: prompt }],
         stream: true,
       },
