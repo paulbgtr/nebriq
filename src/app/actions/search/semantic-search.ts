@@ -11,9 +11,14 @@ if (!process.env.OPENAI_API_KEY) {
 
 const embeddings = new OpenAIEmbeddings({
   apiKey: process.env.OPENAI_API_KEY,
-  batchSize: 512, // Default value if omitted is 512. Max is 2048
-  model: "text-embedding-3-large",
+  batchSize: 512,
+  modelName: "text-embedding-3-large",
+  maxRetries: 3,
+  maxConcurrency: 5,
 });
+
+const vectorStoreCache = new Map<string, MemoryVectorStore>();
+const CACHE_TTL = 5 * 60 * 1000;
 
 /**
  * Represents a document to be searched.
@@ -34,29 +39,36 @@ const documentSchema = z.object({
  */
 const searchHandler = async (
   query: string,
-  documents: z.infer<typeof documentSchema>[]
+  documents: z.infer<typeof documentSchema>[],
+  userId: string
 ) => {
-  const vectorStore = await MemoryVectorStore.fromDocuments(
-    documents,
-    embeddings
-  );
+  try {
+    const cacheKey = `${userId}-${documents.length}`;
+    let vectorStore = vectorStoreCache.get(cacheKey);
 
-  const results = await vectorStore.similaritySearchWithScore(query, 3);
+    if (!vectorStore) {
+      vectorStore = await MemoryVectorStore.fromDocuments(
+        documents,
+        embeddings
+      );
+      vectorStoreCache.set(cacheKey, vectorStore);
 
-  const filteredResults = results
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .filter(([_, score]) => score > 0.4)
-    .map(([doc]) => doc);
+      setTimeout(() => {
+        vectorStoreCache.delete(cacheKey);
+      }, CACHE_TTL);
+    }
 
-  console.log(
-    "Search results with scores:",
-    results.map(([doc, score]) => ({
-      content: doc.pageContent.substring(0, 100) + "...",
-      score,
-    }))
-  );
+    const results = await vectorStore.similaritySearchWithScore(query, 3);
 
-  return filteredResults;
+    const filteredResults = results
+      .filter(([_, score]) => score > 0.4)
+      .map(([doc]) => doc);
+
+    return filteredResults;
+  } catch (error) {
+    console.error("Semantic search error:", error);
+    return [];
+  }
 };
 
 /**
@@ -94,30 +106,35 @@ export const semanticSearch = async (
   query: string,
   notes: z.infer<typeof noteSchema>[]
 ): Promise<z.infer<typeof noteSchema>[]> => {
-  // Normalize query
-  const normalizedQuery = query.trim().toLowerCase();
+  try {
+    if (!notes?.length || !query?.trim()) return [];
 
-  const documents = notes.map((note) => {
-    // Combine title and content for better search coverage
-    const content = [note.title, note.content].filter(Boolean).join("\n\n");
+    const normalizedQuery = query.trim().toLowerCase();
 
-    return {
-      pageContent: content || "no content",
-      metadata: {
-        id: note.id,
-        user_id: note.user_id,
-        title: note.title || "no title",
-        tags: note.tags ?? [],
-        created_at: note.created_at,
-      },
-    };
-  });
+    const documents = notes.map((note) => {
+      const content = [note.title, note.content].filter(Boolean).join("\n\n");
 
-  const results = documentSchema
-    .array()
-    .parse(await searchHandler(normalizedQuery, documents));
+      return {
+        pageContent: content || "no content",
+        metadata: {
+          id: note.id,
+          user_id: note.user_id,
+          title: note.title || "no title",
+          tags: note.tags ?? [],
+          created_at: note.created_at,
+        },
+      };
+    });
 
-  return results.map((result) => {
-    return convertDocumentToNote(result);
-  });
+    const results = documentSchema
+      .array()
+      .parse(
+        await searchHandler(normalizedQuery, documents, notes[0]?.user_id)
+      );
+
+    return results.map(convertDocumentToNote);
+  } catch (error) {
+    console.error("Semantic search error:", error);
+    return [];
+  }
 };
