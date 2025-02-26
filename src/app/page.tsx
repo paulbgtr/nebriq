@@ -457,8 +457,27 @@ export default function Home() {
           id="problem"
           className="relative py-12 sm:py-16 md:py-24 mt-12 sm:mt-16 md:mt-32"
         >
-          {/* Add a subtle backdrop for better readability */}
+          {/* Background elements */}
           <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px]" />
+
+          {/* Add floating gradient orbs similar to hero section */}
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.05, 0.15, 0.05] }}
+              transition={{ duration: 7, repeat: Infinity }}
+              className="absolute rounded-full top-1/3 -left-20 w-40 sm:w-60 h-40 sm:h-60 bg-primary/20 blur-[100px]"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.05, 0.1, 0.05] }}
+              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+              className="absolute rounded-full bottom-1/3 -right-20 w-60 sm:w-80 h-60 sm:h-80 bg-secondary/20 blur-[100px]"
+            />
+          </div>
+
+          {/* Subtle pattern overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.015]" />
 
           {/* Rest of the content with relative positioning */}
           <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
@@ -474,11 +493,15 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
+                className="space-y-2"
               >
-                <Badge variant="secondary" className="mb-4 sm:mb-6">
-                  The Problem
-                </Badge>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+                <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 sm:mb-6 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm">
+                  <Settings className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    The Problem
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-foreground/80">
                   Note-Taking Has Become Too Complex
                 </h2>
               </motion.div>
@@ -524,16 +547,21 @@ export default function Home() {
                     transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                     className="group"
                   >
-                    <div className="p-4 sm:p-6 transition-all duration-300 border rounded-lg bg-background/50 border-border/50 hover:bg-background/80 hover:border-primary/20 hover:shadow-lg hover:-translate-y-1">
-                      <div className="mb-3 text-muted-foreground/50">
-                        <item.icon className="w-5 h-5 sm:w-6 sm:h-6 transition-colors group-hover:text-primary" />
+                    <div className="p-4 sm:p-6 transition-all duration-300 border rounded-lg bg-background/50 border-border/50 hover:bg-background/80 hover:border-primary/20 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden">
+                      {/* Add subtle gradient background */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                      <div className="relative z-10">
+                        <div className="mb-3 flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary">
+                          <item.icon className="w-4 h-4 transition-colors group-hover:text-primary" />
+                        </div>
+                        <h3 className="text-base sm:text-lg font-semibold transition-colors group-hover:text-primary">
+                          {item.title}
+                        </h3>
+                        <p className="mt-2 text-sm sm:text-base text-muted-foreground">
+                          {item.description}
+                        </p>
                       </div>
-                      <h3 className="text-base sm:text-lg font-semibold transition-colors group-hover:text-primary">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 text-sm sm:text-base text-muted-foreground">
-                        {item.description}
-                      </p>
                     </div>
                   </motion.div>
                 ))}
@@ -546,12 +574,25 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.6 }}
                 className="mt-10 sm:mt-16"
               >
-                <div className="p-4 sm:p-8 border shadow-lg rounded-xl sm:rounded-2xl from-primary/10 via-secondary/5 to-primary/10 border-primary/20 shadow-primary/5 backdrop-blur-sm">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-2xl sm:text-3xl text-primary/80">
-                      ❝
-                    </span>
-                    <p className="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-blue-500/90 to-sky-600 bg-clip-text">
+                <div className="p-4 sm:p-8 border shadow-lg rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-primary/10 border-primary/20 shadow-primary/5 backdrop-blur-sm relative overflow-hidden">
+                  {/* Add shine effect */}
+                  <motion.div
+                    initial={{ opacity: 0, x: "-100%" }}
+                    animate={{
+                      opacity: [0, 0.5, 0],
+                      x: ["100%", "100%", "300%"],
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: Infinity,
+                      repeatDelay: 7,
+                    }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+                  />
+
+                  <div className="flex items-start space-x-3 relative z-10">
+                    <span className="text-2xl sm:text-3xl text-primary">❝</span>
+                    <p className="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text">
                       Nebriq brings simplicity back to note-taking, letting you
                       focus on what truly matters - your thoughts and ideas.
                     </p>
