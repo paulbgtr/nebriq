@@ -115,28 +115,29 @@ export const useChat = (
     if (!userId || !message.trim()) return;
 
     try {
+      const newMessage = { role: "user" as const, content: message.trim() };
+
       setChatContext((prev) => ({
         ...prev,
-        conversationHistory: [
-          ...prev.conversationHistory,
-          { role: "user", content: message.trim() },
-        ],
+        conversationHistory: [...prev.conversationHistory, newMessage],
       }));
       setIsLoading(true);
 
-      await relevantNotesQuery.refetch();
+      const { data: freshRelevantNotes } = await relevantNotesQuery.refetch();
 
-      const data = await chat(message, userId, {
-        conversationHistory: chatContext.conversationHistory,
-        relevantNotes: relevantNotesQuery.data || [],
-      });
+      const updatedContext: ChatContext = {
+        conversationHistory: [...chatContext.conversationHistory, newMessage],
+        relevantNotes: freshRelevantNotes || [],
+      };
+
+      const data = await chat(message, userId, updatedContext);
 
       if (data) {
         setChatContext((prev) => ({
           ...prev,
           conversationHistory: [
             ...prev.conversationHistory,
-            { role: "assistant", content: data },
+            { role: "assistant" as const, content: data },
           ],
         }));
       }
