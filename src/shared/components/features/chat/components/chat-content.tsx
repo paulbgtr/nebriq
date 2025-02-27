@@ -5,6 +5,7 @@ import { cn } from "@/shared/lib/utils";
 import { QueryExamples } from "./query-examples";
 import { MessageActions } from "./message-actions";
 import { LoadingIndicator } from "./loading-indicator";
+import { ContextPanel } from "./context-panel";
 
 type ChatContentProps = {
   scrollContainerRef: React.RefObject<HTMLDivElement>;
@@ -37,6 +38,7 @@ export const ChatContent = ({
       <QueryExamples setFollowUp={setFollowUp} />
     ) : (
       <div className="space-y-6">
+        <ContextPanel chatContext={chatContext} />
         {chatContext.conversationHistory.map((message, index) => (
           <div
             key={index}
