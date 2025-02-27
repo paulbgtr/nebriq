@@ -75,10 +75,7 @@ export const InputArea = ({
     <div className={isFullscreen ? "px-8 py-6" : "px-6 py-4"}>
       <form
         onSubmit={handleSubmit}
-        className={cn(
-          "relative",
-          isFullscreen ? "max-w-4xl mx-auto" : "max-w-3xl mx-auto"
-        )}
+        className={cn("relative", "mx-auto", isFullscreen && "max-w-2xl")}
       >
         <div className="relative">
           <Textarea
