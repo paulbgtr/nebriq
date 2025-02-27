@@ -162,7 +162,6 @@ export default function AIChat() {
                     scrollContainerRef={scrollContainerRef}
                     chatContext={chatContext}
                     setFollowUp={setFollowUp}
-                    email={user?.email ?? ""}
                     displayedText={displayedText}
                     isLoading={isLoading}
                     isFullscreen={isFullscreen}
