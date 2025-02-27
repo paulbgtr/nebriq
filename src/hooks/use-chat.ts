@@ -45,14 +45,9 @@ export const useChat = (
       if (!allNotes?.length) return [];
 
       try {
-        const lastMessages = chatContext.conversationHistory
-          .slice(-4)
-          .map((msg) => msg.content)
-          .join(" ");
+        const searchContext = query.trim();
 
-        const searchContext = [query, lastMessages].filter(Boolean).join(" ");
-
-        if (!searchContext.trim()) return [];
+        if (!searchContext) return [];
 
         const [tfidfResults, semanticResults] = await Promise.all([
           searchUsingTFIDF(searchContext, allNotes),
@@ -117,9 +112,11 @@ export const useChat = (
     try {
       const newMessage = { role: "user" as const, content: message.trim() };
 
+      setQuery(message.trim());
       setChatContext((prev) => ({
         ...prev,
         conversationHistory: [...prev.conversationHistory, newMessage],
+        relevantNotes: [],
       }));
       setIsLoading(true);
 
@@ -137,8 +134,13 @@ export const useChat = (
           ...prev,
           conversationHistory: [
             ...prev.conversationHistory,
-            { role: "assistant" as const, content: data },
+            {
+              role: "assistant" as const,
+              content: data,
+              relevantNotes: freshRelevantNotes || [],
+            },
           ],
+          relevantNotes: freshRelevantNotes || [],
         }));
       }
     } catch (err) {
@@ -160,6 +162,7 @@ export const useChat = (
             content: isTokenLimitError
               ? "The conversation has reached the token limit. Please try again later."
               : "An error occurred. Please try again.",
+            relevantNotes: [],
           },
         ],
       }));
