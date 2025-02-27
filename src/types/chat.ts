@@ -4,6 +4,7 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 export type ConversationTurn = {
   role: "user" | "assistant";
   content: string;
+  relevantNotes?: z.infer<typeof noteSchema>[];
 };
 
 export type ChatContext = {
