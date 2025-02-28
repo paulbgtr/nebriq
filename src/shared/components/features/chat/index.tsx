@@ -125,8 +125,7 @@ export default function AIChat() {
             "animate-in slide-in-from-bottom-3 zoom-in-95",
             "shadow-2xl hover:shadow-3xl",
             "motion-safe:animate-in motion-safe:fade-in-0",
-            "overflow-clip",
-            isFullscreen && "md:px-8 lg:px-16 xl:px-32 2xl:px-64"
+            "overflow-clip"
           )}
           role="dialog"
           aria-modal="true"
