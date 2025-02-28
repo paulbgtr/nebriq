@@ -1,5 +1,6 @@
+import packageJson from "../../../package.json";
+
 export const VERSION = {
-  number: "0.1.0-beta.1",
-  phase: "beta",
-  releaseDate: "2024-03-21",
+  number: packageJson.version,
+  releaseDate: "2024-02-28",
 } as const;

@@ -1,5 +1,15 @@
 # Nebriq Changelog
 
+## [0.1.0-beta.3] - 2025-02-24
+
+- New landing page
+- Make library more useful with filtering and better UI
+- Redesing graph UI
+- Update feedback form UI
+- Update favicon and app's icon
+- Deepen AI integration: add sources mentioned, improve collecting relevant notes
+- Improve chat UI: make it more smooth and minimalist
+
 ## [0.1.0-beta.2] - 2025-02-24
 
 ### Added ✨
