@@ -45,28 +45,7 @@ export const ChatHeader = ({
         )}
       >
         <div className="flex items-center gap-2">
-          <div className="relative">
-            <MessageCircle
-              className={cn(
-                "text-primary",
-                isFullscreen ? "w-6 h-6" : "w-5 h-5"
-              )}
-            />
-            <Sparkles
-              className={cn(
-                "absolute text-yellow-300/80 opacity-70",
-                isFullscreen
-                  ? "w-2.5 h-2.5 -top-1 -right-1"
-                  : "w-2 h-2 -top-0.5 -right-0.5"
-              )}
-            />
-          </div>
-          <h2
-            className={cn(
-              "font-semibold text-foreground",
-              isFullscreen ? "text-xl" : "text-md"
-            )}
-          >
+          <h2 className={cn("font-semibold text-foreground", "text-md")}>
             Briq - Your AI Assistant
           </h2>
         </div>

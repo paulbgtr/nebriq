@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { FileText, Search, X, Plus } from "lucide-react";
+import { FileText, Search, X, StickyNote } from "lucide-react";
 import { useNotes } from "@/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,140 +26,6 @@ type Props = {
 type NoteAttachmentProps = {
   selectedNoteIds: string[];
   onNoteSelect: (noteId: string) => void;
-};
-
-const NoteAttachment = ({
-  selectedNoteIds,
-  onNoteSelect,
-}: NoteAttachmentProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const { getNotesQuery } = useNotes();
-
-  const filteredNotes =
-    searchQuery && getNotesQuery.data
-      ? getNotesQuery.data.filter(
-          (note) =>
-            !selectedNoteIds.includes(note.id) &&
-            (note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              note.content?.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
-      : getNotesQuery.data?.filter(
-          (note) => !selectedNoteIds.includes(note.id)
-        );
-
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-    },
-    []
-  );
-
-  const handleNoteSelect = (noteId: string) => {
-    onNoteSelect(noteId);
-    setIsOpen(false);
-    setSearchQuery("");
-  };
-
-  return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "absolute left-3 bottom-3",
-            "w-6 h-6",
-            "hover:bg-muted/80",
-            "transition-colors duration-200",
-            selectedNoteIds.length > 0 && "text-primary"
-          )}
-        >
-          <Plus className="w-4 h-4" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent side="top" align="start" className="w-80">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <h4 className="font-medium text-sm">Attach Note</h4>
-            <p className="text-xs text-muted-foreground">
-              Search and attach notes to your message
-            </p>
-          </div>
-          <div className="space-y-2">
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-              <input
-                type="text"
-                placeholder="Search notes..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className={cn(
-                  "w-full pl-8 pr-8 py-2",
-                  "text-sm",
-                  "rounded-md border border-input",
-                  "bg-background",
-                  "focus:outline-none focus:ring-1 focus:ring-primary",
-                  "transition-all duration-200"
-                )}
-              />
-            </div>
-            <div className="max-h-[300px] overflow-y-auto space-y-1 -mx-2">
-              <AnimatePresence mode="popLayout">
-                {filteredNotes?.map((note) => (
-                  <motion.button
-                    key={note.id}
-                    layout
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    onClick={() => handleNoteSelect(note.id)}
-                    className={cn(
-                      "w-full text-left p-2 rounded-md",
-                      "transition-colors duration-200",
-                      "hover:bg-muted/50"
-                    )}
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <h5 className="font-medium text-sm text-foreground/90 truncate">
-                          {note.title || "Untitled"}
-                        </h5>
-                        <time className="text-[10px] text-muted-foreground/60 whitespace-nowrap">
-                          {formatDate(note.created_at)}
-                        </time>
-                      </div>
-                      {note.content && (
-                        <p className="text-xs text-muted-foreground line-clamp-2">
-                          {note.content.replace(/<[^>]*>/g, "")}
-                        </p>
-                      )}
-                    </div>
-                  </motion.button>
-                ))}
-              </AnimatePresence>
-              {filteredNotes?.length === 0 && (
-                <div className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">
-                    No notes found
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
 };
 
 const AttachedNotePreview = ({
@@ -203,11 +69,32 @@ export const InputArea = ({
   isFullscreen = false,
 }: Props) => {
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { getNotesQuery } = useNotes();
 
   const selectedNotes =
     getNotesQuery.data?.filter((note) => selectedNoteIds.includes(note.id)) ||
     [];
+
+  const filteredNotes =
+    searchQuery && getNotesQuery.data
+      ? getNotesQuery.data.filter(
+          (note) =>
+            !selectedNoteIds.includes(note.id) &&
+            (note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              note.content?.toLowerCase().includes(searchQuery.toLowerCase()))
+        )
+      : getNotesQuery.data?.filter(
+          (note) => !selectedNoteIds.includes(note.id)
+        );
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    []
+  );
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -231,6 +118,8 @@ export const InputArea = ({
 
   const handleNoteSelect = (noteId: string) => {
     setSelectedNoteIds((prev) => [...prev, noteId]);
+    setIsOpen(false);
+    setSearchQuery("");
   };
 
   const handleNoteRemove = (noteId: string) => {
@@ -244,7 +133,7 @@ export const InputArea = ({
       <form
         onSubmit={handleSubmit}
         className={cn(
-          "relative mx-auto space-y-4",
+          "relative mx-auto space-y-2",
           isFullscreen && "max-w-2xl"
         )}
       >
@@ -282,7 +171,7 @@ export const InputArea = ({
               "min-h-[48px] max-h-[200px] w-full",
               "py-3 px-4",
               "text-base leading-relaxed resize-none",
-              "border-0 focus:ring-0 focus-visible:ring-0",
+              "border-0 focus:ring-0 focus-visible:ring-0 ring-0 shadow-none outline-none",
               "bg-transparent",
               "placeholder:text-muted-foreground/40",
               "scrollbar-thin scrollbar-thumb-primary/20",
@@ -291,19 +180,79 @@ export const InputArea = ({
             )}
           />
 
-          <div
-            className={cn(
-              "flex items-center justify-between",
-              "px-4 py-2",
-              "border-t border-input",
-              "bg-muted/50"
-            )}
-          >
+          <div className={cn("flex items-center justify-between", "px-4 py-2")}>
             <div className="flex items-center gap-2">
-              <NoteAttachment
-                selectedNoteIds={selectedNoteIds}
-                onNoteSelect={handleNoteSelect}
-              />
+              <div className="flex items-center gap-2">
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>
+                    <Button type="button" variant="outline" size="sm">
+                      <StickyNote className="w-4 h-4" />
+                      <span className="text-sm">Context</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent side="top" align="start" className="w-80">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder="Search notes..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className={cn(
+                              "w-full py-1 pl-2",
+                              "text-sm",
+                              "rounded-md"
+                            )}
+                          />
+                        </div>
+                        <div className="max-h-[300px] overflow-y-auto space-y-1 -mx-2">
+                          <AnimatePresence mode="popLayout">
+                            {filteredNotes?.map((note) => (
+                              <motion.button
+                                key={note.id}
+                                layout
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                onClick={() => handleNoteSelect(note.id)}
+                                className={cn(
+                                  "w-full text-left p-2 rounded-md",
+                                  "transition-colors duration-200",
+                                  "hover:bg-muted/50"
+                                )}
+                              >
+                                <div className="space-y-1">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <h5 className="font-medium text-sm text-foreground/90 truncate">
+                                      {note.title || "Untitled"}
+                                    </h5>
+                                    <time className="text-[10px] text-muted-foreground/60 whitespace-nowrap">
+                                      {formatDate(note.created_at)}
+                                    </time>
+                                  </div>
+                                  {note.content && (
+                                    <p className="text-xs text-muted-foreground line-clamp-2">
+                                      {note.content.replace(/<[^>]*>/g, "")}
+                                    </p>
+                                  )}
+                                </div>
+                              </motion.button>
+                            ))}
+                          </AnimatePresence>
+                          {filteredNotes?.length === 0 && (
+                            <div className="text-center py-8">
+                              <p className="text-sm text-muted-foreground">
+                                No notes found
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
 
             <div className="flex items-center gap-3">
@@ -320,15 +269,17 @@ export const InputArea = ({
 
               <Button
                 type="submit"
+                variant="outline"
+                size="sm"
                 disabled={followUp.length === 0}
                 className={cn(
-                  "rounded-full h-8 w-8",
-                  "flex items-center justify-center",
+                  "flex items-center gap-2 h-8 rounded-full",
                   "transition-colors duration-200",
                   followUp.length > 0
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 border-primary"
                     : "bg-muted text-muted-foreground",
-                  "disabled:opacity-40 disabled:cursor-not-allowed"
+                  "disabled:opacity-40 disabled:cursor-not-allowed",
+                  "w-8 h-8 flex items-center justify-center"
                 )}
               >
                 <FaArrowUp className="w-3.5 h-3.5" />
