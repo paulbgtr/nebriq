@@ -1,4 +1,4 @@
-import { X, Trash2, Maximize2, Minimize2 } from "lucide-react";
+import { X, Trash2, Maximize2, Minimize2, BrainCircuit } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { ChatContext } from "@/types/chat";
 import { cn } from "@/shared/lib/utils";
@@ -7,7 +7,6 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/shared/components/ui/tooltip";
-import { Compass } from "lucide-react";
 
 type Props = {
   chatContext: ChatContext;
@@ -25,7 +24,7 @@ const Logo = () => {
           <div className="relative w-6 h-6 sm:w-8 sm:h-8">
             <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
             <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
-              <Compass
+              <BrainCircuit
                 className="w-4 h-4 sm:w-5 sm:h-5 text-primary"
                 strokeWidth={1.5}
               />

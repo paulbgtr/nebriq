@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-import { MessageCircle } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { useUser } from "@/hooks/use-user";
@@ -68,35 +68,25 @@ export default function AIChat() {
 
   const ChatToggle = useMemo(
     () => (
-      <Button
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          "fixed bottom-5 right-5 z-50",
-          "flex items-center justify-center gap-2.5",
-          "bg-primary/90 backdrop-blur-sm",
-          "text-primary-foreground",
-          "shadow-md",
-          "transition-all duration-300 ease-out",
-          "rounded-full",
-          "animate-in fade-in zoom-in-95",
-          "group",
-          "md:px-6",
-          "h-12 w-12 md:h-14 md:w-auto",
-          "hover:bg-primary hover:translate-y-[-2px]"
-        )}
-        aria-label="Chat with Briq AI"
-      >
-        <MessageCircle className="w-5 h-5 md:h-6 md:w-6" />
-        <span
-          className={cn(
-            "hidden md:inline font-medium",
-            "transition-all duration-300",
-            "opacity-90 group-hover:opacity-100"
-          )}
+      <div className="fixed bottom-6 right-6 z-50">
+        <div
+          onClick={() => setIsOpen(true)}
+          className="relative cursor-pointer group"
+          aria-label="Chat with Briq AI"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && setIsOpen(true)}
         >
-          Chat with Briq
-        </span>
-      </Button>
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/15 via-primary/10 to-primary/5 blur-sm group-hover:from-primary/25 group-hover:via-primary/15 group-hover:to-primary/10 transition-all duration-500 ease-in-out" />
+
+          <div className="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-primary/20 bg-background/70 backdrop-blur-sm shadow-sm group-hover:border-primary/30 group-hover:shadow-md transition-all duration-500 ease-in-out">
+            <BrainCircuit
+              className="w-5 h-5 sm:w-6 sm:h-6 text-primary/70 group-hover:text-primary transition-all duration-400 ease-in-out"
+              strokeWidth={1.5}
+            />
+          </div>
+        </div>
+      </div>
     ),
     []
   );
