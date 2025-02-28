@@ -1,6 +1,7 @@
+import "katex/dist/katex.min.css";
+
 import { ChatContext } from "@/types/chat";
 import { FileText } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import { cn } from "@/shared/lib/utils";
 import { QueryExamples } from "./query-examples";
 import { MessageActions } from "./message-actions";
@@ -14,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
+import { InlineMath, BlockMath } from "react-katex";
 
 type ChatContentProps = {
   scrollContainerRef: React.RefObject<HTMLDivElement>;
@@ -142,31 +144,49 @@ const MessageBubble = ({
   chatContext,
   isFullscreen = false,
 }: MessageProps &
-  Pick<ChatContentProps, "displayedText" | "chatContext" | "isFullscreen">) => (
-  <div
-    className={cn(
-      "px-4 py-3",
-      "text-sm relative",
-      "transition-all duration-200 ease-out",
-      message.role === "user" && "bg-white text-foreground/90",
-      message.role === "user" ? "ml-8" : "mr-8",
-      message.role === "user" && "rounded-l-full rounded-tr-full"
-    )}
-  >
-    {message.role === "assistant" &&
-      message.relevantNotes &&
-      message.relevantNotes.length > 0 && (
-        <NoteStack notes={message.relevantNotes} isFullscreen={isFullscreen} />
+  Pick<ChatContentProps, "displayedText" | "chatContext" | "isFullscreen">) => {
+  const processText = (text: string) => {
+    const blocks = text.split(/(\\[[\s\S]*?\\]|\\\([\s\S]*?\\\))/g);
+    return blocks.map((block, index) => {
+      if (block.startsWith("\\[") && block.endsWith("\\]")) {
+        return <BlockMath key={index} math={block.slice(2, -2)} />;
+      }
+      if (block.startsWith("\\(") && block.endsWith("\\)")) {
+        return <InlineMath key={index} math={block.slice(2, -2)} />;
+      }
+      return block;
+    });
+  };
+
+  return (
+    <div
+      className={cn(
+        "px-4 py-3",
+        "text-sm relative",
+        "transition-all duration-200 ease-out",
+        message.role === "user" && "bg-white text-foreground/90",
+        message.role === "user" ? "ml-8" : "mr-8",
+        message.role === "user" && "rounded-l-full rounded-tr-full"
       )}
-    <MessageActions message={message} />
-    <ReactMarkdown>
+    >
       {message.role === "assistant" &&
-      message ===
-        chatContext.conversationHistory
-          .filter((m) => m.role === "assistant")
-          .slice(-1)[0]
-        ? displayedText
-        : message.content}
-    </ReactMarkdown>
-  </div>
-);
+        message.relevantNotes &&
+        message.relevantNotes.length > 0 && (
+          <NoteStack
+            notes={message.relevantNotes}
+            isFullscreen={isFullscreen}
+          />
+        )}
+      <MessageActions message={message} />
+      {processText(
+        message.role === "assistant" &&
+          message ===
+            chatContext.conversationHistory
+              .filter((m) => m.role === "assistant")
+              .slice(-1)[0]
+          ? displayedText
+          : message.content
+      )}
+    </div>
+  );
+};
