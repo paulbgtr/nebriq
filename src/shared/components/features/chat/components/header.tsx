@@ -1,11 +1,4 @@
-import {
-  X,
-  MessageCircle,
-  Sparkles,
-  Trash2,
-  Maximize2,
-  Minimize2,
-} from "lucide-react";
+import { X, Trash2, Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { ChatContext } from "@/types/chat";
 import { cn } from "@/shared/lib/utils";
@@ -14,6 +7,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/shared/components/ui/tooltip";
+import { Compass } from "lucide-react";
 
 type Props = {
   chatContext: ChatContext;
@@ -33,9 +27,8 @@ export const ChatHeader = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-between border-b bg-background",
-        isFullscreen ? "px-8 py-4 md:px-12 lg:px-16" : "px-4 py-3",
-        isFullscreen && "border-0"
+        "flex items-center justify-between",
+        isFullscreen ? "px-8 py-4 md:px-12 lg:px-16" : "px-4 py-3"
       )}
     >
       <div
@@ -45,8 +38,24 @@ export const ChatHeader = ({
         )}
       >
         <div className="flex items-center gap-2">
-          <h2 className={cn("font-semibold text-foreground", "text-md")}>
-            Briq - Your AI Assistant
+          <div className="flex items-center gap-1 sm:gap-2 pr-2 sm:pr-4 border-r border-border/60">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className="relative w-6 h-6 sm:w-8 sm:h-8">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
+                <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
+                  <Compass
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-primary"
+                    strokeWidth={1.5}
+                  />
+                </div>
+              </div>
+            </div>
+            <span className="text-base sm:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+              Briq
+            </span>
+          </div>
+          <h2 className={cn("text-foreground", "text-md")}>
+            Your AI Assistant
           </h2>
         </div>
 
