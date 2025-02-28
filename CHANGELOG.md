@@ -9,6 +9,7 @@
 - Update favicon and app's icon
 - Deepen AI integration: add sources mentioned, improve collecting relevant notes
 - Improve chat UI: make it more smooth and minimalist
+- Implement parsing mathematical expressions in chat
 
 ## [0.1.0-beta.2] - 2025-02-24
 
