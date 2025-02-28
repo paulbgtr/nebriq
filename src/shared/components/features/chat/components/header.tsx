@@ -17,6 +17,29 @@ type Props = {
   toggleFullscreen: () => void;
 };
 
+const Logo = () => {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 pr-2 sm:pr-4">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="relative w-6 h-6 sm:w-8 sm:h-8">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
+            <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
+              <Compass
+                className="w-4 h-4 sm:w-5 sm:h-5 text-primary"
+                strokeWidth={1.5}
+              />
+            </div>
+          </div>
+        </div>
+        <span className="text-base sm:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+          Briq
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export const ChatHeader = ({
   chatContext,
   clearChatContext,
@@ -37,27 +60,7 @@ export const ChatHeader = ({
           isFullscreen && "max-w-5xl mx-auto"
         )}
       >
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 sm:gap-2 pr-2 sm:pr-4 border-r border-border/60">
-            <div className="flex items-center gap-1 sm:gap-2">
-              <div className="relative w-6 h-6 sm:w-8 sm:h-8">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
-                <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
-                  <Compass
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-primary"
-                    strokeWidth={1.5}
-                  />
-                </div>
-              </div>
-            </div>
-            <span className="text-base sm:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
-              Briq
-            </span>
-          </div>
-          <h2 className={cn("text-foreground", "text-md")}>
-            Your AI Assistant
-          </h2>
-        </div>
+        <Logo />
 
         <div className="flex items-center">
           <Tooltip>
