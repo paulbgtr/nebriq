@@ -180,10 +180,13 @@ export const InputArea = ({
               <div className="flex items-center gap-2">
                 <Popover open={isOpen} onOpenChange={setIsOpen}>
                   <PopoverTrigger asChild>
-                    <Button type="button" variant="outline" size="sm">
-                      <StickyNote className="w-4 h-4" />
-                      <span className="text-sm">Context</span>
-                    </Button>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground/80 bg-transparent hover:bg-muted/30 border border-border/30 rounded-md transition-colors duration-200"
+                    >
+                      <StickyNote className="w-3.5 h-3.5" />
+                      <span>Context</span>
+                    </button>
                   </PopoverTrigger>
                   <PopoverContent side="top" align="start" className="w-80">
                     <div className="space-y-4">
