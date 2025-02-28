@@ -9,8 +9,64 @@ import { useQuery } from "@tanstack/react-query";
 
 const STORAGE_KEY = "chatContext";
 const MAX_RELEVANT_NOTES = 5;
+const MIN_QUERY_LENGTH = 15;
+const CONVERSATION_MARKERS = [
+  "thanks",
+  "thank you",
+  "ok",
+  "okay",
+  "got it",
+  "bye",
+  "hello",
+  "hi",
+];
 
-type NoteWithScore = z.infer<typeof noteSchema> & { score?: number };
+type BaseNote = z.infer<typeof noteSchema>;
+type NoteWithScore = BaseNote & {
+  score?: number;
+  matchType?: "semantic" | "tfidf" | "both";
+};
+
+const shouldSkipSearch = (query: string): boolean => {
+  const normalizedQuery = query.toLowerCase().trim();
+
+  if (normalizedQuery.length < MIN_QUERY_LENGTH) return true;
+
+  if (CONVERSATION_MARKERS.some((marker) => normalizedQuery.includes(marker)))
+    return true;
+
+  if (
+    /^(what|how|why|when|where|who|is|are|can|could|would|will)\s.{0,10}$/i.test(
+      normalizedQuery
+    )
+  )
+    return true;
+
+  return false;
+};
+
+const calculateRelevanceScore = (
+  note: NoteWithScore,
+  semanticRank: number,
+  tfidfRank: number,
+  totalResults: number
+): number => {
+  const semanticScore = semanticRank ? (totalResults - semanticRank) * 1.5 : 0;
+  const tfidfScore = tfidfRank ? totalResults - tfidfRank : 0;
+
+  let boostScore = 0;
+
+  const noteDate = note.created_at;
+  const daysSinceCreation =
+    (Date.now() - noteDate.getTime()) / (1000 * 60 * 60 * 24);
+  const recencyBoost = Math.max(0, 1 - daysSinceCreation / 30);
+
+  const lengthBoost = Math.min(1, (note.content?.length || 0) / 1000) * 0.5;
+
+  boostScore = recencyBoost + lengthBoost;
+
+  return semanticScore + tfidfScore + boostScore;
+};
 
 export const useChat = (
   userId: string | undefined,
@@ -42,12 +98,13 @@ export const useChat = (
   const relevantNotesQuery = useQuery({
     queryKey: ["relevantNotes", query, userId],
     queryFn: async () => {
-      if (!allNotes?.length) return [];
+      if (!allNotes?.length || shouldSkipSearch(query)) return [];
 
       try {
         const searchContext = query.trim();
-
         if (!searchContext) return [];
+
+        console.log(`🔍 Searching for context: "${searchContext}"`);
 
         const [tfidfResults, semanticResults] = await Promise.all([
           searchUsingTFIDF(searchContext, allNotes),
@@ -55,26 +112,46 @@ export const useChat = (
         ]);
 
         const uniqueResults = new Map<string, NoteWithScore>();
+        const totalResults = Math.max(
+          semanticResults.length,
+          tfidfResults.length
+        );
 
+        // Process semantic results
         semanticResults.forEach((note, index) => {
           uniqueResults.set(note.id, {
             ...note,
-            score: (semanticResults.length - index) * 1.2,
+            matchType: "semantic",
+            score: calculateRelevanceScore(note, index + 1, 0, totalResults),
           });
         });
 
+        // Process TFIDF results and merge with semantic
         tfidfResults.forEach((note, index) => {
-          if (!uniqueResults.has(note.id)) {
+          if (uniqueResults.has(note.id)) {
+            const existingNote = uniqueResults.get(note.id)!;
+            existingNote.matchType = "both";
+            existingNote.score = calculateRelevanceScore(
+              note,
+              semanticResults.findIndex((n) => n.id === note.id) + 1,
+              index + 1,
+              totalResults
+            );
+          } else {
             uniqueResults.set(note.id, {
               ...note,
-              score: tfidfResults.length - index,
+              matchType: "tfidf",
+              score: calculateRelevanceScore(note, 0, index + 1, totalResults),
             });
           }
         });
 
-        return Array.from(uniqueResults.values())
+        const results = Array.from(uniqueResults.values())
           .sort((a, b) => (b.score || 0) - (a.score || 0))
           .slice(0, MAX_RELEVANT_NOTES);
+
+        console.log(`📝 Found ${results.length} relevant notes`);
+        return results;
       } catch (error) {
         console.error("Error finding relevant notes:", error);
         return [];
@@ -92,7 +169,6 @@ export const useChat = (
     }
   }, [relevantNotesQuery.data]);
 
-  // Save chat context to localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(chatContext));
