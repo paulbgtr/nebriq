@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { FileText, Search, X, StickyNote } from "lucide-react";
+import { FileText, X, StickyNote } from "lucide-react";
 import { useNotes } from "@/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,11 +21,6 @@ type Props = {
   setQuery: (query: string) => void;
   maxLength: number;
   isFullscreen?: boolean;
-};
-
-type NoteAttachmentProps = {
-  selectedNoteIds: string[];
-  onNoteSelect: (noteId: string) => void;
 };
 
 const AttachedNotePreview = ({

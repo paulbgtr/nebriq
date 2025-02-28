@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { BrainCircuit } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
