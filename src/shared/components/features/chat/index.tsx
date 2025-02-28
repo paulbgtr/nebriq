@@ -115,70 +115,64 @@ export default function AIChat() {
             : "bottom-6 right-6 w-[95vw] sm:w-[450px] h-[85vh] sm:h-[650px]"
         )}
       >
-        {isAllNotesLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <Spinner />
-          </div>
-        ) : (
-          <article
-            ref={chatContainerRef}
+        <article
+          ref={chatContainerRef}
+          className={cn(
+            "flex flex-col w-full h-full",
+            "bg-background/90 backdrop-blur-md border border-border/30",
+            isFullscreen ? "rounded-none" : "rounded-3xl",
+            "transition-all duration-500 ease-out",
+            "animate-in slide-in-from-bottom-3 zoom-in-95",
+            "shadow-2xl hover:shadow-3xl",
+            "motion-safe:animate-in motion-safe:fade-in-0",
+            "overflow-clip",
+            isFullscreen && "md:px-8 lg:px-16 xl:px-32 2xl:px-64"
+          )}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chat-header"
+        >
+          <ChatHeader
+            chatContext={chatContext}
+            clearChatContext={clearChatContext}
+            setIsOpen={setIsOpen}
+            isFullscreen={isFullscreen}
+            toggleFullscreen={toggleFullscreen}
+          />
+
+          <div
             className={cn(
-              "flex flex-col w-full h-full",
-              "bg-background/90 backdrop-blur-md border border-border/30",
-              isFullscreen ? "rounded-none" : "rounded-3xl",
-              "transition-all duration-500 ease-out",
-              "animate-in slide-in-from-bottom-3 zoom-in-95",
-              "shadow-2xl hover:shadow-3xl",
-              "motion-safe:animate-in motion-safe:fade-in-0",
-              "overflow-clip",
-              isFullscreen && "md:px-8 lg:px-16 xl:px-32 2xl:px-64"
+              "flex-1 flex flex-col overflow-hidden",
+              !isFullscreen && "rounded-b-3xl",
+              isFullscreen && "max-w-5xl mx-auto w-full"
             )}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="chat-header"
           >
-            <ChatHeader
-              chatContext={chatContext}
-              clearChatContext={clearChatContext}
-              setIsOpen={setIsOpen}
-              isFullscreen={isFullscreen}
-              toggleFullscreen={toggleFullscreen}
-            />
+            {isAllNotesLoading ? (
+              <div className="flex items-center justify-center flex-1">
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              <>
+                <ChatContent
+                  scrollContainerRef={scrollContainerRef}
+                  chatContext={chatContext}
+                  setFollowUp={setFollowUp}
+                  displayedText={displayedText}
+                  isLoading={isLoading}
+                  isFullscreen={isFullscreen}
+                />
 
-            <div
-              className={cn(
-                "flex-1 flex flex-col overflow-hidden",
-                !isFullscreen && "rounded-b-3xl",
-                isFullscreen && "max-w-5xl mx-auto w-full"
-              )}
-            >
-              {isAllNotesLoading ? (
-                <div className="flex items-center justify-center flex-1">
-                  <Spinner size="sm" />
-                </div>
-              ) : (
-                <>
-                  <ChatContent
-                    scrollContainerRef={scrollContainerRef}
-                    chatContext={chatContext}
-                    setFollowUp={setFollowUp}
-                    displayedText={displayedText}
-                    isLoading={isLoading}
-                    isFullscreen={isFullscreen}
-                  />
-
-                  <InputArea
-                    followUp={followUp}
-                    setFollowUp={setFollowUp}
-                    setQuery={setQuery}
-                    maxLength={maxLength}
-                    isFullscreen={isFullscreen}
-                  />
-                </>
-              )}
-            </div>
-          </article>
-        )}
+                <InputArea
+                  followUp={followUp}
+                  setFollowUp={setFollowUp}
+                  setQuery={setQuery}
+                  maxLength={maxLength}
+                  isFullscreen={isFullscreen}
+                />
+              </>
+            )}
+          </div>
+        </article>
       </div>
     </TooltipProvider>
   );
