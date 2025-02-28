@@ -1,5 +1,6 @@
 import { Lightbulb } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { motion } from "framer-motion";
 
 const QUERY_EXAMPLES = [
   {
@@ -38,69 +39,92 @@ type Props = {
  */
 export const QueryExamples = ({ setFollowUp }: Props) => {
   return (
-    <>
-      <div className={cn("flex items-center gap-3 mb-6", "text-foreground")}>
-        <div
-          className={cn("p-2 rounded-full", "bg-primary/10", "animate-pulse")}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-2xl mx-auto space-y-4"
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className={cn(
+          "flex items-center gap-3",
+          "px-1.5 py-1",
+          "text-foreground/80",
+          "border-b border-input/50"
+        )}
+      >
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 10, 0],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatDelay: 4,
+          }}
+          className="text-primary/80"
         >
-          <Lightbulb className="w-5 h-5 text-primary" />
-        </div>
-        <div className="space-y-1">
-          <h2 className="text-lg font-semibold">Get Started</h2>
-          <p className="text-sm text-muted-foreground">
-            Choose an example or type your own question
-          </p>
-        </div>
-      </div>
+          <Lightbulb className="w-[18px] h-[18px]" />
+        </motion.div>
+        <span className="text-sm font-medium tracking-tight">
+          Try asking about...
+        </span>
+      </motion.div>
 
-      <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-3", "relative")}>
+      <div className="grid grid-cols-2 gap-2 px-1">
         {QUERY_EXAMPLES.map((example, index) => (
-          <button
+          <motion.button
             key={index}
-            onClick={() => setFollowUp(`${example.icon} ${example.text}`)}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * (index + 1) }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              setFollowUp(`${example.text}`);
+            }}
             className={cn(
-              "group relative",
-              "p-4 w-full",
-              "rounded-xl",
+              "group",
+              "px-3 py-2.5 w-full",
+              "rounded-lg",
               "text-left",
-
-              "bg-background/50",
-              "border border-secondary/20",
+              "bg-background",
+              "border border-input",
               "hover:border-primary/30",
-
-              "shadow-sm",
-              "hover:shadow-md hover:shadow-primary/5",
-
-              "transition-all duration-300 ease-out",
-              "hover:-translate-y-1",
-
-              "before:absolute before:inset-0",
-              "before:rounded-xl",
-              "before:bg-gradient-to-br",
-              "before:from-transparent before:to-primary/5",
-              "before:opacity-0 before:transition-opacity",
-              "hover:before:opacity-100"
+              "hover:bg-muted/40",
+              "transition-colors duration-200"
             )}
           >
-            <div className="relative z-10 space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{example.icon}</span>
-                <span
+            <div className="flex items-center gap-2">
+              <motion.span
+                className="text-lg"
+                whileHover={{ scale: 1.2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                {example.icon}
+              </motion.span>
+              <div className="space-y-0.5 min-w-0">
+                <p
                   className={cn(
-                    "font-medium text-foreground",
-                    "group-hover:text-primary"
+                    "text-sm font-medium truncate",
+                    "text-foreground/90",
+                    "group-hover:text-primary",
+                    "transition-colors duration-200"
                   )}
                 >
                   {example.text}
-                </span>
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {example.description}
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {example.description}
-              </p>
             </div>
-          </button>
+          </motion.button>
         ))}
       </div>
-    </>
+    </motion.div>
   );
 };
