@@ -98,7 +98,7 @@ export default function AIChat() {
     <TooltipProvider>
       <div
         className={cn(
-          "fixed z-50 transition-all duration-500 ease-out",
+          "fixed z-50 transition-all duration-500 ease-in-out",
           isFullscreen
             ? "inset-0"
             : "bottom-6 right-6 w-[95vw] sm:w-[450px] h-[85vh] sm:h-[650px]"
@@ -110,7 +110,7 @@ export default function AIChat() {
             "flex flex-col w-full h-full",
             "bg-background/90 backdrop-blur-md border border-border/30",
             isFullscreen ? "rounded-none" : "rounded-3xl",
-            "transition-all duration-500 ease-out",
+            "transition-all duration-500 ease-in-out",
             "animate-in slide-in-from-bottom-3 zoom-in-95",
             "shadow-2xl hover:shadow-3xl",
             "motion-safe:animate-in motion-safe:fade-in-0",
@@ -130,7 +130,7 @@ export default function AIChat() {
 
           <div
             className={cn(
-              "flex-1 flex flex-col overflow-hidden",
+              "flex-1 flex flex-col overflow-hidden transition-all duration-500 ease-in-out",
               !isFullscreen && "rounded-b-3xl",
               isFullscreen && "max-w-5xl mx-auto w-full"
             )}
