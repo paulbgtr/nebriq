@@ -5,6 +5,7 @@ export type ConversationTurn = {
   role: "user" | "assistant";
   content: string;
   relevantNotes?: z.infer<typeof noteSchema>[];
+  attachedNotes?: z.infer<typeof noteSchema>[];
 };
 
 export type ChatContext = {

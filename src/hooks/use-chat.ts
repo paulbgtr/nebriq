@@ -6,6 +6,7 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 import { searchUsingTFIDF } from "@/app/actions/search/tfidf";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
 import { useQuery } from "@tanstack/react-query";
+import { useSelectedModelStore } from "@/store/selected-model";
 
 const STORAGE_KEY = "chatContext";
 const MAX_RELEVANT_NOTES = 5;
@@ -73,6 +74,7 @@ export const useChat = (
   allNotes: z.infer<typeof noteSchema>[]
 ) => {
   const [query, setQuery] = useState("");
+  const { selectedModel } = useSelectedModelStore();
   const [chatContext, setChatContext] = useState<ChatContext>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -186,7 +188,29 @@ export const useChat = (
     if (!userId || !message.trim()) return;
 
     try {
-      const newMessage = { role: "user" as const, content: message.trim() };
+      let attachedNoteIds: string[] = [];
+      if (typeof window !== "undefined") {
+        const savedNoteIds = localStorage.getItem("attachedNoteIds");
+        if (savedNoteIds) {
+          try {
+            attachedNoteIds = JSON.parse(savedNoteIds);
+            localStorage.removeItem("attachedNoteIds");
+          } catch (e) {
+            console.error("Failed to parse attached note IDs:", e);
+          }
+        }
+      }
+
+      const attachedNotes =
+        attachedNoteIds.length > 0
+          ? allNotes.filter((note) => attachedNoteIds.includes(note.id))
+          : [];
+
+      const newMessage = {
+        role: "user" as const,
+        content: message.trim(),
+        attachedNotes: attachedNotes.length > 0 ? attachedNotes : undefined,
+      };
 
       setQuery(message.trim());
       setChatContext((prev) => ({
@@ -196,14 +220,27 @@ export const useChat = (
       }));
       setIsLoading(true);
 
-      const { data: freshRelevantNotes } = await relevantNotesQuery.refetch();
+      let freshRelevantNotes: z.infer<typeof noteSchema>[] = [];
+
+      if (attachedNotes.length > 0) {
+        freshRelevantNotes = attachedNotes;
+      } else {
+        const { data } = await relevantNotesQuery.refetch();
+        freshRelevantNotes = data || [];
+      }
 
       const updatedContext: ChatContext = {
         conversationHistory: [...chatContext.conversationHistory, newMessage],
-        relevantNotes: freshRelevantNotes || [],
+        relevantNotes: freshRelevantNotes,
       };
 
-      const data = await chat(message, userId, updatedContext);
+      const data = await chat(
+        message,
+        userId,
+        updatedContext,
+        undefined,
+        selectedModel.id
+      );
 
       if (data) {
         setChatContext((prev) => ({
@@ -213,10 +250,10 @@ export const useChat = (
             {
               role: "assistant" as const,
               content: data,
-              relevantNotes: freshRelevantNotes || [],
+              relevantNotes: freshRelevantNotes,
             },
           ],
-          relevantNotes: freshRelevantNotes || [],
+          relevantNotes: freshRelevantNotes,
         }));
       }
     } catch (err) {
@@ -254,9 +291,12 @@ export const useChat = (
   }, [query]);
 
   return {
+    query,
     setQuery,
     chatContext,
+    setChatContext,
     isLoading,
+    sendMessage,
     clearChatContext,
   };
 };
