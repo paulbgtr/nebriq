@@ -1,5 +1,15 @@
 # Nebriq Changelog
 
+## [0.2.0-beta.1] - 2025-03-02
+
+### Added ✨
+
+- Redesign chat
+- Add note attachments
+- Implement AI search in chat
+
+Overall the chat is more useful and feature rich now.
+
 ## [0.1.0-beta.3] - 2025-02-24
 
 - New landing page
