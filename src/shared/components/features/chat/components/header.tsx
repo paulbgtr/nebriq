@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/shared/components/ui/tooltip";
+import { ModelSelector } from "./model-selector";
 
 type Props = {
   chatContext: ChatContext;
@@ -49,19 +50,22 @@ export const ChatHeader = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-between",
+        "flex items-center justify-between transition-all duration-500 ease-in-out",
         isFullscreen ? "px-8 py-4 md:px-12 lg:px-16" : "px-4 py-3"
       )}
     >
       <div
         className={cn(
-          "flex items-center justify-between w-full",
+          "flex items-center justify-between w-full transition-all duration-500 ease-in-out",
           isFullscreen && "max-w-5xl mx-auto"
         )}
       >
-        <Logo />
+        <div className="flex items-center gap-3 transition-transform duration-500 ease-in-out">
+          <Logo />
+          <ModelSelector />
+        </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center transition-transform duration-500 ease-in-out">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -70,16 +74,21 @@ export const ChatHeader = ({
                 size="icon"
                 className={cn(
                   "rounded-full",
+                  "transition-all duration-300 ease-in-out",
                   isFullscreen ? "h-9 w-9" : "h-8 w-8",
                   "text-muted-foreground hover:text-destructive/80",
-                  "transition-all duration-200 ease-out",
                   "hover:bg-destructive/5",
                   chatContext.conversationHistory.length === 0 &&
                     "opacity-50 pointer-events-none"
                 )}
                 aria-label="Clear chat history"
               >
-                <Trash2 className={cn(isFullscreen ? "w-5 h-5" : "w-4 h-4")} />
+                <Trash2
+                  className={cn(
+                    "transition-all duration-300 ease-in-out",
+                    isFullscreen ? "w-5 h-5" : "w-4 h-4"
+                  )}
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Clear chat history</TooltipContent>
@@ -92,7 +101,7 @@ export const ChatHeader = ({
                 onClick={toggleFullscreen}
                 className={cn(
                   "rounded-full hover:bg-primary/5 hover:text-primary/80",
-                  "transition-all duration-200 ease-out",
+                  "transition-all duration-300 ease-in-out",
                   isFullscreen ? "h-9 w-9" : "h-8 w-8"
                 )}
                 aria-label={
@@ -101,11 +110,17 @@ export const ChatHeader = ({
               >
                 {isFullscreen ? (
                   <Minimize2
-                    className={cn(isFullscreen ? "w-5 h-5" : "w-4 h-4")}
+                    className={cn(
+                      "transition-all duration-300 ease-in-out",
+                      isFullscreen ? "w-5 h-5" : "w-4 h-4"
+                    )}
                   />
                 ) : (
                   <Maximize2
-                    className={cn(isFullscreen ? "w-5 h-5" : "w-4 h-4")}
+                    className={cn(
+                      "transition-all duration-300 ease-in-out",
+                      isFullscreen ? "w-5 h-5" : "w-4 h-4"
+                    )}
                   />
                 )}
               </Button>
@@ -122,12 +137,17 @@ export const ChatHeader = ({
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   "rounded-full hover:bg-destructive/5 hover:text-destructive/80",
-                  "transition-all duration-200 ease-out",
+                  "transition-all duration-300 ease-in-out",
                   isFullscreen ? "h-9 w-9" : "h-8 w-8"
                 )}
                 aria-label="Close chat"
               >
-                <X className={cn(isFullscreen ? "w-5 h-5" : "w-4 h-4")} />
+                <X
+                  className={cn(
+                    "transition-all duration-300 ease-in-out",
+                    isFullscreen ? "w-5 h-5" : "w-4 h-4"
+                  )}
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Close chat</TooltipContent>
