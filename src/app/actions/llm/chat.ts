@@ -27,7 +27,15 @@ Guidelines:
 - If notes would help but aren't provided, suggest adding them gently without making it a requirement
 - Use a warm, natural tone - avoid robotic responses`;
 
-  if (chatContext?.relevantNotes?.length) {
+  const latestUserMessage = chatContext?.conversationHistory
+    .filter((msg) => msg.role === "user")
+    .pop();
+
+  if (latestUserMessage?.attachedNotes?.length) {
+    prompt += `\n\nATTACHED NOTES:\n${latestUserMessage.attachedNotes
+      .map((note) => `${note.title}: ${note.content}`)
+      .join("\n")}`;
+  } else if (chatContext?.relevantNotes?.length) {
     prompt += `\n\nRELEVANT NOTES:\n${chatContext.relevantNotes
       .map((note) => `${note.title}: ${note.content}`)
       .join("\n")}`;
@@ -49,7 +57,8 @@ export const chat = async (
   query: string,
   userId: string,
   followUpContext?: ChatContext,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  modelId: string = "gpt-4o-mini"
 ): Promise<string | null> => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -61,7 +70,7 @@ export const chat = async (
 
     const completion = await openai.chat.completions.create(
       {
-        model: "gpt-4o-mini",
+        model: modelId,
         messages: [{ role: "user", content: prompt }],
         stream: true,
       },
