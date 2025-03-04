@@ -1,5 +1,21 @@
 # Nebriq Changelog
 
+## [0.3.2-beta.1] - 2025-03-05
+
+### Added ✨
+
+- Significant landing page update with improved UI
+
+### Fixed 🐛
+
+- Implement proper chat scroll functionality
+- Fix library grid view layout bug
+- Improve note list and note component rendering
+
+### Changed 🔄
+
+- Improve color scheme throughout the application
+
 ## [0.3.1-beta.1] - 2025-03-04
 
 ### Added ✨
