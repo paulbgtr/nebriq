@@ -1,5 +1,12 @@
 # Nebriq Changelog
 
+## [0.3.0-beta.1] - 2025-03-04
+
+- Completely redesign the app and polish the idea: integrate chat into search
+- Update Landing page
+- Redesign Library: actual library instead of search history
+- Layout update: sidebar instead of navbar
+
 ## [0.2.0-beta.1] - 2025-03-02
 
 ### Added ✨
