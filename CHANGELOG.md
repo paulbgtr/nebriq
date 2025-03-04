@@ -1,5 +1,14 @@
 # Nebriq Changelog
 
+## [0.3.3-beta.1] - 2025-03-05
+
+### Fixed 🐛
+
+- Fix chat markdown formatting for improved content rendering
+- Fix issue where deleting current chat doesn't close it automatically (PAU-184)
+- Fix new chat creation on first message
+- Improve chat component behavior and user experience
+
 ## [0.3.2-beta.1] - 2025-03-05
 
 ### Added ✨
