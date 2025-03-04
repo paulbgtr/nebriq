@@ -16,6 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
+import { useChatHistoryStore } from "@/store/chat-history";
 
 export default function HomeModule() {
   const [followUp, setFollowUp] = useState("");
@@ -41,10 +42,16 @@ export default function HomeModule() {
   }, [allNotes]);
 
   const { user } = useUser();
-  const { setQuery, chatContext, isLoading, clearChatContext } = useChat(
-    user?.id,
-    allNotes || []
-  );
+  const { setQuery, chatContext, isLoading, clearChatContext, activeChatId } =
+    useChat(user?.id, allNotes || []);
+
+  const { getChatById } = useChatHistoryStore();
+  const activeChat = useMemo(() => {
+    if (activeChatId) {
+      return getChatById(activeChatId);
+    }
+    return null;
+  }, [activeChatId, getChatById]);
 
   const lastAssistantMessage = useMemo(
     () =>
@@ -77,7 +84,9 @@ export default function HomeModule() {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={clearChatContext}
+                onClick={() => {
+                  clearChatContext();
+                }}
                 className={cn(
                   "flex items-center justify-center",
                   "w-9 h-9",
@@ -115,6 +124,14 @@ export default function HomeModule() {
                   : "justify-between"
               )}
             >
+              <div className="px-4 pt-4">
+                {activeChat && chatContext.conversationHistory.length > 0 && (
+                  <h2 className="text-lg font-medium text-foreground/80 mb-4">
+                    {activeChat.title}
+                  </h2>
+                )}
+              </div>
+
               <ChatContent
                 scrollContainerRef={scrollContainerRef}
                 chatContext={chatContext}

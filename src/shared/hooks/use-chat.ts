@@ -7,6 +7,7 @@ import { searchUsingTFIDF } from "@/app/actions/search/tfidf";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
 import { useQuery } from "@tanstack/react-query";
 import { useSelectedModelStore } from "@/store/selected-model";
+import { useChatHistoryStore } from "@/store/chat-history";
 
 const STORAGE_KEY = "chatContext";
 const MAX_RELEVANT_NOTES = 5;
@@ -75,7 +76,20 @@ export const useChat = (
 ) => {
   const [query, setQuery] = useState("");
   const { selectedModel } = useSelectedModelStore();
+  const { activeChatId, addChat, updateChat, getChatById, setActiveChatId } =
+    useChatHistoryStore();
+
+  // Load chat context from active chat whenever activeChatId changes
   const [chatContext, setChatContext] = useState<ChatContext>(() => {
+    // If there's an active chat, load it from history
+    if (activeChatId) {
+      const activeChat = getChatById(activeChatId);
+      if (activeChat) {
+        return activeChat.context;
+      }
+    }
+
+    // Otherwise check local storage (legacy support)
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -90,11 +104,23 @@ export const useChat = (
         }
       }
     }
+
     return {
       conversationHistory: [],
       relevantNotes: [],
     };
   });
+
+  // Update chat context when activeChatId changes
+  useEffect(() => {
+    if (activeChatId) {
+      const activeChat = getChatById(activeChatId);
+      if (activeChat) {
+        setChatContext(activeChat.context);
+      }
+    }
+  }, [activeChatId, getChatById]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const relevantNotesQuery = useQuery({
@@ -164,24 +190,56 @@ export const useChat = (
 
   useEffect(() => {
     if (relevantNotesQuery.data) {
-      setChatContext((prev) => ({
-        ...prev,
+      const updatedContext = {
+        ...chatContext,
         relevantNotes: relevantNotesQuery.data,
-      }));
+      };
+
+      setChatContext(updatedContext);
+
+      // Update in history if we have an active chat
+      if (activeChatId) {
+        updateChat(activeChatId, updatedContext);
+      }
     }
   }, [relevantNotesQuery.data]);
 
   useEffect(() => {
+    // Legacy storage support
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(chatContext));
     }
-  }, [chatContext]);
+
+    // Update in history if we have an active chat and context has conversation history
+    if (activeChatId && chatContext.conversationHistory.length > 0) {
+      // Only update the chat if there's been a change to avoid unnecessary updates
+      // that would affect the updatedAt timestamp
+      const activeChat = getChatById(activeChatId);
+      if (
+        activeChat &&
+        JSON.stringify(activeChat.context) !== JSON.stringify(chatContext)
+      ) {
+        updateChat(activeChatId, chatContext);
+      }
+    }
+  }, [chatContext, activeChatId, getChatById, updateChat]);
 
   const clearChatContext = () => {
-    setChatContext({
+    const emptyContext = {
       conversationHistory: [],
       relevantNotes: [],
-    });
+    };
+
+    setChatContext(emptyContext);
+
+    // Create a new chat in history and set it as active
+    if (userId) {
+      const newChatId = addChat(emptyContext);
+      // No need to set active chat ID here as addChat already does it
+    } else {
+      // If no user, just clear the active chat
+      setActiveChatId(null);
+    }
   };
 
   const sendMessage = async (message: string): Promise<void> => {
@@ -213,11 +271,33 @@ export const useChat = (
       };
 
       setQuery(message.trim());
-      setChatContext((prev) => ({
-        ...prev,
-        conversationHistory: [...prev.conversationHistory, newMessage],
-        relevantNotes: [],
-      }));
+
+      // Create a new chat if this is the first message and we don't have an active chat
+      if (
+        chatContext.conversationHistory.length === 0 &&
+        !activeChatId &&
+        userId
+      ) {
+        const newContext = {
+          conversationHistory: [newMessage],
+          relevantNotes: [],
+        };
+        addChat(newContext);
+        setChatContext(newContext);
+      } else {
+        const updatedContext = {
+          ...chatContext,
+          conversationHistory: [...chatContext.conversationHistory, newMessage],
+          relevantNotes: [],
+        };
+        setChatContext(updatedContext);
+
+        // Update in history if we have an active chat
+        if (activeChatId) {
+          updateChat(activeChatId, updatedContext);
+        }
+      }
+
       setIsLoading(true);
 
       let freshRelevantNotes: z.infer<typeof noteSchema>[] = [];
@@ -243,18 +323,24 @@ export const useChat = (
       );
 
       if (data) {
-        setChatContext((prev) => ({
-          ...prev,
+        const finalContext = {
+          ...updatedContext,
           conversationHistory: [
-            ...prev.conversationHistory,
+            ...updatedContext.conversationHistory,
             {
               role: "assistant" as const,
               content: data,
               relevantNotes: freshRelevantNotes,
             },
           ],
-          relevantNotes: freshRelevantNotes,
-        }));
+        };
+
+        setChatContext(finalContext);
+
+        // Update in history if we have an active chat
+        if (activeChatId) {
+          updateChat(activeChatId, finalContext);
+        }
       }
     } catch (err) {
       console.error(`Chat error:`, err);
@@ -266,19 +352,26 @@ export const useChat = (
           errorMessage.toLowerCase().includes("exceed") ||
           errorMessage.toLowerCase().includes("context length"));
 
-      setChatContext((prev) => ({
-        ...prev,
+      const errorContext = {
+        ...chatContext,
         conversationHistory: [
-          ...prev.conversationHistory,
+          ...chatContext.conversationHistory,
           {
-            role: "assistant",
+            role: "assistant" as const,
             content: isTokenLimitError
               ? "The conversation has reached the token limit. Please try again later."
               : "An error occurred. Please try again.",
             relevantNotes: [],
           },
         ],
-      }));
+      };
+
+      setChatContext(errorContext);
+
+      // Update in history if we have an active chat
+      if (activeChatId) {
+        updateChat(activeChatId, errorContext);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -298,5 +391,6 @@ export const useChat = (
     isLoading,
     sendMessage,
     clearChatContext,
+    activeChatId,
   };
 };

@@ -11,6 +11,9 @@ import {
   Pen,
   FileText,
   Shield,
+  MessageSquare,
+  Trash2,
+  Clock,
 } from "lucide-react";
 
 import {
@@ -22,9 +25,14 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/shared/components/ui/sidebar";
 import { FeedbackPopover } from "./feedback/feedback-popover";
 import { Button } from "./ui/button";
+import { useChatHistoryStore } from "@/store/chat-history";
+import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
+import { useUser } from "@/shared/hooks/use-user";
 
 const navItems = [
   {
@@ -56,6 +64,24 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useUser();
+  const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
+    useChatHistoryStore();
+
+  const handleChatClick = (id: string) => {
+    setActiveChatId(id);
+    if (pathname === "/home") {
+      router.refresh();
+    } else {
+      router.push("/home");
+    }
+  };
+
+  const handleDeleteChat = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    deleteChat(id);
+  };
 
   return (
     <Sidebar className="border-r">
@@ -125,6 +151,77 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+
+          {user && chatHistory.length > 0 && (
+            <>
+              <SidebarSeparator />
+              <SidebarGroup>
+                <SidebarGroupLabel className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>Chat History</span>
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {chatHistory.length > 0 ? (
+                      chatHistory
+                        .sort(
+                          (a, b) =>
+                            new Date(b.createdAt).getTime() -
+                            new Date(a.createdAt).getTime()
+                        )
+                        .map((chat) => (
+                          <SidebarMenuItem key={chat.id}>
+                            <SidebarMenuButton
+                              onClick={() => handleChatClick(chat.id)}
+                              className={cn(
+                                "w-full gap-2 transition-all duration-200 justify-between pr-2 group",
+                                activeChatId === chat.id
+                                  ? "bg-primary/10 text-primary"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              <div className="flex items-center gap-2 overflow-hidden">
+                                <MessageSquare
+                                  className={cn(
+                                    "w-4 h-4 flex-shrink-0",
+                                    activeChatId === chat.id
+                                      ? "text-primary"
+                                      : "text-muted-foreground"
+                                  )}
+                                />
+                                <div className="truncate text-sm">
+                                  <div className="truncate">{chat.title}</div>
+                                  <div className="text-xs text-muted-foreground truncate">
+                                    {formatDistanceToNow(
+                                      new Date(chat.createdAt),
+                                      { addSuffix: true }
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                role="button"
+                                className="w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-muted"
+                                onClick={(e) => handleDeleteChat(e, chat.id)}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                <span className="sr-only">Delete</span>
+                              </div>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))
+                    ) : (
+                      <SidebarMenuItem>
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                          No chat history yet
+                        </div>
+                      </SidebarMenuItem>
+                    )}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </>
+          )}
         </div>
 
         <SidebarGroup className="mt-auto">
