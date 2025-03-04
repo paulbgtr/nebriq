@@ -6,7 +6,10 @@ import { useUser } from "@/shared/hooks/use-user";
 import { useRelevantNotesStore } from "@/store/relevant-notes";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { ChatContent } from "@/modules/home/features/chat/components/chat-content";
-import { InputArea } from "@/modules/home/features/chat/components/input-area";
+import {
+  InputArea,
+  InputAreaHandle,
+} from "@/modules/home/features/chat/components/input-area";
 import { Spinner } from "@/shared/components/spinner";
 import { cn } from "@/shared/lib/utils";
 import { PlusCircle } from "lucide-react";
@@ -15,13 +18,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import { useChatHistoryStore } from "@/store/chat-history";
 
 export default function HomeModule() {
   const [followUp, setFollowUp] = useState("");
   const [mounted, setMounted] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const inputAreaRef = useRef<InputAreaHandle>(null);
 
   const { getNotesQuery } = useNotes();
   const { relevantNotes, setRelevantNotes } = useRelevantNotesStore();
@@ -44,14 +47,6 @@ export default function HomeModule() {
   const { setQuery, chatContext, isLoading, clearChatContext, activeChatId } =
     useChat(user?.id, allNotes || []);
 
-  const { getChatById } = useChatHistoryStore();
-  const activeChat = useMemo(() => {
-    if (activeChatId) {
-      return getChatById(activeChatId);
-    }
-    return null;
-  }, [activeChatId, getChatById]);
-
   const lastAssistantMessage = useMemo(
     () =>
       chatContext.conversationHistory
@@ -67,6 +62,15 @@ export default function HomeModule() {
     }
   }, [chatContext.conversationHistory]);
 
+  const handleNewChat = () => {
+    clearChatContext();
+    setTimeout(() => {
+      if (inputAreaRef.current) {
+        inputAreaRef.current.focusInput();
+      }
+    }, 100);
+  };
+
   return (
     <article
       ref={chatContainerRef}
@@ -81,9 +85,7 @@ export default function HomeModule() {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => {
-                  clearChatContext();
-                }}
+                onClick={handleNewChat}
                 className={cn(
                   "flex items-center justify-center",
                   "w-9 h-9",
@@ -121,14 +123,6 @@ export default function HomeModule() {
                   : "justify-between"
               )}
             >
-              <div className="px-4 pt-4">
-                {activeChat && chatContext.conversationHistory.length > 0 && (
-                  <h2 className="text-lg font-medium text-foreground/80 mb-4">
-                    {activeChat.title}
-                  </h2>
-                )}
-              </div>
-
               <ChatContent
                 scrollContainerRef={scrollContainerRef}
                 chatContext={chatContext}
@@ -137,6 +131,7 @@ export default function HomeModule() {
               />
 
               <InputArea
+                ref={inputAreaRef}
                 followUp={followUp}
                 setFollowUp={setFollowUp}
                 setQuery={setQuery}

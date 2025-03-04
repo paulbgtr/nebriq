@@ -170,11 +170,14 @@ export function AppSidebar() {
                             new Date(a.createdAt).getTime()
                         )
                         .map((chat) => (
-                          <SidebarMenuItem key={chat.id}>
+                          <SidebarMenuItem
+                            key={chat.id}
+                            className="relative group/chat-item"
+                          >
                             <SidebarMenuButton
                               onClick={() => handleChatClick(chat.id)}
                               className={cn(
-                                "w-full gap-2 transition-all duration-200 justify-between pr-2 group",
+                                "w-full gap-2 transition-all duration-200 justify-between pr-2",
                                 activeChatId === chat.id
                                   ? "bg-primary/10 text-primary"
                                   : "text-muted-foreground hover:text-foreground"
@@ -187,7 +190,7 @@ export function AppSidebar() {
                               </div>
                               <div
                                 role="button"
-                                className="w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-muted"
+                                className="w-6 h-6 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-100 transition-opacity rounded-full hover:bg-muted"
                                 onClick={(e) => handleDeleteChat(e, chat.id)}
                               >
                                 <Trash2 className="w-3 h-3" />
