@@ -5,7 +5,7 @@ import { z } from "zod";
 import { motion } from "framer-motion";
 import { cn } from "../lib/utils";
 
-import { useNotes } from "@/hooks/use-notes";
+import { useNotes } from "@/shared/hooks/use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { formatDate, formatHTMLNoteContent } from "../lib/utils";
@@ -18,6 +18,7 @@ interface NoteProps {
   selected?: boolean;
   onSelect?: (selected: boolean) => void;
   skipAnimation?: boolean;
+  viewMode?: "grid" | "list";
 }
 
 const MAX_CONTENT_LENGTH = 80;
@@ -77,6 +78,7 @@ const NoteComponent: React.FC<NoteProps> = ({
   selected = false,
   onSelect,
   skipAnimation = false,
+  viewMode = "grid",
 }) => {
   const { id, title, content, tags, created_at } = note;
   const { deleteNoteMutation } = useNotes();
@@ -111,12 +113,15 @@ const NoteComponent: React.FC<NoteProps> = ({
   const noteClasses = React.useMemo(
     () =>
       cn(
-        "group relative flex flex-col",
+        "group relative",
+        viewMode === "grid" ? "flex flex-col" : "flex flex-row gap-6",
         "p-3 sm:p-4 md:p-5",
         "mb-2 sm:mb-3 md:mb-4",
         "bg-card/50 backdrop-blur-sm",
         "rounded-md sm:rounded-lg",
-        "min-h-[140px] sm:min-h-[160px]",
+        viewMode === "grid"
+          ? "min-h-[140px] sm:min-h-[160px]"
+          : "min-h-[100px]",
         "h-full",
         selected && selectable
           ? "ring-2 ring-primary border-transparent"
@@ -128,7 +133,7 @@ const NoteComponent: React.FC<NoteProps> = ({
         "hover:translate-y-[-2px]",
         "cursor-pointer"
       ),
-    [selected, selectable]
+    [selected, selectable, viewMode]
   );
 
   const noteTitle = title || "Untitled";
@@ -153,7 +158,12 @@ const NoteComponent: React.FC<NoteProps> = ({
       onClick={handleClick}
       layout={!skipAnimation}
     >
-      <div className="flex justify-between items-start sm:items-center mb-2 sm:mb-3">
+      <div
+        className={cn(
+          "flex justify-between items-start sm:items-center mb-2 sm:mb-3",
+          viewMode === "list" && "flex-1 min-w-0"
+        )}
+      >
         <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 pr-8 sm:pr-0 line-clamp-1">
           {noteTitle}
           <ChevronRight className="inline-block ml-1 w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
@@ -163,11 +173,22 @@ const NoteComponent: React.FC<NoteProps> = ({
         </div>
       </div>
 
-      <div className="flex-grow">
+      <div
+        className={cn(
+          viewMode === "grid" ? "flex-grow" : "hidden sm:block flex-1 min-w-0"
+        )}
+      >
         <NoteContent content={noteContent} />
       </div>
 
-      <div className="mt-auto pt-2 sm:pt-3 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-between sm:items-end border-t border-border/10">
+      <div
+        className={cn(
+          "mt-auto pt-2 sm:pt-3 flex gap-2 sm:gap-3 border-t border-border/10",
+          viewMode === "grid"
+            ? "flex-col sm:flex-row sm:justify-between sm:items-end"
+            : "flex-row items-center gap-6 ml-auto"
+        )}
+      >
         <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
           <Calendar className="w-3 h-3 sm:w-4 sm:h-4 opacity-70" />
           <time className="group-hover:text-foreground/60 transition-colors duration-200">

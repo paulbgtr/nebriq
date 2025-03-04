@@ -4,17 +4,20 @@ import { noteSchema } from "../lib/schemas/note";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { EmptyState } from "./empty-state";
+import { cn } from "../lib/utils";
 
 type NoteListProps = {
   notes: z.infer<typeof noteSchema>[];
   onSelectionChange?: (selectedNotes: string[]) => void;
   selectable?: boolean;
+  viewMode?: "grid" | "list";
 };
 
 export const NoteList = ({
   notes,
   onSelectionChange,
   selectable = false,
+  viewMode = "grid",
 }: NoteListProps) => {
   const [selectedNotes, setSelectedNotes] = useState<string[]>([]);
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -61,7 +64,14 @@ export const NoteList = ({
   const shouldAnimate = !isFirstRender;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6 items-start">
+    <div
+      className={cn(
+        viewMode === "grid"
+          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6"
+          : "flex flex-col gap-4",
+        "items-start"
+      )}
+    >
       <AnimatePresence mode="popLayout">
         {sortedNotes.map((note) => (
           <motion.div
@@ -76,7 +86,7 @@ export const NoteList = ({
               mass: 1,
             }}
             layout
-            className="h-full"
+            className="h-full w-full"
           >
             <Note
               note={note}
@@ -84,6 +94,7 @@ export const NoteList = ({
               selected={selectedNotes.includes(note.id)}
               onSelect={(selected) => handleNoteSelect(note.id, selected)}
               skipAnimation={true}
+              viewMode={viewMode}
             />
           </motion.div>
         ))}
