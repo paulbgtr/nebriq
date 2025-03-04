@@ -216,7 +216,6 @@ export default function LibraryModule() {
         <SearchBar
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
-          onToggleSearch={toggleSearch}
           isPendingTransition={isPendingTransition}
           showSearch={showSearch}
         />
