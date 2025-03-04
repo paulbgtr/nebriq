@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useChat } from "@/shared/hooks/use-chat";
-import { useTypewriter } from "@/shared/hooks/use-typewriter";
 import { useUser } from "@/shared/hooks/use-user";
 import { useRelevantNotesStore } from "@/store/relevant-notes";
 import { useNotes } from "@/shared/hooks/use-notes";
@@ -60,8 +59,6 @@ export default function HomeModule() {
         .slice(-1)[0]?.content,
     [chatContext.conversationHistory]
   );
-
-  const { displayedText } = useTypewriter(lastAssistantMessage ?? "", 15);
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
@@ -135,7 +132,7 @@ export default function HomeModule() {
               <ChatContent
                 scrollContainerRef={scrollContainerRef}
                 chatContext={chatContext}
-                displayedText={displayedText}
+                displayedText={lastAssistantMessage}
                 isLoading={isLoading}
               />
 

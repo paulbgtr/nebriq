@@ -181,22 +181,8 @@ export function AppSidebar() {
                               )}
                             >
                               <div className="flex items-center gap-2 overflow-hidden">
-                                <MessageSquare
-                                  className={cn(
-                                    "w-4 h-4 flex-shrink-0",
-                                    activeChatId === chat.id
-                                      ? "text-primary"
-                                      : "text-muted-foreground"
-                                  )}
-                                />
                                 <div className="truncate text-sm">
-                                  <div className="truncate">{chat.title}</div>
-                                  <div className="text-xs text-muted-foreground truncate">
-                                    {formatDistanceToNow(
-                                      new Date(chat.createdAt),
-                                      { addSuffix: true }
-                                    )}
-                                  </div>
+                                  <span className="truncate">{chat.title}</span>
                                 </div>
                               </div>
                               <div
