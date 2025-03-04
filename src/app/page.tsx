@@ -23,7 +23,6 @@ import {
   Sigma,
   Code,
   Compass,
-  BotMessageSquare,
   BookOpen,
   ChevronRight,
   Grid2X2,
@@ -31,6 +30,9 @@ import {
   ScrollText,
   RouteOff,
   SearchX,
+  User,
+  ArrowUp,
+  BotMessageSquare,
 } from "lucide-react";
 import { ModeToggle } from "@/modules/landing-page/features/theme-switcher";
 import { useTheme } from "next-themes";
@@ -502,19 +504,38 @@ export default function Home() {
           ref={heroRef}
           className="relative min-h-screen pt-24 sm:pt-32 pb-12 sm:pb-16 overflow-hidden"
         >
-          {/* Floating Elements */}
+          {/* Enhanced Floating Elements */}
           <div className="absolute inset-0">
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0.1, 0.3, 0.1] }}
+              animate={{ opacity: [0.15, 0.35, 0.15] }}
               transition={{ duration: 5, repeat: Infinity }}
-              className="absolute rounded-full top-1/4 -left-20 w-40 sm:w-60 h-40 sm:h-60 bg-primary/20 blur-[100px]"
+              className="absolute rounded-full top-1/4 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-primary/30 blur-[120px]"
             />
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0.1, 0.2, 0.1] }}
+              animate={{ opacity: [0.15, 0.25, 0.15] }}
               transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-              className="absolute rounded-full bottom-1/4 -right-20 w-60 sm:w-80 h-60 sm:h-80 bg-secondary/20 blur-[100px]"
+              className="absolute rounded-full bottom-1/4 -right-20 w-72 sm:w-96 h-72 sm:h-96 bg-secondary/30 blur-[120px]"
+            />
+            {/* Additional floating element */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.1, 0.2, 0.1] }}
+              transition={{ duration: 6, repeat: Infinity, delay: 0.5 }}
+              className="absolute rounded-full top-2/3 left-1/3 w-40 sm:w-56 h-40 sm:h-56 bg-accent/20 blur-[100px]"
+            />
+            {/* Subtle animated pattern overlay */}
+            <motion.div
+              className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.02]"
+              animate={{
+                backgroundPosition: ["0% 0%", "100% 100%"],
+              }}
+              transition={{
+                duration: 100,
+                repeat: Infinity,
+                ease: "linear",
+              }}
             />
           </div>
 
@@ -524,11 +545,11 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="text-center space-y-4 sm:space-y-6"
+              className="text-center space-y-6 sm:space-y-8"
             >
               {/* Hero Title */}
               <motion.div
-                className="relative space-y-2 sm:space-y-3"
+                className="relative space-y-4 sm:space-y-5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -538,12 +559,13 @@ export default function Home() {
                 }}
               >
                 <div className="relative">
-                  {/* Vibrant background glow with primary colors */}
+                  {/* Enhanced vibrant background glow with primary colors */}
                   <motion.div
-                    className="absolute -inset-10 bg-gradient-to-br from-primary/20 via-primary/5 to-secondary/10 blur-3xl opacity-50"
+                    className="absolute -inset-12 bg-gradient-to-br from-primary/30 via-primary/10 to-secondary/20 blur-3xl opacity-60"
                     animate={{
-                      opacity: [0.3, 0.5, 0.3],
+                      opacity: [0.4, 0.6, 0.4],
                       rotate: [0, 1, 0],
+                      scale: [1, 1.05, 1],
                     }}
                     transition={{
                       duration: 10,
@@ -552,10 +574,10 @@ export default function Home() {
                     }}
                   />
 
-                  <h1 className="relative text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
-                    <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 sm:mb-4 md:mb-6">
+                  <h1 className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
+                    <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 sm:mb-5 md:mb-7">
                       <motion.span
-                        className="inline-block bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/95 to-secondary drop-shadow-[0_2px_10px_rgba(147,197,253,0.4)] [text-shadow:0_4px_12px_rgba(0,0,0,0.2)]"
+                        className="inline-block bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/95 to-secondary drop-shadow-[0_2px_12px_rgba(147,197,253,0.5)] [text-shadow:0_4px_14px_rgba(0,0,0,0.25)]"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.3 }}
@@ -563,7 +585,7 @@ export default function Home() {
                         Write
                       </motion.span>
                       <motion.span
-                        className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-primary via-primary/95 to-secondary/90 drop-shadow-[0_2px_10px_rgba(167,139,250,0.4)]"
+                        className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-primary via-primary/95 to-secondary/90 drop-shadow-[0_2px_10px_rgba(167,139,250,0.5)]"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
@@ -572,9 +594,9 @@ export default function Home() {
                       </motion.span>
                       <motion.div className="relative inline-block">
                         <motion.span
-                          className="absolute inset-0 bg-gradient-to-br from-secondary/30 via-accent/30 to-primary/30 blur-[25px]"
+                          className="absolute inset-0 bg-gradient-to-br from-secondary/40 via-accent/40 to-primary/40 blur-[30px]"
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: [0.4, 0.8, 0.4] }}
+                          animate={{ opacity: [0.5, 0.9, 0.5] }}
                           transition={{
                             duration: 4,
                             repeat: Infinity,
@@ -582,7 +604,7 @@ export default function Home() {
                           }}
                         />
                         <motion.span
-                          className="relative inline-block bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/95 to-secondary drop-shadow-[0_2px_10px_rgba(147,197,253,0.4)] [text-shadow:0_4px_12px_rgba(0,0,0,0.2)]"
+                          className="relative inline-block bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/95 to-secondary drop-shadow-[0_2px_12px_rgba(147,197,253,0.5)] [text-shadow:0_4px_14px_rgba(0,0,0,0.25)]"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.8, delay: 0.5 }}
@@ -591,18 +613,18 @@ export default function Home() {
                         </motion.span>
                       </motion.div>
                       <motion.span
-                        className="inline-block text-primary/50"
+                        className="inline-block text-primary/60"
                         initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 0.5, scale: 1 }}
+                        animate={{ opacity: 0.6, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.4 }}
                       >
                         •
                       </motion.span>
                       <motion.div className="relative inline-block">
                         <motion.span
-                          className="absolute inset-0 bg-secondary/10 blur-2xl"
+                          className="absolute inset-0 bg-secondary/20 blur-3xl"
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: [0.2, 0.4, 0.2] }}
+                          animate={{ opacity: [0.3, 0.5, 0.3] }}
                           transition={{
                             duration: 4,
                             repeat: Infinity,
@@ -611,7 +633,7 @@ export default function Home() {
                           }}
                         />
                         <motion.span
-                          className="relative inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/95 to-secondary"
+                          className="relative inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/95 to-secondary drop-shadow-[0_2px_12px_rgba(147,197,253,0.5)]"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.8, delay: 0.7 }}
@@ -622,13 +644,17 @@ export default function Home() {
                     </div>
                   </h1>
                 </div>
-                <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground/90 [text-wrap:balance] bg-clip-text">
+                <p className="max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl text-muted-foreground/90 [text-wrap:balance] bg-clip-text font-medium">
                   Transform your scattered thoughts into a living knowledge base
-                  that answers your questions instantly.
+                  that{" "}
+                  <span className="text-primary/90">
+                    answers your questions instantly
+                  </span>
+                  .
                 </p>
               </motion.div>
 
-              {/* CTA Form */}
+              {/* Enhanced CTA Form */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -636,11 +662,11 @@ export default function Home() {
                 className="max-w-xl mx-auto px-2 sm:px-0"
               >
                 <div className="relative group">
-                  <div className="absolute transition-all duration-500 rounded-lg -inset-1 bg-gradient-to-r from-primary/50 via-primary/30 to-primary/50 blur-lg group-hover:blur-xl" />
+                  <div className="absolute transition-all duration-500 rounded-lg -inset-1.5 bg-gradient-to-r from-primary/60 via-primary/40 to-primary/60 blur-lg group-hover:blur-xl opacity-80 group-hover:opacity-100" />
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="relative flex flex-col sm:flex-row gap-2 sm:gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm"
+                      className="relative flex flex-col sm:flex-row gap-3 sm:gap-4 p-2.5 rounded-lg bg-background/80 backdrop-blur-sm"
                     >
                       <FormField
                         control={form.control}
@@ -652,7 +678,7 @@ export default function Home() {
                                 {...field}
                                 type="email"
                                 placeholder="Enter your email"
-                                className="h-10 sm:h-12 bg-transparent border-primary/20"
+                                className="h-12 sm:h-14 bg-transparent border-primary/30 text-base"
                               />
                             </FormControl>
                           </FormItem>
@@ -661,7 +687,7 @@ export default function Home() {
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="h-10 sm:h-12 px-4 sm:px-8 transition-colors duration-300 bg-primary/90 hover:bg-primary"
+                        className="h-12 sm:h-14 px-6 sm:px-10 transition-all duration-300 bg-primary/90 hover:bg-primary text-base font-medium hover:scale-[1.02] active:scale-[0.98]"
                       >
                         Join Waitlist
                       </Button>
@@ -670,17 +696,29 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              {/* Feature Tags */}
+              {/* Enhanced Feature Tags */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
-                className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2 sm:px-4"
+                className="flex flex-wrap justify-center gap-3 sm:gap-4 px-2 sm:px-4"
               >
                 {[
-                  { icon: Sparkles, text: "AI-Powered Writing" },
-                  { icon: Waypoints, text: "Dynamic Knowledge Maps" },
-                  { icon: BrainCircuit, text: "Intelligent Conversations" },
+                  {
+                    icon: Sparkles,
+                    text: "AI-Powered Writing",
+                    color: "from-blue-500/20 to-blue-600/20",
+                  },
+                  {
+                    icon: Waypoints,
+                    text: "Dynamic Knowledge Maps",
+                    color: "from-purple-500/20 to-purple-600/20",
+                  },
+                  {
+                    icon: BrainCircuit,
+                    text: "Intelligent Conversations",
+                    color: "from-green-500/20 to-green-600/20",
+                  },
                 ].map((feature, index) => (
                   <motion.div
                     key={feature.text}
@@ -691,9 +729,10 @@ export default function Home() {
                       delay: 1 + index * 0.1,
                       ease: "easeOut",
                     }}
-                    className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className={`flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r ${feature.color} backdrop-blur-sm border border-primary/20 shadow-sm`}
                   >
-                    <feature.icon className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                    <feature.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                     <span className="text-xs sm:text-sm font-medium">
                       {feature.text}
                     </span>
@@ -703,8 +742,8 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Interactive Chat Demo Section */}
-          <div className="relative z-10 w-full mt-8 sm:mt-10 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32">
+          {/* Enhanced Interactive Chat Demo Section */}
+          <div className="relative z-10 w-full mt-10 sm:mt-14 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32">
             <div className="max-w-3xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -716,22 +755,22 @@ export default function Home() {
                   delay: 1.2,
                 }}
                 whileHover={{
-                  y: -5,
-                  boxShadow: "0 30px 60px rgba(var(--primary-rgb), 0.15)",
+                  y: -8,
+                  boxShadow: "0 30px 60px rgba(var(--primary-rgb), 0.2)",
                   transition: {
                     type: "spring",
                     stiffness: 150,
                     damping: 25,
                   },
                 }}
-                className="relative rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden border border-primary/10 shadow-2xl shadow-primary/5 bg-background/90 backdrop-blur-md"
+                className="relative rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden border border-primary/20 shadow-2xl shadow-primary/10 bg-background/90 backdrop-blur-md"
               >
-                {/* Background effects */}
+                {/* Enhanced background effects */}
                 <motion.div
-                  className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 blur-2xl opacity-70"
+                  className="absolute -inset-1 bg-gradient-to-r from-primary/15 via-primary/10 to-secondary/15 blur-2xl opacity-80"
                   animate={{
-                    opacity: [0.4, 0.6, 0.4],
-                    scale: [1, 1.01, 1],
+                    opacity: [0.5, 0.7, 0.5],
+                    scale: [1, 1.02, 1],
                   }}
                   transition={{
                     duration: 8,
@@ -740,9 +779,9 @@ export default function Home() {
                   }}
                 />
 
-                {/* Subtle pattern overlay */}
+                {/* Enhanced subtle pattern overlay */}
                 <motion.div
-                  className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.015]"
+                  className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.02]"
                   animate={{
                     backgroundPosition: ["0% 0%", "100% 100%"],
                   }}
@@ -752,6 +791,19 @@ export default function Home() {
                     ease: "linear",
                   }}
                 />
+
+                {/* Chat Interface Header */}
+                <div className="flex items-center justify-between px-6 py-3 border-b border-primary/10 bg-muted/30">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground/70">
+                    Nebriq Assistant
+                  </div>
+                  <div className="w-16"></div>
+                </div>
 
                 {/* Simple Chat Interface */}
                 <div className="p-6 sm:p-8">
@@ -763,7 +815,7 @@ export default function Home() {
                       transition={{ delay: 1.5 }}
                       className="flex justify-end"
                     >
-                      <div className="max-w-[80%] bg-muted/30 rounded-2xl rounded-tr-sm px-4 py-2 text-sm text-muted-foreground/90">
+                      <div className="max-w-[80%] bg-primary/10 rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-foreground/90 shadow-sm">
                         What are the key insights from my research notes about
                         learning techniques?
                       </div>
@@ -780,10 +832,10 @@ export default function Home() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 2.4 }}
-                          className="absolute -top-3 left-0 flex items-center gap-1.5 px-2 py-0.5 text-[10px] rounded-full bg-secondary/10 border border-secondary/20"
+                          className="absolute -top-3 left-0 flex items-center gap-1.5 px-2 py-0.5 text-[10px] rounded-full bg-secondary/15 border border-secondary/30 shadow-sm"
                         >
-                          <StickyNote className="w-3 h-3 text-secondary/70" />
-                          <span className="text-secondary/80">
+                          <StickyNote className="w-3 h-3 text-secondary/80" />
+                          <span className="text-secondary/90 font-medium">
                             From 3 notes
                           </span>
                         </motion.div>
@@ -806,7 +858,7 @@ export default function Home() {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: 3.2 }}
                             >
-                              <span className="text-primary/80">
+                              <span className="text-primary font-medium">
                                 Active Recall:
                               </span>{" "}
                               Testing yourself rather than passive re-reading
@@ -816,7 +868,7 @@ export default function Home() {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: 3.4 }}
                             >
-                              <span className="text-primary/80">
+                              <span className="text-primary font-medium">
                                 Spaced Repetition:
                               </span>{" "}
                               Reviewing at optimal intervals
@@ -826,7 +878,7 @@ export default function Home() {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: 3.6 }}
                             >
-                              <span className="text-primary/80">
+                              <span className="text-primary font-medium">
                                 Elaborative Rehearsal:
                               </span>{" "}
                               Connecting new info to existing knowledge
@@ -837,8 +889,8 @@ export default function Home() {
                     </motion.div>
                   </div>
 
-                  {/* Input Area */}
-                  <div className="relative rounded-2xl border border-border/30 bg-background/95 backdrop-blur-xl overflow-hidden">
+                  {/* Enhanced Input Area */}
+                  <div className="relative rounded-2xl border border-border/40 bg-background/95 backdrop-blur-xl overflow-hidden shadow-sm">
                     <div className="flex items-center">
                       <motion.div
                         initial={{ opacity: 0.4 }}
@@ -848,28 +900,34 @@ export default function Home() {
                           repeat: Infinity,
                           ease: "easeInOut",
                         }}
-                        className="flex-1 px-4 py-3.5 text-base leading-relaxed resize-none border-0 bg-transparent text-muted-foreground/60"
+                        className="flex-1 px-4 py-3.5 text-base leading-relaxed resize-none border-0 bg-transparent text-muted-foreground/70"
                       >
                         Ask anything about your notes...
                       </motion.div>
                       <div className="flex items-center gap-2 px-4">
                         <motion.div
-                          whileHover={{ scale: 1.05 }}
+                          whileHover={{
+                            scale: 1.05,
+                            boxShadow: "0 0 15px rgba(var(--primary-rgb), 0.5)",
+                          }}
                           whileTap={{ scale: 0.95 }}
-                          className="w-8 h-8 rounded-full bg-primary/90 flex items-center justify-center cursor-pointer"
+                          className="w-9 h-9 rounded-full bg-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary/20"
                         >
-                          <FaArrowUp className="w-3.5 h-3.5 text-primary-foreground" />
+                          <ArrowUp className="w-3.5 h-3.5 text-primary-foreground" />
                         </motion.div>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-border/10 bg-muted/20 px-4 py-2.5">
+                    <div className="flex items-center justify-between border-t border-border/20 bg-muted/30 px-4 py-2.5">
                       <div className="flex items-center gap-2">
                         <motion.button
-                          whileHover={{ scale: 1.02 }}
+                          whileHover={{
+                            scale: 1.02,
+                            backgroundColor: "rgba(var(--primary-rgb), 0.1)",
+                          }}
                           whileTap={{ scale: 0.98 }}
                           type="button"
-                          className="flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50 transition-colors duration-200"
+                          className="flex items-center gap-2 px-2.5 py-1.5 rounded-full text-xs font-medium text-muted-foreground/80 hover:text-muted-foreground hover:bg-muted/60 transition-colors duration-200"
                         >
                           <StickyNote className="w-3.5 h-3.5" />
                           <span>Add context</span>
@@ -878,10 +936,13 @@ export default function Home() {
 
                       <div className="flex items-center gap-2">
                         <motion.button
-                          whileHover={{ scale: 1.02 }}
+                          whileHover={{
+                            scale: 1.02,
+                            backgroundColor: "rgba(var(--primary-rgb), 0.1)",
+                          }}
                           whileTap={{ scale: 0.98 }}
                           type="button"
-                          className="flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50 transition-colors duration-200"
+                          className="flex items-center gap-2 px-2.5 py-1.5 rounded-full text-xs font-medium text-muted-foreground/80 hover:text-muted-foreground hover:bg-muted/60 transition-colors duration-200"
                         >
                           <BrainCircuit className="w-3.5 h-3.5" />
                           <span>GPT-4</span>
@@ -898,29 +959,46 @@ export default function Home() {
         {/* Problem Statement Section */}
         <section
           id="problem"
-          className="relative py-12 sm:py-16 md:py-24 mt-12 sm:mt-16 md:mt-32"
+          className="relative py-16 sm:py-20 md:py-28 mt-16 sm:mt-20 md:mt-36"
         >
-          {/* Background elements */}
-          <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px]" />
+          {/* Enhanced Background elements */}
+          <div className="absolute inset-0 bg-background/30 backdrop-blur-[3px]" />
 
-          {/* Add floating gradient orbs similar to hero section */}
+          {/* Enhanced floating gradient orbs */}
           <div className="absolute inset-0 overflow-hidden">
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0.05, 0.15, 0.05] }}
+              animate={{ opacity: [0.08, 0.18, 0.08] }}
               transition={{ duration: 7, repeat: Infinity }}
-              className="absolute rounded-full top-1/3 -left-20 w-40 sm:w-60 h-40 sm:h-60 bg-primary/20 blur-[100px]"
+              className="absolute rounded-full top-1/3 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-primary/30 blur-[120px]"
             />
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0.05, 0.1, 0.05] }}
+              animate={{ opacity: [0.08, 0.15, 0.08] }}
               transition={{ duration: 8, repeat: Infinity, delay: 1 }}
-              className="absolute rounded-full bottom-1/3 -right-20 w-60 sm:w-80 h-60 sm:h-80 bg-secondary/20 blur-[100px]"
+              className="absolute rounded-full bottom-1/3 -right-20 w-72 sm:w-96 h-72 sm:h-96 bg-secondary/30 blur-[120px]"
+            />
+            {/* Additional floating element */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.05, 0.12, 0.05] }}
+              transition={{ duration: 6, repeat: Infinity, delay: 0.5 }}
+              className="absolute rounded-full top-2/3 left-1/3 w-40 sm:w-56 h-40 sm:h-56 bg-accent/20 blur-[100px]"
             />
           </div>
 
-          {/* Subtle pattern overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.015]" />
+          {/* Enhanced Subtle pattern overlay */}
+          <motion.div
+            className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.02]"
+            animate={{
+              backgroundPosition: ["0% 0%", "100% 100%"],
+            }}
+            transition={{
+              duration: 100,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
 
           {/* Rest of the content with relative positioning */}
           <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
@@ -936,17 +1014,35 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="space-y-2"
+                className="space-y-3"
               >
-                <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 sm:mb-6 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 sm:mb-8 border rounded-full border-primary/30 bg-background/80 backdrop-blur-sm shadow-sm">
                   <Settings className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">
                     The Challenge
                   </span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-foreground/80">
-                  Knowledge Is Trapped in Your Notes
-                </h2>
+
+                {/* Enhanced title with animated gradient background */}
+                <div className="relative">
+                  <motion.div
+                    className="absolute -inset-10 bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10 blur-3xl opacity-40"
+                    animate={{
+                      opacity: [0.3, 0.5, 0.3],
+                      rotate: [0, 1, 0],
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 10,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <h2 className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-foreground/80">
+                    Knowledge Is <span className="text-primary">Trapped</span>{" "}
+                    in Your Notes
+                  </h2>
+                </div>
               </motion.div>
 
               <motion.p
@@ -954,32 +1050,45 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="mx-auto mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-muted-foreground/90 max-w-prose"
+                className="mx-auto mt-6 sm:mt-8 text-lg sm:text-xl leading-relaxed text-muted-foreground/90 max-w-prose"
               >
                 Traditional note apps leave your knowledge buried and
-                disconnected. Nebriq turns your notes into a living knowledge
-                base you can ask questions and get immediate answers from.
+                disconnected. Nebriq turns your notes into a{" "}
+                <span className="font-medium text-foreground">
+                  living knowledge base
+                </span>{" "}
+                you can ask questions and get immediate answers from.
               </motion.p>
 
-              <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 text-left md:grid-cols-3">
+              {/* Enhanced challenge cards */}
+              <div className="grid grid-cols-1 gap-5 sm:gap-7 md:gap-8 mt-10 sm:mt-14 text-left md:grid-cols-3">
                 {[
                   {
                     title: "Lost Information",
                     icon: SearchX,
                     description:
                       "Important insights get buried in endless notes, making it difficult to find what you need when you need it.",
+                    color: "from-blue-500/20 to-blue-600/10",
+                    iconBg: "bg-blue-500/15",
+                    iconColor: "text-blue-500",
                   },
                   {
                     title: "Disconnected Knowledge",
                     icon: RouteOff,
                     description:
                       "Your notes contain valuable connections and patterns that remain hidden without a way to surface them.",
+                    color: "from-purple-500/20 to-purple-600/10",
+                    iconBg: "bg-purple-500/15",
+                    iconColor: "text-purple-500",
                   },
                   {
                     title: "Static Content",
                     icon: ScrollText,
                     description:
                       "Traditional notes are passive storage - you write once and struggle to extract insights later.",
+                    color: "from-green-500/20 to-green-600/10",
+                    iconBg: "bg-green-500/15",
+                    iconColor: "text-green-500",
                   },
                 ].map((item, index) => (
                   <motion.div
@@ -988,20 +1097,36 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     className="group"
                   >
-                    <div className="p-4 sm:p-6 transition-all duration-300 border rounded-lg bg-background/50 border-border/50 hover:bg-background/80 hover:border-primary/20 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden">
-                      {/* Add subtle gradient background */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="p-5 sm:p-7 transition-all duration-300 border rounded-xl bg-background/60 border-border/50 hover:bg-background/90 hover:border-primary/30 hover:shadow-lg relative overflow-hidden">
+                      {/* Enhanced gradient background */}
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                      />
+
+                      {/* Animated shine effect on hover */}
+                      <motion.div
+                        initial={{ opacity: 0, x: "-100%" }}
+                        whileHover={{
+                          opacity: [0, 0.4, 0],
+                          x: ["-100%", "100%", "100%"],
+                          transition: { duration: 1.5, ease: "easeInOut" },
+                        }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+                      />
 
                       <div className="relative z-10">
-                        <div className="mb-3 flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary">
-                          <item.icon className="w-4 h-4 transition-colors group-hover:text-primary" />
+                        <div
+                          className={`mb-4 flex items-center justify-center w-10 h-10 rounded-full ${item.iconBg} ${item.iconColor}`}
+                        >
+                          <item.icon className="w-5 h-5 transition-all group-hover:scale-110" />
                         </div>
-                        <h3 className="text-base sm:text-lg font-semibold transition-colors group-hover:text-primary">
+                        <h3 className="text-lg sm:text-xl font-semibold transition-colors group-hover:text-primary">
                           {item.title}
                         </h3>
-                        <p className="mt-2 text-sm sm:text-base text-muted-foreground">
+                        <p className="mt-3 text-base text-muted-foreground/90 group-hover:text-muted-foreground">
                           {item.description}
                         </p>
                       </div>
@@ -1010,19 +1135,20 @@ export default function Home() {
                 ))}
               </div>
 
+              {/* Enhanced quote section */}
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.6 }}
-                className="mt-10 sm:mt-16"
+                className="mt-14 sm:mt-20"
               >
-                <div className="p-4 sm:p-8 border shadow-lg rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-primary/10 border-primary/20 shadow-primary/5 backdrop-blur-sm relative overflow-hidden">
-                  {/* Add shine effect */}
+                <div className="p-6 sm:p-10 border shadow-xl rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/15 via-secondary/10 to-primary/15 border-primary/30 shadow-primary/10 backdrop-blur-sm relative overflow-hidden">
+                  {/* Enhanced shine effect */}
                   <motion.div
                     initial={{ opacity: 0, x: "-100%" }}
                     animate={{
-                      opacity: [0, 0.5, 0],
+                      opacity: [0, 0.6, 0],
                       x: ["100%", "100%", "300%"],
                     }}
                     transition={{
@@ -1030,16 +1156,42 @@ export default function Home() {
                       repeat: Infinity,
                       repeatDelay: 7,
                     }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent skew-x-12"
                   />
 
-                  <div className="flex items-start space-x-3 relative z-10">
-                    <span className="text-2xl sm:text-3xl text-primary">❝</span>
-                    <p className="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text">
-                      Nebriq transforms how you interact with your knowledge.
-                      Write once, ask questions anytime, and get immediate
-                      answers from your notes.
-                    </p>
+                  {/* Subtle animated background pattern */}
+                  <motion.div
+                    className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.03]"
+                    animate={{
+                      backgroundPosition: ["0% 0%", "100% 100%"],
+                    }}
+                    transition={{
+                      duration: 50,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+
+                  <div className="flex items-start text-left space-x-4 relative z-10">
+                    <span className="text-3xl sm:text-4xl text-primary">❝</span>
+                    <div>
+                      <p className="text-lg sm:text-xl md:text-2xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text">
+                        Nebriq transforms how you interact with your knowledge.
+                        Write once, ask questions anytime, and get immediate
+                        answers from your notes.
+                      </p>
+                      <div className="mt-4 flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                          <User className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium">Paul Bogatyr</p>
+                          <p className="text-xs text-muted-foreground">
+                            Founder, Nebriq
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
