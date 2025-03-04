@@ -5,8 +5,8 @@ import { Button } from "@/shared/components/ui/button";
 import { TagManager } from "./tag-manager";
 import { EditorContextMenu } from "./context-menu";
 import { cn } from "@/shared/lib/utils";
-import { useEditorCounts } from "@/hooks/use-editor-counts";
-import { useCustomEditor } from "@/hooks/use-editor";
+import { useEditorCounts } from "@/shared/hooks/use-editor-counts";
+import { useCustomEditor } from "@/shared/hooks/use-editor";
 
 export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
   const {
