@@ -8,39 +8,51 @@ body {
 
 @layer base {
   :root {
-    /* Base colors */
-    --background: 220 33% 98%; /* Soft blue-tinted white */
-    --foreground: 220 25% 15%;
-    --card: 220 33% 99%;
-    --card-foreground: 220 25% 15%;
-    --popover: 220 33% 99%;
-    --popover-foreground: 220 25% 15%;
+    /* Base colors - Refined for knowledge management with subtle blue undertones */
+    --background: 215 30% 98%; /* Slightly cooler white for better readability */
+    --foreground: 215 35% 15%; /* Deeper blue-tinted text for better contrast */
+    --card: 215 30% 99%;
+    --card-foreground: 215 35% 15%;
+    --popover: 215 30% 99%;
+    --popover-foreground: 215 35% 15%;
 
-    /* Primary - Blue promotes focus and memory retention */
-    --primary: 220 45% 45%;
-    --primary-rgb: 64, 95, 153; /* RGB equivalent of HSL(220, 45%, 45%) */
-    --primary-foreground: 220 33% 98%;
+    /* Primary - Deeper, more focused blue for AI/knowledge theme */
+    --primary: 215 60% 45%; /* More saturated blue for emphasis */
+    --primary-rgb: 51, 102, 170; /* RGB equivalent of HSL(215, 60%, 45%) */
+    --primary-foreground: 215 30% 98%;
 
-    /* Secondary - Subtle blue-gray */
-    --secondary: 220 25% 94%;
-    --secondary-foreground: 220 25% 20%;
+    /* Secondary - Subtle blue-gray with better contrast */
+    --secondary: 215 20% 92%;
+    --secondary-foreground: 215 35% 20%;
 
-    /* Muted variations */
-    --muted: 220 25% 94%;
-    --muted-foreground: 220 20% 40%;
+    /* Muted variations - Improved for better readability */
+    --muted: 215 20% 92%;
+    --muted-foreground: 215 25% 40%;
 
-    /* Accent - Lighter blue variation for subtle emphasis */
-    --accent: 220 35% 96%;
-    --accent-foreground: 220 25% 25%;
+    /* Accent - Lighter blue variation with better distinction */
+    --accent: 215 40% 94%;
+    --accent-foreground: 215 35% 25%;
 
-    /* Destructive */
-    --destructive: 0 65% 55%;
+    /* Destructive - Slightly adjusted for better harmony */
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and interactive elements */
-    --border: 220 25% 90%;
-    --input: 220 25% 90%;
-    --ring: 220 45% 45%;
+    /* Borders and interactive elements - Refined for better UI definition */
+    --border: 215 25% 88%;
+    --input: 215 25% 88%;
+    --ring: 215 60% 45%;
+
+    /* New success color for positive feedback */
+    --success: 145 65% 42%;
+    --success-foreground: 145 65% 98%;
+
+    /* New info color for notifications */
+    --info: 200 75% 55%;
+    --info-foreground: 200 75% 98%;
+
+    /* New warning color */
+    --warning: 35 90% 55%;
+    --warning-foreground: 35 90% 98%;
 
     --radius: 0.5rem;
 
@@ -62,46 +74,68 @@ body {
   }
 
   .dark {
-    /* Base colors */
-    --background: 220 25% 12%;
-    --foreground: 220 25% 95%;
-    --card: 220 25% 14%;
-    --card-foreground: 220 25% 95%;
-    --popover: 220 25% 14%;
-    --popover-foreground: 220 25% 95%;
+    /* Base colors - Refined for knowledge management with deeper blue undertones */
+    --background: 215 30% 10%; /* Deeper blue-black for immersive experience */
+    --foreground: 215 25% 95%; /* Bright text for better readability */
+    --card: 215 30% 12%; /* Slightly lighter than background for depth */
+    --card-foreground: 215 25% 95%;
+    --popover: 215 30% 12%;
+    --popover-foreground: 215 25% 95%;
 
-    /* Primary */
-    --primary: 220 40% 60%;
-    --primary-rgb: 102, 136, 204; /* RGB equivalent of HSL(220, 40%, 60%) */
-    --primary-foreground: 220 25% 98%;
+    /* Primary - Vibrant blue that stands out in dark mode */
+    --primary: 215 70% 60%; /* More saturated blue for emphasis */
+    --primary-rgb: 77, 143, 230; /* RGB equivalent of HSL(215, 70%, 60%) */
+    --primary-foreground: 215 25% 98%;
 
-    /* Secondary */
-    --secondary: 220 20% 22%;
-    --secondary-foreground: 220 25% 95%;
+    /* Secondary - Subtle blue-gray with better contrast */
+    --secondary: 215 25% 20%;
+    --secondary-foreground: 215 25% 95%;
 
-    /* Muted */
-    --muted: 220 20% 22%;
-    --muted-foreground: 220 20% 75%;
+    /* Muted - Improved for better readability */
+    --muted: 215 25% 20%;
+    --muted-foreground: 215 20% 75%;
 
-    /* Accent - Darker blue variation */
-    --accent: 220 25% 24%;
-    --accent-foreground: 220 25% 95%;
+    /* Accent - Darker blue variation with better distinction */
+    --accent: 215 30% 22%;
+    --accent-foreground: 215 25% 95%;
 
-    /* Destructive */
-    --destructive: 0 60% 55%;
+    /* Destructive - Slightly adjusted for better harmony */
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Borders and interactive */
-    --border: 220 25% 20%;
-    --input: 220 25% 20%;
-    --ring: 220 40% 60%;
-    --sidebar-background: 240 5.9% 10%;
+    /* Borders and interactive elements - Refined for better UI definition */
+    --border: 215 30% 18%;
+    --input: 215 30% 18%;
+    --ring: 215 70% 60%;
+
+    /* New success color for positive feedback */
+    --success: 145 70% 40%;
+    --success-foreground: 145 70% 98%;
+
+    /* New info color for notifications */
+    --info: 200 80% 50%;
+    --info-foreground: 200 80% 98%;
+
+    /* New warning color */
+    --warning: 35 95% 50%;
+    --warning-foreground: 35 95% 98%;
+
+    --sidebar-background: 215 35% 8%;
+
+    --radius: 0.5rem;
+
     --sidebar-foreground: 240 4.8% 95.9%;
+
     --sidebar-primary: 224.3 76.3% 48%;
+
     --sidebar-primary-foreground: 0 0% 100%;
+
     --sidebar-accent: 240 3.7% 15.9%;
+
     --sidebar-accent-foreground: 240 4.8% 95.9%;
+
     --sidebar-border: 240 3.7% 15.9%;
+
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -147,63 +181,63 @@ body {
 
 @layer components {
   .tiptap-editor {
-    @apply bg-background rounded-lg border border-border shadow-sm;
+    @apply bg-background rounded-lg border border-border shadow-sm transition-all duration-200;
   }
 
   .tiptap-editor:focus-within {
-    @apply ring-2 ring-ring/20 border-ring;
+    @apply ring-2 ring-ring/30 border-ring shadow-md;
   }
 
   .prose {
-    @apply max-w-none px-4 py-3;
+    @apply max-w-none px-4 py-3 transition-all duration-200;
   }
 
   .prose p {
-    @apply my-3 text-foreground leading-relaxed;
+    @apply my-3 text-foreground leading-relaxed transition-colors duration-200;
   }
 
   .prose h1 {
-    @apply text-3xl font-bold text-foreground mb-4 mt-6;
+    @apply text-3xl font-bold text-foreground mb-4 mt-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
   }
 
   .prose h2 {
-    @apply text-2xl font-semibold text-foreground mb-3 mt-5;
+    @apply text-2xl font-semibold text-foreground mb-3 mt-5 border-b border-border/50 pb-1;
   }
 
   .prose h3 {
-    @apply text-xl font-semibold text-foreground mb-3 mt-4;
+    @apply text-xl font-medium text-foreground mb-2 mt-4;
   }
 
   .prose ul {
-    @apply list-disc list-outside ml-4 space-y-2;
+    @apply my-3 list-disc list-inside space-y-1;
   }
 
   .prose ol {
-    @apply list-decimal list-outside ml-4 space-y-2;
+    @apply my-3 list-decimal list-inside space-y-1;
   }
 
   .prose li {
-    @apply text-foreground;
+    @apply text-foreground leading-relaxed;
   }
 
   .prose blockquote {
-    @apply pl-4 border-l-4 border-border text-muted-foreground italic my-4;
+    @apply pl-4 border-l-2 border-primary/50 italic my-4 text-muted-foreground;
   }
 
   .prose code {
-    @apply bg-muted rounded-md px-[0.4rem] py-[0.2rem] font-mono text-[0.9em] text-primary;
+    @apply bg-secondary/50 px-1.5 py-0.5 rounded text-sm font-mono text-foreground;
   }
 
   .prose pre {
-    @apply bg-muted rounded-lg p-4 my-4 border border-border overflow-x-auto;
+    @apply bg-secondary/30 p-3 rounded-md my-4 overflow-x-auto border border-border/50;
   }
 
   .prose pre code {
-    @apply font-mono text-[0.9rem] leading-relaxed text-foreground;
+    @apply bg-transparent p-0 text-foreground;
   }
 
   .prose a {
-    @apply text-primary hover:text-primary/80 underline decoration-primary/30 hover:decoration-primary/60;
+    @apply text-primary hover:text-primary/80 underline underline-offset-2 transition-colors duration-200;
   }
 
   .prose strong {
@@ -265,13 +299,6 @@ body {
 }
 
 .hljs-number,
-.hljs-literal,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag .hljs-attr {
-  @apply text-primary/80;
-}
-
 .hljs-string,
 .hljs-doctag {
   @apply text-primary/70;
