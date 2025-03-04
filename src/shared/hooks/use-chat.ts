@@ -80,6 +80,13 @@ export const useChat = (
     useChatHistoryStore();
 
   const [chatContext, setChatContext] = useState<ChatContext>(() => {
+    if (typeof window === "undefined") {
+      return {
+        conversationHistory: [],
+        relevantNotes: [],
+      };
+    }
+
     if (activeChatId) {
       const activeChat = getChatById(activeChatId);
       if (activeChat) {
@@ -87,18 +94,16 @@ export const useChat = (
       }
     }
 
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          return {
-            conversationHistory: parsed.conversationHistory || [],
-            relevantNotes: parsed.relevantNotes || [],
-          };
-        } catch (e) {
-          console.error("Failed to parse stored context:", e);
-        }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          conversationHistory: parsed.conversationHistory || [],
+          relevantNotes: parsed.relevantNotes || [],
+        };
+      } catch (e) {
+        console.error("Failed to parse stored context:", e);
       }
     }
 
@@ -109,6 +114,10 @@ export const useChat = (
   });
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return; // Skip on server side
+    }
+
     if (activeChatId) {
       const activeChat = getChatById(activeChatId);
       if (activeChat) {
@@ -198,9 +207,11 @@ export const useChat = (
   }, [relevantNotesQuery.data]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(chatContext));
+    if (typeof window === "undefined") {
+      return; // Skip on server side
     }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(chatContext));
 
     if (activeChatId && chatContext.conversationHistory.length > 0) {
       const activeChat = getChatById(activeChatId);
@@ -221,10 +232,13 @@ export const useChat = (
 
     setChatContext(emptyContext);
 
-    if (userId) {
-      addChat(emptyContext);
-    } else {
-      setActiveChatId(null);
+    // Clear the active chat ID without creating a new one
+    // A new chat will be created when the first message is sent
+    setActiveChatId(null);
+
+    // Clear local storage to prevent hydration issues
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STORAGE_KEY);
     }
   };
 
@@ -258,17 +272,17 @@ export const useChat = (
 
       setQuery(message.trim());
 
-      if (
-        chatContext.conversationHistory.length === 0 &&
-        !activeChatId &&
-        userId
-      ) {
+      // Create a new chat if there's no active conversation
+      if (chatContext.conversationHistory.length === 0 && userId) {
         const newContext = {
           conversationHistory: [newMessage],
           relevantNotes: [],
         };
-        addChat(newContext);
+        const newChatId = addChat(newContext);
         setChatContext(newContext);
+        if (newChatId) {
+          setActiveChatId(newChatId);
+        }
       } else {
         const updatedContext = {
           ...chatContext,
@@ -360,6 +374,10 @@ export const useChat = (
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return; // Skip on server side
+    }
+
     if (query.trim()) {
       sendMessage(query);
     }

@@ -83,33 +83,35 @@ export default function HomeModule() {
         <div className="absolute w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.06)_0%,transparent_70%)] animate-pulse-glow" />
       </div>
       <div className="absolute inset-0 flex flex-col max-w-5xl mx-auto w-full">
-        <div className="absolute top-4 right-4 z-10">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handleNewChat}
-                className={cn(
-                  "flex items-center justify-center",
-                  "w-9 h-9",
-                  "rounded-full",
-                  "bg-background/95",
-                  "border border-border/30",
-                  "text-muted-foreground hover:text-primary",
-                  "shadow-sm",
-                  "transition-all duration-200 ease-in-out",
-                  "hover:scale-105 hover:shadow-md hover:border-primary/20",
-                  "backdrop-blur-sm",
-                  !chatContext.conversationHistory.length &&
-                    "opacity-0 pointer-events-none"
-                )}
-                aria-label="New Chat"
-              >
-                <PlusCircle className="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>New Chat</TooltipContent>
-          </Tooltip>
-        </div>
+        {mounted && (
+          <div className="absolute top-4 right-4 z-10">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleNewChat}
+                  className={cn(
+                    "flex items-center justify-center",
+                    "w-9 h-9",
+                    "rounded-full",
+                    "bg-background/95",
+                    "border border-border/30",
+                    "text-muted-foreground hover:text-primary",
+                    "shadow-sm",
+                    "transition-all duration-200 ease-in-out",
+                    "hover:scale-105 hover:shadow-md hover:border-primary/20",
+                    "backdrop-blur-sm",
+                    !chatContext.conversationHistory.length &&
+                      "opacity-0 pointer-events-none"
+                  )}
+                  aria-label="New Chat"
+                >
+                  <PlusCircle className="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>New Chat</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
 
         {isAllNotesLoading ? (
           <div className="flex items-center justify-center flex-1">
