@@ -123,6 +123,20 @@ export const useChat = (
       if (activeChat) {
         setChatContext(activeChat.context);
       }
+    } else {
+      setChatContext({
+        conversationHistory: [],
+        relevantNotes: [],
+      });
+
+      localStorage.removeItem(STORAGE_KEY);
+
+      setTimeout(() => {
+        const inputArea = document.querySelector("textarea");
+        if (inputArea) {
+          inputArea.focus();
+        }
+      }, 100);
     }
   }, [activeChatId, getChatById]);
 

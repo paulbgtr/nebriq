@@ -78,7 +78,19 @@ export function AppSidebar() {
 
   const handleDeleteChat = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
+
+    const isActiveChat = id === activeChatId;
+
     deleteChat(id);
+
+    if (isActiveChat) {
+      setTimeout(() => {
+        const inputArea = document.querySelector("textarea");
+        if (inputArea) {
+          inputArea.focus();
+        }
+      }, 100);
+    }
   };
 
   return (
