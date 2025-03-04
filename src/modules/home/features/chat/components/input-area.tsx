@@ -1,26 +1,42 @@
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
-import { KeyboardEvent, useState, useCallback } from "react";
+import {
+  KeyboardEvent,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import { Textarea } from "@/shared/components/ui/textarea";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { FileText, X, StickyNote } from "lucide-react";
-import { useNotes } from "@/hooks/use-notes";
+import {
+  FileText,
+  X,
+  StickyNote,
+  Brain,
+  Book,
+  Search,
+  Sparkles,
+} from "lucide-react";
+import { useNotes } from "@/shared/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
+import { ModelSelector } from "./model-selector";
+import { getRandomQuote } from "@/modules/home/utils";
+import { LucideIcon } from "lucide-react";
 
 type Props = {
   followUp: string;
   setFollowUp: (followUp: string) => void;
   setQuery: (query: string) => void;
-  maxLength: number;
-  isFullscreen?: boolean;
+  isEmpty?: boolean;
 };
 
 const AttachedNotePreview = ({
@@ -58,12 +74,120 @@ const AttachedNotePreview = ({
   );
 };
 
+const Quote = () => {
+  const [quote, setQuote] = useState("");
+
+  useEffect(() => {
+    setQuote(getRandomQuote());
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center my-3">
+      <div className="relative">
+        <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+          {quote || ""}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const QueryExample = ({
+  icon: Icon,
+  text,
+  onClick,
+}: {
+  icon: LucideIcon;
+  text: string;
+  onClick: () => void;
+}) => (
+  <motion.button
+    onClick={onClick}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    className={cn(
+      "flex items-center gap-2",
+      "px-3 py-2",
+      "rounded-lg",
+      "bg-muted/20 hover:bg-muted/30",
+      "border border-border/20 hover:border-border/30",
+      "transition-colors duration-200",
+      "group"
+    )}
+  >
+    <div className="text-primary/60 group-hover:text-primary/80 transition-colors">
+      <Icon className="w-4 h-4" />
+    </div>
+    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+      {text}
+    </span>
+  </motion.button>
+);
+
+const QueryExamples = ({ onSelect }: { onSelect: (query: string) => void }) => {
+  const { getNotesQuery } = useNotes();
+  const notes = getNotesQuery.data || [];
+
+  const examples = useMemo(() => {
+    const staticExamples = [
+      {
+        icon: Brain,
+        text: "Create Quiz",
+        query: "Create a quiz from my notes",
+      },
+      { icon: Book, text: "Summarize", query: "Summarize my recent notes" },
+    ];
+
+    const dynamicExamples = [];
+
+    const allTags = notes.flatMap((note) => note.tags || []);
+    if (allTags.length > 0) {
+      const randomTag = allTags[Math.floor(Math.random() * allTags.length)];
+      dynamicExamples.push({
+        icon: Search,
+        text: `Find ${randomTag}`,
+        query: `Find notes about ${randomTag}`,
+      });
+    }
+
+    // Add recent note example
+    const recentNote = notes[0];
+    if (recentNote?.title) {
+      dynamicExamples.push({
+        icon: Sparkles,
+        text: `Review`,
+        query: `Explain the concepts in "${recentNote.title}"`,
+      });
+    }
+
+    return [...staticExamples, ...dynamicExamples];
+  }, [notes]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 10 }}
+      transition={{ delay: 0.1 }}
+      className="flex flex-wrap items-center gap-2 mt-3 px-1"
+    >
+      {examples.map((example, i) => (
+        <QueryExample
+          key={i}
+          icon={example.icon}
+          text={example.text}
+          onClick={() => onSelect(example.query)}
+        />
+      ))}
+    </motion.div>
+  );
+};
+
 export const InputArea = ({
   followUp,
   setFollowUp,
   setQuery,
-  maxLength,
-  isFullscreen = false,
+  isEmpty = false,
 }: Props) => {
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -138,84 +262,126 @@ export const InputArea = ({
   return (
     <div
       className={cn(
-        "w-full bg-background/95 backdrop-blur-sm border-t border-border/10 transition-all duration-500 ease-in-out",
-        isFullscreen ? "px-8 py-5" : "p-3"
+        "w-full bg-background/70 backdrop-blur-xl border-t border-border/20",
+        "transition-all duration-500 ease-in-out",
+        isEmpty && "border-transparent"
       )}
     >
-      <form
-        onSubmit={handleSubmit}
+      <div
         className={cn(
-          "relative mx-auto space-y-2 transition-all duration-500 ease-in-out",
-          isFullscreen && "max-w-2xl"
+          "px-4 sm:px-6 lg:px-8 py-4 max-w-2xl mx-auto",
+          isEmpty && "px-6 py-8 sm:py-12"
         )}
       >
         <AnimatePresence>
-          {selectedNotes.length > 0 && (
+          {isEmpty && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="space-y-2"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              className="mb-6"
             >
-              <div className="flex flex-wrap items-center gap-2">
-                {selectedNotes.map((note) => (
-                  <AttachedNotePreview
-                    key={note.id}
-                    note={note}
-                    onRemove={() => handleNoteRemove(note.id)}
-                  />
-                ))}
+              <div className="flex flex-col items-center gap-8">
+                <Quote />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="relative rounded-xl border border-border/20 bg-background/80 overflow-hidden focus-within:ring-1 focus-within:ring-primary/30 focus-within:border-primary/20 transition-all duration-300 ease-in-out">
-          <Textarea
-            value={followUp}
-            onChange={(e) => setFollowUp(e.target.value)}
-            onKeyDown={handleKeyDown}
-            maxLength={maxLength}
-            placeholder="Message Briq..."
-            rows={1}
-            aria-label="Type your message"
-            className={cn(
-              "min-h-[44px] max-h-[180px] w-full",
-              "py-2.5 px-3.5",
-              "text-sm leading-relaxed resize-none",
-              "border-0 focus:ring-0 focus-visible:ring-0 ring-0 shadow-none outline-none",
-              "bg-transparent",
-              "placeholder:text-muted-foreground/40",
-              "scrollbar-thin scrollbar-thumb-primary/20",
-              "scrollbar-track-transparent",
-              "transition-all duration-300 ease-in-out",
-              isFullscreen && "min-h-[52px] text-base"
+        <form onSubmit={handleSubmit} className="relative space-y-3">
+          <AnimatePresence>
+            {selectedNotes.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-2 overflow-hidden"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  {selectedNotes.map((note) => (
+                    <AttachedNotePreview
+                      key={note.id}
+                      note={note}
+                      onRemove={() => handleNoteRemove(note.id)}
+                    />
+                  ))}
+                </div>
+              </motion.div>
             )}
-          />
+          </AnimatePresence>
 
           <div
             className={cn(
-              "flex items-center justify-between transition-all duration-300 ease-in-out",
-              "px-3 py-1.5"
+              "relative rounded-2xl border border-border/30",
+              "bg-gradient-to-b from-background/95 to-background/90",
+              "backdrop-blur-xl overflow-hidden",
+              "focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30",
+              "transition-all duration-300 ease-in-out shadow-sm",
+              isEmpty && "shadow-lg"
             )}
           >
-            <div className="flex items-center gap-2 transition-transform duration-300 ease-in-out">
+            <div className="flex items-center">
+              <Textarea
+                value={followUp}
+                onChange={(e) => setFollowUp(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Message Briq..."
+                rows={1}
+                aria-label="Type your message"
+                className={cn(
+                  "min-h-[52px] max-h-[200px] flex-1",
+                  "py-3.5 px-4",
+                  "text-base leading-relaxed resize-none",
+                  "border-0 focus:ring-0 focus-visible:ring-0 ring-0 shadow-none outline-none",
+                  "bg-transparent",
+                  "placeholder:text-muted-foreground/40",
+                  "scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent",
+                  "transition-all duration-300 ease-in-out"
+                )}
+              />
+              <div className="flex items-center gap-2 px-4">
+                <Button
+                  type="submit"
+                  disabled={followUp.length === 0}
+                  className={cn(
+                    "flex items-center justify-center",
+                    "h-8 w-8 rounded-full",
+                    "transition-all duration-300 ease-in-out",
+                    followUp.length > 0
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-muted/40 text-muted-foreground",
+                    "disabled:opacity-40 disabled:cursor-not-allowed"
+                  )}
+                >
+                  <FaArrowUp className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            </div>
+
+            <div
+              className={cn(
+                "flex items-center justify-between",
+                "border-t border-border/10",
+                "bg-muted/20",
+                "px-4 py-2.5"
+              )}
+            >
               <div className="flex items-center gap-2">
                 <Popover open={isOpen} onOpenChange={setIsOpen}>
                   <PopoverTrigger asChild>
                     <button
                       type="button"
                       className={cn(
-                        "flex items-center gap-1.5 px-2 py-0.5",
+                        "flex items-center gap-2 px-2 py-1",
                         "rounded-full",
                         "text-xs font-medium",
-                        "bg-muted/30 hover:bg-muted/50",
-                        "border-none",
-                        "text-muted-foreground/60 hover:text-muted-foreground/80",
+                        "hover:bg-muted/50",
+                        "text-muted-foreground/70 hover:text-muted-foreground",
                         "transition-colors duration-200"
                       )}
                     >
-                      <StickyNote className="w-3 h-3" />
+                      <StickyNote className="w-3.5 h-3.5" />
                       <span>Add context</span>
                     </button>
                   </PopoverTrigger>
@@ -291,41 +457,17 @@ export const InputArea = ({
                   </PopoverContent>
                 </Popover>
               </div>
-            </div>
 
-            <div className="flex items-center gap-3 transition-transform duration-300 ease-in-out">
-              <span
-                className={cn(
-                  "text-xs font-medium",
-                  followUp.length > maxLength * 0.8 && "text-yellow-500",
-                  followUp.length === maxLength && "text-red-500",
-                  "text-muted-foreground/50"
-                )}
-              >
-                {followUp.length}/{maxLength}
-              </span>
-
-              <Button
-                type="submit"
-                variant="outline"
-                size="sm"
-                disabled={followUp.length === 0}
-                className={cn(
-                  "flex items-center justify-center",
-                  "h-7 w-7 rounded-full",
-                  "transition-all duration-300 ease-in-out",
-                  followUp.length > 0
-                    ? "bg-primary/90 text-primary-foreground hover:bg-primary border-primary/80"
-                    : "bg-muted/40 text-muted-foreground border-none",
-                  "disabled:opacity-40 disabled:cursor-not-allowed"
-                )}
-              >
-                <FaArrowUp className="w-3 h-3" />
-              </Button>
+              <ModelSelector />
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+        <AnimatePresence>
+          {isEmpty && (
+            <QueryExamples onSelect={(query) => setFollowUp(query)} />
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

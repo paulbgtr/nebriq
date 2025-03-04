@@ -1,9 +1,9 @@
 import "katex/dist/katex.min.css";
+import { useState, useEffect } from "react";
 
 import { ChatContext } from "@/types/chat";
-import { FileText } from "lucide-react";
+import { StickyNote } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { QueryExamples } from "./query-examples";
 import { MessageActions } from "./message-actions";
 import { LoadingIndicator } from "./loading-indicator";
 import { formatDate } from "@/shared/lib/utils";
@@ -20,10 +20,8 @@ import { InlineMath, BlockMath } from "react-katex";
 type ChatContentProps = {
   scrollContainerRef: React.RefObject<HTMLDivElement>;
   chatContext: ChatContext;
-  setFollowUp: (followUp: string) => void;
   displayedText: string;
   isLoading: boolean;
-  isFullscreen?: boolean;
 };
 
 type MessageProps = {
@@ -34,54 +32,59 @@ type Note = z.infer<typeof noteSchema>;
 
 type NoteStackProps = {
   notes: Note[];
-  isFullscreen?: boolean;
   isAttached?: boolean;
 };
 
 export const ChatContent = ({
   scrollContainerRef,
   chatContext,
-  setFollowUp,
   displayedText,
   isLoading,
-  isFullscreen = false,
-}: ChatContentProps) => (
-  <div
-    ref={scrollContainerRef}
-    className={cn(
-      "flex-1 overflow-y-auto transition-all duration-500 ease-in-out",
-      isFullscreen ? "px-4 py-8 md:px-8" : "px-4 py-6 md:px-6",
-      "scroll-smooth"
-    )}
-  >
-    {!chatContext.conversationHistory.length ? (
-      <QueryExamples setFollowUp={setFollowUp} />
-    ) : (
-      <div className="space-y-5 max-w-3xl mx-auto pb-4 transition-all duration-500 ease-in-out">
-        {chatContext.conversationHistory.map((message, index) => (
-          <div
-            key={index}
-            className={cn(
-              "group",
-              "animate-in fade-in-0 slide-in-from-bottom-2",
-              message.role === "user"
-                ? "flex justify-end"
-                : "flex justify-start"
-            )}
-          >
-            <MessageBubble
-              message={message}
-              displayedText={displayedText}
-              chatContext={chatContext}
-              isFullscreen={isFullscreen}
-            />
-          </div>
-        ))}
-        {isLoading && <LoadingIndicator />}
+}: ChatContentProps) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    <div
+      ref={scrollContainerRef}
+      className={cn(
+        "flex-1 overflow-y-auto",
+        mounted && "transition-all duration-500 ease-in-out",
+        !chatContext.conversationHistory.length &&
+          mounted &&
+          "opacity-0 pointer-events-none absolute"
+      )}
+    >
+      <div className="h-full px-4 sm:px-6 lg:px-8">
+        <div className="space-y-4 max-w-3xl mx-auto py-4">
+          {chatContext.conversationHistory.map((message, index) => (
+            <div
+              key={index}
+              className={cn(
+                "group",
+                message.role === "user"
+                  ? "flex justify-end"
+                  : "flex justify-start",
+                mounted && "animate-in fade-in-0 slide-in-from-bottom-2"
+              )}
+              style={!mounted ? { opacity: 0 } : undefined}
+            >
+              <MessageBubble
+                message={message}
+                displayedText={mounted ? displayedText : message.content}
+                chatContext={chatContext}
+              />
+            </div>
+          ))}
+          {isLoading && mounted && <LoadingIndicator />}
+        </div>
       </div>
-    )}
-  </div>
-);
+    </div>
+  );
+};
 
 const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
   const router = useRouter();
@@ -109,7 +112,7 @@ const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
                 : "bg-secondary/10 hover:bg-secondary/15 border-secondary/20 text-secondary-foreground/70"
             )}
           >
-            <FileText
+            <StickyNote
               className={cn(
                 "w-3 h-3",
                 isAttached ? "text-primary/70" : "text-secondary-foreground/70"
@@ -163,9 +166,13 @@ const MessageBubble = ({
   message,
   displayedText,
   chatContext,
-  isFullscreen = false,
-}: MessageProps &
-  Pick<ChatContentProps, "displayedText" | "chatContext" | "isFullscreen">) => {
+}: MessageProps & Pick<ChatContentProps, "displayedText" | "chatContext">) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const processText = (text: string) => {
     const blocks = text.split(/(\\[[\s\S]*?\\]|\\\([\s\S]*?\\\))/g);
     return blocks.map((block, index) => {
@@ -187,34 +194,27 @@ const MessageBubble = ({
     <div>
       <div
         className={cn(
-          "relative",
-          "transition-all duration-200 ease-out",
-          "p-1",
-          "text-sm",
+          "relative p-1 text-sm",
+          mounted && "transition-all duration-200 ease-out",
           message.role === "user"
             ? "bg-muted/30 border-none rounded-2xl rounded-tr-sm"
             : "bg-transparent border-0",
           message.role === "user" ? "ml-12" : "mr-4",
           hasNotes ? "mt-5" : message.role === "assistant" ? "mt-1" : "mt-0"
         )}
+        style={!mounted ? { opacity: 0 } : undefined}
       >
-        {message.role === "assistant" &&
+        {mounted &&
+          message.role === "assistant" &&
           message.relevantNotes &&
           message.relevantNotes.length > 0 && (
-            <NoteStack
-              notes={message.relevantNotes}
-              isFullscreen={isFullscreen}
-              isAttached={false}
-            />
+            <NoteStack notes={message.relevantNotes} isAttached={false} />
           )}
-        {message.role === "user" &&
+        {mounted &&
+          message.role === "user" &&
           message.attachedNotes &&
           message.attachedNotes.length > 0 && (
-            <NoteStack
-              notes={message.attachedNotes}
-              isFullscreen={isFullscreen}
-              isAttached={true}
-            />
+            <NoteStack notes={message.attachedNotes} isAttached={true} />
           )}
         <div
           className={cn(
@@ -231,12 +231,14 @@ const MessageBubble = ({
                 chatContext.conversationHistory
                   .filter((m) => m.role === "assistant")
                   .slice(-1)[0]
-              ? displayedText
+              ? mounted
+                ? displayedText
+                : message.content
               : message.content
           )}
         </div>
       </div>
-      <MessageActions message={message} />
+      {mounted && <MessageActions message={message} />}
     </div>
   );
 };
