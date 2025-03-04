@@ -1,5 +1,24 @@
 # Nebriq Changelog
 
+## [0.3.1-beta.1] - 2025-03-04
+
+### Added ✨
+
+- Implement chat history persistence
+- Add sidebar navigation for chat history
+
+### Fixed 🐛
+
+- Fix editor hooks paths
+- Fix linter issues throughout the codebase
+- Improve chat component styling and functionality
+
+### Changed 🔄
+
+- Remove typewriter effect (temporarily due to bugs)
+- Reorganize write module hooks for better maintainability
+- Improve chat input focus behavior on new chat creation
+
 ## [0.3.0-beta.1] - 2025-03-04
 
 - Completely redesign the app and polish the idea: integrate chat into search
