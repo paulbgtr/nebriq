@@ -276,6 +276,7 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
         className={cn(
           "w-full bg-background/70 backdrop-blur-xl border-t border-border/20",
           "transition-all duration-500 ease-in-out",
+          "flex-shrink-0",
           isEmpty && "border-transparent"
         )}
       >

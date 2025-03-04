@@ -51,14 +51,14 @@ export const ChatContent = ({
     <div
       ref={scrollContainerRef}
       className={cn(
-        "flex-1 overflow-y-auto",
+        "flex-1 overflow-y-auto h-full",
         mounted && "transition-all duration-500 ease-in-out",
         !chatContext.conversationHistory.length &&
           mounted &&
           "opacity-0 pointer-events-none absolute"
       )}
     >
-      <div className="h-full px-4 sm:px-6 lg:px-8">
+      <div className="h-full px-4 sm:px-6 lg:px-8 pb-4">
         <div className="space-y-4 max-w-3xl mx-auto py-4">
           {chatContext.conversationHistory.map((message, index) => (
             <div

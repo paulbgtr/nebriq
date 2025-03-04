@@ -116,10 +116,10 @@ export default function HomeModule() {
             <Spinner size="sm" />
           </div>
         ) : (
-          <div className="flex-1 flex">
+          <div className="flex-1 flex h-full overflow-hidden">
             <div
               className={cn(
-                "w-full flex flex-col",
+                "w-full flex flex-col h-full",
                 mounted && !chatContext.conversationHistory.length
                   ? "justify-center"
                   : "justify-between"
