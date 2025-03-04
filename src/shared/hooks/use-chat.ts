@@ -79,9 +79,7 @@ export const useChat = (
   const { activeChatId, addChat, updateChat, getChatById, setActiveChatId } =
     useChatHistoryStore();
 
-  // Load chat context from active chat whenever activeChatId changes
   const [chatContext, setChatContext] = useState<ChatContext>(() => {
-    // If there's an active chat, load it from history
     if (activeChatId) {
       const activeChat = getChatById(activeChatId);
       if (activeChat) {
@@ -89,7 +87,6 @@ export const useChat = (
       }
     }
 
-    // Otherwise check local storage (legacy support)
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -111,7 +108,6 @@ export const useChat = (
     };
   });
 
-  // Update chat context when activeChatId changes
   useEffect(() => {
     if (activeChatId) {
       const activeChat = getChatById(activeChatId);
@@ -145,7 +141,6 @@ export const useChat = (
           tfidfResults.length
         );
 
-        // Process semantic results
         semanticResults.forEach((note, index) => {
           uniqueResults.set(note.id, {
             ...note,
@@ -154,7 +149,6 @@ export const useChat = (
           });
         });
 
-        // Process TFIDF results and merge with semantic
         tfidfResults.forEach((note, index) => {
           if (uniqueResults.has(note.id)) {
             const existingNote = uniqueResults.get(note.id)!;
@@ -197,7 +191,6 @@ export const useChat = (
 
       setChatContext(updatedContext);
 
-      // Update in history if we have an active chat
       if (activeChatId) {
         updateChat(activeChatId, updatedContext);
       }
@@ -205,15 +198,11 @@ export const useChat = (
   }, [relevantNotesQuery.data]);
 
   useEffect(() => {
-    // Legacy storage support
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(chatContext));
     }
 
-    // Update in history if we have an active chat and context has conversation history
     if (activeChatId && chatContext.conversationHistory.length > 0) {
-      // Only update the chat if there's been a change to avoid unnecessary updates
-      // that would affect the updatedAt timestamp
       const activeChat = getChatById(activeChatId);
       if (
         activeChat &&
@@ -232,12 +221,9 @@ export const useChat = (
 
     setChatContext(emptyContext);
 
-    // Create a new chat in history and set it as active
     if (userId) {
-      const newChatId = addChat(emptyContext);
-      // No need to set active chat ID here as addChat already does it
+      addChat(emptyContext);
     } else {
-      // If no user, just clear the active chat
       setActiveChatId(null);
     }
   };
@@ -272,7 +258,6 @@ export const useChat = (
 
       setQuery(message.trim());
 
-      // Create a new chat if this is the first message and we don't have an active chat
       if (
         chatContext.conversationHistory.length === 0 &&
         !activeChatId &&
@@ -292,7 +277,6 @@ export const useChat = (
         };
         setChatContext(updatedContext);
 
-        // Update in history if we have an active chat
         if (activeChatId) {
           updateChat(activeChatId, updatedContext);
         }
@@ -337,7 +321,6 @@ export const useChat = (
 
         setChatContext(finalContext);
 
-        // Update in history if we have an active chat
         if (activeChatId) {
           updateChat(activeChatId, finalContext);
         }
@@ -368,7 +351,6 @@ export const useChat = (
 
       setChatContext(errorContext);
 
-      // Update in history if we have an active chat
       if (activeChatId) {
         updateChat(activeChatId, errorContext);
       }
