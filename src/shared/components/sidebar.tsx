@@ -11,7 +11,6 @@ import {
   Pen,
   FileText,
   Shield,
-  MessageSquare,
   Trash2,
   Clock,
 } from "lucide-react";
@@ -31,7 +30,6 @@ import { FeedbackPopover } from "./feedback/feedback-popover";
 import { Button } from "./ui/button";
 import { useChatHistoryStore } from "@/store/chat-history";
 import { useRouter } from "next/navigation";
-import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/shared/hooks/use-user";
 
 const navItems = [

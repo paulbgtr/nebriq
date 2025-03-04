@@ -44,8 +44,10 @@ export default function HomeModule() {
   }, [allNotes]);
 
   const { user } = useUser();
-  const { setQuery, chatContext, isLoading, clearChatContext, activeChatId } =
-    useChat(user?.id, allNotes || []);
+  const { setQuery, chatContext, isLoading, clearChatContext } = useChat(
+    user?.id,
+    allNotes || []
+  );
 
   const lastAssistantMessage = useMemo(
     () =>

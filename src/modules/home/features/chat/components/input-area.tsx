@@ -157,7 +157,6 @@ const QueryExamples = ({ onSelect }: { onSelect: (query: string) => void }) => {
       });
     }
 
-    // Add recent note example
     const recentNote = notes[0];
     if (recentNote?.title) {
       dynamicExamples.push({
@@ -486,3 +485,5 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
     );
   }
 );
+
+InputArea.displayName = "InputArea";
