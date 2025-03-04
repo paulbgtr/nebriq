@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
-import { useNoteConnections } from "./use-note-connections";
-import { useNotes } from "./use-notes";
+import { useNoteConnections } from "@/shared/hooks/use-note-connections";
+import { useNotes } from "@/shared/hooks/use-notes";
 
 export const useSyncNoteConnections = (noteId: string, content: string) => {
   const { noteConnectionsQuery, deleteNoteConnectionMutation } =
