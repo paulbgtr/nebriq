@@ -1,5 +1,9 @@
 import "katex/dist/katex.min.css";
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 import { ChatContext } from "@/types/chat";
 import { StickyNote } from "lucide-react";
@@ -182,7 +186,33 @@ const MessageBubble = ({
       if (block.startsWith("\\(") && block.endsWith("\\)")) {
         return <InlineMath key={index} math={block.slice(2, -2)} />;
       }
-      return block;
+
+      return (
+        <ReactMarkdown
+          key={index}
+          remarkPlugins={[remarkGfm]}
+          components={{
+            code({ className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return match ? (
+                <SyntaxHighlighter
+                  style={vscDarkPlus}
+                  language={match[1]}
+                  PreTag="div"
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {block}
+        </ReactMarkdown>
+      );
     });
   };
 
