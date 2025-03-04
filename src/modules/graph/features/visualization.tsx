@@ -6,7 +6,7 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 import { noteConnectionSchema } from "@/shared/lib/schemas/note-connection";
 import { useEffect, useRef, useMemo, useCallback, memo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useNotes } from "@/hooks/use-notes";
+import { useNotes } from "@/shared/hooks/use-notes";
 import { useQuery } from "@tanstack/react-query";
 import { getAllNoteConnections } from "@/app/actions/supabase/note_connections";
 import { FolderPlus, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";

@@ -9,7 +9,7 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
-import { useUser } from "@/hooks/use-user";
+import { useUser } from "@/shared/hooks/use-user";
 import { motion } from "framer-motion";
 
 const steps = [
