@@ -13,19 +13,24 @@ import {
   Twitter,
   Heart,
   Settings,
-  Folders,
-  FolderX,
-  BookOpen,
+  Text,
   Mail,
-  BotMessageSquare,
   Waypoints,
+  BrainCircuit,
   Maximize,
   Cloud,
-  Type,
+  StickyNote,
   Sigma,
   Code,
-  Tag,
   Compass,
+  BotMessageSquare,
+  BookOpen,
+  ChevronRight,
+  Grid2X2,
+  FolderIcon,
+  ScrollText,
+  RouteOff,
+  SearchX,
 } from "lucide-react";
 import { ModeToggle } from "@/modules/landing-page/features/theme-switcher";
 import { useTheme } from "next-themes";
@@ -46,6 +51,9 @@ import { extractFirstName } from "@/shared/lib/utils";
 import { EmailTemplate } from "@/enums/email-template";
 import { FuturisticCard } from "@/modules/landing-page/components/futuristic-card";
 import { NeuralNetwork } from "@/modules/landing-page/features/neural-network";
+import { FaArrowUp } from "react-icons/fa";
+import * as d3 from "d3";
+import { cn } from "@/shared/lib/utils";
 
 const wishListSchema = z.object({
   email: z
@@ -82,6 +90,231 @@ const imagePaths = {
     light: "/editor.png",
     dark: "/editor-dark.png",
   },
+};
+
+// Add these interfaces before the DemoGraph component
+interface DemoNode extends d3.SimulationNodeDatum {
+  id: string;
+  title: string;
+  connections: number;
+}
+
+interface DemoLink extends d3.SimulationLinkDatum<DemoNode> {
+  source: DemoNode;
+  target: DemoNode;
+}
+
+const DemoGraph = () => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Demo data
+  const nodes: DemoNode[] = [
+    { id: "1", title: "Machine Learning", connections: 4 },
+    { id: "2", title: "Neural Networks", connections: 3 },
+    { id: "3", title: "Deep Learning", connections: 3 },
+    { id: "4", title: "Data Science", connections: 2 },
+    { id: "5", title: "AI Ethics", connections: 2 },
+    { id: "6", title: "Computer Vision", connections: 1 },
+  ];
+
+  const links: DemoLink[] = [
+    { source: nodes[0], target: nodes[1] },
+    { source: nodes[0], target: nodes[2] },
+    { source: nodes[0], target: nodes[3] },
+    { source: nodes[1], target: nodes[2] },
+    { source: nodes[1], target: nodes[5] },
+    { source: nodes[2], target: nodes[4] },
+    { source: nodes[3], target: nodes[4] },
+  ];
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!svgRef.current || dimensions.width === 0) return;
+
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
+
+    // Create the simulation
+    const simulation = d3
+      .forceSimulation<DemoNode>(nodes)
+      .force("charge", d3.forceManyBody<DemoNode>().strength(-100))
+      .force(
+        "center",
+        d3.forceCenter<DemoNode>(dimensions.width / 2, dimensions.height / 2)
+      )
+      .force(
+        "link",
+        d3
+          .forceLink<DemoNode, DemoLink>(links)
+          .id((d) => d.id)
+          .distance(80)
+      )
+      .force(
+        "collision",
+        d3.forceCollide<DemoNode>().radius((d) => getNodeRadius(d) + 10)
+      );
+
+    // Create gradient definitions
+    const defs = svg.append("defs");
+
+    // Link gradient
+    const linkGradient = defs
+      .append("linearGradient")
+      .attr("id", "demo-link-gradient")
+      .attr("gradientUnits", "userSpaceOnUse");
+
+    linkGradient
+      .append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "hsl(var(--primary) / 0.7)");
+
+    linkGradient
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "hsl(var(--secondary) / 0.7)");
+
+    // Node glow filter
+    const filter = defs
+      .append("filter")
+      .attr("id", "demo-glow")
+      .attr("x", "-50%")
+      .attr("y", "-50%")
+      .attr("width", "200%")
+      .attr("height", "200%");
+
+    filter
+      .append("feGaussianBlur")
+      .attr("stdDeviation", "3")
+      .attr("result", "coloredBlur");
+
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "coloredBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+    // Create the link lines
+    const link = svg
+      .append("g")
+      .selectAll("path")
+      .data(links)
+      .join("path")
+      .attr("stroke", "url(#demo-link-gradient)")
+      .attr("stroke-opacity", 0.6)
+      .attr("stroke-width", 1.5)
+      .attr("fill", "none")
+      .style("stroke-dasharray", "4,2");
+
+    // Create node groups
+    const node = svg.append("g").selectAll("g").data(nodes).join("g");
+
+    // Add glow circles
+    node
+      .append("circle")
+      .attr("r", (d) => getNodeRadius(d) * 2.5)
+      .style("fill", "hsl(var(--primary) / 0.2)")
+      .style("opacity", 0.4)
+      .style("filter", "url(#demo-glow)");
+
+    // Add main circles
+    node
+      .append("circle")
+      .attr("r", (d) => getNodeRadius(d))
+      .style("fill", "hsl(var(--primary))")
+      .style("stroke", "hsl(var(--background))")
+      .style("stroke-width", 1.5)
+      .style("cursor", "pointer")
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("r", getNodeRadius(d) * 1.2)
+          .style("fill", "hsl(var(--primary) / 0.8)");
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("r", getNodeRadius(d))
+          .style("fill", "hsl(var(--primary))");
+      });
+
+    // Add labels
+    node
+      .append("text")
+      .text((d) => d.title)
+      .attr("x", (d) => getNodeRadius(d) + 8)
+      .attr("y", 4)
+      .style("font-size", "11px")
+      .style("font-weight", "500")
+      .style("fill", "hsl(var(--foreground))")
+      .style(
+        "text-shadow",
+        "0 0 3px hsl(var(--background)), 0 0 3px hsl(var(--background))"
+      );
+
+    // Helper function for node radius
+    function getNodeRadius(d: DemoNode) {
+      const baseSize = 6;
+      const connectionBonus = Math.min(d.connections || 0, 10) * 0.8;
+      return baseSize + connectionBonus;
+    }
+
+    // Helper function for curved links
+    function linkArc(d: DemoLink) {
+      const dx = d.target.x! - d.source.x!;
+      const dy = d.target.y! - d.source.y!;
+      const dr = Math.sqrt(dx * dx + dy * dy) * 1.2;
+      return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+    }
+
+    // Update positions on simulation tick
+    simulation.on("tick", () => {
+      link.attr("d", linkArc);
+      node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+    });
+
+    // Add subtle animation to links
+    function animateLinks() {
+      link
+        .style("stroke-dashoffset", 8)
+        .transition()
+        .duration(30000)
+        .ease(d3.easeLinear)
+        .style("stroke-dashoffset", 0)
+        .on("end", animateLinks);
+    }
+
+    animateLinks();
+
+    return () => {
+      simulation.stop();
+    };
+  }, [dimensions]);
+
+  return (
+    <div ref={containerRef} className="w-full h-full">
+      <svg
+        ref={svgRef}
+        width={dimensions.width}
+        height={dimensions.height}
+        className="w-full h-full"
+      />
+    </div>
+  );
 };
 
 export default function Home() {
@@ -304,33 +537,94 @@ export default function Home() {
                   ease: [0.21, 0.45, 0.27, 0.99],
                 }}
               >
-                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
-                  <span className="block leading-[1.1] pb-1 sm:pb-2 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/80">
-                    Start Writing.
-                  </span>
-                  <div className="relative mt-1 sm:mt-2">
-                    <motion.span
-                      className="absolute inset-0 bg-primary/20 blur-3xl"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: [0.3, 0.6, 0.3] }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                    <span className="block leading-[1.1] pb-1 sm:pb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/90 to-primary/80">
-                      Stop Organizing.
-                    </span>
-                  </div>
-                </h1>
-                <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground">
-                  A simple writing space that uses AI to keep your notes
-                  organized.
-                  <span className="hidden sm:inline">
-                    {" "}
-                    No folders, no tags, just write.
-                  </span>
+                <div className="relative">
+                  {/* Vibrant background glow with primary colors */}
+                  <motion.div
+                    className="absolute -inset-10 bg-gradient-to-br from-primary/20 via-primary/5 to-secondary/10 blur-3xl opacity-50"
+                    animate={{
+                      opacity: [0.3, 0.5, 0.3],
+                      rotate: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 10,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+
+                  <h1 className="relative text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
+                    <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 sm:mb-4 md:mb-6">
+                      <motion.span
+                        className="inline-block bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/95 to-secondary drop-shadow-[0_2px_10px_rgba(147,197,253,0.4)] [text-shadow:0_4px_12px_rgba(0,0,0,0.2)]"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                      >
+                        Write
+                      </motion.span>
+                      <motion.span
+                        className="inline-block text-transparent bg-clip-text bg-gradient-to-br from-primary via-primary/95 to-secondary/90 drop-shadow-[0_2px_10px_rgba(167,139,250,0.4)]"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                      >
+                        •
+                      </motion.span>
+                      <motion.div className="relative inline-block">
+                        <motion.span
+                          className="absolute inset-0 bg-gradient-to-br from-secondary/30 via-accent/30 to-primary/30 blur-[25px]"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0.4, 0.8, 0.4] }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            repeatType: "reverse",
+                          }}
+                        />
+                        <motion.span
+                          className="relative inline-block bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/95 to-secondary drop-shadow-[0_2px_10px_rgba(147,197,253,0.4)] [text-shadow:0_4px_12px_rgba(0,0,0,0.2)]"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.8, delay: 0.5 }}
+                        >
+                          Ask
+                        </motion.span>
+                      </motion.div>
+                      <motion.span
+                        className="inline-block text-primary/50"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 0.5, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                      >
+                        •
+                      </motion.span>
+                      <motion.div className="relative inline-block">
+                        <motion.span
+                          className="absolute inset-0 bg-secondary/10 blur-2xl"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0.2, 0.4, 0.2] }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            repeatType: "reverse",
+                            delay: 1,
+                          }}
+                        />
+                        <motion.span
+                          className="relative inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/95 to-secondary"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.8, delay: 0.7 }}
+                        >
+                          Know
+                        </motion.span>
+                      </motion.div>
+                    </div>
+                  </h1>
+                </div>
+                <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground/90 [text-wrap:balance] bg-clip-text">
+                  Transform your scattered thoughts into a living knowledge base
+                  that answers your questions instantly.
                 </p>
               </motion.div>
 
@@ -384,9 +678,9 @@ export default function Home() {
                 className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2 sm:px-4"
               >
                 {[
-                  { icon: Sparkles, text: "AI-Powered" },
-                  { icon: Search, text: "Smart Search" },
-                  { icon: FolderX, text: "No Folders" },
+                  { icon: Sparkles, text: "AI-Powered Writing" },
+                  { icon: Waypoints, text: "Dynamic Knowledge Maps" },
+                  { icon: BrainCircuit, text: "Intelligent Conversations" },
                 ].map((feature, index) => (
                   <motion.div
                     key={feature.text}
@@ -409,46 +703,195 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Full-Width Hero Image */}
-          <div className="relative z-10 w-full mt-6 sm:mt-8 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1 }}
-              className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 shadow-2xl shadow-primary/10"
-            >
-              {/* Enhanced glow effect */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl opacity-75" />
-
-              {/* Subtle pattern overlay */}
-              <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.015]" />
-
-              <Image
-                src={getImageUrl("hero")}
-                alt="Nebriq Dashboard"
-                fill
-                className="object-cover rounded-lg sm:rounded-xl transition-transform duration-700 hover:scale-105"
-                priority
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1400px"
-              />
-
-              {/* Enhanced gradient overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-primary/10 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-secondary/5 to-secondary/10" />
-
-              {/* Shine effect */}
+          {/* Interactive Chat Demo Section */}
+          <div className="relative z-10 w-full mt-8 sm:mt-10 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32">
+            <div className="max-w-3xl mx-auto">
               <motion.div
-                initial={{ opacity: 0, x: "-100%" }}
-                animate={{ opacity: [0, 1, 0], x: ["100%", "100%", "300%"] }}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  repeatDelay: 5,
+                  type: "spring",
+                  damping: 20,
+                  stiffness: 80,
+                  delay: 1.2,
                 }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
-              />
-            </motion.div>
+                whileHover={{
+                  y: -5,
+                  boxShadow: "0 30px 60px rgba(var(--primary-rgb), 0.15)",
+                  transition: {
+                    type: "spring",
+                    stiffness: 150,
+                    damping: 25,
+                  },
+                }}
+                className="relative rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden border border-primary/10 shadow-2xl shadow-primary/5 bg-background/90 backdrop-blur-md"
+              >
+                {/* Background effects */}
+                <motion.div
+                  className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 blur-2xl opacity-70"
+                  animate={{
+                    opacity: [0.4, 0.6, 0.4],
+                    scale: [1, 1.01, 1],
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                {/* Subtle pattern overlay */}
+                <motion.div
+                  className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.015]"
+                  animate={{
+                    backgroundPosition: ["0% 0%", "100% 100%"],
+                  }}
+                  transition={{
+                    duration: 120,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
+
+                {/* Simple Chat Interface */}
+                <div className="p-6 sm:p-8">
+                  {/* Animated Conversation */}
+                  <div className="space-y-4 mb-6">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.5 }}
+                      className="flex justify-end"
+                    >
+                      <div className="max-w-[80%] bg-muted/30 rounded-2xl rounded-tr-sm px-4 py-2 text-sm text-muted-foreground/90">
+                        What are the key insights from my research notes about
+                        learning techniques?
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 2.2 }}
+                      className="flex justify-start"
+                    >
+                      <div className="max-w-[80%] relative">
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 2.4 }}
+                          className="absolute -top-3 left-0 flex items-center gap-1.5 px-2 py-0.5 text-[10px] rounded-full bg-secondary/10 border border-secondary/20"
+                        >
+                          <StickyNote className="w-3 h-3 text-secondary/70" />
+                          <span className="text-secondary/80">
+                            From 3 notes
+                          </span>
+                        </motion.div>
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 2.6 }}
+                          className="prose prose-sm prose-neutral dark:prose-invert mt-2"
+                        >
+                          Based on your notes, here are the key learning
+                          techniques:
+                          <motion.ul
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 3 }}
+                            className="mt-1 space-y-1"
+                          >
+                            <motion.li
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 3.2 }}
+                            >
+                              <span className="text-primary/80">
+                                Active Recall:
+                              </span>{" "}
+                              Testing yourself rather than passive re-reading
+                            </motion.li>
+                            <motion.li
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 3.4 }}
+                            >
+                              <span className="text-primary/80">
+                                Spaced Repetition:
+                              </span>{" "}
+                              Reviewing at optimal intervals
+                            </motion.li>
+                            <motion.li
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 3.6 }}
+                            >
+                              <span className="text-primary/80">
+                                Elaborative Rehearsal:
+                              </span>{" "}
+                              Connecting new info to existing knowledge
+                            </motion.li>
+                          </motion.ul>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Input Area */}
+                  <div className="relative rounded-2xl border border-border/30 bg-background/95 backdrop-blur-xl overflow-hidden">
+                    <div className="flex items-center">
+                      <motion.div
+                        initial={{ opacity: 0.4 }}
+                        animate={{ opacity: [0.4, 1, 0.4] }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                        className="flex-1 px-4 py-3.5 text-base leading-relaxed resize-none border-0 bg-transparent text-muted-foreground/60"
+                      >
+                        Ask anything about your notes...
+                      </motion.div>
+                      <div className="flex items-center gap-2 px-4">
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="w-8 h-8 rounded-full bg-primary/90 flex items-center justify-center cursor-pointer"
+                        >
+                          <FaArrowUp className="w-3.5 h-3.5 text-primary-foreground" />
+                        </motion.div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-border/10 bg-muted/20 px-4 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          className="flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50 transition-colors duration-200"
+                        >
+                          <StickyNote className="w-3.5 h-3.5" />
+                          <span>Add context</span>
+                        </motion.button>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          className="flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50 transition-colors duration-200"
+                        >
+                          <BrainCircuit className="w-3.5 h-3.5" />
+                          <span>GPT-4</span>
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -498,11 +941,11 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 sm:mb-6 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm">
                   <Settings className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">
-                    The Problem
+                    The Challenge
                   </span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-foreground/80">
-                  Note-Taking Has Become Too Complex
+                  Knowledge Is Trapped in Your Notes
                 </h2>
               </motion.div>
 
@@ -513,30 +956,30 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="mx-auto mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-muted-foreground/90 max-w-prose"
               >
-                Most note-taking apps force you to spend time organizing instead
-                of thinking. We believe you should focus on writing, while
-                technology handles the organization.
+                Traditional note apps leave your knowledge buried and
+                disconnected. Nebriq turns your notes into a living knowledge
+                base you can ask questions and get immediate answers from.
               </motion.p>
 
               <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 text-left md:grid-cols-3">
                 {[
                   {
-                    title: "Too Many Features",
-                    icon: Settings,
+                    title: "Lost Information",
+                    icon: SearchX,
                     description:
-                      "Endless settings, plugins, and customization options that distract from what matters - your ideas.",
+                      "Important insights get buried in endless notes, making it difficult to find what you need when you need it.",
                   },
                   {
-                    title: "Complex Organization",
-                    icon: Folders,
+                    title: "Disconnected Knowledge",
+                    icon: RouteOff,
                     description:
-                      "Rigid folder structures and tagging systems that require constant maintenance and reorganization.",
+                      "Your notes contain valuable connections and patterns that remain hidden without a way to surface them.",
                   },
                   {
-                    title: "Learning Curve",
-                    icon: BookOpen,
+                    title: "Static Content",
+                    icon: ScrollText,
                     description:
-                      "Steep learning curves and complicated workflows that slow down your creative process.",
+                      "Traditional notes are passive storage - you write once and struggle to extract insights later.",
                   },
                 ].map((item, index) => (
                   <motion.div
@@ -593,8 +1036,9 @@ export default function Home() {
                   <div className="flex items-start space-x-3 relative z-10">
                     <span className="text-2xl sm:text-3xl text-primary">❝</span>
                     <p className="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-transparent bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text">
-                      Nebriq brings simplicity back to note-taking, letting you
-                      focus on what truly matters - your thoughts and ideas.
+                      Nebriq transforms how you interact with your knowledge.
+                      Write once, ask questions anytime, and get immediate
+                      answers from your notes.
                     </p>
                   </div>
                 </div>
@@ -620,15 +1064,16 @@ export default function Home() {
               >
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
-                  Core Features
+                  Key Features
                 </span>
               </motion.div>
               <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
-                Simple Writing, Smart Organization
+                Powerful, Yet Beautifully Simple
               </h2>
               <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
-                Just write. AI automatically connects and organizes your notes
-                behind the scenes.
+                Forget about complex folder structures and manual organization.
+                Our AI-powered features work silently in the background while
+                you focus on writing.
               </p>
             </div>
 
@@ -636,17 +1081,75 @@ export default function Home() {
               {/* AI-Powered Insights */}
               <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-12 items-center">
                 <div className="w-full md:w-3/5">
-                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20">
-                    <Image
-                      src={getImageUrl("intelligentSearch")}
-                      alt="AI-powered search and insights"
-                      fill
-                      className="object-cover"
-                      loading="lazy"
-                      sizes="(max-width: 768px) 100vw, 60vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-background/90 backdrop-blur-sm">
+                    {/* Chat Interface Preview */}
+                    <div className="absolute inset-0 flex flex-col">
+                      {/* Chat Header */}
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-primary/10">
+                        <div className="flex items-center gap-2">
+                          <div className="relative w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <BrainCircuit
+                              className="w-4 h-4 text-primary/70"
+                              strokeWidth={1.5}
+                            />
+                            <div className="absolute inset-0 rounded-full bg-primary/10 animate-pulse" />
+                          </div>
+                          <div className="text-sm font-medium text-foreground/80">
+                            Briq
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Chat Messages */}
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {/* User Message */}
+                        <div className="flex justify-end">
+                          <div className="max-w-[75%] bg-muted/30 rounded-2xl rounded-tr-sm px-4 py-2 text-sm">
+                            What are the key concepts in my machine learning
+                            notes?
+                          </div>
+                        </div>
+
+                        {/* Assistant Message */}
+                        <div className="flex justify-start">
+                          <div className="max-w-[75%] relative">
+                            {/* Source Reference */}
+                            <div className="absolute -top-4 left-0">
+                              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-secondary/10 border border-secondary/20">
+                                <StickyNote className="w-3 h-3 text-secondary-foreground/70" />
+                                <span className="text-xs font-medium text-secondary-foreground/70">
+                                  Source
+                                </span>
+                              </div>
+                            </div>
+                            <div className="prose prose-sm mt-2 text-foreground/90">
+                              Based on your notes, the key concepts include:
+                              <ul className="mt-2">
+                                <li>Neural Networks & Deep Learning</li>
+                                <li>Supervised vs Unsupervised Learning</li>
+                                <li>Model Evaluation Metrics</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Input Area */}
+                      <div className="p-4 border-t border-primary/10">
+                        <div className="relative rounded-2xl border border-border/30 bg-background/95 backdrop-blur-xl overflow-hidden">
+                          <div className="flex items-center">
+                            <div className="flex-1 px-4 py-3 text-sm text-muted-foreground/60">
+                              Message Briq...
+                            </div>
+                            <div className="px-4">
+                              <div className="w-8 h-8 rounded-full bg-muted/40 flex items-center justify-center">
+                                <FaArrowUp className="w-3.5 h-3.5 text-muted-foreground" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
@@ -657,25 +1160,26 @@ export default function Home() {
                     </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold">
-                    AI-Powered Insights
+                    Chat with Your Notes
                   </h3>
                   <p className="text-base sm:text-lg text-muted-foreground">
-                    Write naturally while our AI works behind the scenes. It
-                    understands your notes, suggests relevant connections, and
-                    helps you discover insights you might have missed.
+                    Ask questions about your notes in simple language and get
+                    immediate answers. Our AI understands the context across all
+                    your notes and delivers relevant insights with source
+                    references.
                   </p>
                   <ul className="space-y-2 sm:space-y-3">
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Automatic note linking
+                      Natural language queries
                     </li>
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Smart suggestions
+                      Sources linked to answers
                     </li>
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Content analysis
+                      Cross-note understanding
                     </li>
                   </ul>
                 </div>
@@ -684,17 +1188,16 @@ export default function Home() {
               {/* Knowledge Graph */}
               <div className="flex flex-col md:flex-row-reverse gap-6 sm:gap-8 md:gap-12 items-center">
                 <div className="w-full md:w-3/5">
-                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20">
-                    <Image
-                      src={getImageUrl("graph")}
-                      alt="Interactive knowledge graph"
-                      fill
-                      className="object-cover"
-                      loading="lazy"
-                      sizes="(max-width: 768px) 100vw, 60vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-background/90 backdrop-blur-sm">
+                    {/* Dynamic Graph Preview */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                      className="absolute inset-0"
+                    >
+                      <DemoGraph />
+                    </motion.div>
                   </div>
                 </div>
                 <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
@@ -705,73 +1208,148 @@ export default function Home() {
                     </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold">
-                    Knowledge Graph
+                    Connected Knowledge
                   </h3>
                   <p className="text-base sm:text-lg text-muted-foreground">
-                    Visualize how your ideas connect. Our interactive knowledge
-                    graph helps you explore relationships between notes and
-                    discover new patterns in your thinking.
+                    Visualize how your ideas connect with our interactive
+                    knowledge graph. The AI automatically links related notes,
+                    making it easy to explore relationships and discover hidden
+                    patterns in your thinking.
                   </p>
                   <ul className="space-y-2 sm:space-y-3">
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Interactive visualization
+                      Automatic connections
                     </li>
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Pattern discovery
+                      Visual exploration
                     </li>
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Relationship mapping
+                      Contextual navigation
                     </li>
                   </ul>
                 </div>
               </div>
 
-              {/* Smart Assistant */}
+              {/* Smart Library */}
               <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-12 items-center">
                 <div className="w-full md:w-3/5">
-                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20">
-                    <Image
-                      src={getImageUrl("briq")}
-                      alt="Briq AI Assistant"
-                      fill
-                      className="object-cover"
-                      loading="lazy"
-                      sizes="(max-width: 768px) 100vw, 60vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-background/90 backdrop-blur-sm">
+                    {/* Library Preview */}
+                    <div className="absolute inset-0 flex flex-col">
+                      {/* Library Header */}
+                      <div className="flex items-center justify-between p-4 border-b border-primary/10">
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <BookOpen className="h-8 w-8 text-primary/60" />
+                            <motion.div
+                              className="absolute inset-0"
+                              animate={{
+                                opacity: [0.4, 1, 0.4],
+                                scale: [1, 1.1, 1],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                            >
+                              <BookOpen className="h-8 w-8 text-primary/10" />
+                            </motion.div>
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold">Library</h3>
+                            <p className="text-sm text-muted-foreground/80">
+                              12 notes • 4 categories
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Search className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Grid2X2 className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Categories */}
+                      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                        {[
+                          { name: "Research Notes", count: 5, expanded: true },
+                          { name: "Meeting Notes", count: 3 },
+                          { name: "Ideas", count: 2 },
+                          { name: "Uncategorized", count: 2 },
+                        ].map((category, index) => (
+                          <motion.div
+                            key={category.name}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="rounded-lg border border-border/40 bg-card/30 backdrop-blur-sm hover:border-border/60 hover:bg-card/40 transition-all duration-200"
+                          >
+                            <div className="flex items-center gap-3 p-3">
+                              <ChevronRight
+                                className={cn(
+                                  "h-5 w-5 text-primary/60",
+                                  category.expanded && "rotate-90"
+                                )}
+                              />
+                              <div className="flex items-center gap-2">
+                                <FolderIcon className="h-5 w-5 text-primary/60" />
+                                <span className="text-sm font-medium">
+                                  {category.name}
+                                </span>
+                                <span className="text-xs text-muted-foreground/70">
+                                  ({category.count})
+                                </span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-                    <BotMessageSquare className="w-4 h-4 text-primary" />
+                    <BookOpen className="w-4 h-4 text-primary" />
                     <span className="text-sm font-medium text-primary">
-                      AI Assistant
+                      Smart Library
                     </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold">
-                    Smart Assistant
+                    Your Notes, Automatically Organized
                   </h3>
                   <p className="text-base sm:text-lg text-muted-foreground">
-                    Your personal AI research assistant. Ask questions about
-                    your notes, get instant summaries, and find information
-                    quickly without manual searching.
+                    Don&apos;t worry about complex organization systems. Your
+                    notes are automatically categorized and easily accessible.
+                    Browse them naturally when you want to explore without AI
+                    assistance.
                   </p>
                   <ul className="space-y-2 sm:space-y-3">
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Natural language queries
+                      Smart categorization
                     </li>
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Instant summaries
+                      Flexible viewing options
                     </li>
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Smart search
+                      Quick search and filters
                     </li>
                   </ul>
                 </div>
@@ -795,64 +1373,68 @@ export default function Home() {
               >
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
-                  Essential Tools
+                  Powerful Features
                 </span>
               </motion.div>
               <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
-                Powerful, Yet Simple
+                Smart, Yet Simple
               </h2>
               <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
-                All the tools you need to write effectively, wrapped in a clean,
-                distraction-free design. No complexity, just smooth writing
-                experience.
+                All the tools you need to capture, retrieve, and interact with
+                your knowledge, wrapped in an elegant interface that makes
+                complex tasks feel simple.
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:gap-6 mt-8 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 {
-                  title: "Focus Mode",
+                  title: "Natural Conversations",
                   description:
-                    "Write without distractions in a clean, minimal environment",
+                    "Just ask questions in plain English - no complex search syntax or filters needed",
+                  icon: BotMessageSquare,
+                },
+                {
+                  title: "Smart Discovery",
+                  description:
+                    "Find anything without remembering tags or folder locations",
+                  icon: Search,
+                },
+                {
+                  title: "Automatic Context",
+                  description:
+                    "Every answer shows you exactly where it came from - no manual linking required",
+                  icon: StickyNote,
+                },
+                {
+                  title: "Distraction-Free",
+                  description:
+                    "A clean interface that hides complexity until you need it",
                   icon: Maximize,
                 },
                 {
-                  title: "No Folders Needed",
+                  title: "Auto-Connected",
                   description:
-                    "Everything in one place - just write and let your ideas flow",
-                  icon: FolderX,
+                    "AI finds relationships between notes - no manual tagging needed",
+                  icon: Waypoints,
                 },
                 {
-                  title: "Always in Sync",
-                  description: "Access your notes instantly on any device",
-                  icon: Cloud,
-                },
-                {
-                  title: "Rich Formatting",
+                  title: "Math & Formulas",
                   description:
-                    "Style your notes exactly how you want with Markdown",
-                  icon: Type,
-                },
-                {
-                  title: "LaTeX Support",
-                  description: "Write mathematical expressions with ease",
+                    "Write equations naturally with built-in LaTeX support",
                   icon: Sigma,
                 },
                 {
-                  title: "Code Blocks",
-                  description: "Share and format code with syntax highlighting",
+                  title: "Code Snippets",
+                  description:
+                    "Share code with automatic language detection and formatting",
                   icon: Code,
                 },
                 {
-                  title: "Quick Labels",
+                  title: "Always Available",
                   description:
-                    "Add light touches of context without getting lost in organization",
-                  icon: Tag,
-                },
-                {
-                  title: "Smart Search",
-                  description: "Find anything instantly with semantic search",
-                  icon: Search,
+                    "Access your notes from any device, always in sync",
+                  icon: Cloud,
                 },
               ].map((feature, index) => (
                 <FuturisticCard
@@ -903,7 +1485,7 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-primary/10 backdrop-blur-sm"
               >
-                <Type className="w-4 h-4 text-primary" />
+                <Text className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
                   Powerful Editor
                 </span>
@@ -938,14 +1520,8 @@ export default function Home() {
 
                 <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 lg:p-12">
                   <div className="max-w-3xl mx-auto space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6">
-                    <div className="inline-flex items-center gap-1 sm:gap-1.5 md:gap-2 px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 rounded-full bg-primary/10 backdrop-blur-md">
-                      <Maximize className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-primary" />
-                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">
-                        Distraction Free
-                      </span>
-                    </div>
                     <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-foreground">
-                      Focus on Writing
+                      Just Write
                     </h3>
                     <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground/90 max-w-2xl">
                       A clean, minimal interface that lets you focus on what
@@ -972,10 +1548,10 @@ export default function Home() {
                 Early Access
               </Badge>
               <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold">
-                Focus on What Matters
+                Turn Notes Into Knowledge
               </h2>
               <p className="mb-6 sm:mb-8 text-base sm:text-lg text-muted-foreground">
-                Join us in building a simpler way to write and think.
+                Join us in building the future of personal knowledge management.
               </p>
               <Button
                 size="lg"
