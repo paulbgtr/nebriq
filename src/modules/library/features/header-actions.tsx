@@ -5,7 +5,7 @@ import {
   Trash2,
   Search,
   Grid2X2,
-  Grid3X3,
+  Rows3,
   ListFilter,
 } from "lucide-react";
 import {
@@ -76,7 +76,7 @@ export function HeaderActions({
             viewMode === "list" && "bg-background shadow-sm"
           )}
         >
-          <Grid3X3 className="h-4 w-4" />
+          <Rows3 className="h-4 w-4" />
         </Button>
       </div>
 

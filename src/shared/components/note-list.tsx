@@ -64,40 +64,41 @@ export const NoteList = ({
   const shouldAnimate = !isFirstRender;
 
   return (
-    <div
-      className={cn(
-        viewMode === "grid"
-          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6"
-          : "flex flex-col gap-4",
-        "items-start"
-      )}
-    >
+    <div className="w-full">
       <AnimatePresence mode="popLayout">
-        {sortedNotes.map((note) => (
-          <motion.div
-            key={note.id}
-            initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{
-              type: "spring",
-              stiffness: 500,
-              damping: 30,
-              mass: 1,
-            }}
-            layout
-            className="h-full w-full"
-          >
-            <Note
-              note={note}
-              selectable={selectable}
-              selected={selectedNotes.includes(note.id)}
-              onSelect={(selected) => handleNoteSelect(note.id, selected)}
-              skipAnimation={true}
-              viewMode={viewMode}
-            />
-          </motion.div>
-        ))}
+        <div
+          className={cn(
+            viewMode === "grid"
+              ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4"
+              : "flex flex-col gap-4"
+          )}
+        >
+          {sortedNotes.map((note) => (
+            <motion.div
+              key={note.id}
+              initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 30,
+                mass: 1,
+              }}
+              layout
+              className="w-full"
+            >
+              <Note
+                note={note}
+                selectable={selectable}
+                selected={selectedNotes.includes(note.id)}
+                onSelect={(selected) => handleNoteSelect(note.id, selected)}
+                skipAnimation={true}
+                viewMode={viewMode}
+              />
+            </motion.div>
+          ))}
+        </div>
       </AnimatePresence>
     </div>
   );

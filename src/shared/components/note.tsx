@@ -114,15 +114,17 @@ const NoteComponent: React.FC<NoteProps> = ({
     () =>
       cn(
         "group relative",
-        viewMode === "grid" ? "flex flex-col" : "flex flex-row gap-6",
-        "p-3 sm:p-4 md:p-5",
-        "mb-2 sm:mb-3 md:mb-4",
+        viewMode === "grid"
+          ? "flex flex-col w-full"
+          : "flex flex-row items-center gap-4 sm:gap-6",
+        "p-4 sm:p-5",
+        "mb-2 sm:mb-3",
         "bg-card/50 backdrop-blur-sm",
         "rounded-md sm:rounded-lg",
         viewMode === "grid"
-          ? "min-h-[140px] sm:min-h-[160px]"
-          : "min-h-[100px]",
-        "h-full",
+          ? "min-h-[160px] sm:min-h-[180px]"
+          : "min-h-[90px] sm:min-h-[100px]",
+        "h-full w-full",
         selected && selectable
           ? "ring-2 ring-primary border-transparent"
           : "border border-border/20",
@@ -160,11 +162,19 @@ const NoteComponent: React.FC<NoteProps> = ({
     >
       <div
         className={cn(
-          "flex justify-between items-start sm:items-center mb-2 sm:mb-3",
-          viewMode === "list" && "flex-1 min-w-0"
+          "flex justify-between items-start sm:items-center",
+          viewMode === "grid" ? "mb-2 sm:mb-3" : "mb-0",
+          viewMode === "list" && "flex-1 min-w-0 max-w-[30%]"
         )}
       >
-        <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 pr-8 sm:pr-0 line-clamp-1">
+        <h3
+          className={cn(
+            "font-semibold text-foreground group-hover:text-primary transition-colors duration-200 pr-8 sm:pr-0 line-clamp-1",
+            viewMode === "grid"
+              ? "text-base sm:text-lg"
+              : "text-sm sm:text-base"
+          )}
+        >
           {noteTitle}
           <ChevronRight className="inline-block ml-1 w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
         </h3>
@@ -173,20 +183,16 @@ const NoteComponent: React.FC<NoteProps> = ({
         </div>
       </div>
 
-      <div
-        className={cn(
-          viewMode === "grid" ? "flex-grow" : "hidden sm:block flex-1 min-w-0"
-        )}
-      >
+      <div className={cn(viewMode === "grid" ? "flex-grow" : "flex-1 min-w-0")}>
         <NoteContent content={noteContent} />
       </div>
 
       <div
         className={cn(
-          "mt-auto pt-2 sm:pt-3 flex gap-2 sm:gap-3 border-t border-border/10",
           viewMode === "grid"
-            ? "flex-col sm:flex-row sm:justify-between sm:items-end"
-            : "flex-row items-center gap-6 ml-auto"
+            ? "mt-auto pt-2 sm:pt-3 flex-col sm:flex-row sm:justify-between sm:items-end border-t border-border/10"
+            : "flex-row items-center gap-6 ml-auto",
+          "flex gap-2 sm:gap-3"
         )}
       >
         <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
