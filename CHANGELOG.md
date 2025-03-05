@@ -1,5 +1,17 @@
 # Nebriq Changelog
 
+## [0.3.4-beta.1] - 2025-03-05
+
+### Fixed 🐛
+
+- Fix race conditions in editor to improve stability
+- Fix sync issues in note connections
+- Improve landing page design consistency
+
+### Changed 🔄
+
+- Various linter fixes in editor components
+
 ## [0.3.3-beta.1] - 2025-03-05
 
 ### Fixed 🐛
