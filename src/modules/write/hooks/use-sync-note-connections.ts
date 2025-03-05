@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
 import { useNoteConnections } from "@/shared/hooks/use-note-connections";
 import { useNotes } from "@/shared/hooks/use-notes";
+import queryClient from "@/shared/lib/react-query";
 
 export const useSyncNoteConnections = (noteId: string, content: string) => {
   const { noteConnectionsQuery, deleteNoteConnectionMutation } =
@@ -9,6 +10,29 @@ export const useSyncNoteConnections = (noteId: string, content: string) => {
   const { getNotesQuery } = useNotes();
 
   const isDeletingRef = useRef(false);
+  const lastProcessedContentRef = useRef("");
+
+  useEffect(() => {
+    if (!noteId) return;
+
+    const currentMentions = extractNoteConnectionsFromContent(content);
+    const previousMentions = extractNoteConnectionsFromContent(
+      lastProcessedContentRef.current
+    );
+
+    const mentionsChanged =
+      !currentMentions ||
+      !previousMentions ||
+      currentMentions.length !== previousMentions.length ||
+      currentMentions.some((m) => !previousMentions.includes(m));
+
+    if (mentionsChanged) {
+      lastProcessedContentRef.current = content;
+
+      queryClient.invalidateQueries({ queryKey: ["noteConnections", noteId] });
+      queryClient.invalidateQueries({ queryKey: ["note-connections"] });
+    }
+  }, [noteId, content]);
 
   useEffect(() => {
     if (
@@ -52,6 +76,13 @@ export const useSyncNoteConnections = (noteId: string, content: string) => {
       const processNextConnection = (index = 0) => {
         if (index >= connectionsToRemove.length) {
           isDeletingRef.current = false;
+
+          // Invalidate both specific note connections and the global connections list
+          queryClient.invalidateQueries({
+            queryKey: ["noteConnections", noteId],
+          });
+          queryClient.invalidateQueries({ queryKey: ["note-connections"] });
+
           return;
         }
 

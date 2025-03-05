@@ -11,12 +11,16 @@ export const useNoteConnections = (noteId: string) => {
     queryKey: ["noteConnections", noteId],
     queryFn: () => getNoteConnections(noteId),
     enabled: !!noteId,
+    staleTime: 30 * 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const createNoteConnectionMutation = useMutation({
     mutationFn: createNoteConnection,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["noteConnections"] });
+      queryClient.invalidateQueries({ queryKey: ["note-connections"] });
     },
   });
 
@@ -24,10 +28,12 @@ export const useNoteConnections = (noteId: string) => {
     mutationFn: deleteNoteConnection,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["noteConnections"] });
+      queryClient.invalidateQueries({ queryKey: ["note-connections"] });
     },
     onError: (error) => {
       console.error("Error deleting note connection:", error);
       queryClient.invalidateQueries({ queryKey: ["noteConnections"] });
+      queryClient.invalidateQueries({ queryKey: ["note-connections"] });
     },
     retry: false,
   });

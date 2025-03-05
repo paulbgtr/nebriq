@@ -614,7 +614,6 @@ const ForceGraph = memo(
   }
 );
 
-// Memoize the Visualization component
 export const Visualization = memo(() => {
   const { getNotesQuery } = useNotes();
   const notesData = getNotesQuery.data || [];
@@ -625,7 +624,9 @@ export const Visualization = memo(() => {
       const data = await getAllNoteConnections();
       return data;
     },
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to reduce re-fetching
+    staleTime: 30 * 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   if (!isPending && notesData.length === 0) {
