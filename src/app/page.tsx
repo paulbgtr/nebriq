@@ -416,20 +416,20 @@ export default function Home() {
           className="fixed top-4 sm:top-6 inset-x-0 z-50 px-2 sm:px-4"
         >
           <div className="max-w-7xl mx-auto flex justify-center">
-            <div className="relative flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border bg-background/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/5">
+            <div className="relative flex items-center gap-2 sm:gap-4 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border bg-background/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
               {/* Logo */}
               <div className="flex items-center gap-2 sm:gap-3 pr-2 sm:pr-4 border-r border-border/60">
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="relative w-6 h-6 sm:w-8 sm:h-8">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="relative w-7 h-7 sm:w-9 sm:h-9">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-primary/10 to-primary/5 blur-sm" />
-                    <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20">
+                    <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/20 bg-background/50">
                       <Compass
                         className="w-4 h-4 sm:w-5 sm:h-5 text-primary"
                         strokeWidth={1.5}
                       />
                     </div>
                   </div>
-                  <span className="text-base sm:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+                  <span className="text-base sm:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-foreground/80">
                     Nebriq
                   </span>
                 </div>
@@ -959,7 +959,7 @@ export default function Home() {
         {/* Problem Statement Section */}
         <section
           id="problem"
-          className="relative py-16 sm:py-20 md:py-28 mt-16 sm:mt-20 md:mt-36"
+          className="relative py-24 sm:py-32 md:py-40 mt-16 sm:mt-20 md:mt-36"
         >
           {/* Enhanced Background elements */}
           <div className="absolute inset-0 bg-background/30 backdrop-blur-[3px]" />
@@ -970,7 +970,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: [0.08, 0.18, 0.08] }}
               transition={{ duration: 7, repeat: Infinity }}
-              className="absolute rounded-full top-1/3 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-primary/30 blur-[120px]"
+              className="absolute rounded-full top-1/3 -left-20 w-72 sm:w-96 h-72 sm:h-96 bg-primary/30 blur-[120px]"
             />
             <motion.div
               initial={{ opacity: 0 }}
@@ -983,7 +983,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: [0.05, 0.12, 0.05] }}
               transition={{ duration: 6, repeat: Infinity, delay: 0.5 }}
-              className="absolute rounded-full top-2/3 left-1/3 w-40 sm:w-56 h-40 sm:h-56 bg-accent/20 blur-[100px]"
+              className="absolute rounded-full top-2/3 left-1/3 w-56 sm:w-72 h-56 sm:h-72 bg-accent/20 blur-[100px]"
             />
           </div>
 
@@ -1006,17 +1006,17 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="max-w-3xl mx-auto text-center"
+              transition={{ duration: 0.5 }}
+              className="max-w-3xl mx-auto text-center space-y-8 sm:space-y-10"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="space-y-3"
+                className="space-y-6"
               >
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 sm:mb-8 border rounded-full border-primary/30 bg-background/80 backdrop-blur-sm shadow-sm">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 border rounded-full border-primary/30 bg-background/80 backdrop-blur-sm shadow-sm">
                   <Settings className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">
                     The Challenge
@@ -1050,7 +1050,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="mx-auto mt-6 sm:mt-8 text-lg sm:text-xl leading-relaxed text-muted-foreground/90 max-w-prose"
+                className="text-lg sm:text-xl leading-relaxed text-muted-foreground/90 max-w-prose mx-auto"
               >
                 Traditional note apps leave your knowledge buried and
                 disconnected. Nebriq turns your notes into a{" "}
@@ -1201,32 +1201,50 @@ export default function Home() {
 
         <section
           id="features-overview"
-          className="relative py-16 sm:py-20 md:py-24"
+          className="relative py-24 sm:py-32 md:py-40"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
 
+          {/* Add consistent background elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.08, 0.18, 0.08] }}
+              transition={{ duration: 7, repeat: Infinity }}
+              className="absolute rounded-full top-1/3 -left-20 w-72 sm:w-96 h-72 sm:h-96 bg-primary/30 blur-[120px]"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.08, 0.15, 0.08] }}
+              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+              className="absolute rounded-full bottom-1/3 -right-20 w-72 sm:w-96 h-72 sm:h-96 bg-secondary/30 blur-[120px]"
+            />
+          </div>
+
           <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
-            <div className="mb-10 sm:mb-16 text-center">
+            <div className="mb-16 sm:mb-20 text-center space-y-6 sm:space-y-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1 mb-4 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20"
               >
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
                   Key Features
                 </span>
               </motion.div>
-              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
-                Powerful, Yet Beautifully Simple
-              </h2>
-              <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
-                Forget about complex folder structures and manual organization.
-                Our AI-powered features work silently in the background while
-                you focus on writing.
-              </p>
+              <div className="space-y-4 sm:space-y-6">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  Powerful, Yet Beautifully Simple
+                </h2>
+                <p className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground">
+                  Forget about complex folder structures and manual
+                  organization. Our AI-powered features work silently in the
+                  background while you focus on writing.
+                </p>
+              </div>
             </div>
 
             <div className="space-y-16 sm:space-y-20 md:space-y-24">
@@ -1511,31 +1529,49 @@ export default function Home() {
         </section>
 
         {/* Essential Tools Section */}
-        <section className="relative py-16 sm:py-20 md:py-24">
+        <section className="relative py-24 sm:py-32 md:py-40">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
 
+          {/* Add consistent background elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.08, 0.18, 0.08] }}
+              transition={{ duration: 7, repeat: Infinity }}
+              className="absolute rounded-full top-1/3 -left-20 w-72 sm:w-96 h-72 sm:h-96 bg-primary/30 blur-[120px]"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.08, 0.15, 0.08] }}
+              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+              className="absolute rounded-full bottom-1/3 -right-20 w-72 sm:w-96 h-72 sm:h-96 bg-secondary/30 blur-[120px]"
+            />
+          </div>
+
           <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
-            <div className="mb-10 sm:mb-16 text-center">
+            <div className="mb-16 sm:mb-20 text-center space-y-6 sm:space-y-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1 mb-4 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20"
               >
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
                   Powerful Features
                 </span>
               </motion.div>
-              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
-                Smart, Yet Simple
-              </h2>
-              <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
-                All the tools you need to capture, retrieve, and interact with
-                your knowledge, wrapped in an elegant interface that makes
-                complex tasks feel simple.
-              </p>
+              <div className="space-y-4 sm:space-y-6">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  Smart, Yet Simple
+                </h2>
+                <p className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground">
+                  All the tools you need to capture, retrieve, and interact with
+                  your knowledge, wrapped in an elegant interface that makes
+                  complex tasks feel simple.
+                </p>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:gap-6 mt-8 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
@@ -1610,45 +1646,47 @@ export default function Home() {
         </section>
 
         {/* Powerful Editor Section */}
-        <section className="relative py-16 sm:py-24 overflow-hidden">
+        <section className="relative py-24 sm:py-32 md:py-40 overflow-hidden">
           {/* Atmospheric background effects */}
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 overflow-hidden">
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0.1, 0.2, 0.1] }}
-              transition={{ duration: 5, repeat: Infinity }}
-              className="absolute -left-1/4 top-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-[100px]"
+              animate={{ opacity: [0.08, 0.18, 0.08] }}
+              transition={{ duration: 7, repeat: Infinity }}
+              className="absolute rounded-full top-1/3 -left-20 w-72 sm:w-96 h-72 sm:h-96 bg-primary/30 blur-[120px]"
             />
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0.1, 0.2, 0.1] }}
-              transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-              className="absolute -right-1/4 bottom-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-[100px]"
+              animate={{ opacity: [0.08, 0.15, 0.08] }}
+              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+              className="absolute rounded-full bottom-1/3 -right-20 w-72 sm:w-96 h-72 sm:h-96 bg-secondary/30 blur-[120px]"
             />
           </div>
 
           <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
-            <div className="mb-8 sm:mb-12 md:mb-16 text-center">
+            <div className="mb-16 sm:mb-20 text-center space-y-6 sm:space-y-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-primary/10 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20"
               >
                 <Text className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
                   Powerful Editor
                 </span>
               </motion.div>
-              <h2 className="mb-3 sm:mb-4 md:mb-6 text-2xl sm:text-3xl font-bold md:text-4xl lg:text-5xl">
-                Write Without Limits
-              </h2>
-              <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-muted-foreground">
-                A powerful editor that stays out of your way. Focus on writing
-                while AI works in the background.
-              </p>
+              <div className="space-y-4 sm:space-y-6">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  Write Without Limits
+                </h2>
+                <p className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground">
+                  A powerful editor that stays out of your way. Focus on writing
+                  while AI works in the background.
+                </p>
+              </div>
             </div>
 
             <div className="relative">
@@ -1688,26 +1726,45 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section id="cta" className="py-16 sm:py-24 bg-muted/30">
-          <div className="px-4 sm:px-6 mx-auto text-center max-w-7xl">
+        <section id="cta" className="relative py-24 sm:py-32 md:py-40">
+          {/* Add consistent background elements */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.08, 0.18, 0.08] }}
+              transition={{ duration: 7, repeat: Infinity }}
+              className="absolute rounded-full top-1/3 -left-20 w-72 sm:w-96 h-72 sm:h-96 bg-primary/30 blur-[120px]"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.08, 0.15, 0.08] }}
+              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+              className="absolute rounded-full bottom-1/3 -right-20 w-72 sm:w-96 h-72 sm:h-96 bg-secondary/30 blur-[120px]"
+            />
+          </div>
+
+          <div className="relative z-10 px-4 sm:px-6 mx-auto text-center max-w-7xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
+              className="relative p-8 sm:p-12 rounded-2xl border border-primary/20 bg-background/60 backdrop-blur-md"
             >
-              <Badge variant="secondary" className="mb-4 sm:mb-6">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-secondary/5 rounded-2xl" />
+              <Badge variant="secondary" className="mb-6 sm:mb-8">
                 Early Access
               </Badge>
-              <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold">
+              <h2 className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl font-bold">
                 Turn Notes Into Knowledge
               </h2>
-              <p className="mb-6 sm:mb-8 text-base sm:text-lg text-muted-foreground">
+              <p className="mb-8 sm:mb-10 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
                 Join us in building the future of personal knowledge management.
               </p>
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-primary to-primary/80"
+                className="bg-gradient-to-r from-primary to-primary/80 text-lg px-8 py-6 h-auto hover:scale-105 transition-transform duration-200"
                 onClick={scrollToHero}
               >
                 Join Waitlist
@@ -1717,8 +1774,9 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t bg-background">
-          <div className="px-4 sm:px-6 py-8 sm:py-12 mx-auto max-w-7xl">
+        <footer className="relative border-t bg-background/60 backdrop-blur-sm">
+          <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-background" />
+          <div className="relative z-10 px-4 sm:px-6 py-12 sm:py-16 mx-auto max-w-7xl">
             {/* Main Footer Content */}
             <div className="grid grid-cols-1 gap-6 sm:gap-8 mb-6 sm:mb-8 sm:grid-cols-2 md:grid-cols-3">
               {/* Company Info */}
