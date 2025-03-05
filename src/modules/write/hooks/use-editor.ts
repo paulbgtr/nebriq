@@ -41,6 +41,8 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   const [isCreatingNote, setIsCreatingNote] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedContent, setLastSavedContent] = useState("");
+  const isUpdatingRef = useRef(false);
+  const lastUserEditTimeRef = useRef(Date.now());
 
   useSyncNoteConnections(id, content);
 
@@ -76,8 +78,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   const updateNote = useDebouncedCallback(
     useCallback(
       (newTitle?: string, newContent?: string) => {
-        if (!id) return;
+        if (!id || isUpdatingRef.current) return;
 
+        isUpdatingRef.current = true;
         setIsSaving(true);
         updateNoteMutation.mutate(
           {
@@ -88,6 +91,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           {
             onSuccess: (updatedNote) => {
               setIsSaving(false);
+              isUpdatingRef.current = false;
               if (newContent) {
                 setLastSavedContent(newContent);
               }
@@ -100,6 +104,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             },
             onError: () => {
               setIsSaving(false);
+              isUpdatingRef.current = false;
               toast({
                 title: "Error saving changes",
                 description: "Please try again",
@@ -130,8 +135,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   };
 
   const handleEditorUpdate = useDebouncedCallback((newContent: string) => {
-    if (!id) return;
+    if (!id || isUpdatingRef.current) return;
 
+    isUpdatingRef.current = true;
     setIsSaving(true);
 
     updateNoteMutation.mutate(
@@ -140,6 +146,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         onSuccess: () => {
           setLastSavedContent(newContent);
           setIsSaving(false);
+          isUpdatingRef.current = false;
         },
         onError: () => {
           toast({
@@ -148,6 +155,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             variant: "destructive",
           });
           setIsSaving(false);
+          isUpdatingRef.current = false;
         },
       }
     );
@@ -273,16 +281,18 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         const newContent = editor.getHTML();
         const cursorPos = editor.state.selection.anchor;
 
-        setContent(newContent);
-        handleEditorUpdate(newContent);
+        // Update the last edit time
+        lastUserEditTimeRef.current = Date.now();
 
-        if (!id && !isCreatingNote) {
-          createNote();
+        // Only update if content actually changed to avoid unnecessary re-renders
+        if (newContent !== content) {
+          setContent(newContent);
+          handleEditorUpdate(newContent);
+
+          if (!id && !isCreatingNote) {
+            createNote();
+          }
         }
-
-        requestAnimationFrame(() => {
-          editor.commands.focus(cursorPos);
-        });
       },
     },
     [id, handleEditorUpdate]
@@ -306,11 +316,19 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     if (!editor || !id || !noteConnectionsQuery.data || !lastSavedContent)
       return;
 
+    // Don't update if user edited content in the last 2 seconds
+    const timeSinceLastEdit = Date.now() - lastUserEditTimeRef.current;
+    if (timeSinceLastEdit < 2000) return;
+
     if (noteConnectionsQuery.isSuccess && lastSavedContent) {
       const currentMentions = extractNoteConnectionsFromContent(content);
       const savedMentions = extractNoteConnectionsFromContent(lastSavedContent);
 
-      if (currentMentions?.length !== savedMentions?.length) {
+      // Only update if mentions changed AND the editor is not currently focused
+      if (
+        currentMentions?.length !== savedMentions?.length &&
+        !editor.isFocused
+      ) {
         const cursorPos = editor.state.selection.anchor;
 
         editor.commands.setContent(lastSavedContent, false, {
@@ -344,11 +362,19 @@ export const useCustomEditor = (initialNoteId: string | null) => {
 
   useEffect(() => {
     if (!editor) return;
-    const { from, to } = editor.state.selection;
-    editor.commands.setContent(content, false, {
-      preserveWhitespace: "full",
-    });
-    editor.commands.setTextSelection({ from, to });
+
+    // Don't update if user edited content in the last 2 seconds
+    const timeSinceLastEdit = Date.now() - lastUserEditTimeRef.current;
+    if (timeSinceLastEdit < 2000) return;
+
+    // Only update editor content from external changes, not from typing
+    if (content !== editor.getHTML() && !editor.isFocused) {
+      const { from, to } = editor.state.selection;
+      editor.commands.setContent(content, false, {
+        preserveWhitespace: "full",
+      });
+      editor.commands.setTextSelection({ from, to });
+    }
   }, [editor, content]);
 
   useEffect(() => {
