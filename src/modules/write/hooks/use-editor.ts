@@ -279,7 +279,6 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         if (transaction.getMeta("avoidSave")) return;
 
         const newContent = editor.getHTML();
-        const cursorPos = editor.state.selection.anchor;
 
         // Update the last edit time
         lastUserEditTimeRef.current = Date.now();
