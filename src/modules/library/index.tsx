@@ -4,8 +4,17 @@ import { useState, useCallback, useTransition } from "react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { Spinner } from "@/shared/components/spinner";
 import { Button } from "@/shared/components/ui/button";
-import { BookOpen, FolderIcon, Plus, Network } from "lucide-react";
-import { motion } from "framer-motion";
+import {
+  BookOpen,
+  FolderIcon,
+  Plus,
+  Network,
+  Sparkles,
+  BookMarked,
+  Library,
+  Compass,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ViewMode } from "./types";
 import { handleNotePlural, groupNotesByCategory } from "./utils";
 import { SearchBar } from "./features/search-bar";
@@ -13,6 +22,7 @@ import { FilterBar } from "./features/filter-bar";
 import { Category } from "./features/category";
 import { HeaderActions } from "./features/header-actions";
 import { Visualization } from "@/modules/library/features/visualization";
+import { SmartView } from "@/modules/library/features/smart-view";
 import {
   Tabs,
   TabsContent,
@@ -31,7 +41,7 @@ export default function LibraryModule() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(false);
-  const [activeTab, setActiveTab] = useState("collection");
+  const [activeTab, setActiveTab] = useState("smart");
 
   const handleSelectionChange = (selected: string[]) => {
     setSelectedNotes(selected);
@@ -91,9 +101,25 @@ export default function LibraryModule() {
         animate={{ opacity: 1 }}
       >
         <div className="flex flex-col items-center gap-4 text-primary">
-          <Spinner size="lg" />
+          <div className="relative">
+            <Spinner size="lg" className="text-primary" />
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                opacity: [0.4, 1, 0.4],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Spinner size="lg" className="text-primary/20" />
+            </motion.div>
+          </div>
           <p className="text-sm text-muted-foreground animate-pulse">
-            Loading your library...
+            Loading your knowledge hub...
           </p>
         </div>
       </motion.div>
@@ -102,37 +128,40 @@ export default function LibraryModule() {
   if (!notes?.length) {
     return (
       <motion.div
-        className="min-h-[400px] flex flex-col items-center justify-center"
+        className="min-h-[500px] flex flex-col items-center justify-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="space-y-6 text-center">
+        <div className="space-y-8 text-center max-w-md mx-auto">
           <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="relative"
           >
-            <div className="relative">
-              <BookOpen className="h-16 w-16 text-primary/30 mx-auto" />
-              <motion.div
-                className="absolute inset-0"
-                animate={{
-                  opacity: [0.4, 1, 0.4],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <BookOpen className="h-16 w-16 text-primary/10 mx-auto" />
-              </motion.div>
+            <div className="w-24 h-24 rounded-full bg-background/80 border border-primary/20 mx-auto flex items-center justify-center">
+              <BookMarked className="h-12 w-12 text-primary/70 mx-auto" />
             </div>
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center"
+              animate={{
+                opacity: [0.4, 1, 0.4],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <div className="w-24 h-24 rounded-full border border-primary/10 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-primary/30 absolute top-3 right-3" />
+              </div>
+            </motion.div>
           </motion.div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold text-foreground/90">
+          <div className="space-y-3">
+            <h3 className="text-2xl font-bold text-foreground/90">
               Your Knowledge Hub Awaits
             </h3>
             <p className="text-sm text-muted-foreground/80 max-w-md mx-auto leading-relaxed">
@@ -140,9 +169,12 @@ export default function LibraryModule() {
               thoughts, ideas, and inspirations in one place.
             </p>
           </div>
-          <Button size="lg" className="bg-primary/90 hover:bg-primary">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Your First Note
+          <Button
+            size="lg"
+            className="bg-primary/90 hover:bg-primary transition-colors duration-300 shadow-sm group"
+          >
+            <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+            <span>Create Your First Note</span>
           </Button>
         </div>
       </motion.div>
@@ -168,43 +200,50 @@ export default function LibraryModule() {
           >
             <div className="flex items-center gap-3">
               <div className="relative">
-                <BookOpen className="h-8 w-8 text-primary/60" />
+                <div className="w-12 h-12 rounded-xl bg-background/80 border border-primary/20 flex items-center justify-center">
+                  <Library className="h-6 w-6 text-primary/80" />
+                </div>
                 <motion.div
-                  className="absolute inset-0"
+                  className="absolute inset-0 flex items-center justify-center"
                   animate={{
                     opacity: [0.4, 1, 0.4],
-                    scale: [1, 1.1, 1],
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 3,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
                 >
-                  <BookOpen className="h-8 w-8 text-primary/10" />
+                  <div className="w-12 h-12 rounded-xl border border-primary/10 flex items-center justify-center">
+                    <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary/40"></div>
+                  </div>
                 </motion.div>
               </div>
-              <h2 className="text-3xl font-bold">Knowledge Hub</h2>
-            </div>
-            <p className="text-sm text-muted-foreground/80 flex items-center gap-2">
-              <span className="flex items-center gap-1.5">
-                <BookOpen className="h-4 w-4" />
-                {notes.length} {handleNotePlural(notes.length)}
-              </span>
-              <span className="text-muted-foreground/40">•</span>
-              <span className="flex items-center gap-1.5">
-                <FolderIcon className="h-4 w-4" />
-                {categorizedNotes.length} categories
-              </span>
-              {isSelectionMode && selectedNotes.length > 0 && (
-                <>
-                  <span className="text-muted-foreground/40">•</span>
-                  <span className="text-primary font-medium flex items-center gap-1.5">
-                    {selectedNotes.length} selected
+              <div>
+                <h2 className="text-3xl font-bold text-foreground/90">
+                  Knowledge Hub
+                </h2>
+                <p className="text-sm text-muted-foreground/80 flex items-center gap-2">
+                  <span className="flex items-center gap-1.5">
+                    <BookOpen className="h-4 w-4" />
+                    {notes.length} {handleNotePlural(notes.length)}
                   </span>
-                </>
-              )}
-            </p>
+                  <span className="text-muted-foreground/40">•</span>
+                  <span className="flex items-center gap-1.5">
+                    <FolderIcon className="h-4 w-4" />
+                    {categorizedNotes.length} categories
+                  </span>
+                  {isSelectionMode && selectedNotes.length > 0 && (
+                    <>
+                      <span className="text-muted-foreground/40">•</span>
+                      <span className="text-primary font-medium flex items-center gap-1.5">
+                        {selectedNotes.length} selected
+                      </span>
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
           </motion.div>
 
           <HeaderActions
@@ -241,46 +280,93 @@ export default function LibraryModule() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto">
-          <TabsTrigger value="collection" className="flex items-center gap-2">
+        <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto bg-background/50 backdrop-blur-sm border border-border/30 p-1 rounded-xl">
+          <TabsTrigger
+            value="smart"
+            className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary/90 data-[state=active]:text-white transition-all duration-300"
+          >
+            <Compass className="h-4 w-4" />
+            <span className="hidden sm:inline">Smart View</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="collection"
+            className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary/90 data-[state=active]:text-white transition-all duration-300"
+          >
             <BookOpen className="h-4 w-4" />
             <span className="hidden sm:inline">Collection</span>
           </TabsTrigger>
-          <TabsTrigger value="graph" className="flex items-center gap-2">
+          <TabsTrigger
+            value="graph"
+            className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary/90 data-[state=active]:text-white transition-all duration-300"
+          >
             <Network className="h-4 w-4" />
             <span className="hidden sm:inline">Graph</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="collection" className="space-y-6 mt-6">
-          {categorizedNotes.map(([category, notes]) => (
-            <Category
-              key={category}
-              category={category}
-              notes={notes}
-              isExpanded={expandedCategories.includes(category)}
-              isSelectionMode={isSelectionMode}
-              viewMode={viewMode}
-              onSelectionChange={handleSelectionChange}
-              onToggleCategory={toggleCategory}
-            />
-          ))}
-        </TabsContent>
+        <AnimatePresence mode="wait">
+          {activeTab === "smart" && (
+            <TabsContent value="smart" className="mt-6">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <SmartView
+                  notes={filteredNotes || []}
+                  viewMode={viewMode}
+                  smartViewMode={"recent"}
+                  isSelectionMode={isSelectionMode}
+                  onSelectionChange={handleSelectionChange}
+                />
+              </motion.div>
+            </TabsContent>
+          )}
 
-        <TabsContent value="graph" className="mt-6">
-          <motion.div
-            className="h-[600px] rounded-xl border overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="h-full relative">
-              <div className="absolute inset-0">
-                <Visualization />
-              </div>
-            </div>
-          </motion.div>
-        </TabsContent>
+          {activeTab === "collection" && (
+            <TabsContent value="collection" className="space-y-6 mt-6">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="grid gap-6"
+              >
+                {categorizedNotes.map(([category, notes]) => (
+                  <Category
+                    key={category}
+                    category={category}
+                    notes={notes}
+                    isExpanded={expandedCategories.includes(category)}
+                    isSelectionMode={isSelectionMode}
+                    viewMode={viewMode}
+                    onSelectionChange={handleSelectionChange}
+                    onToggleCategory={toggleCategory}
+                  />
+                ))}
+              </motion.div>
+            </TabsContent>
+          )}
+
+          {activeTab === "graph" && (
+            <TabsContent value="graph" className="mt-6">
+              <motion.div
+                className="h-[600px] rounded-xl border border-border/30 bg-background/50 backdrop-blur-sm overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="h-full relative">
+                  <div className="absolute inset-0">
+                    <Visualization />
+                  </div>
+                </div>
+              </motion.div>
+            </TabsContent>
+          )}
+        </AnimatePresence>
       </Tabs>
     </motion.div>
   );
