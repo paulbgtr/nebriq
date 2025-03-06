@@ -1,8 +1,9 @@
 type SpinnerProps = {
   size?: "sm" | "md" | "lg";
+  className?: string;
 };
 
-export const Spinner = ({ size = "md" }: SpinnerProps) => {
+export const Spinner = ({ size = "md", className = "" }: SpinnerProps) => {
   const sizeClasses = {
     sm: "h-6 w-6 border-2",
     md: "h-10 w-10 border-4",
@@ -12,7 +13,7 @@ export const Spinner = ({ size = "md" }: SpinnerProps) => {
   return (
     <div className="flex items-center justify-center">
       <div
-        className={`animate-spin ${sizeClasses[size]} rounded-full border-b-2 border-secondary border-t-transparent border-r-transparent border-l-primary`}
+        className={`animate-spin ${sizeClasses[size]} rounded-full border-b-2 border-secondary border-t-transparent border-r-transparent border-l-primary ${className}`}
         style={{
           borderRadius: "50%", // ensures a perfect circle
           animationDuration: "1.5s", // a slower, deliberate spin to resemble writing pace
