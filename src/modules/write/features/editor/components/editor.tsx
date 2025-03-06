@@ -5,7 +5,6 @@ import {
   Shrink,
   Save,
   Sparkles,
-  Clock,
   BookOpen,
   MoreHorizontal,
 } from "lucide-react";
@@ -53,7 +52,7 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
   const [isZenMode, setIsZenMode] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [titleFocused, setTitleFocused] = useState(false);
+  const [setTitleFocused] = useState(false);
   const [showControls, setShowControls] = useState(true);
 
   useEffect(() => {
