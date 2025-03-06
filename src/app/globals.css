@@ -376,3 +376,105 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Note Discovery Animations */
+@keyframes highlightPulse0 {
+  0% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+  50% {
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+  100% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+}
+
+@keyframes highlightPulse1 {
+  0% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+  33% {
+    border-color: rgba(34, 197, 94, 0.25);
+  }
+  66% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+  100% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+}
+
+@keyframes highlightPulse2 {
+  0% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+  25% {
+    border-color: rgba(34, 197, 94, 0.2);
+  }
+  75% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+  100% {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+}
+
+.highlight-0 {
+  animation: highlightPulse0 3s infinite;
+}
+
+.highlight-1 {
+  animation: highlightPulse1 3.5s infinite;
+}
+
+.highlight-2 {
+  animation: highlightPulse2 4s infinite;
+}
+
+/* Futuristic scan effect */
+@keyframes scanGlow {
+  0% {
+    box-shadow: 0 0 3px rgba(100, 116, 139, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 3px rgba(100, 116, 139, 0.2);
+  }
+}
+
+.prose mark {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.prose mark:hover {
+  background-color: rgba(34, 197, 94, 0.1) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+.prose mark:active {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Connection line animation */
+@keyframes connectionLine {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    width: 100%;
+    opacity: 0.2;
+  }
+}
+
+.connection-line {
+  animation: connectionLine 1s ease-out forwards;
+}
