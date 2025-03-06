@@ -1,12 +1,20 @@
 import { EditorContent } from "@tiptap/react";
 import { useState } from "react";
-import { Expand, Shrink, Save } from "lucide-react";
+import { Expand, Shrink, Save, Lightbulb } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { TagManager } from "./tag-manager";
 import { EditorContextMenu } from "./context-menu";
 import { cn } from "@/shared/lib/utils";
 import { useEditorCounts } from "@/modules/write/hooks/use-editor-counts";
 import { useCustomEditor } from "@/modules/write/hooks/use-editor";
+import { useNoteDiscovery } from "@/modules/write/hooks/use-note-discovery";
+import { NoteDiscovery } from "./note-discovery";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/components/ui/tooltip";
 
 export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
   const {
@@ -23,6 +31,9 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
     editor,
     content,
   });
+
+  const { isSearching, discoveredNotes, isDiscoveryOpen, toggleDiscovery } =
+    useNoteDiscovery(editor, id);
 
   const [isZenMode, setIsZenMode] = useState(false);
 
@@ -78,9 +89,9 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 sm:h-9 sm:w-9"
                 onClick={() => updateNote()}
                 disabled={isSaving}
+                className="h-8 w-8 sm:h-9 sm:w-9"
               >
                 <Save
                   className={cn(
@@ -89,6 +100,33 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
                   )}
                 />
               </Button>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "h-8 w-8 sm:h-9 sm:w-9",
+                        isDiscoveryOpen ? "bg-muted" : ""
+                      )}
+                      onClick={toggleDiscovery}
+                      disabled={!id}
+                    >
+                      <Lightbulb
+                        className={cn(
+                          "h-3.5 w-3.5 sm:h-4 sm:w-4",
+                          isSearching && "animate-pulse"
+                        )}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Find connected notes (Alt+L)</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               <Button
                 variant="ghost"
@@ -115,7 +153,11 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
               "overflow-auto scroll-smooth",
               "prose-p:my-2",
               "prose-headings:my-4",
-              "leading-relaxed"
+              "leading-relaxed",
+              "prose-mark:bg-transparent prose-mark:border prose-mark:border-dashed prose-mark:border-muted-foreground/30 prose-mark:px-0.5 prose-mark:rounded",
+              "prose-mark:cursor-pointer prose-mark:hover:bg-green-500/10 prose-mark:hover:border-green-500/30 prose-mark:dark:hover:bg-green-500/10",
+              "prose-mark:relative prose-mark:after:content-[attr(data-note-title)] prose-mark:after:absolute prose-mark:after:hidden prose-mark:hover:after:block prose-mark:after:bottom-full prose-mark:after:left-1/2 prose-mark:after:-translate-x-1/2 prose-mark:after:bg-popover prose-mark:after:text-popover-foreground prose-mark:after:px-2 prose-mark:after:py-1 prose-mark:after:rounded prose-mark:after:text-xs prose-mark:after:whitespace-nowrap prose-mark:after:shadow-md",
+              "[&_.animate-highlight]:animate-pulse [&_.animate-highlight]:duration-500"
             )}
             onClick={() => editor?.commands.focus()}
           >
@@ -123,6 +165,13 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
           </div>
         </EditorContextMenu>
       </div>
+
+      <NoteDiscovery
+        notes={discoveredNotes}
+        isOpen={isDiscoveryOpen}
+        onClose={toggleDiscovery}
+        isLoading={isSearching}
+      />
     </div>
   );
 }

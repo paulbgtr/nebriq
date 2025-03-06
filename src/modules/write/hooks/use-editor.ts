@@ -24,6 +24,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
+import Highlight from "@tiptap/extension-highlight";
 import { FileElement } from "@/shared/lib/tippy/nodes/file-element";
 
 export const useCustomEditor = (initialNoteId: string | null) => {
@@ -184,6 +185,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         }),
         TextAlign.configure({
           types: ["heading", "paragraph"],
+        }),
+        Highlight.configure({
+          multicolor: true,
         }),
         Link.configure({
           openOnClick: true,
