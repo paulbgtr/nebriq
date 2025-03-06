@@ -33,6 +33,10 @@ import {
   User,
   ArrowUp,
   BotMessageSquare,
+  FileText,
+  Lightbulb,
+  Save,
+  Network,
 } from "lucide-react";
 import { ModeToggle } from "@/modules/landing-page/features/theme-switcher";
 import { useTheme } from "next-themes";
@@ -1520,6 +1524,368 @@ export default function Home() {
                     <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       Quick search and filters
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Semantic Connections */}
+              <div className="flex flex-col md:flex-row-reverse gap-6 sm:gap-8 md:gap-12 items-center">
+                <div className="w-full md:w-3/5">
+                  <div className="relative aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-background/90 backdrop-blur-sm">
+                    {/* Semantic Connections Preview */}
+                    <div className="absolute inset-0 flex flex-col">
+                      {/* Editor Header */}
+                      <div className="flex items-center justify-between p-4 border-b border-primary/10">
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <FileText className="h-8 w-8 text-primary/60" />
+                            <motion.div
+                              className="absolute inset-0"
+                              animate={{
+                                opacity: [0.4, 1, 0.4],
+                                scale: [1, 1.1, 1],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                            >
+                              <FileText className="h-8 w-8 text-primary/10" />
+                            </motion.div>
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold">
+                              Machine Learning Basics
+                            </h3>
+                            <p className="text-sm text-muted-foreground/80">
+                              Last edited 2 hours ago
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <motion.div
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="relative"
+                          >
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 relative z-10"
+                            >
+                              <Lightbulb className="h-4 w-4 text-primary" />
+                            </Button>
+                            <motion.div
+                              className="absolute inset-0 rounded-full"
+                              animate={{
+                                boxShadow: [
+                                  "0 0 0 0 rgba(var(--primary), 0)",
+                                  "0 0 0 8px rgba(var(--primary), 0.1)",
+                                  "0 0 0 0 rgba(var(--primary), 0)",
+                                ],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                            />
+                          </motion.div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Save className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Editor Content */}
+                      <div className="flex-1 overflow-y-auto p-4">
+                        <div className="prose prose-sm max-w-none">
+                          <h2>Introduction to Mean in Statistics</h2>
+                          <p>
+                            A{" "}
+                            <motion.span
+                              className="relative inline-block semantic-highlight"
+                              initial={{ backgroundColor: "transparent" }}
+                              animate={{
+                                backgroundColor: [
+                                  "transparent",
+                                  "rgba(var(--primary), 0.15)",
+                                  "rgba(var(--primary), 0.15)",
+                                  "transparent",
+                                  "transparent",
+                                  "transparent",
+                                  "transparent",
+                                  "transparent",
+                                ],
+                              }}
+                              transition={{
+                                duration: 8,
+                                times: [0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1],
+                                repeat: Infinity,
+                                repeatDelay: 1,
+                              }}
+                            >
+                              mean is a quantity representing the center of a
+                              collection of numbers
+                            </motion.span>{" "}
+                            and is intermediate to the extreme values of the set
+                            of numbers.
+                          </p>
+                          <p>
+                            The arithmetic mean is calculated by adding all the
+                            values in a dataset and dividing by the number of
+                            values:
+                          </p>
+                          <pre className="bg-muted/30 p-2 rounded">
+                            <code>Mean = (x₁ + x₂ + ... + xₙ) / n</code>
+                          </pre>
+                          <p>
+                            Other types of means include the{" "}
+                            <motion.span
+                              className="relative inline-block semantic-highlight"
+                              initial={{ backgroundColor: "transparent" }}
+                              animate={{
+                                backgroundColor: [
+                                  "transparent",
+                                  "transparent",
+                                  "transparent",
+                                  "transparent",
+                                  "transparent",
+                                  "rgba(var(--secondary), 0.15)",
+                                  "rgba(var(--secondary), 0.15)",
+                                  "transparent",
+                                ],
+                              }}
+                              transition={{
+                                duration: 8,
+                                times: [0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1],
+                                repeat: Infinity,
+                                repeatDelay: 1,
+                              }}
+                            >
+                              geometric mean
+                            </motion.span>{" "}
+                            and harmonic mean, each with specific use cases in
+                            statistics.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Primary Connection Popup */}
+                      <motion.div
+                        className="absolute right-16 top-20 w-64 rounded-lg border border-primary/20 bg-card/95 backdrop-blur-sm shadow-lg overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                        animate={{
+                          opacity: [0, 1, 1, 0, 0, 0, 0, 0],
+                          scale: [0.9, 1, 1, 0.9, 0.9, 0.9, 0.9, 0.9],
+                          y: [-10, 0, 0, -10, -10, -10, -10, -10],
+                        }}
+                        transition={{
+                          duration: 8,
+                          times: [0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1],
+                          repeat: Infinity,
+                          repeatDelay: 1,
+                        }}
+                      >
+                        <div className="p-3 border-b border-border/40">
+                          <div className="flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-medium">
+                              Connected Note
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-3">
+                          <h4 className="text-sm font-medium mb-1">
+                            Mean (Statistics)
+                          </h4>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            This note discusses different types of means and
+                            their applications in statistical analysis.
+                          </p>
+                          <div className="flex justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs"
+                            >
+                              Open Note
+                            </Button>
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Secondary Connection Popup */}
+                      <motion.div
+                        className="absolute right-16 bottom-20 w-64 rounded-lg border border-secondary/20 bg-card/95 backdrop-blur-sm shadow-lg overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{
+                          opacity: [0, 0, 0, 0, 0, 1, 1, 0],
+                          scale: [0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 0.9],
+                          y: [10, 10, 10, 10, 10, 0, 0, 10],
+                        }}
+                        transition={{
+                          duration: 8,
+                          times: [0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1],
+                          repeat: Infinity,
+                          repeatDelay: 1,
+                        }}
+                      >
+                        <div className="p-3 border-b border-border/40">
+                          <div className="flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4 text-secondary" />
+                            <span className="text-sm font-medium">
+                              Connected Note
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-3">
+                          <h4 className="text-sm font-medium mb-1">
+                            Geometric Mean
+                          </h4>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            The geometric mean is used for sets of numbers with
+                            different ranges and is calculated as the nth root
+                            of their product.
+                          </p>
+                          <div className="flex justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs"
+                            >
+                              Open Note
+                            </Button>
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Primary Animated Connection Line */}
+                      <motion.div
+                        className="absolute"
+                        initial={{ opacity: 0 }}
+                        animate={{
+                          opacity: [0, 0.7, 0.7, 0, 0, 0, 0, 0],
+                        }}
+                        transition={{
+                          duration: 8,
+                          times: [0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1],
+                          repeat: Infinity,
+                          repeatDelay: 1,
+                        }}
+                        style={{
+                          top: "120px",
+                          left: "300px",
+                          width: "100px",
+                          height: "2px",
+                          background:
+                            "linear-gradient(90deg, rgba(var(--primary), 0.3) 0%, rgba(var(--primary), 0.8) 100%)",
+                          transform: "rotate(-45deg)",
+                          transformOrigin: "left center",
+                        }}
+                      >
+                        <motion.div
+                          className="absolute h-2 w-2 rounded-full bg-primary right-0 top-1/2 -translate-y-1/2"
+                          animate={{
+                            scale: [1, 1.5, 1],
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      </motion.div>
+
+                      {/* Secondary Animated Connection Line */}
+                      <motion.div
+                        className="absolute"
+                        initial={{ opacity: 0 }}
+                        animate={{
+                          opacity: [0, 0, 0, 0, 0, 0.7, 0.7, 0],
+                        }}
+                        transition={{
+                          duration: 8,
+                          times: [0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1],
+                          repeat: Infinity,
+                          repeatDelay: 1,
+                        }}
+                        style={{
+                          bottom: "120px",
+                          left: "200px",
+                          width: "150px",
+                          height: "2px",
+                          background:
+                            "linear-gradient(90deg, rgba(var(--secondary), 0.3) 0%, rgba(var(--secondary), 0.8) 100%)",
+                          transform: "rotate(45deg)",
+                          transformOrigin: "left center",
+                        }}
+                      >
+                        <motion.div
+                          className="absolute h-2 w-2 rounded-full bg-secondary right-0 top-1/2 -translate-y-1/2"
+                          animate={{
+                            scale: [1, 1.5, 1],
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      </motion.div>
+
+                      {/* Lightbulb Notification */}
+                      <motion.div
+                        className="absolute top-4 right-10 h-2 w-2 rounded-full bg-primary"
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{
+                          opacity: [0, 1, 1, 0, 0, 1, 1, 0],
+                          scale: [0, 1, 1, 0, 0, 1, 1, 0],
+                        }}
+                        transition={{
+                          duration: 8,
+                          times: [0, 0.1, 0.2, 0.3, 0.5, 0.6, 0.8, 1],
+                          repeat: Infinity,
+                          repeatDelay: 1,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full md:w-2/5 space-y-4 sm:space-y-6 mt-4 md:mt-0">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                    <Network className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      Semantic Connections
+                    </span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold">
+                    Discover Connections While Writing
+                  </h3>
+                  <p className="text-base sm:text-lg text-muted-foreground">
+                    Our AI automatically identifies connections between your
+                    notes as you write. See related content without breaking
+                    your flow, helping you build a more interconnected knowledge
+                    base.
+                  </p>
+                  <ul className="space-y-2 sm:space-y-3">
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Real-time connection discovery
+                    </li>
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      Content and title matching
+                    </li>
+                    <li className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      One-click navigation to related notes
                     </li>
                   </ul>
                 </div>
