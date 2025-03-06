@@ -83,18 +83,142 @@ const AttachedNotePreview = ({
 
 const Quote = () => {
   const [quote, setQuote] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+  const [displayedQuote, setDisplayedQuote] = useState("");
+  const [charIndex, setCharIndex] = useState(0);
+
+  const refreshQuote = useCallback(() => {
+    setIsTyping(true);
+    setCharIndex(0);
+    setDisplayedQuote("");
+    setQuote(getRandomQuote());
+  }, []);
 
   useEffect(() => {
     setQuote(getRandomQuote());
   }, []);
 
+  useEffect(() => {
+    if (!quote || charIndex >= quote.length) {
+      setIsTyping(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDisplayedQuote((prev) => prev + quote[charIndex]);
+      setCharIndex((prev) => prev + 1);
+    }, 30); // Speed of typing
+
+    return () => clearTimeout(timer);
+  }, [quote, charIndex]);
+
   return (
-    <div className="flex items-center justify-center my-3">
-      <div className="relative">
-        <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
-          {quote || ""}
-        </span>
-      </div>
+    <div className="flex items-center justify-center my-4">
+      <motion.div
+        className="relative px-6 py-3 max-w-md group"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.7,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+      >
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg blur-sm opacity-70"
+          animate={{
+            opacity: [0.5, 0.7, 0.5],
+            background: [
+              "linear-gradient(to right, rgba(var(--primary), 0.03), rgba(var(--secondary), 0.05))",
+              "linear-gradient(to right, rgba(var(--primary), 0.05), rgba(var(--secondary), 0.07))",
+              "linear-gradient(to right, rgba(var(--primary), 0.03), rgba(var(--secondary), 0.05))",
+            ],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <div className="absolute inset-0 border border-primary/10 rounded-lg"></div>
+        <motion.div
+          className="absolute -left-1 top-1/2 -translate-y-1/2 w-0.5 h-1/2 bg-gradient-to-b from-primary/40 to-transparent"
+          animate={{
+            height: ["40%", "60%", "40%"],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+
+        <div className="relative flex items-center">
+          <span className="text-sm text-primary/40 mr-2">❝</span>
+          <motion.p
+            className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-foreground/90 via-foreground/80 to-foreground/70 leading-relaxed tracking-wide"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            {displayedQuote}
+            {isTyping && (
+              <motion.span
+                className="inline-block w-1 h-4 ml-0.5 bg-primary/40"
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+              />
+            )}
+          </motion.p>
+        </div>
+
+        <motion.div
+          className="absolute bottom-1 right-3 w-8 h-0.5 bg-gradient-to-r from-transparent to-secondary/20"
+          animate={{
+            width: ["1.5rem", "2.5rem", "1.5rem"],
+            opacity: [0.1, 0.3, 0.1],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+
+        <motion.button
+          onClick={refreshQuote}
+          className="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          whileHover={{
+            scale: 1.1,
+            backgroundColor: "rgba(var(--primary), 0.2)",
+          }}
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-primary/60"
+          >
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+            <path d="M21 3v5h-5" />
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+            <path d="M3 21v-5h5" />
+          </svg>
+        </motion.button>
+      </motion.div>
     </div>
   );
 };
