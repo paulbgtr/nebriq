@@ -248,7 +248,7 @@ const MessageBubble = ({
           )}
         <div
           className={cn(
-            "prose max-w-none",
+            "py-3 px-4 max-w-none",
             message.role === "user" ? "prose-sm" : "prose-base",
             message.role === "assistant"
               ? "text-foreground/90 leading-relaxed"
