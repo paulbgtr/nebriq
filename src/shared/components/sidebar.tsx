@@ -4,8 +4,8 @@ import { cn } from "@/shared/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  House,
   Library,
+  BrainCircuit,
   MessageSquarePlus,
   Pen,
   FileText,
@@ -33,10 +33,10 @@ import { useUser } from "@/shared/hooks/use-user";
 
 const navItems = [
   {
-    icon: House,
-    name: "home",
+    icon: BrainCircuit,
+    name: "briq",
     href: "/home",
-    tooltip: "Go to Homepage",
+    tooltip: "Talk to Briq",
   },
   {
     icon: Library,
