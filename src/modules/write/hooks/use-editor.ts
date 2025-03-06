@@ -177,6 +177,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         Mention.configure({
           HTMLAttributes: {
             class: "mention cursor-pointer",
+            "data-type": "mention",
           },
           suggestion: createSuggestion(id),
         }),

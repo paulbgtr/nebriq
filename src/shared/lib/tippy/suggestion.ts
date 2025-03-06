@@ -54,6 +54,9 @@ export default function createSuggestion(currentNoteId: string) {
             placement: "bottom-start",
             theme: "custom",
             maxWidth: "none",
+            animation: "scale-subtle",
+            duration: [150, 100],
+            inertia: true,
           });
         },
 

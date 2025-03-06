@@ -164,9 +164,11 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -253,28 +255,142 @@ body {
   pointer-events: none;
 }
 
-.dropdown-menu {
-  @apply bg-popover border border-border p-2 rounded-lg flex flex-col gap-0.5 overflow-auto relative min-w-[200px];
-}
-
-.dropdown-menu button {
-  @apply text-left w-full px-2 py-1 rounded transition-colors duration-200;
-}
-
-.dropdown-menu button:hover {
-  @apply bg-accent;
-}
-
-.dropdown-menu button.is-selected {
-  @apply bg-accent;
-}
-
 .mention {
-  @apply bg-accent rounded-md px-[0.3rem] py-[0.1rem] box-decoration-clone;
+  @apply bg-primary/5 text-primary/90 font-medium rounded-md px-[0.3rem] py-[0.1rem] box-decoration-clone;
+  @apply border border-primary/10 shadow-sm;
+  @apply transition-all duration-200;
+  @apply relative overflow-hidden;
+  @apply text-sm;
+  text-shadow: 0 0 1px rgba(var(--primary), 0.05);
+  animation: mentionPulse 0.8s ease-out;
+}
+
+@keyframes mentionPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 4px rgba(var(--primary), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0);
+  }
+}
+
+.mention-char {
+  @apply text-primary/60 font-medium;
+  font-size: 0.9em;
+}
+
+.mention-content {
+  @apply font-medium;
+  font-size: 0.9em;
+}
+
+.mention::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--primary), 0.02) 0%,
+    rgba(var(--primary), 0.05) 50%,
+    rgba(var(--primary), 0.02) 100%
+  );
+  background-size: 200% 200%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.mention:hover {
+  @apply bg-primary/10 border-primary/20;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 4px rgba(var(--primary), 0.1);
+}
+
+.mention:hover::before {
+  opacity: 1;
+  animation: mentionGlow 2s infinite;
+}
+
+.mention:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(var(--primary), 0.05);
 }
 
 .mention::after {
   content: "\200B";
+}
+
+@keyframes mentionGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Tippy.js custom theme for mentions */
+.tippy-box[data-theme~="custom"] {
+  @apply bg-popover/90 backdrop-blur-sm border border-border/50 rounded-lg;
+  @apply shadow-md;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
+}
+
+.tippy-box[data-theme~="custom"] .tippy-content {
+  @apply p-0;
+}
+
+.tippy-box[data-animation="scale-subtle"][data-placement^="top"] {
+  transform-origin: bottom;
+}
+.tippy-box[data-animation="scale-subtle"][data-placement^="bottom"] {
+  transform-origin: top;
+}
+.tippy-box[data-animation="scale-subtle"][data-placement^="left"] {
+  transform-origin: right;
+}
+.tippy-box[data-animation="scale-subtle"][data-placement^="right"] {
+  transform-origin: left;
+}
+.tippy-box[data-animation="scale-subtle"][data-state="hidden"] {
+  transform: scale(0.97);
+  opacity: 0;
+}
+
+/* Dropdown menu styling improvements for mentions */
+.dropdown-menu {
+  @apply bg-transparent p-1.5 rounded-lg;
+  @apply flex flex-col gap-0.5 overflow-auto relative min-w-[200px] max-h-[250px];
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dropdown-menu button {
+  @apply text-left w-full px-2.5 py-1.5 rounded-md transition-all duration-200;
+  @apply relative overflow-hidden text-sm;
+  @apply flex items-center;
+}
+
+.dropdown-menu button:hover {
+  @apply bg-primary/5 text-primary/90;
+}
+
+.dropdown-menu button.is-selected {
+  @apply bg-primary/10 text-primary/90 font-medium;
+  @apply border-l border-primary/40 pl-[calc(0.625rem-1px)];
+}
+
+.dropdown-menu button::before {
+  content: "@";
+  @apply text-primary/50 mr-1 font-normal text-xs;
 }
 
 /* Syntax highlighting styles */

@@ -83,11 +83,13 @@ const MentionList = forwardRef<
               await selectItem(index);
             }}
           >
-            {item.title}
+            <span className="truncate text-sm">{item.title}</span>
           </button>
         ))
       ) : (
-        <div className="item">No result</div>
+        <div className="px-2.5 py-1.5 text-muted-foreground text-xs">
+          No results found
+        </div>
       )}
     </div>
   );
