@@ -1,5 +1,18 @@
 # Nebriq Changelog
 
+## [0.4.0-beta.1] - 2025-03-06
+
+### Added ✨
+
+- Add note discovery feature for improved content exploration
+- Implement semantic highlighting in editor
+- Add TipTap highlight extension for better text editing
+
+### Changed 🔄
+
+- Enhance landing page with semantic highlighting
+- Improve note highlight styles for better readability
+
 ## [0.3.4-beta.1] - 2025-03-05
 
 ### Fixed 🐛
