@@ -1,5 +1,19 @@
 # Nebriq Changelog
 
+## [0.4.1-beta.1] - 2025-03-06
+
+### Added ✨
+
+- Add smart view feature to library for improved content organization
+
+### Changed 🔄
+
+- Improve library design and user experience
+- Enhance header actions design
+- Improve filter bar design
+- Remove star from smart view
+- Enhance category design
+
 ## [0.4.0-beta.1] - 2025-03-06
 
 ### Added ✨
