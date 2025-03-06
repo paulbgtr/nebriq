@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SmartViewProps, SmartViewMode } from "../../types";
 import {
   Clock,
-  Star,
   Tags,
   Sparkles,
   CalendarDays,
