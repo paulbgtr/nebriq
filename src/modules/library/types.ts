@@ -7,6 +7,8 @@ export type NotesByCategory = {
 
 export type ViewMode = "grid" | "list";
 
+export type SmartViewMode = "recent" | "tags" | "ai" | "timeline";
+
 export interface CategoryProps {
   category: string;
   notes: z.infer<typeof noteSchema>[];
@@ -29,4 +31,39 @@ export interface FilterBarProps {
   expandedCategories: string[];
   onToggleCategory: (category: string) => void;
   showFilters: boolean;
+}
+
+export interface SmartViewProps {
+  notes: z.infer<typeof noteSchema>[];
+  viewMode: ViewMode;
+  smartViewMode: SmartViewMode;
+  isSelectionMode: boolean;
+  onSelectionChange: (selected: string[]) => void;
+}
+
+export interface TimelineViewProps {
+  notes: z.infer<typeof noteSchema>[];
+  viewMode: ViewMode;
+  isSelectionMode: boolean;
+  onSelectionChange: (selected: string[]) => void;
+}
+
+export interface TagCloudViewProps {
+  notes: z.infer<typeof noteSchema>[];
+  viewMode: ViewMode;
+  isSelectionMode: boolean;
+  onSelectionChange: (selected: string[]) => void;
+  onTagSelect: (tag: string) => void;
+  selectedTags: string[];
+}
+
+export interface AIClusterViewProps {
+  notes: z.infer<typeof noteSchema>[];
+  viewMode: ViewMode;
+  isSelectionMode: boolean;
+  onSelectionChange: (selected: string[]) => void;
+  clusters: {
+    name: string;
+    notes: z.infer<typeof noteSchema>[];
+  }[];
 }
