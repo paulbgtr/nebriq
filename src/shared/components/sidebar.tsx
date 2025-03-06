@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   House,
-  Waypoints,
   Library,
   MessageSquarePlus,
   Pen,
@@ -40,16 +39,10 @@ const navItems = [
     tooltip: "Go to Homepage",
   },
   {
-    icon: Waypoints,
-    name: "connections",
-    href: "/graph",
-    tooltip: "View Connections",
-  },
-  {
     icon: Library,
-    name: "library",
+    name: "knowledge hub",
     href: "/library",
-    tooltip: "Browse Library",
+    tooltip: "Browse Knowledge Hub",
   },
   {
     icon: MessageSquarePlus,

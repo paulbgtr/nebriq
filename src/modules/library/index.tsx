@@ -4,7 +4,7 @@ import { useState, useCallback, useTransition } from "react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { Spinner } from "@/shared/components/spinner";
 import { Button } from "@/shared/components/ui/button";
-import { BookOpen, FolderIcon, Plus } from "lucide-react";
+import { BookOpen, FolderIcon, Plus, Network } from "lucide-react";
 import { motion } from "framer-motion";
 import { ViewMode } from "./types";
 import { handleNotePlural, groupNotesByCategory } from "./utils";
@@ -12,6 +12,13 @@ import { SearchBar } from "./features/search-bar";
 import { FilterBar } from "./features/filter-bar";
 import { Category } from "./features/category";
 import { HeaderActions } from "./features/header-actions";
+import { Visualization } from "@/modules/library/features/visualization";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/shared/components/ui/tabs";
 
 export default function LibraryModule() {
   const { getNotesQuery, deleteNotesMutation } = useNotes();
@@ -24,6 +31,7 @@ export default function LibraryModule() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(false);
+  const [activeTab, setActiveTab] = useState("collection");
 
   const handleSelectionChange = (selected: string[]) => {
     setSelectedNotes(selected);
@@ -125,7 +133,7 @@ export default function LibraryModule() {
           </motion.div>
           <div className="space-y-2">
             <h3 className="text-xl font-semibold text-foreground/90">
-              Your Library Awaits
+              Your Knowledge Hub Awaits
             </h3>
             <p className="text-sm text-muted-foreground/80 max-w-md mx-auto leading-relaxed">
               Start your journey by creating your first note. Organize your
@@ -176,7 +184,7 @@ export default function LibraryModule() {
                   <BookOpen className="h-8 w-8 text-primary/10" />
                 </motion.div>
               </div>
-              <h2 className="text-3xl font-bold">Library</h2>
+              <h2 className="text-3xl font-bold">Knowledge Hub</h2>
             </div>
             <p className="text-sm text-muted-foreground/80 flex items-center gap-2">
               <span className="flex items-center gap-1.5">
@@ -228,20 +236,52 @@ export default function LibraryModule() {
         />
       </header>
 
-      <div className="w-full space-y-6">
-        {categorizedNotes.map(([category, notes]) => (
-          <Category
-            key={category}
-            category={category}
-            notes={notes}
-            isExpanded={expandedCategories.includes(category)}
-            isSelectionMode={isSelectionMode}
-            viewMode={viewMode}
-            onSelectionChange={handleSelectionChange}
-            onToggleCategory={toggleCategory}
-          />
-        ))}
-      </div>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
+        <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto">
+          <TabsTrigger value="collection" className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            <span className="hidden sm:inline">Collection</span>
+          </TabsTrigger>
+          <TabsTrigger value="graph" className="flex items-center gap-2">
+            <Network className="h-4 w-4" />
+            <span className="hidden sm:inline">Graph</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="collection" className="space-y-6 mt-6">
+          {categorizedNotes.map(([category, notes]) => (
+            <Category
+              key={category}
+              category={category}
+              notes={notes}
+              isExpanded={expandedCategories.includes(category)}
+              isSelectionMode={isSelectionMode}
+              viewMode={viewMode}
+              onSelectionChange={handleSelectionChange}
+              onToggleCategory={toggleCategory}
+            />
+          ))}
+        </TabsContent>
+
+        <TabsContent value="graph" className="mt-6">
+          <motion.div
+            className="h-[600px] rounded-xl border overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="h-full relative">
+              <div className="absolute inset-0">
+                <Visualization />
+              </div>
+            </div>
+          </motion.div>
+        </TabsContent>
+      </Tabs>
     </motion.div>
   );
 }
