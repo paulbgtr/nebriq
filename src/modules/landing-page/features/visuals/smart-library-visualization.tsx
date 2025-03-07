@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import {
   Search,
   Filter,
@@ -8,7 +8,7 @@ import {
   FolderIcon,
 } from "lucide-react";
 
-export const SmartLibraryVisualization = () => {
+export const SmartLibraryVisualization = memo(() => {
   const [activeTab, setActiveTab] = useState("smart");
 
   const notes = [
@@ -189,4 +189,4 @@ export const SmartLibraryVisualization = () => {
       </div>
     </div>
   );
-};
+});

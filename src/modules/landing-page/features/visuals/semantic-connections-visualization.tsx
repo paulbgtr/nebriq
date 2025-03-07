@@ -1,7 +1,7 @@
 import { Lightbulb } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 
-export const SemanticConnectionsVisualization = () => {
+export const SemanticConnectionsVisualization = memo(() => {
   const [showConnections, setShowConnections] = useState(true);
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -129,4 +129,4 @@ The key benefits of this feature include:
       </div>
     </div>
   );
-};
+});

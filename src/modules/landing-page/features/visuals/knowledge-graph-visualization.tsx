@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import * as d3 from "d3";
 
 interface GraphNode extends d3.SimulationNodeDatum {
@@ -13,36 +13,48 @@ interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
   strength: number;
 }
 
+// Memoized data outside component to prevent recreation
+const nodes: GraphNode[] = [
+  { id: "note1", title: "Project Ideas", connections: 5 },
+  { id: "note2", title: "Meeting Notes", connections: 3 },
+  { id: "note3", title: "Research Paper", connections: 4 },
+  { id: "note4", title: "Book Summary", connections: 2 },
+  { id: "note5", title: "Weekly Goals", connections: 3 },
+  { id: "note6", title: "Product Roadmap", connections: 4 },
+  { id: "note7", title: "Learning Resources", connections: 2 },
+];
+
+const links: GraphLink[] = [
+  { source: "note1", target: "note2", strength: 0.7 },
+  { source: "note1", target: "note3", strength: 0.5 },
+  { source: "note1", target: "note6", strength: 0.8 },
+  { source: "note2", target: "note5", strength: 0.6 },
+  { source: "note3", target: "note4", strength: 0.4 },
+  { source: "note3", target: "note7", strength: 0.5 },
+  { source: "note5", target: "note6", strength: 0.7 },
+  { source: "note6", target: "note7", strength: 0.3 },
+];
+
 export const KnowledgeGraphVisualization = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [mounted, setMounted] = useState(false);
+  const simulationRef = useRef<d3.Simulation<GraphNode, GraphLink> | null>(
+    null
+  );
+
+  // Memoize helper functions
+  const getNodeRadius = useMemo(() => {
+    return (d: GraphNode) => {
+      const baseSize = 6;
+      const connectionBonus = Math.min(d.connections || 0, 10) * 0.8;
+      return baseSize + connectionBonus;
+    };
+  }, []);
 
   useEffect(() => {
     setMounted(true);
 
     if (!svgRef.current) return;
-
-    // Sample data for visualization
-    const nodes: GraphNode[] = [
-      { id: "note1", title: "Project Ideas", connections: 5 },
-      { id: "note2", title: "Meeting Notes", connections: 3 },
-      { id: "note3", title: "Research Paper", connections: 4 },
-      { id: "note4", title: "Book Summary", connections: 2 },
-      { id: "note5", title: "Weekly Goals", connections: 3 },
-      { id: "note6", title: "Product Roadmap", connections: 4 },
-      { id: "note7", title: "Learning Resources", connections: 2 },
-    ];
-
-    const links: GraphLink[] = [
-      { source: "note1", target: "note2", strength: 0.7 },
-      { source: "note1", target: "note3", strength: 0.5 },
-      { source: "note1", target: "note6", strength: 0.8 },
-      { source: "note2", target: "note5", strength: 0.6 },
-      { source: "note3", target: "note4", strength: 0.4 },
-      { source: "note3", target: "note7", strength: 0.5 },
-      { source: "note5", target: "note6", strength: 0.7 },
-      { source: "note6", target: "note7", strength: 0.3 },
-    ];
 
     // Clear any existing SVG content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -50,16 +62,17 @@ export const KnowledgeGraphVisualization = () => {
     const width = svgRef.current.clientWidth;
     const height = svgRef.current.clientHeight;
 
-    // Create SVG
+    // Create SVG with performance optimizations
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .style("will-change", "transform"); // Optimize GPU rendering
 
-    // Add a subtle gradient background
+    // Create defs once
     const defs = svg.append("defs");
 
-    // Create gradient for background
+    // Optimize gradients with fewer stops
     const bgGradient = defs
       .append("linearGradient")
       .attr("id", "background-gradient")
@@ -78,7 +91,7 @@ export const KnowledgeGraphVisualization = () => {
       .attr("offset", "100%")
       .attr("stop-color", "hsl(var(--muted) / 0.1)");
 
-    // Create gradient for links
+    // Optimize link gradient
     const linkGradient = defs
       .append("linearGradient")
       .attr("id", "link-gradient")
@@ -97,7 +110,7 @@ export const KnowledgeGraphVisualization = () => {
       .attr("offset", "100%")
       .attr("stop-color", "hsl(var(--secondary) / 0.7)");
 
-    // Add glow filter
+    // Optimize glow filter
     const filter = defs
       .append("filter")
       .attr("id", "glow")
@@ -108,7 +121,7 @@ export const KnowledgeGraphVisualization = () => {
 
     filter
       .append("feGaussianBlur")
-      .attr("stdDeviation", "3")
+      .attr("stdDeviation", "2") // Reduced blur for better performance
       .attr("result", "blur");
 
     filter
@@ -128,31 +141,24 @@ export const KnowledgeGraphVisualization = () => {
 
     const container = svg.append("g");
 
-    // Helper function to get node radius based on connections
-    const getNodeRadius = (d: GraphNode) => {
-      const baseSize = 6;
-      const connectionBonus = Math.min(d.connections || 0, 10) * 0.8;
-      return baseSize + connectionBonus;
-    };
-
-    // Create simulation
-    const simulation = d3
+    simulationRef.current = d3
       .forceSimulation<GraphNode>(nodes)
-      .force("charge", d3.forceManyBody<GraphNode>().strength(-120))
+      .force("charge", d3.forceManyBody<GraphNode>().strength(-100)) // Reduced strength
       .force("center", d3.forceCenter<GraphNode>(width / 2, height / 2))
       .force(
         "link",
         d3
           .forceLink<GraphNode, GraphLink>(links)
           .id((d) => d.id)
-          .distance(80)
+          .distance(60) // Reduced distance
       )
       .force(
         "collision",
-        d3.forceCollide<GraphNode>().radius((d) => getNodeRadius(d) + 15)
-      );
+        d3.forceCollide<GraphNode>().radius((d) => getNodeRadius(d) + 10)
+      )
+      .alphaDecay(0.05) // Faster decay
+      .velocityDecay(0.4); // More damping
 
-    // Create links
     const link = container
       .append("g")
       .selectAll<SVGPathElement, GraphLink>("path")
@@ -162,25 +168,24 @@ export const KnowledgeGraphVisualization = () => {
       .attr("stroke-opacity", 0.6)
       .attr("stroke-width", 1.5)
       .attr("fill", "none")
-      .style("stroke-dasharray", "4,2");
+      .style("stroke-dasharray", "4,2")
+      .style("will-change", "d"); // Optimize path updates
 
-    // Create nodes
     const node = container
       .append("g")
       .selectAll<SVGGElement, GraphNode>("g")
       .data(nodes)
-      .join("g");
+      .join("g")
+      .style("will-change", "transform"); // Optimize transform updates
 
-    // Add glow circles behind nodes
     node
       .append("circle")
-      .attr("r", (d) => getNodeRadius(d) * 2.5)
+      .attr("r", (d) => getNodeRadius(d) * 2)
       .style("fill", "hsl(var(--primary))")
-      .style("opacity", 0.2)
+      .style("opacity", 0.15)
       .attr("class", "glow-circle")
       .style("filter", "url(#glow)");
 
-    // Add circles to nodes
     node
       .append("circle")
       .attr("r", (d) => getNodeRadius(d))
@@ -188,7 +193,6 @@ export const KnowledgeGraphVisualization = () => {
       .style("stroke", "hsl(var(--background))")
       .style("stroke-width", 1.5);
 
-    // Add labels to nodes
     node
       .append("text")
       .text((d) => d.title)
@@ -197,9 +201,10 @@ export const KnowledgeGraphVisualization = () => {
       .attr("dy", (d) => getNodeRadius(d) + 12)
       .style("fill", "hsl(var(--foreground))")
       .style("pointer-events", "none")
-      .style("user-select", "none");
+      .style("user-select", "none")
+      .style("will-change", "transform"); // Optimize text updates
 
-    simulation.on("tick", () => {
+    simulationRef.current.on("tick", () => {
       link.attr("d", (d) => {
         const sourceX = (d.source as GraphNode).x || 0;
         const sourceY = (d.source as GraphNode).y || 0;
@@ -208,7 +213,7 @@ export const KnowledgeGraphVisualization = () => {
 
         const dx = targetX - sourceX;
         const dy = targetY - sourceY;
-        const dr = Math.sqrt(dx * dx + dy * dy) * 2;
+        const dr = Math.sqrt(dx * dx + dy * dy) * 1.5; // Reduced curve
 
         return `M${sourceX},${sourceY}A${dr},${dr} 0 0,1 ${targetX},${targetY}`;
       });
@@ -219,7 +224,7 @@ export const KnowledgeGraphVisualization = () => {
     const dragBehavior = d3
       .drag<SVGGElement, GraphNode>()
       .on("start", (event, d) => {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
+        if (!event.active) simulationRef.current?.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
       })
@@ -228,18 +233,22 @@ export const KnowledgeGraphVisualization = () => {
         d.fy = event.y;
       })
       .on("end", (event, d) => {
-        if (!event.active) simulation.alphaTarget(0);
+        if (!event.active) simulationRef.current?.alphaTarget(0);
         d.fx = null;
         d.fy = null;
       });
 
-    // Type assertion needed because d3's type definitions don't perfectly match between Selection and DragBehavior
     node.call(dragBehavior as d3.DragBehavior<SVGGElement, GraphNode, unknown>);
 
+    // Cleanup function
     return () => {
-      simulation.stop();
+      if (simulationRef.current) {
+        simulationRef.current.stop();
+        simulationRef.current = null;
+      }
+      d3.select(svgRef.current).selectAll("*").remove();
     };
-  }, [mounted]);
+  }, [mounted, getNodeRadius]);
 
   return (
     <svg
