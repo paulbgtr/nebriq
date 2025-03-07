@@ -190,3 +190,5 @@ export const SmartLibraryVisualization = memo(() => {
     </div>
   );
 });
+
+SmartLibraryVisualization.displayName = "SmartLibraryVisualization";

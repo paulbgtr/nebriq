@@ -168,3 +168,5 @@ export const EditorVisualization = React.memo(() => {
     </div>
   );
 });
+
+EditorVisualization.displayName = "EditorVisualization";

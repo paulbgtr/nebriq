@@ -130,3 +130,6 @@ The key benefits of this feature include:
     </div>
   );
 });
+
+SemanticConnectionsVisualization.displayName =
+  "SemanticConnectionsVisualization";
