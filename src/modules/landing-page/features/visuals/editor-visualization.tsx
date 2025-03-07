@@ -1,4 +1,6 @@
-export const EditorVisualization = () => {
+import React from "react";
+
+export const EditorVisualization = React.memo(() => {
   return (
     <div className="w-full h-full bg-card flex flex-col">
       <div className="flex items-center justify-between p-2 border-b border-border bg-muted/50">
@@ -165,4 +167,4 @@ export const EditorVisualization = () => {
       </div>
     </div>
   );
-};
+});
