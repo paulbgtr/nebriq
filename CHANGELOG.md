@@ -1,5 +1,22 @@
 # Nebriq Changelog
 
+## [0.4.3-beta.1] - 2025-03-07
+
+### Added ✨
+
+- Add model categorization by open source status
+- Implement core AI model type definitions
+- Update LangChain integrations
+- Integrate new AI providers: Mistral AI and Grok
+- Separate open source models from proprietary ones
+
+### Changed 🔄
+
+- Abstract LLM provider logic for improved maintainability
+- Update AI model list with latest providers
+- Remove summary generation action
+- Improve D3 type safety and visualization components
+
 ## [0.4.2-beta.1] - 2025-03-07
 
 ### Added ✨
