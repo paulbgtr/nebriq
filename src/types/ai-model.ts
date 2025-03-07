@@ -5,4 +5,5 @@ export type AIModel = {
   name: string;
   description: string;
   available: boolean;
+  isOpenSource: boolean;
 };

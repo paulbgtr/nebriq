@@ -7,6 +7,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/shared/components/ui/dropdown-menu";
 import {
   Tooltip,
@@ -14,11 +16,15 @@ import {
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
 import { Button } from "@/shared/components/ui/button";
-import { useSelectedModelStore, models, AIModel } from "@/store/selected-model";
+import { useSelectedModelStore, models } from "@/store/selected-model";
 import { motion, AnimatePresence } from "framer-motion";
+import { AIModel } from "@/types/ai-model";
 
 export const ModelSelector = () => {
   const { selectedModel, setSelectedModel } = useSelectedModelStore();
+
+  const openSourceModels = models.filter((model) => model.isOpenSource);
+  const otherModels = models.filter((model) => !model.isOpenSource);
 
   return (
     <DropdownMenu>
@@ -41,8 +47,38 @@ export const ModelSelector = () => {
         side="top"
         className="w-56 p-1.5 backdrop-blur-xl bg-background/95"
       >
+        {openSourceModels.length > 0 && (
+          <>
+            <DropdownMenuLabel className="text-xs text-muted-foreground/70 px-2 py-1.5">
+              Open Source
+            </DropdownMenuLabel>
+            <AnimatePresence mode="wait">
+              {openSourceModels.map((model, index) => (
+                <motion.div
+                  key={model.id}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <ModelItem
+                    model={model}
+                    isSelected={selectedModel.id === model.id}
+                    onSelect={() => {
+                      if (model.available) {
+                        setSelectedModel(model);
+                      }
+                    }}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            {otherModels.length > 0 && <DropdownMenuSeparator />}
+          </>
+        )}
+
         <AnimatePresence mode="wait">
-          {models.map((model, index) => (
+          {otherModels.map((model, index) => (
             <motion.div
               key={model.id}
               initial={{ opacity: 0, y: 5 }}
@@ -88,21 +124,24 @@ const ModelItem = ({ model, isSelected, onSelect }: ModelItemProps) => {
     >
       <div className="flex flex-col gap-0.5">
         <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "text-sm",
-              isSelected
-                ? "text-foreground font-medium"
-                : "text-muted-foreground"
-            )}
-          >
-            {model.name}
-          </span>
+          <div className="flex items-center gap-2 min-w-0">
+            <span
+              className={cn(
+                "text-sm truncate",
+                isSelected
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground"
+              )}
+            >
+              {model.name}
+            </span>
+          </div>
           {isSelected && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="shrink-0"
             >
               <Check className="h-3.5 w-3.5 text-primary" />
             </motion.div>
