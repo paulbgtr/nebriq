@@ -1,36 +1,36 @@
 import { create } from "zustand";
-
-export type AIModel = {
-  id: string;
-  name: string;
-  description: string;
-  available: boolean;
-};
+import { AIModel } from "@/types/ai-model";
 
 export const models: AIModel[] = [
   {
     id: "gpt-4o-mini",
     name: "GPT-4o Mini",
-    description: "Fast and efficient for most tasks",
+    description:
+      "Fast and affordable for everyday tasks. Best for quick responses.",
     available: true,
+    isOpenSource: false,
   },
   {
     id: "gpt-4o",
     name: "GPT-4o",
-    description: "Advanced reasoning and knowledge",
+    description: "Advanced reasoning for complex topics and in-depth analysis.",
     available: true,
+    isOpenSource: false,
   },
   {
-    id: "claude-3-5-sonnet",
-    name: "Claude 3.5 Sonnet",
-    description: "Balanced performance and capabilities",
-    available: false,
+    id: "grok-2",
+    name: "Grok 2",
+    description:
+      "Balanced with real-time information. Ideal for current events.",
+    available: true,
+    isOpenSource: false,
   },
   {
-    id: "claude-3-opus",
-    name: "Claude 3 Opus",
-    description: "Highest quality for complex tasks",
-    available: false,
+    id: "mistral-medium",
+    name: "Mistral Medium",
+    description: "Balanced performance with real-time information.",
+    available: true,
+    isOpenSource: true,
   },
 ];
 
