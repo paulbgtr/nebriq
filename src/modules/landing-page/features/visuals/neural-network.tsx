@@ -9,12 +9,16 @@ interface NetworkNode extends d3.SimulationNodeDatum {
   size: number;
   color: string;
   type: "primary" | "secondary" | "accent" | "info" | "warning";
+  x?: number;
+  y?: number;
 }
 
-interface NetworkLink extends d3.SimulationLinkDatum<NetworkNode> {
+interface NetworkLink {
   source: string | NetworkNode;
   target: string | NetworkNode;
   strength?: number;
+  // These properties are added by D3 during simulation
+  index?: number;
 }
 
 interface NeuralNetworkProps {
@@ -32,7 +36,7 @@ export const NeuralNetwork = ({
     null
   );
   const animationFrameRef = useRef<number | null>(null);
-  const { theme, resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -350,8 +354,15 @@ export const NeuralNetwork = ({
 
     // Create simulation
     if (!useStaticVersion) {
+      // Helper function for collision radius that properly handles the type
+      const collisionRadius = (d: d3.SimulationNodeDatum) => {
+        // Type assertion to access the size property
+        const node = d as NetworkNode;
+        return node.size * 3;
+      };
+
       const simulation = d3
-        .forceSimulation(nodes)
+        .forceSimulation<NetworkNode>(nodes)
         .force("charge", d3.forceManyBody().strength(-30))
         .force(
           "center",
@@ -360,16 +371,13 @@ export const NeuralNetwork = ({
         .force(
           "link",
           d3
-            .forceLink(links)
-            .id((d: any) => d.id)
+            .forceLink<NetworkNode, NetworkLink>(links)
+            .id((d) => d.id)
             .distance(70)
         )
         .force("x", d3.forceX(dimensions.width / 2).strength(0.01))
         .force("y", d3.forceY(dimensions.height / 2).strength(0.01))
-        .force(
-          "collision",
-          d3.forceCollide().radius((d: any) => d.size * 3)
-        )
+        .force("collision", d3.forceCollide().radius(collisionRadius))
         .alphaDecay(0.02) // Faster convergence
         .velocityDecay(0.3) // More damping
         .alpha(0.3)
@@ -379,13 +387,26 @@ export const NeuralNetwork = ({
 
       // Update function for animation
       const ticked = () => {
+        // D3 adds x and y properties to the nodes during simulation
         link
-          .attr("x1", (d: any) => d.source.x)
-          .attr("y1", (d: any) => d.source.y)
-          .attr("x2", (d: any) => d.target.x)
-          .attr("y2", (d: any) => d.target.y);
+          .attr("x1", (d) => {
+            const source = d.source as NetworkNode;
+            return source.x ?? 0;
+          })
+          .attr("y1", (d) => {
+            const source = d.source as NetworkNode;
+            return source.y ?? 0;
+          })
+          .attr("x2", (d) => {
+            const target = d.target as NetworkNode;
+            return target.x ?? 0;
+          })
+          .attr("y2", (d) => {
+            const target = d.target as NetworkNode;
+            return target.y ?? 0;
+          });
 
-        node.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+        node.attr("transform", (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
       };
 
       // Use requestAnimationFrame for smoother animation
@@ -403,29 +424,42 @@ export const NeuralNetwork = ({
         node.y = node.y || Math.random() * dimensions.height;
       });
 
-      link
-        .attr("x1", (d: any) =>
-          typeof d.source === "object"
-            ? d.source.x
-            : nodes.find((n) => n.id === d.source)?.x
-        )
-        .attr("y1", (d: any) =>
-          typeof d.source === "object"
-            ? d.source.y
-            : nodes.find((n) => n.id === d.source)?.y
-        )
-        .attr("x2", (d: any) =>
-          typeof d.target === "object"
-            ? d.target.x
-            : nodes.find((n) => n.id === d.target)?.x
-        )
-        .attr("y2", (d: any) =>
-          typeof d.target === "object"
-            ? d.target.y
-            : nodes.find((n) => n.id === d.target)?.y
-        );
+      // Helper function to get node coordinates
+      const getNodeById = (id: string): NetworkNode | undefined => {
+        return nodes.find((n) => n.id === id);
+      };
 
-      node.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+      link
+        .attr("x1", (d) => {
+          if (typeof d.source === "string") {
+            const node = getNodeById(d.source);
+            return node?.x ?? 0;
+          }
+          return (d.source as NetworkNode).x ?? 0;
+        })
+        .attr("y1", (d) => {
+          if (typeof d.source === "string") {
+            const node = getNodeById(d.source);
+            return node?.y ?? 0;
+          }
+          return (d.source as NetworkNode).y ?? 0;
+        })
+        .attr("x2", (d) => {
+          if (typeof d.target === "string") {
+            const node = getNodeById(d.target);
+            return node?.x ?? 0;
+          }
+          return (d.target as NetworkNode).x ?? 0;
+        })
+        .attr("y2", (d) => {
+          if (typeof d.target === "string") {
+            const node = getNodeById(d.target);
+            return node?.y ?? 0;
+          }
+          return (d.target as NetworkNode).y ?? 0;
+        });
+
+      node.attr("transform", (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
     }
 
     // Cleanup function
