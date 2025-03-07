@@ -1,5 +1,24 @@
 # Nebriq Changelog
 
+## [0.4.2-beta.1] - 2025-03-07
+
+### Added ✨
+
+- Add visualization components for feature showcase on landing page
+- Implement optimized neural network visualization with D3
+
+### Changed 🔄
+
+- Comprehensive landing page UI/UX redesign with enhanced visual components
+- Complete editor redesign for improved user experience
+- Optimize visualization components with performance improvements
+- Improve type safety in D3 visualizations
+
+### Fixed 🐛
+
+- Fix editor focus issues
+- Various linter fixes
+
 ## [0.4.1-beta.1] - 2025-03-06
 
 ### Added ✨
