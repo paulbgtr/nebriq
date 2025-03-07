@@ -2,439 +2,483 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useTheme } from "next-themes";
+import * as d3 from "d3";
 
-interface Node {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  connections: Set<number>; // Using Set for O(1) lookups
+interface NetworkNode extends d3.SimulationNodeDatum {
+  id: string;
   size: number;
   color: string;
-  pulseOffset: number;
-  glowIntensity: number;
-  type: "primary" | "secondary" | "accent";
+  type: "primary" | "secondary" | "accent" | "info" | "warning";
 }
 
-export const NeuralNetwork = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme } = useTheme();
-  const [isMobile, setIsMobile] = useState(false);
-  const animationRef = useRef<number>();
-  const nodesRef = useRef<Node[]>([]);
-  const lastRenderTimeRef = useRef<number>(0);
-  const targetFpsRef = useRef<number>(60);
-  const mousePositionRef = useRef<{ x: number; y: number } | null>(null);
-  const dimensionsRef = useRef<{ width: number; height: number }>({
-    width: typeof window !== "undefined" ? window.innerWidth : 1920,
-    height: typeof window !== "undefined" ? window.innerHeight : 1080,
-  });
+interface NetworkLink extends d3.SimulationLinkDatum<NetworkNode> {
+  source: string | NetworkNode;
+  target: string | NetworkNode;
+  strength?: number;
+}
 
-  // Memoize constants
-  const constants = useMemo(
-    () => ({
-      connectionRadius: isMobile ? 130 : 200,
-      pulseSpeed: isMobile ? 3000 : 2500,
-      nodeCount: isMobile ? 25 : 65,
-      maxConnections: isMobile ? 3 : 6,
-      nodeSpeed: isMobile ? 0.1 : 0.15,
-    }),
-    [isMobile]
+interface NeuralNetworkProps {
+  disabled?: boolean;
+  nodeCount?: number;
+}
+
+export const NeuralNetwork = ({
+  disabled = false,
+  nodeCount = 25,
+}: NeuralNetworkProps) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const simulationRef = useRef<d3.Simulation<NetworkNode, NetworkLink> | null>(
+    null
   );
+  const animationFrameRef = useRef<number | null>(null);
+  const { theme, resolvedTheme } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+  const [mounted, setMounted] = useState(false);
 
-  // Detect mobile devices and set appropriate FPS
+  // Set mounted state after component mounts to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+
+    // Initialize dimensions after mount
+    if (typeof window !== "undefined") {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+  }, []);
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    setIsReducedMotion(prefersReducedMotion);
+  }, []);
+
+  // Detect mobile devices
   const checkMobile = useCallback(() => {
     if (typeof window === "undefined") return;
     const mobile = window.innerWidth < 768;
     setIsMobile(mobile);
-    targetFpsRef.current = mobile ? 30 : 60;
   }, []);
 
-  // Efficient color management
-  const themeColors = useMemo(() => {
-    const colors = {
-      primary:
-        theme === "dark"
-          ? ["rgba(147, 197, 253, 0.9)", "rgba(147, 197, 253, 0.8)"]
-          : ["rgba(59, 130, 246, 0.8)", "rgba(59, 130, 246, 0.7)"],
-      secondary:
-        theme === "dark"
-          ? ["rgba(167, 139, 250, 0.85)", "rgba(167, 139, 250, 0.75)"]
-          : ["rgba(99, 102, 241, 0.75)", "rgba(99, 102, 241, 0.65)"],
-      accent:
-        theme === "dark"
-          ? ["rgba(248, 113, 113, 0.9)", "rgba(248, 113, 113, 0.8)"]
-          : ["rgba(239, 68, 68, 0.8)", "rgba(239, 68, 68, 0.7)"],
+  // Color schemes based on theme
+  const colors = useMemo(() => {
+    // Use resolvedTheme which is available after hydration
+    const isDark = resolvedTheme === "dark";
+
+    return {
+      primary: isDark
+        ? "rgba(147, 197, 253, 0.85)" // blue
+        : "rgba(59, 130, 246, 0.75)",
+      secondary: isDark
+        ? "rgba(167, 139, 250, 0.85)" // purple
+        : "rgba(99, 102, 241, 0.75)",
+      accent: isDark
+        ? "rgba(248, 113, 113, 0.85)" // red
+        : "rgba(239, 68, 68, 0.75)",
+      info: isDark
+        ? "rgba(79, 209, 197, 0.85)" // teal
+        : "rgba(20, 184, 166, 0.75)",
+      warning: isDark
+        ? "rgba(251, 191, 36, 0.85)" // amber
+        : "rgba(245, 158, 11, 0.75)",
+      background: isDark
+        ? "rgba(15, 23, 42, 0.9)" // slate-900
+        : "rgba(255, 255, 255, 0.9)",
+      link: isDark
+        ? "rgba(148, 163, 184, 0.3)" // slate-400
+        : "rgba(100, 116, 139, 0.3)", // slate-500
+      linkHighlight: isDark
+        ? "rgba(147, 197, 253, 0.5)" // blue
+        : "rgba(59, 130, 246, 0.5)",
     };
-    return colors;
-  }, [theme]);
+  }, [resolvedTheme]);
 
-  // Initialize nodes with optimized data structure
-  const initializeNodes = useCallback(() => {
-    if (!canvasRef.current) return;
+  // Generate nodes and links
+  const { nodes, links } = useMemo(() => {
+    if (!mounted || dimensions.width === 0) {
+      return { nodes: [], links: [] };
+    }
 
-    const nodes: Node[] = Array.from({ length: constants.nodeCount }, () => {
-      const type =
-        Math.random() > 0.7
-          ? "accent"
-          : Math.random() > 0.3
-            ? "primary"
-            : "secondary";
-      const size =
-        Math.random() > 0.92
-          ? isMobile
-            ? 4
-            : 6
-          : Math.random() > 0.65
+    // Adjust node count for mobile
+    const actualNodeCount = isMobile ? Math.min(nodeCount, 15) : nodeCount;
+
+    // Use a fixed seed for random generation to ensure consistency between server and client
+    const nodeTypes: (
+      | "primary"
+      | "secondary"
+      | "accent"
+      | "info"
+      | "warning"
+    )[] = [
+      "primary",
+      "primary",
+      "primary", // 30% primary
+      "secondary",
+      "secondary", // 20% secondary
+      "accent",
+      "accent", // 20% accent
+      "info",
+      "info", // 20% info
+      "warning", // 10% warning
+    ];
+
+    // Create nodes
+    const nodes: NetworkNode[] = Array.from({ length: actualNodeCount }).map(
+      (_, i) => {
+        // Use deterministic values based on index instead of random
+        const typeIndex = i % nodeTypes.length;
+        const type = nodeTypes[typeIndex];
+
+        // Size based on index pattern rather than random
+        const sizeCategory = i % 10;
+        const size =
+          sizeCategory < 2
             ? isMobile
-              ? 2.5
-              : 3.5
-            : isMobile
-              ? 1.5
-              : 2;
+              ? 3
+              : 4 // Large nodes (20%)
+            : sizeCategory < 6
+              ? isMobile
+                ? 2
+                : 3 // Medium nodes (40%)
+              : isMobile
+                ? 1
+                : 2; // Small nodes (40%)
 
-      const colorArray = themeColors[type];
-      const color = colorArray[Math.floor(Math.random() * colorArray.length)];
+        // Deterministic position based on index
+        const angle = (i / actualNodeCount) * Math.PI * 2;
+        const radius = dimensions.width * 0.3 * (0.6 + (i % 5) * 0.1);
+        const x = dimensions.width / 2 + Math.cos(angle) * radius;
+        const y = dimensions.height / 2 + Math.sin(angle) * radius;
 
-      return {
-        x: Math.random() * dimensionsRef.current.width,
-        y: Math.random() * dimensionsRef.current.height,
-        vx: (Math.random() - 0.5) * constants.nodeSpeed,
-        vy: (Math.random() - 0.5) * constants.nodeSpeed,
-        connections: new Set<number>(),
-        size,
-        color,
-        type,
-        pulseOffset: Math.random() * 2 * Math.PI,
-        glowIntensity: 0.5 + Math.random() * 0.5,
-      };
-    });
+        return {
+          id: `node-${i}`,
+          size,
+          color: colors[type],
+          type,
+          x,
+          y,
+        };
+      }
+    );
 
-    // Initialize connections efficiently
+    // Create links (connections between nodes)
+    const links: NetworkLink[] = [];
+    const maxConnections = isMobile ? 2 : 3;
+
     nodes.forEach((node, i) => {
-      for (
-        let j = i + 1;
-        j < nodes.length && node.connections.size < constants.maxConnections;
-        j++
-      ) {
-        if (nodes[j].connections.size >= constants.maxConnections) continue;
+      // Deterministic number of connections based on index
+      const numConnections = 1 + (i % maxConnections);
 
-        const dx = node.x - nodes[j].x;
-        const dy = node.y - nodes[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+      for (let j = 0; j < numConnections; j++) {
+        // Deterministic target selection
+        const targetIndex = (i + j + 1) % nodes.length;
 
-        if (distance < constants.connectionRadius) {
-          node.connections.add(j);
-          nodes[j].connections.add(i);
-        }
+        // Skip self-connections
+        if (targetIndex === i) continue;
+
+        // Add link with deterministic strength
+        links.push({
+          source: node.id,
+          target: nodes[targetIndex].id,
+          strength: 0.3 + ((i + j) % 5) * 0.1, // Deterministic strength between 0.3 and 0.7
+        });
       }
     });
 
-    nodesRef.current = nodes;
-  }, [constants, isMobile, themeColors]);
+    return { nodes, links };
+  }, [isMobile, nodeCount, colors, dimensions, mounted]);
 
   // Setup canvas dimensions
-  const setupCanvas = useCallback(() => {
-    if (!canvasRef.current || typeof window === "undefined") return;
+  const setupDimensions = useCallback(() => {
+    if (typeof window === "undefined") return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    canvasRef.current.width = width * dpr;
-    canvasRef.current.height = height * dpr;
-    canvasRef.current.style.width = `${width}px`;
-    canvasRef.current.style.height = `${height}px`;
-
-    dimensionsRef.current = { width, height };
-
-    const ctx = canvasRef.current.getContext("2d");
-    if (ctx) {
-      ctx.scale(dpr, dpr);
-      ctx.lineCap = "round";
-    }
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
   }, []);
 
   // Initialize on mount
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || disabled || !mounted) return;
 
     checkMobile();
-    setupCanvas();
-    initializeNodes();
-  }, [checkMobile, setupCanvas, initializeNodes]);
+    setupDimensions();
+  }, [checkMobile, setupDimensions, disabled, mounted]);
 
-  // Handle resize with RAF for better performance
+  // Handle resize with debouncing
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || disabled) return;
 
-    let rafId: number;
-    let lastWidth = window.innerWidth;
-    let lastHeight = window.innerHeight;
+    let resizeTimeout: NodeJS.Timeout;
 
     const handleResize = () => {
-      rafId = requestAnimationFrame(() => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-
-        if (width === lastWidth && height === lastHeight) return;
-
-        lastWidth = width;
-        lastHeight = height;
-
-        setupCanvas();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
         checkMobile();
-        initializeNodes();
-      });
+        setupDimensions();
+      }, 500);
     };
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (rafId) cancelAnimationFrame(rafId);
+      clearTimeout(resizeTimeout);
     };
-  }, [checkMobile, initializeNodes, setupCanvas]);
+  }, [checkMobile, setupDimensions, disabled]);
 
-  // Optimized mouse tracking
+  // Intersection Observer to pause animation when not visible
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mousePositionRef.current = { x: e.clientX, y: e.clientY };
-    };
+    if (typeof window === "undefined" || !containerRef.current || disabled)
+      return;
 
-    const handleMouseLeave = () => {
-      mousePositionRef.current = null;
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("mouseleave", handleMouseLeave);
+    observer.observe(containerRef.current);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
+      observer.disconnect();
     };
-  }, []);
+  }, [disabled]);
 
-  // Main animation loop with optimized rendering
+  // Main D3 visualization effect
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (
+      !svgRef.current ||
+      disabled ||
+      !isVisible ||
+      !dimensions.width ||
+      !mounted
+    )
+      return;
 
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
+    // Stop any existing simulation
+    if (simulationRef.current) {
+      simulationRef.current.stop();
+    }
 
-    const draw = (timestamp: number) => {
-      const elapsed = timestamp - lastRenderTimeRef.current;
-      const fpsInterval = 1000 / targetFpsRef.current;
+    // Cancel any animation frame
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
 
-      if (elapsed < fpsInterval) {
-        animationRef.current = requestAnimationFrame(draw);
-        return;
-      }
+    // For reduced motion or mobile, render a static version
+    const useStaticVersion = isReducedMotion || isMobile;
 
-      const delta = Math.min(elapsed / (1000 / 60), 2); // Cap delta time
-      lastRenderTimeRef.current = timestamp - (elapsed % fpsInterval);
+    // Select SVG and clear it
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
 
-      // Clear with proper alpha for motion blur effect
-      ctx.fillStyle =
-        theme === "dark" ? "rgba(0,0,0,0.85)" : "rgba(255,255,255,0.85)";
-      ctx.fillRect(
-        0,
-        0,
-        dimensionsRef.current.width,
-        dimensionsRef.current.height
+    // Set SVG dimensions
+    svg
+      .attr("width", dimensions.width)
+      .attr("height", dimensions.height)
+      .attr("viewBox", `0 0 ${dimensions.width} ${dimensions.height}`);
+
+    // Create defs for gradients and filters
+    const defs = svg.append("defs");
+
+    // Create glow filter
+    const filter = defs
+      .append("filter")
+      .attr("id", "glow")
+      .attr("x", "-50%")
+      .attr("y", "-50%")
+      .attr("width", "200%")
+      .attr("height", "200%");
+
+    filter
+      .append("feGaussianBlur")
+      .attr("stdDeviation", "2")
+      .attr("result", "coloredBlur");
+
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "coloredBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+    // Create container group
+    const container = svg.append("g");
+
+    // Create links
+    const link = container
+      .append("g")
+      .selectAll("line")
+      .data(links)
+      .join("line")
+      .attr("stroke", colors.link)
+      .attr("stroke-opacity", 0.4)
+      .attr(
+        "stroke-width",
+        (d) => (d.strength || 0.5) * (isMobile ? 0.5 : 0.8)
       );
 
-      const nodes = nodesRef.current;
-      const mousePos = mousePositionRef.current;
+    // Create nodes
+    const node = container.append("g").selectAll("g").data(nodes).join("g");
 
-      // Update physics
+    // Add glow circles
+    node
+      .append("circle")
+      .attr("r", (d) => d.size * 2)
+      .attr("fill", (d) => d.color.replace(/[\d.]+\)$/, "0.2)"))
+      .attr("filter", "url(#glow)");
+
+    // Add main circles
+    node
+      .append("circle")
+      .attr("r", (d) => d.size)
+      .attr("fill", (d) => d.color);
+
+    // Create simulation
+    if (!useStaticVersion) {
+      const simulation = d3
+        .forceSimulation(nodes)
+        .force("charge", d3.forceManyBody().strength(-30))
+        .force(
+          "center",
+          d3.forceCenter(dimensions.width / 2, dimensions.height / 2)
+        )
+        .force(
+          "link",
+          d3
+            .forceLink(links)
+            .id((d: any) => d.id)
+            .distance(70)
+        )
+        .force("x", d3.forceX(dimensions.width / 2).strength(0.01))
+        .force("y", d3.forceY(dimensions.height / 2).strength(0.01))
+        .force(
+          "collision",
+          d3.forceCollide().radius((d: any) => d.size * 3)
+        )
+        .alphaDecay(0.02) // Faster convergence
+        .velocityDecay(0.3) // More damping
+        .alpha(0.3)
+        .restart();
+
+      simulationRef.current = simulation;
+
+      // Update function for animation
+      const ticked = () => {
+        link
+          .attr("x1", (d: any) => d.source.x)
+          .attr("y1", (d: any) => d.source.y)
+          .attr("x2", (d: any) => d.target.x)
+          .attr("y2", (d: any) => d.target.y);
+
+        node.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+      };
+
+      // Use requestAnimationFrame for smoother animation
+      simulation.on("tick", () => {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+
+        animationFrameRef.current = requestAnimationFrame(ticked);
+      });
+    } else {
+      // For static version, just position nodes and links once
       nodes.forEach((node) => {
-        if (mousePos) {
-          const dx = mousePos.x - node.x;
-          const dy = mousePos.y - node.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 150) {
-            const force = 0.02 * (1 - distance / 150);
-            node.vx += (dx / distance) * force * delta;
-            node.vy += (dy / distance) * force * delta;
-          }
-        }
-
-        node.x += node.vx * delta;
-        node.y += node.vy * delta;
-
-        // Improved boundary handling
-        if (node.x < 0) {
-          node.x = 0;
-          node.vx *= -0.5;
-        }
-        if (node.x > dimensionsRef.current.width) {
-          node.x = dimensionsRef.current.width;
-          node.vx *= -0.5;
-        }
-        if (node.y < 0) {
-          node.y = 0;
-          node.vy *= -0.5;
-        }
-        if (node.y > dimensionsRef.current.height) {
-          node.y = dimensionsRef.current.height;
-          node.vy *= -0.5;
-        }
-
-        node.vx *= 0.99;
-        node.vy *= 0.99;
+        node.x = node.x || Math.random() * dimensions.width;
+        node.y = node.y || Math.random() * dimensions.height;
       });
 
-      // Draw connections
-      ctx.lineCap = "round";
-      nodes.forEach((node, i) => {
-        node.connections.forEach((j) => {
-          const otherNode = nodes[j];
-          const dx = node.x - otherNode.x;
-          const dy = node.y - otherNode.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < constants.connectionRadius) {
-            const opacity = 1 - distance / constants.connectionRadius;
-
-            // Optimized mouse influence calculation
-            let mouseInfluence = 0;
-            if (mousePos) {
-              const lineLength = distance;
-              const t =
-                ((mousePos.x - node.x) * dx + (mousePos.y - node.y) * dy) /
-                (lineLength * lineLength);
-              if (t >= 0 && t <= 1) {
-                const closestX = node.x + t * dx;
-                const closestY = node.y + t * dy;
-                const mouseDistance = Math.hypot(
-                  mousePos.x - closestX,
-                  mousePos.y - closestY
-                );
-                if (mouseDistance < 100) {
-                  mouseInfluence = 1 - mouseDistance / 100;
-                }
-              }
-            }
-
-            const gradient = ctx.createLinearGradient(
-              node.x,
-              node.y,
-              otherNode.x,
-              otherNode.y
-            );
-            const enhancedOpacity = opacity * (1 + mouseInfluence * 0.5);
-
-            gradient.addColorStop(
-              0,
-              node.color.replace(/[\d.]+\)$/, `${enhancedOpacity * 0.8})`)
-            );
-            gradient.addColorStop(
-              1,
-              otherNode.color.replace(/[\d.]+\)$/, `${enhancedOpacity * 0.8})`)
-            );
-
-            ctx.beginPath();
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth =
-              (isMobile ? 0.5 : 0.8) *
-              opacity *
-              (node.size / 3) *
-              (1 + mouseInfluence * 2);
-            ctx.moveTo(node.x, node.y);
-            ctx.lineTo(otherNode.x, otherNode.y);
-            ctx.stroke();
-
-            if (mouseInfluence > 0) {
-              ctx.globalAlpha = mouseInfluence * 0.3;
-              ctx.lineWidth *= 1.5;
-              ctx.stroke();
-              ctx.globalAlpha = 1;
-            }
-          } else {
-            node.connections.delete(j);
-            otherNode.connections.delete(i);
-          }
-        });
-      });
-
-      // Draw nodes with optimized effects
-      nodes.forEach((node) => {
-        const mouseInfluence = mousePos
-          ? Math.max(
-              0,
-              1 - Math.hypot(mousePos.x - node.x, mousePos.y - node.y) / 100
-            )
-          : 0;
-        const time = Date.now() / constants.pulseSpeed;
-        const pulseScale =
-          1 +
-          Math.sin(time + node.pulseOffset) * 0.2 * (1 + mouseInfluence * 0.3);
-        const radius = node.size * pulseScale;
-        const glowSize = node.size * (3 + mouseInfluence * 2);
-
-        // Draw glow
-        const gradient = ctx.createRadialGradient(
-          node.x,
-          node.y,
-          0,
-          node.x,
-          node.y,
-          glowSize
+      link
+        .attr("x1", (d: any) =>
+          typeof d.source === "object"
+            ? d.source.x
+            : nodes.find((n) => n.id === d.source)?.x
+        )
+        .attr("y1", (d: any) =>
+          typeof d.source === "object"
+            ? d.source.y
+            : nodes.find((n) => n.id === d.source)?.y
+        )
+        .attr("x2", (d: any) =>
+          typeof d.target === "object"
+            ? d.target.x
+            : nodes.find((n) => n.id === d.target)?.x
+        )
+        .attr("y2", (d: any) =>
+          typeof d.target === "object"
+            ? d.target.y
+            : nodes.find((n) => n.id === d.target)?.y
         );
-        const baseColor = node.color.replace(/[\d.]+\)$/, "");
-        const glowIntensity = node.glowIntensity * (1 + mouseInfluence * 1.5);
 
-        gradient.addColorStop(0, node.color);
-        gradient.addColorStop(0.5, `${baseColor}${0.2 * glowIntensity})`);
-        gradient.addColorStop(1, `${baseColor}0)`);
+      node.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+    }
 
-        ctx.beginPath();
-        ctx.fillStyle = gradient;
-        ctx.arc(node.x, node.y, glowSize, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Draw node
-        ctx.beginPath();
-        ctx.fillStyle = node.color;
-        ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Add highlight
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-        ctx.arc(
-          node.x - radius * 0.3,
-          node.y - radius * 0.3,
-          radius * 0.4,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-      });
-
-      animationRef.current = requestAnimationFrame(draw);
-    };
-
-    animationRef.current = requestAnimationFrame(draw);
-
+    // Cleanup function
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (simulationRef.current) {
+        simulationRef.current.stop();
+      }
+
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
     };
-  }, [constants, isMobile, theme]);
+  }, [
+    disabled,
+    isVisible,
+    isReducedMotion,
+    isMobile,
+    dimensions,
+    nodes,
+    links,
+    colors,
+    mounted,
+  ]);
 
+  if (disabled) {
+    return null;
+  }
+
+  // Only render the background div after client-side hydration
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 -z-20 w-full h-full"
-      style={{
-        filter: isMobile ? "blur(0.5px)" : "blur(0.7px)",
-        opacity: 0.95,
-      }}
-    />
+    <div
+      ref={containerRef}
+      className="fixed inset-0 -z-20 w-full h-full overflow-hidden"
+      aria-hidden="true"
+    >
+      {mounted && (
+        <>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundColor: colors.background,
+            }}
+          />
+          <svg
+            ref={svgRef}
+            className="w-full h-full"
+            style={{
+              opacity: 0.8,
+            }}
+          />
+        </>
+      )}
+    </div>
   );
 };
