@@ -240,7 +240,7 @@ export default function Home() {
                       ease: "easeInOut",
                     }}
                   />
-                  <ModeToggle className="relative z-10" />
+                  <ModeToggle />
                 </div>
               </div>
 
