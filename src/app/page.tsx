@@ -223,23 +223,9 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Fixed Theme Toggle with proper vertical alignment */}
               <div className="flex items-center">
                 <div className="w-px h-5 bg-border/60 mr-5 hidden sm:block" />
                 <div className="flex items-center justify-center">
-                  <motion.div
-                    className="absolute rounded-full bg-primary/15 w-8 h-8"
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [0.3, 0.6, 0.3],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      ease: "easeInOut",
-                    }}
-                  />
                   <ModeToggle />
                 </div>
               </div>
