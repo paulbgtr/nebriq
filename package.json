@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "@langchain/mistralai": "^0.2.0",
     "@langchain/openai": "^0.3.14",
+    "@langchain/xai": "^0.0.2",
     "@million/lint": "latest",
     "@next/font": "^14.2.15",
     "@radix-ui/react-accordion": "^1.2.2",
