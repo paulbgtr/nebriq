@@ -1,8 +1,8 @@
 "use server";
 
-import OpenAI from "openai";
 import { ChatContext } from "@/types/chat";
-import { handleTokenLimits } from "./utils";
+import { handleTokenLimits, getCompletion } from "./utils";
+import { ModelId } from "@/types/ai-model";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is not defined in environment");
@@ -58,31 +58,25 @@ export const chat = async (
   userId: string,
   followUpContext?: ChatContext,
   signal?: AbortSignal,
-  modelId: string = "gpt-4o-mini"
+  modelId: ModelId = "gpt-4o-mini"
 ): Promise<string | null> => {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
   try {
     const prompt = createPrompt(query, followUpContext);
 
     await handleTokenLimits(userId, prompt);
 
-    const completion = await openai.chat.completions.create(
-      {
-        model: modelId,
-        messages: [{ role: "user", content: prompt }],
-        stream: true,
-      },
-      { signal }
-    );
+    const completion = await getCompletion(prompt, modelId);
+
+    if (!completion) {
+      throw new Error("No completion");
+    }
 
     let result = "";
     for await (const chunk of completion) {
       if (signal?.aborted) {
         throw new Error("Request aborted");
       }
-      result += chunk.choices[0]?.delta?.content || "";
+      result += chunk;
     }
 
     return result || null;
