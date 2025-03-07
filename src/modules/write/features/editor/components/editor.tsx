@@ -52,7 +52,6 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
   const [isZenMode, setIsZenMode] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [setTitleFocused] = useState(false);
   const [showControls, setShowControls] = useState(true);
 
   useEffect(() => {
@@ -356,8 +355,6 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
               onChange={(e) => {
                 handleTitleChange(e.target.value);
               }}
-              onFocus={() => setTitleFocused(true)}
-              onBlur={() => setTitleFocused(false)}
               placeholder="Untitled"
               className={cn(
                 "text-xl sm:text-2xl font-bold",
