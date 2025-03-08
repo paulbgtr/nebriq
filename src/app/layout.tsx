@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "@/providers";
 import { Poppins } from "next/font/google";
 import { Toaster } from "@/shared/components/ui/toaster";
+import { Analytics } from "@vercel/analytics/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -98,7 +99,7 @@ export default function RootLayout({
       </head>
       <body className={`${poppins.className} antialiased`}>
         <Providers>{children}</Providers>
-
+        <Analytics />
         <Toaster />
       </body>
     </html>
