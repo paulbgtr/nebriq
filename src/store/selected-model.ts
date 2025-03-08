@@ -32,8 +32,14 @@ export const models: AIModel[] = [
     available: true,
     isOpenSource: true,
   },
+  {
+    id: "mistral-small",
+    name: "Mistral Small",
+    description: "Small and fast for basic tasks.",
+    available: true,
+    isOpenSource: true,
+  },
 ];
-
 type SelectedModelState = {
   selectedModel: AIModel;
   setSelectedModel: (model: AIModel) => void;
