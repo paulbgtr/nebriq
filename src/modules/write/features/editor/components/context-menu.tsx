@@ -89,7 +89,7 @@ export const EditorContextMenu = ({ children, editor }: Props) => {
         duration: 3000,
       });
     }
-  }, [editor]);
+  }, [editor, toast]);
 
   const { user } = useUser();
 

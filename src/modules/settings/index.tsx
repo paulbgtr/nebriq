@@ -23,7 +23,7 @@ export default function SettingsModule() {
     } else if (message === "password_updated") {
       toast({ title: "Password updated successfully", color: "success" });
     }
-  }, [searchParams]);
+  }, [searchParams, toast]);
 
   return (
     <>

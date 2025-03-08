@@ -41,7 +41,7 @@ export default function HomeModule() {
     ) {
       setRelevantNotes(allNotes);
     }
-  }, [allNotes]);
+  }, [allNotes, relevantNotes, setRelevantNotes]);
 
   const { user } = useUser();
   const { setQuery, chatContext, isLoading, clearChatContext } = useChat(

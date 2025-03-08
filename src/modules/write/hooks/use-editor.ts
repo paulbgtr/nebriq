@@ -362,7 +362,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         },
       ]);
     }
-  }, [id, setOpenNotes]);
+  }, [id, setOpenNotes, title, content, openNotes]);
 
   useEffect(() => {
     if (!editor) return;

@@ -56,15 +56,18 @@ export const KnowledgeGraphVisualization = () => {
 
     if (!svgRef.current) return;
 
-    // Clear any existing SVG content
-    d3.select(svgRef.current).selectAll("*").remove();
+    // Capture the ref value inside the effect
+    const svgElement = svgRef.current;
 
-    const width = svgRef.current.clientWidth;
-    const height = svgRef.current.clientHeight;
+    // Clear any existing SVG content
+    d3.select(svgElement).selectAll("*").remove();
+
+    const width = svgElement.clientWidth;
+    const height = svgElement.clientHeight;
 
     // Create SVG with performance optimizations
     const svg = d3
-      .select(svgRef.current)
+      .select(svgElement)
       .attr("width", width)
       .attr("height", height)
       .style("will-change", "transform"); // Optimize GPU rendering
@@ -246,7 +249,7 @@ export const KnowledgeGraphVisualization = () => {
         simulationRef.current.stop();
         simulationRef.current = null;
       }
-      d3.select(svgRef.current).selectAll("*").remove();
+      d3.select(svgElement).selectAll("*").remove();
     };
   }, [mounted, getNodeRadius]);
 

@@ -42,9 +42,10 @@ export const QueryExamples = ({
   onSelect: (query: string) => void;
 }) => {
   const { getNotesQuery } = useNotes();
-  const notes = getNotesQuery.data || [];
 
   const examples = useMemo(() => {
+    const notes = getNotesQuery.data || [];
+
     const staticExamples = [
       {
         icon: Brain,
@@ -76,7 +77,7 @@ export const QueryExamples = ({
     }
 
     return [...staticExamples, ...dynamicExamples];
-  }, [notes]);
+  }, [getNotesQuery.data]);
 
   return (
     <motion.div

@@ -80,53 +80,6 @@ export const useNoteDiscovery = (
     };
   }, [editor, discoveredNotes, openNotes, setOpenNotes]);
 
-  const findRelatedNotes = useCallback(async () => {
-    if (!editor || !getNotesQuery.data || isSearching || !currentNoteId) return;
-
-    setIsSearching(true);
-    clearHighlights();
-
-    try {
-      const content = editor.getHTML();
-
-      const otherNotes = getNotesQuery.data.filter(
-        (note) => note.id !== currentNoteId
-      );
-
-      if (!otherNotes.length) {
-        setDiscoveredNotes([]);
-        setIsSearching(false);
-        return;
-      }
-
-      const results = await semanticSearch(content, otherNotes);
-
-      if (!results.length) {
-        setDiscoveredNotes([]);
-        setIsSearching(false);
-        return;
-      }
-
-      const processedResults = results.map((note, index) => {
-        const matchScore = 1 - index / Math.max(results.length, 1);
-
-        return {
-          ...note,
-          matchScore,
-        };
-      });
-
-      setDiscoveredNotes(processedResults);
-      setIsDiscoveryOpen(true);
-
-      highlightMatches(content, processedResults);
-    } catch (error) {
-      console.error("Error finding related notes:", error);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [editor, getNotesQuery.data, currentNoteId, isSearching, clearHighlights]);
-
   const highlightMatches = useCallback(
     (content: string, notes: DiscoveredNote[]) => {
       if (!editor) return;
@@ -265,6 +218,60 @@ export const useNoteDiscovery = (
     },
     [editor]
   );
+
+  const findRelatedNotes = useCallback(async () => {
+    if (!editor || !getNotesQuery.data || isSearching || !currentNoteId) return;
+
+    setIsSearching(true);
+    clearHighlights();
+
+    try {
+      const content = editor.getHTML();
+
+      const otherNotes = getNotesQuery.data.filter(
+        (note) => note.id !== currentNoteId
+      );
+
+      if (!otherNotes.length) {
+        setDiscoveredNotes([]);
+        setIsSearching(false);
+        return;
+      }
+
+      const results = await semanticSearch(content, otherNotes);
+
+      if (!results.length) {
+        setDiscoveredNotes([]);
+        setIsSearching(false);
+        return;
+      }
+
+      const processedResults = results.map((note, index) => {
+        const matchScore = 1 - index / Math.max(results.length, 1);
+
+        return {
+          ...note,
+          matchScore,
+        };
+      });
+
+      setDiscoveredNotes(processedResults);
+      setIsDiscoveryOpen(true);
+
+      highlightMatches(content, processedResults);
+    } catch (error) {
+      console.error("Error finding related notes:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [
+    editor,
+    getNotesQuery.data,
+    currentNoteId,
+    isSearching,
+    clearHighlights,
+    highlightMatches,
+  ]);
 
   const mergeRanges = (
     ranges: { from: number; to: number; noteId?: string; noteTitle?: string }[]
