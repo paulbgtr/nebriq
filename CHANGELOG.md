@@ -162,7 +162,7 @@ Overall the chat is more useful and feature rich now.
 
 - Auth page image
 
-## [0.1.0-beta.1] - 2024-03-21
+## [0.1.0-beta.1] - 2025-02-21
 
 ### Added ✨
 
