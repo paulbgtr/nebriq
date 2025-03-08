@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { AIModel } from "@/types/ai-model";
 
 export const models: AIModel[] = [
@@ -45,7 +46,15 @@ type SelectedModelState = {
   setSelectedModel: (model: AIModel) => void;
 };
 
-export const useSelectedModelStore = create<SelectedModelState>((set) => ({
-  selectedModel: models[0],
-  setSelectedModel: (model) => set({ selectedModel: model }),
-}));
+export const useSelectedModelStore = create<SelectedModelState>()(
+  persist(
+    (set) => ({
+      selectedModel: models[0],
+      setSelectedModel: (model) => set({ selectedModel: model }),
+    }),
+    {
+      name: "selected-model-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
