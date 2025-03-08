@@ -1,6 +1,6 @@
 import { cn } from "@/shared/lib/utils";
 import { LucideIcon, Brain, Book, Sparkles, Search } from "lucide-react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { useMemo } from "react";
 import { useNotes } from "@/shared/hooks/use-notes";
 
