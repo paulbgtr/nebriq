@@ -153,9 +153,11 @@ export const useChat = (
 
         console.log(`🔍 Searching for context: "${searchContext}"`);
 
+        if (!userId) return [];
+
         const [tfidfResults, semanticResults] = await Promise.all([
           searchUsingTFIDF(searchContext, allNotes),
-          semanticSearch(searchContext, allNotes),
+          semanticSearch(searchContext, allNotes, userId),
         ]);
 
         const uniqueResults = new Map<string, NoteWithScore>();

@@ -5,6 +5,7 @@ import { useNotes } from "@/shared/hooks/use-notes";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { useNoteTabsStore } from "@/store/note-tabs";
+import { useUser } from "@/shared/hooks/use-user";
 
 type DiscoveredNote = z.infer<typeof noteSchema> & {
   matchScore: number;
@@ -23,6 +24,7 @@ export const useNoteDiscovery = (
   const [isDiscoveryOpen, setIsDiscoveryOpen] = useState(false);
   const { getNotesQuery } = useNotes();
   const { setOpenNotes, openNotes } = useNoteTabsStore();
+  const { user } = useUser();
 
   const clearHighlights = useCallback(() => {
     if (!editor) return;
@@ -238,7 +240,13 @@ export const useNoteDiscovery = (
         return;
       }
 
-      const results = await semanticSearch(content, otherNotes);
+      if (!user?.id) {
+        setDiscoveredNotes([]);
+        setIsSearching(false);
+        return;
+      }
+
+      const results = await semanticSearch(content, otherNotes, user.id);
 
       if (!results.length) {
         setDiscoveredNotes([]);
@@ -271,6 +279,7 @@ export const useNoteDiscovery = (
     isSearching,
     clearHighlights,
     highlightMatches,
+    user?.id,
   ]);
 
   const mergeRanges = (
