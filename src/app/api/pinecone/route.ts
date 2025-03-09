@@ -16,18 +16,25 @@ const syncNotes = async () => {
     return;
   }
 
+  console.log(`Found ${notes.length} notes to sync`);
+
   if (notes.length === 0) return;
 
   try {
-    await index.upsertRecords(
-      notes.map((note) => ({
-        _id: note.id,
-        text: note.title + " " + note.content,
-        userId: note.user_id,
-      }))
-    );
+    const records = notes.map((note) => ({
+      _id: note.id,
+      text: note.title + " " + note.content,
+      userId: note.user_id,
+    }));
+
+    console.log(`Preparing to upsert ${records.length} records to Pinecone`);
+    console.log(`Sample record:`, JSON.stringify(records[0]));
+
+    await index.upsertRecords(records);
+    console.log(`Successfully upserted records to Pinecone`);
   } catch (error) {
     console.error("Error syncing notes:", error);
+    console.error("Error details:", JSON.stringify(error));
   }
 };
 
@@ -39,6 +46,13 @@ const syncNotes = async () => {
  */
 export async function GET() {
   console.log("Syncing notes");
-  await syncNotes();
-  return new Response("Synced notes");
+  try {
+    await syncNotes();
+    return new Response("Synced notes successfully");
+  } catch (error: any) {
+    console.error("Unexpected error in GET handler:", error);
+    return new Response(`Error syncing notes: ${error.message}`, {
+      status: 500,
+    });
+  }
 }
