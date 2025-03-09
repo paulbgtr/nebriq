@@ -1,7 +1,7 @@
 import { getUserTokenLimits, updateTokenLimit } from "../supabase/token_limits";
 import { getEncoding } from "js-tiktoken";
 
-import { OpenAI } from "@langchain/openai";
+import { ChatOpenAI } from "@langchain/openai";
 import { ChatXAI } from "@langchain/xai";
 import { ModelId } from "@/types/ai-model";
 import { ChatMistralAI } from "@langchain/mistralai";
@@ -62,8 +62,8 @@ export const getCompletion = async (prompt: string, modelId: ModelId) => {
 
   switch (llmname) {
     case "gpt":
-      llm = new OpenAI({ model, maxTokens });
-      return await llm.invoke(prompt);
+      llm = new ChatOpenAI({ model, maxTokens });
+      return (await llm.invoke(prompt)).content;
     case "grok":
       llm = new ChatXAI({ model, maxTokens });
       return (await llm.invoke(prompt)).content;
