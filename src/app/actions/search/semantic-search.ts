@@ -8,6 +8,14 @@ type Note = z.infer<typeof noteSchema>;
 
 const COSINE_THRESHOLD = 0.2;
 
+/**
+ * Performs a semantic search on the given notes based on the query and filters the results by user ID.
+ *
+ * @param {string} query - The search query.
+ * @param {Note[]} notes - The array of notes to search through.
+ * @param {string} userId - The user ID to filter the results by.
+ * @returns {Promise<Note[]>} A promise that resolves to an array of notes that match the query and belong to the specified user.
+ */
 export const semanticSearch = async (
   query: string,
   notes: Note[],
