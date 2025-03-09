@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/pinecone",
+      "schedule": "*/15 * * * *"
+    }
+  ]
+}
