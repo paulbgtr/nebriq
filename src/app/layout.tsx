@@ -4,6 +4,7 @@ import Providers from "@/providers";
 import { Poppins } from "next/font/google";
 import { Toaster } from "@/shared/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -100,6 +101,7 @@ export default function RootLayout({
       <body className={`${poppins.className} antialiased`}>
         <Providers>{children}</Providers>
         <Analytics />
+        <SpeedInsights />
         <Toaster />
       </body>
     </html>
