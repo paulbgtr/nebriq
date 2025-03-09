@@ -32,12 +32,12 @@ const syncNotes = async () => {
 };
 
 /**
- * Handles the POST request to sync notes.
+ * Handles the GET request to sync notes.
  *
  * This function logs a message indicating that notes are being synced, calls the syncNotes function to perform the actual syncing,
  * and then returns a response indicating that the syncing process has completed.
  */
-export async function POST() {
+export async function GET() {
   console.log("Syncing notes");
   await syncNotes();
   return new Response("Synced notes");
