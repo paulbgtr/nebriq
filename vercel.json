@@ -1,8 +1,12 @@
 {
   "crons": [
     {
-      "path": "/api/pinecone",
+      "path": "/api/sync/pinecone",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cleanup/pinecone",
+      "schedule": "0 0 * * *"
     }
   ]
 }
