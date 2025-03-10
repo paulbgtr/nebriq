@@ -1,5 +1,5 @@
 import { index } from "@/shared/lib/pinecone/client";
-import { createAdminClient } from "@/shared/lib/supabase/admin";
+import { getAllNotes } from "../utils";
 
 /**
  * Syncs notes from the database to the Pinecone index.
@@ -8,17 +8,11 @@ import { createAdminClient } from "@/shared/lib/supabase/admin";
  * and then upserts them into the Pinecone index. If any errors occur during the process, they are logged to the console.
  */
 const syncNotes = async () => {
-  const supabase = createAdminClient();
-  const { data: notes, error } = await supabase.from("notes").select("*");
+  const notes = await getAllNotes();
 
-  if (error) {
-    console.error("Error fetching notes:", error);
-    return;
+  if (!notes) {
+    throw new Error("No notes found");
   }
-
-  console.log(`Found ${notes.length} notes to sync`);
-
-  if (notes.length === 0) return;
 
   try {
     const records = notes.map((note) => ({
