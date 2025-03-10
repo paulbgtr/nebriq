@@ -1,5 +1,6 @@
 import { index } from "@/shared/lib/pinecone/client";
-import { createClient } from "@/shared/lib/supabase/server";
+import { createAdminClient } from "@/shared/lib/supabase/admin";
+import { PineconeRecord } from "@pinecone-database/pinecone";
 
 /**
  * Syncs notes from the database to the Pinecone index.
@@ -8,7 +9,7 @@ import { createClient } from "@/shared/lib/supabase/server";
  * and then upserts them into the Pinecone index. If any errors occur during the process, they are logged to the console.
  */
 const syncNotes = async () => {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: notes, error } = await supabase.from("notes").select("*");
 
   if (error) {
@@ -27,10 +28,29 @@ const syncNotes = async () => {
       userId: note.user_id,
     }));
 
-    console.log(`Preparing to upsert ${records.length} records to Pinecone`);
-    console.log(`Sample record:`, JSON.stringify(records[0]));
+    const pineconeData = await index
+      .namespace("notes")
+      .fetch(records.map((record) => record._id));
 
-    await index.upsertRecords(records);
+    const existingRecords = pineconeData.records;
+
+    await Promise.all(
+      records.map(async (record) => {
+        const id = record._id;
+        const freshText = record.text;
+
+        if (existingRecords[id]) {
+          const { metadata } = existingRecords[id];
+          const { text } = metadata as { text: string };
+
+          if (text === freshText) {
+            return;
+          }
+        }
+        await index.upsertRecords([record]);
+      })
+    );
+
     console.log(`Successfully upserted records to Pinecone`);
   } catch (error) {
     console.error("Error syncing notes:", error);
@@ -49,9 +69,8 @@ export async function GET() {
   try {
     await syncNotes();
     return new Response("Synced notes successfully");
-  } catch (error: any) {
-    console.error("Unexpected error in GET handler:", error);
-    return new Response(`Error syncing notes: ${error.message}`, {
+  } catch (error) {
+    return new Response(`Error syncing notes: ${error}`, {
       status: 500,
     });
   }
