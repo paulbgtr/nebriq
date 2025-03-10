@@ -1,6 +1,5 @@
 import { index } from "@/shared/lib/pinecone/client";
 import { createAdminClient } from "@/shared/lib/supabase/admin";
-import { PineconeRecord } from "@pinecone-database/pinecone";
 
 /**
  * Syncs notes from the database to the Pinecone index.
