@@ -15,6 +15,8 @@ import {
   Sparkles,
   ChevronDown,
   ChevronUp,
+  Flame,
+  CheckCircle2,
 } from "lucide-react";
 import { useState } from "react";
 import { useSubscription } from "../hooks/use-subscription";
@@ -130,27 +132,51 @@ export function AppSidebar() {
 
           {!isPro && (
             <div className="px-4 py-3">
-              <div className="relative overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 transition-all">
-                {/* Pro badge */}
-                <div className="absolute -right-6 -top-6 rotate-45">
-                  <div className="bg-primary text-primary-foreground text-xs font-semibold px-8 py-1 shadow-sm">
+              <div className="relative overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-primary/15 hover:from-primary/15 hover:via-primary/10 hover:to-primary/20 transition-all duration-300 shadow-sm">
+                {/* Animated flame background */}
+                <div
+                  className="absolute inset-0 opacity-5 bg-repeat-x bg-[length:12px_12px] animate-[pulse_4s_ease-in-out_infinite]"
+                  style={{
+                    backgroundImage:
+                      "url(\"data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 0C6 0 7 3 7 5C7 6.5 5.5 7 5.5 9C5.5 10.5 6.5 12 6.5 12C6.5 12 4 11 3 9C2 7 3 5 4 3.5C5 2 6 0 6 0Z' fill='%23ff4500'/%3E%3C/svg%3E\")",
+                  }}
+                ></div>
+
+                {/* Pro badge with better positioning and style */}
+                <div className="absolute -right-8 -top-8 rotate-45">
+                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-10 py-1 shadow-md flex items-center justify-center">
+                    <Flame className="w-3 h-3 mr-1 animate-[pulse_2s_ease-in-out_infinite]" />
                     PRO
                   </div>
                 </div>
 
-                <div className="p-3">
-                  <h3 className="text-sm font-medium text-foreground flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                    Upgrade to Pro
+                <div className="p-3.5">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-orange-500" />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-500">
+                      Upgrade to Pro
+                    </span>
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1 mb-3">
-                    Unlock advanced features and enhanced capabilities
+                  <p className="text-xs text-muted-foreground mt-1 mb-2">
+                    Unlock premium features today for maximum productivity
                   </p>
 
+                  {/* View features button */}
+                  {!showProFeatures && (
+                    <button
+                      onClick={() => setShowProFeatures(true)}
+                      className="text-xs text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1 mb-3 transition-colors"
+                    >
+                      <span>View all features</span>
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  )}
+
                   {showProFeatures && (
-                    <div className="space-y-2 mb-3 bg-background/50 rounded-md p-2">
+                    <div className="space-y-2 mb-3 bg-background/70 rounded-md p-2.5 border border-primary/10 transition-all duration-200 opacity-100">
                       {proFeatures.map((feature, index) => (
                         <div key={index} className="flex items-start gap-2">
+                          <CheckCircle2 className="w-3 h-3 text-orange-500 mt-0.5 flex-shrink-0" />
                           <div>
                             <p className="text-xs font-medium">
                               {feature.title}
@@ -168,16 +194,19 @@ export function AppSidebar() {
                     <Button
                       variant="default"
                       size="sm"
-                      className="w-full text-xs font-medium"
+                      className="w-full text-xs font-medium bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-md animate-[pulse_5s_ease-in-out_infinite]"
                       asChild
                     >
-                      <Link href="/settings/subscription">Subscribe Now</Link>
+                      <Link href="/settings/subscription">Upgrade Now</Link>
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                      onClick={() => setShowProFeatures(!showProFeatures)}
+                      className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowProFeatures(!showProFeatures);
+                      }}
                     >
                       {showProFeatures ? (
                         <ChevronUp className="h-4 w-4" />
