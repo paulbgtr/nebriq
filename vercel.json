@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/sync/pinecone",
-      "schedule": "*/15 * * * *"
+      "schedule": "0 0 * * *"
     },
     {
       "path": "/api/cleanup/pinecone",
