@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, Check } from "lucide-react";
-import { OpenAI, Mistral, Gemini, Grok } from "@lobehub/icons";
+import { OpenAI, Mistral, Gemini, Grok, Meta, DeepSeek } from "@lobehub/icons";
 import { cn } from "@/shared/lib/utils";
 import {
   DropdownMenu,
@@ -26,6 +26,8 @@ const MODEL_ICONS = {
   mistral: Mistral,
   gemini: Gemini,
   grok: Grok,
+  meta: Meta,
+  deepseek: DeepSeek,
 };
 
 export const ModelSelector = () => {
