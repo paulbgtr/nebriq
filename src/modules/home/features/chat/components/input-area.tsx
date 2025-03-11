@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { FileText, X, StickyNote } from "lucide-react";
+import { FileText, X, StickyNote, Sparkles } from "lucide-react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -74,55 +74,36 @@ const AttachedNotePreview = ({
 const Greeting = () => {
   const { user } = useUser();
   const userFirstName = user?.email ? user.email.split("@")[0] : "there";
-
   const displayName =
     userFirstName.charAt(0).toUpperCase() + userFirstName.slice(1);
 
+  const currentHour = new Date().getHours();
+  let timeGreeting = "Hi";
+
+  if (currentHour < 12) {
+    timeGreeting = "Good morning";
+  } else if (currentHour < 18) {
+    timeGreeting = "Good afternoon";
+  } else {
+    timeGreeting = "Good evening";
+  }
+
   return (
-    <div className="flex items-center justify-center my-6">
-      <div className="relative w-full max-w-sm">
-        <motion.div
-          className="relative px-5 py-4"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Main content */}
-          <div className="flex flex-col items-center">
-            {/* Welcome text */}
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-              className="mb-1"
-            >
-              <span className="text-xs text-muted-foreground/60 font-medium">
-                Welcome back
-              </span>
-            </motion.div>
-
-            {/* Name with gradient */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground/90">
-                {displayName}
-              </span>
-            </motion.div>
-          </div>
-
-          {/* Subtle line */}
-          <motion.div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"
-            initial={{ width: 0 }}
-            animate={{ width: "80%" }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-          />
-        </motion.div>
-      </div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 5 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10"
+    >
+      <Sparkles className="w-3 h-3 text-primary/70" />
+      <span className="text-xs text-muted-foreground/70">{timeGreeting},</span>
+      <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-primary/90 via-primary to-primary/80">
+        {displayName}
+      </span>
+    </motion.div>
   );
 };
 
@@ -230,11 +211,9 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="mb-6"
+                className="mb-4"
               >
-                <div className="flex flex-col items-center gap-8">
-                  <Greeting />
-                </div>
+                <Greeting />
               </motion.div>
             )}
           </AnimatePresence>
