@@ -89,27 +89,34 @@ const Greeting = () => {
 
   const currentHour = new Date().getHours();
   let timeGreeting = "Hi";
+  let helpMessage = "How can I help organize your thoughts today?";
 
   let TimeIcon = Coffee;
 
   if (currentHour >= 5 && currentHour < 8) {
     timeGreeting = "Good morning";
     TimeIcon = Sunrise;
+    helpMessage = "Ready to capture your morning thoughts?";
   } else if (currentHour >= 8 && currentHour < 12) {
     timeGreeting = "Good morning";
     TimeIcon = Coffee;
+    helpMessage = "What knowledge would you like to explore today?";
   } else if (currentHour >= 12 && currentHour < 14) {
     timeGreeting = "Good afternoon";
     TimeIcon = Sun;
+    helpMessage = "Need help connecting your ideas?";
   } else if (currentHour >= 14 && currentHour < 18) {
     timeGreeting = "Good afternoon";
     TimeIcon = Cloud;
+    helpMessage = "Let's write, ask, and discover together.";
   } else if (currentHour >= 18 && currentHour < 22) {
     timeGreeting = "Good evening";
     TimeIcon = Sunset;
+    helpMessage = "Time to reflect on your thoughts and ideas?";
   } else {
     timeGreeting = "Good evening";
     TimeIcon = Moon;
+    helpMessage = "Your knowledge is always accessible, even at night.";
   }
 
   return (
@@ -120,12 +127,26 @@ const Greeting = () => {
         duration: 0.4,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10"
+      className={cn(
+        "inline-flex items-center gap-1.5 px-3 py-1.5",
+        "rounded-full",
+        "bg-muted/20 border border-border/30",
+        "text-muted-foreground/70",
+        "transition-all duration-300 ease-in-out"
+      )}
     >
-      <TimeIcon className="w-3.5 h-3.5 text-primary/80" />
-      <span className="text-xs text-muted-foreground/70">{timeGreeting},</span>
-      <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-primary/90 via-primary to-primary/80">
-        {displayName}
+      <TimeIcon className="w-3.5 h-3.5 text-muted-foreground/60" />
+      <div className="flex items-center gap-1">
+        <span className="text-xs">{timeGreeting},</span>
+        <span className="text-xs font-medium text-foreground/80">
+          {displayName}
+        </span>
+      </div>
+      <span className="hidden sm:inline-block text-[10px] text-muted-foreground/50 mx-0.5">
+        •
+      </span>
+      <span className="hidden sm:inline-block text-[10px] text-muted-foreground/50">
+        {helpMessage}
       </span>
     </motion.div>
   );
@@ -139,7 +160,6 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
     const { getNotesQuery } = useNotes();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    // Expose the focusInput function through the ref
     useImperativeHandle(ref, () => ({
       focusInput: () => {
         if (textareaRef.current) {
