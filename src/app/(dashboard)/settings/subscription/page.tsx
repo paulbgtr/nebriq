@@ -55,13 +55,21 @@ export default function SubscriptionPage() {
                       Popular
                     </Badge>
                   </div>
-                  <div className="mt-2 mb-1">
-                    <span className="text-2xl font-bold">$7.99</span>
-                    <span className="text-muted-foreground text-sm">
-                      /month
-                    </span>
+                  <div className="mt-2 mb-1 flex items-baseline">
+                    <div className="flex items-baseline">
+                      <span className="text-muted-foreground text-sm line-through mr-1">
+                        $14.99
+                      </span>
+                      <span className="text-2xl font-bold">$8.99</span>
+                      <span className="text-muted-foreground text-sm">
+                        /month
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-muted-foreground text-sm">
+                  <div className="mt-1 text-xs inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-1 font-medium text-green-500 border border-green-500/20">
+                    <span>40% Early Adopter Discount</span>
+                  </div>
+                  <p className="text-muted-foreground text-sm mt-2">
                     For organized individuals
                   </p>
                 </div>
@@ -78,13 +86,21 @@ export default function SubscriptionPage() {
                       Best Value
                     </Badge>
                   </div>
-                  <div className="mt-2 mb-1">
-                    <span className="text-2xl font-bold">$9.99</span>
-                    <span className="text-muted-foreground text-sm">
-                      /month
-                    </span>
+                  <div className="mt-2 mb-1 flex items-baseline">
+                    <div className="flex items-baseline">
+                      <span className="text-muted-foreground text-sm line-through mr-1">
+                        $19.99
+                      </span>
+                      <span className="text-2xl font-bold">$11.99</span>
+                      <span className="text-muted-foreground text-sm">
+                        /month
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-muted-foreground text-sm">
+                  <div className="mt-1 text-xs inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-1 font-medium text-green-500 border border-green-500/20">
+                    <span>40% Early Adopter Discount</span>
+                  </div>
+                  <p className="text-muted-foreground text-sm mt-2">
                     For power users
                   </p>
                 </div>
@@ -258,6 +274,9 @@ export default function SubscriptionPage() {
                     <Zap className="mr-2 h-4 w-4" />
                     Upgrade to Personal
                   </Button>
+                  <p className="text-xs text-center mt-2 text-muted-foreground">
+                    40% off limited time
+                  </p>
                 </div>
                 <div className="bg-card p-6 border-t border-border/10">
                   {isPro ? (
@@ -265,13 +284,18 @@ export default function SubscriptionPage() {
                       Current Plan
                     </Button>
                   ) : (
-                    <Button
-                      variant="default"
-                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-sm hover:shadow-md transition-all duration-200 font-medium"
-                    >
-                      <Zap className="mr-2 h-4 w-4" />
-                      Upgrade to Pro
-                    </Button>
+                    <>
+                      <Button
+                        variant="default"
+                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-sm hover:shadow-md transition-all duration-200 font-medium"
+                      >
+                        <Zap className="mr-2 h-4 w-4" />
+                        Upgrade to Pro
+                      </Button>
+                      <p className="text-xs text-center mt-2 text-muted-foreground">
+                        40% off limited time
+                      </p>
+                    </>
                   )}
                 </div>
               </div>
@@ -285,11 +309,19 @@ export default function SubscriptionPage() {
           <div>
             <h3 className="text-lg font-medium flex items-center">
               <span className="mr-2">✨</span>
-              Save 20% with annual billing
+              Save 60% with annual billing
             </h3>
             <p className="text-muted-foreground max-w-xl mt-1">
-              Get Pro for $7.99/month when billed annually ($95.88/year).
+              Get Pro for{" "}
+              <span className="line-through text-muted-foreground">$19.99</span>{" "}
+              <span className="font-medium text-green-600">$9.99</span>/month
+              when billed annually (
+              <span className="font-medium text-green-600">$119.88/year</span>).
               Includes all Pro features plus priority feature requests.
+            </p>
+            <p className="text-xs text-amber-600 font-medium mt-2">
+              Lock in your early adopter discount forever! Price will increase
+              to $19.99/month for new users soon.
             </p>
           </div>
           <Button
@@ -320,9 +352,11 @@ export default function SubscriptionPage() {
             </p>
           </div>
           <div className="space-y-2">
-            <h3 className="font-medium">What payment methods do you accept?</h3>
+            <h3 className="font-medium">What's the Early Adopter Discount?</h3>
             <p className="text-muted-foreground text-sm">
-              We accept all major credit cards and PayPal.
+              Early adopters get 40% off forever! Once you subscribe, your rate
+              is locked in as long as your subscription remains active. Prices
+              will increase for new users soon.
             </p>
           </div>
           <div className="space-y-2">
@@ -333,6 +367,22 @@ export default function SubscriptionPage() {
               You'll have 30 days to export your data before it's permanently
               deleted.
             </p>
+          </div>
+        </div>
+
+        <div className="mt-8 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20">
+          <div className="flex items-start gap-3">
+            <div className="p-1.5 bg-amber-500/10 rounded-full">
+              <div className="w-4 h-4 text-amber-600">⏱️</div>
+            </div>
+            <div>
+              <h3 className="font-medium text-sm">Limited-Time Offer</h3>
+              <p className="text-muted-foreground text-xs mt-1">
+                The 40% Early Adopter Discount is available for a limited time.
+                Subscribe now to lock in your discounted rate before prices
+                increase to $19.99/month.
+              </p>
+            </div>
           </div>
         </div>
       </div>
