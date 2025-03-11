@@ -12,6 +12,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useNoteConnections } from "@/shared/hooks/use-note-connections";
 import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
+import { useSyncNoteToPinecone } from "./use-sync-note-to-pinecone";
 
 import Image from "@tiptap/extension-image";
 import Mathematics, {
@@ -35,6 +36,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   const { user } = useUser();
   const { createNoteMutation, updateNoteMutation } = useNotes();
   const initialLoadRef = useRef(false);
+  const { syncNoteToPinecone, isSyncing } = useSyncNoteToPinecone(5000); // 5 second debounce
 
   const [id, setId] = useState("");
   const [content, setContent] = useState("");
@@ -53,16 +55,20 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     if (!user || id || initialNoteId) return;
 
     setIsCreatingNote(true);
+    const currentContent = editor ? editor.getHTML() : content;
+
     createNoteMutation.mutate(
       {
         title: title || "Untitled",
-        content: content || "",
+        content: currentContent || "",
         user_id: user.id,
       },
       {
         onSuccess: (data) => {
           setId(data.id);
           setIsCreatingNote(false);
+          setLastSavedContent(currentContent || "");
+          syncNoteToPinecone(data.id, title, currentContent || "");
         },
         onError: () => {
           setIsCreatingNote(false);
@@ -102,6 +108,12 @@ export const useCustomEditor = (initialNoteId: string | null) => {
                   : note
               );
               setOpenNotes(updatedNotes);
+
+              syncNoteToPinecone(
+                id,
+                updatedNote.title || "",
+                updatedNote.content || ""
+              );
             },
             onError: () => {
               setIsSaving(false);
@@ -115,7 +127,16 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           }
         );
       },
-      [id, title, content, updateNoteMutation, toast, openNotes, setOpenNotes]
+      [
+        id,
+        title,
+        content,
+        updateNoteMutation,
+        toast,
+        openNotes,
+        setOpenNotes,
+        syncNoteToPinecone,
+      ]
     ),
     1000
   );
@@ -148,6 +169,8 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           setLastSavedContent(newContent);
           setIsSaving(false);
           isUpdatingRef.current = false;
+
+          syncNoteToPinecone(id, title, newContent);
         },
         onError: () => {
           toast({
@@ -285,15 +308,14 @@ export const useCustomEditor = (initialNoteId: string | null) => {
 
         const newContent = editor.getHTML();
 
-        // Update the last edit time
         lastUserEditTimeRef.current = Date.now();
 
-        // Only update if content actually changed to avoid unnecessary re-renders
         if (newContent !== content) {
           setContent(newContent);
-          handleEditorUpdate(newContent);
 
-          if (!id && !isCreatingNote) {
+          if (id) {
+            handleEditorUpdate(newContent);
+          } else if (!isCreatingNote) {
             createNote();
           }
         }
@@ -371,12 +393,17 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     const timeSinceLastEdit = Date.now() - lastUserEditTimeRef.current;
     if (timeSinceLastEdit < 2000) return;
 
-    // Only update editor content from external changes, not from typing
     if (content !== editor.getHTML() && !editor.isFocused) {
       const { from, to } = editor.state.selection;
+
+      const transaction = editor.state.tr.setMeta("avoidSave", true);
+      editor.view.dispatch(transaction);
+
       editor.commands.setContent(content, false, {
         preserveWhitespace: "full",
       });
+
+      // Restore cursor position
       editor.commands.setTextSelection({ from, to });
     }
   }, [editor, content]);
@@ -411,5 +438,6 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     isPending,
     updateNote,
     isSaving,
+    isSyncingToPinecone: isSyncing,
   };
 };

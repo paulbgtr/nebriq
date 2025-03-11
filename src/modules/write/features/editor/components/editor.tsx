@@ -7,6 +7,7 @@ import {
   Sparkles,
   BookOpen,
   MoreHorizontal,
+  Database,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { TagManager } from "./tag-manager";
@@ -33,6 +34,7 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
     editor,
     updateNote,
     isSaving,
+    isSyncingToPinecone,
   } = useCustomEditor(initialNoteId);
 
   const {
@@ -138,6 +140,21 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
                 )}
               </AnimatePresence>
 
+              <AnimatePresence>
+                {isSyncingToPinecone && (
+                  <motion.div
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-xs text-foreground/80 font-medium flex items-center gap-1.5 pr-1"
+                  >
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
+                    <span>Syncing</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -158,6 +175,34 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
                   </TooltipTrigger>
                   <TooltipContent side="top">
                     <p>Save (Ctrl+S)</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "h-7 w-7 rounded-full",
+                        isSyncingToPinecone
+                          ? "bg-blue-500/20 text-blue-500"
+                          : "bg-muted/40 hover:bg-muted/60 text-foreground"
+                      )}
+                      disabled={true}
+                    >
+                      <Database
+                        className={cn(
+                          "h-3 w-3",
+                          isSyncingToPinecone && "animate-pulse"
+                        )}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>Vector DB sync status</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
