@@ -1,5 +1,3 @@
-import { Separator } from "@/shared/components/ui/separator";
-
 type Props = {
   title: string;
   description: string;

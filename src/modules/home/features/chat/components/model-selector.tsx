@@ -111,7 +111,6 @@ export const ModelSelector = () => {
                       setSelectedModel(model);
                     }
                   }}
-                  isPro={isPro}
                   isLocked={false}
                 />
               ))}
@@ -144,7 +143,6 @@ export const ModelSelector = () => {
                       setSelectedModel(model);
                     }
                   }}
-                  isPro={isPro}
                   isLocked={!isPro}
                 />
               ))}
@@ -177,7 +175,6 @@ export const ModelSelector = () => {
                       setSelectedModel(model);
                     }
                   }}
-                  isPro={isPro}
                   isLocked={!isPro}
                 />
               ))}
@@ -238,7 +235,6 @@ interface ModelItemProps {
   model: AIModel;
   isSelected: boolean;
   onSelect: () => void;
-  isPro: boolean;
   isLocked: boolean;
 }
 
@@ -246,7 +242,6 @@ const ModelItem = ({
   model,
   isSelected,
   onSelect,
-  isPro,
   isLocked,
 }: ModelItemProps) => {
   const item = (

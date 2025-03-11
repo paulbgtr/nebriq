@@ -352,7 +352,9 @@ export default function SubscriptionPage() {
             </p>
           </div>
           <div className="space-y-2">
-            <h3 className="font-medium">What's the Early Adopter Discount?</h3>
+            <h3 className="font-medium">
+              What&apos;s the Early Adopter Discount?
+            </h3>
             <p className="text-muted-foreground text-sm">
               Early adopters get 40% off forever! Once you subscribe, your rate
               is locked in as long as your subscription remains active. Prices
@@ -364,8 +366,8 @@ export default function SubscriptionPage() {
               What happens to my data if I cancel?
             </h3>
             <p className="text-muted-foreground text-sm">
-              You'll have 30 days to export your data before it's permanently
-              deleted.
+              You&apos;ll have 30 days to export your data before it&apos;s
+              permanently deleted.
             </p>
           </div>
         </div>

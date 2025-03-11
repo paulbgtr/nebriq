@@ -9,7 +9,6 @@ import {
   MoreHorizontal,
   Database,
   Zap,
-  X,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { TagManager } from "./tag-manager";
