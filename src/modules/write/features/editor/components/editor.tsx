@@ -8,6 +8,8 @@ import {
   BookOpen,
   MoreHorizontal,
   Database,
+  Zap,
+  X,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { TagManager } from "./tag-manager";
@@ -17,6 +19,7 @@ import { useEditorCounts } from "@/modules/write/hooks/use-editor-counts";
 import { useCustomEditor } from "@/modules/write/hooks/use-editor";
 import { useNoteDiscovery } from "@/modules/write/hooks/use-note-discovery";
 import { NoteDiscovery } from "./note-discovery";
+import { useSubscription } from "@/shared/hooks/use-subscription";
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +29,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
+  const { isPro } = useSubscription();
+
   const {
     id,
     title,
@@ -180,31 +185,33 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
               </TooltipProvider>
 
               <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "h-7 w-7 rounded-full",
-                        isSyncingToPinecone
-                          ? "bg-blue-500/20 text-blue-500"
-                          : "bg-muted/40 hover:bg-muted/60 text-foreground"
-                      )}
-                      disabled={true}
-                    >
-                      <Database
+                {isPro && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className={cn(
-                          "h-3 w-3",
-                          isSyncingToPinecone && "animate-pulse"
+                          "h-7 w-7 rounded-full",
+                          isSyncingToPinecone
+                            ? "bg-blue-500/20 text-blue-500"
+                            : "bg-muted/40 hover:bg-muted/60 text-foreground"
                         )}
-                      />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    <p>Vector DB sync status</p>
-                  </TooltipContent>
-                </Tooltip>
+                        disabled={true}
+                      >
+                        <Database
+                          className={cn(
+                            "h-3 w-3",
+                            isSyncingToPinecone && "animate-pulse"
+                          )}
+                        />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>Vector DB sync status</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </TooltipProvider>
 
               <TooltipProvider>
@@ -231,7 +238,16 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    <p>Find connected notes (Alt+L)</p>
+                    {isPro ? (
+                      <p>Find connected notes (Alt+L)</p>
+                    ) : (
+                      <div className="flex flex-col gap-1 max-w-48">
+                        <p className="flex items-center gap-1.5">
+                          <Zap className="h-3 w-3 text-amber-500" />
+                          <span>Pro feature: Find connected notes</span>
+                        </p>
+                      </div>
+                    )}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -470,12 +486,62 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
         </div>
       </div>
 
-      <NoteDiscovery
-        notes={discoveredNotes}
-        isOpen={isDiscoveryOpen}
-        onClose={toggleDiscovery}
-        isLoading={isSearching}
-      />
+      {isPro ? (
+        <NoteDiscovery
+          notes={discoveredNotes}
+          isOpen={isDiscoveryOpen}
+          onClose={toggleDiscovery}
+          isLoading={isSearching}
+        />
+      ) : (
+        <AnimatePresence>
+          {isDiscoveryOpen && (
+            <motion.div
+              className="fixed bottom-0 left-0 right-0 md:left-auto md:right-6 md:bottom-24 md:w-96 z-50"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="bg-card border border-border rounded-t-lg md:rounded-lg shadow-lg overflow-hidden">
+                <div className="p-6 flex flex-col items-center text-center gap-4">
+                  <div className="p-3 bg-amber-500/10 rounded-full">
+                    <Sparkles className="h-6 w-6 text-amber-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Upgrade to Pro</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Discover related notes automatically as you write with our
+                      AI-powered note discovery feature.
+                    </p>
+                  </div>
+                  <div className="flex flex-col w-full gap-2">
+                    <Button
+                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
+                      onClick={() =>
+                        (window.location.href = "/settings/subscription")
+                      }
+                    >
+                      <Zap className="mr-2 h-4 w-4" />
+                      Upgrade to Pro
+                    </Button>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Only{" "}
+                      <span className="line-through opacity-70">$19.99</span>{" "}
+                      <span className="font-medium text-amber-500">
+                        $11.99/month
+                      </span>
+                      <span className="ml-1 text-xs rounded-full bg-amber-500/10 px-2 py-0.5 text-amber-600">
+                        40% off
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </motion.div>
   );
 }
