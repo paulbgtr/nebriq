@@ -1,5 +1,28 @@
 # Nebriq Changelog
 
+## [0.5.0-beta.1] - 2025-03-11
+
+### Added ✨
+
+- Integrate Pinecone vector database for improved semantic search
+- Add client-side note synchronization with Pinecone
+- Add Pinecone sync status indicator in editor
+- Implement daily cleanup route for unused vector records
+- Add admin client for service role access
+- Add Vercel Speed Insights for performance tracking
+- Add user authentication check for semantic search
+
+### Changed 🔄
+
+- Migrate from previous search system to Pinecone vector search
+- Optimize notes sync with deduplication and selective updates
+- Adjust Pinecone sync cron schedule to daily run
+- Update OpenAI model import and response handling
+
+### Fixed 🐛
+
+- Fix Pinecone synchronization issues
+
 ## [0.4.3-beta.1] - 2025-03-07
 
 ### Added ✨
