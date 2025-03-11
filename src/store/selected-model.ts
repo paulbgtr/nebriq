@@ -86,6 +86,26 @@ export const models: AIModel[] = [
     technicalDetails:
       "Google's efficient model optimized for speed with 1 million token context window",
   },
+  {
+    id: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    name: "Meta Llama 3.3 70B Instruct Turbo",
+    description: "Balanced, open-source for advanced language tasks.",
+    available: true,
+    isOpenSource: true,
+    category: "Advanced",
+    capabilities: ["Smart", "Balanced"],
+    technicalDetails: "Meta's 8B parameter open source model",
+  },
+  {
+    id: "deepseek-ai/DeepSeek-V3",
+    name: "DeepSeek V3",
+    description: "Balanced, open-source for advanced language tasks.",
+    available: true,
+    isOpenSource: true,
+    category: "Advanced",
+    capabilities: ["Smart", "Balanced"],
+    technicalDetails: "DeepSeek's 7B parameter open source model",
+  },
 ];
 
 type SelectedModelState = {
