@@ -303,36 +303,6 @@ export default function SubscriptionPage() {
           </div>
         </div>
       </div>
-      {/* Annual Offer */}
-      <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-green-500/5 to-emerald-500/5 border border-green-500/10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-medium flex items-center">
-              <span className="mr-2">✨</span>
-              Save 60% with annual billing
-            </h3>
-            <p className="text-muted-foreground max-w-xl mt-1">
-              Get Pro for{" "}
-              <span className="line-through text-muted-foreground">$19.99</span>{" "}
-              <span className="font-medium text-green-600">$9.99</span>/month
-              when billed annually (
-              <span className="font-medium text-green-600">$119.88/year</span>).
-              Includes all Pro features plus priority feature requests.
-            </p>
-            <p className="text-xs text-amber-600 font-medium mt-2">
-              Lock in your early adopter discount forever! Price will increase
-              to $19.99/month for new users soon.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            className="md:w-auto w-full border-green-500/30 hover:bg-green-500/5 text-green-600 font-medium transition-all duration-200"
-          >
-            <Zap className="mr-2 h-4 w-4" />
-            Upgrade Annually
-          </Button>
-        </div>
-      </div>
       {/* FAQ Section */}
       <div className="mt-12 mb-8">
         <h2 className="text-xl font-bold mb-6">Frequently Asked Questions</h2>
