@@ -79,9 +79,6 @@ export default function HomeModule() {
       role="main"
       className="fixed inset-0 top-16 flex flex-col bg-background"
     >
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.06)_0%,transparent_70%)] animate-pulse-glow" />
-      </div>
       <div className="absolute inset-0 flex flex-col max-w-5xl mx-auto w-full">
         {mounted && (
           <div className="absolute top-4 right-4 z-10">
