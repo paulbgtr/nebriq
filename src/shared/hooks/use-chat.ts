@@ -8,6 +8,7 @@ import { semanticSearch } from "@/app/actions/search/semantic-search";
 import { useQuery } from "@tanstack/react-query";
 import { useSelectedModelStore } from "@/store/selected-model";
 import { useChatHistoryStore } from "@/store/chat-history";
+import { useSubscription } from "./use-subscription";
 
 const STORAGE_KEY = "chatContext";
 const MAX_RELEVANT_NOTES = 5;
@@ -78,6 +79,7 @@ export const useChat = (
   const { selectedModel } = useSelectedModelStore();
   const { activeChatId, addChat, updateChat, getChatById, setActiveChatId } =
     useChatHistoryStore();
+  const { isPro } = useSubscription();
 
   const [chatContext, setChatContext] = useState<ChatContext>(() => {
     if (typeof window === "undefined") {
@@ -157,7 +159,7 @@ export const useChat = (
 
         const [tfidfResults, semanticResults] = await Promise.all([
           searchUsingTFIDF(searchContext, allNotes),
-          semanticSearch(searchContext, allNotes, userId),
+          isPro ? semanticSearch(searchContext, allNotes, userId) : [],
         ]);
 
         const uniqueResults = new Map<string, NoteWithScore>();
