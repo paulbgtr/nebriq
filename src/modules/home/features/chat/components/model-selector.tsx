@@ -17,7 +17,7 @@ import {
 } from "@/shared/components/ui/tooltip";
 import { Button } from "@/shared/components/ui/button";
 import { useSelectedModelStore, models } from "@/store/selected-model";
-import { AIModel, ModelCapability } from "@/types/ai-model";
+import { AIModel } from "@/types/ai-model";
 import { Badge } from "@/shared/components/ui/badge";
 
 const MODEL_ICONS = {
@@ -81,7 +81,7 @@ export const ModelSelector = () => {
             {/* Category header */}
             <div className="px-2 py-1 flex items-center justify-between">
               <div className="text-[10px] text-muted-foreground/70 flex items-center">
-                <span className="mr-1">{category}</span>
+                {category}
               </div>
               <span className="text-[9px] text-muted-foreground/50">
                 {category === "Beginner"
@@ -170,6 +170,17 @@ export const ModelSelector = () => {
                           {model.technicalDetails}
                         </span>
                       )}
+                      <div className="flex flex-wrap gap-1 mt-0.5">
+                        {model.capabilities?.map((capability) => (
+                          <Badge
+                            key={capability}
+                            variant="secondary"
+                            className="px-1 py-0 h-3.5 text-[8px]"
+                          >
+                            {capability}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </TooltipContent>
                 </Tooltip>
