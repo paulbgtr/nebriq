@@ -25,6 +25,18 @@ export const models: AIModel[] = [
     technicalDetails: "OpenAI's flagship model with 128K context window",
   },
   {
+    id: "o3-mini",
+    name: "O3 Mini",
+    description:
+      "Specialized for STEM reasoning with strong math, coding, and science capabilities. Balances speed and accuracy.",
+    available: true,
+    isOpenSource: false,
+    category: "Specialized",
+    capabilities: ["Smart", "Fast"],
+    technicalDetails:
+      "OpenAI's specialized STEM reasoning model with function calling support and 8K context window",
+  },
+  {
     id: "grok-2",
     name: "Grok 2",
     description:
@@ -54,6 +66,30 @@ export const models: AIModel[] = [
     category: "Beginner",
     capabilities: ["Fast"],
     technicalDetails: "Mistral AI's lightweight 3B parameter open source model",
+  },
+  {
+    id: "gemini-1.5-pro",
+    name: "Gemini 1.5 Pro",
+    description:
+      "Advanced reasoning with 2M token context window for complex analysis and multimodal tasks.",
+    available: true,
+    isOpenSource: false,
+    category: "Advanced",
+    capabilities: ["Smart", "Creative", "Balanced"],
+    technicalDetails:
+      "Google's flagship model with 2 million token context window and multimodal capabilities",
+  },
+  {
+    id: "gemini-1.5-flash",
+    name: "Gemini 1.5 Flash",
+    description:
+      "Fast and versatile with 1M token context window for efficient multimodal processing.",
+    available: true,
+    isOpenSource: false,
+    category: "Beginner",
+    capabilities: ["Fast", "Balanced"],
+    technicalDetails:
+      "Google's efficient model optimized for speed with 1 million token context window",
   },
 ];
 

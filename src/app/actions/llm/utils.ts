@@ -5,6 +5,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { ChatXAI } from "@langchain/xai";
 import { ModelId } from "@/types/ai-model";
 import { ChatMistralAI } from "@langchain/mistralai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 export const handleTokenLimits = async (
   userId: string,
@@ -60,15 +61,17 @@ export const getCompletion = async (prompt: string, modelId: ModelId) => {
   const model = modelId;
   const maxTokens = 4000;
 
-  switch (llmname) {
-    case "gpt":
-      llm = new ChatOpenAI({ model, maxTokens });
-      return (await llm.invoke(prompt)).content;
-    case "grok":
-      llm = new ChatXAI({ model, maxTokens });
-      return (await llm.invoke(prompt)).content;
-    case "mistral":
-      llm = new ChatMistralAI({ model, maxTokens });
-      return (await llm.invoke(prompt)).content;
+  if (llmname === "gpt" || llmname === "o3") {
+    llm = new ChatOpenAI({ model });
+    return (await llm.invoke(prompt)).content;
+  } else if (llmname === "grok") {
+    llm = new ChatXAI({ model, maxTokens });
+    return (await llm.invoke(prompt)).content;
+  } else if (llmname === "mistral") {
+    llm = new ChatMistralAI({ model, maxTokens });
+    return (await llm.invoke(prompt)).content;
+  } else if (llmname === "gemini") {
+    llm = new ChatGoogleGenerativeAI({ model });
+    return (await llm.invoke(prompt)).content;
   }
 };
