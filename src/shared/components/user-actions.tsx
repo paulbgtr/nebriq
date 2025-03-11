@@ -12,7 +12,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { LogOut, Settings, PaintBucket, HelpCircle } from "lucide-react";
+import {
+  LogOut,
+  Settings,
+  PaintBucket,
+  HelpCircle,
+  CreditCard,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
 import { logout } from "@/app/actions/supabase/auth";
 import Link from "next/link";
@@ -44,6 +50,12 @@ const menuItems = [
         label: "Appearance",
         href: "/settings/appearance",
         description: "Customize theme and layout",
+      },
+      {
+        icon: CreditCard,
+        label: "Manage Subscription",
+        href: "/settings/subscription",
+        description: "Upgrade or manage your plan",
       },
     ],
   },
