@@ -189,43 +189,6 @@ export default function SubscriptionPage() {
                 </div>
               </div>
 
-              {/* Knowledge Graph */}
-              <div className="grid grid-cols-4 gap-px bg-muted/80">
-                <div className="bg-card p-6 border-t border-border/10">
-                  <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                    Knowledge Graph
-                  </h4>
-                </div>
-                <div className="bg-card p-6 border-t border-border/10">
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>Basic graph (30 nodes)</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="bg-card p-6 border-t border-border/10">
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-primary" />
-                      <span>Enhanced graph (100 nodes)</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="bg-card p-6 border-t border-border/10">
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-primary" />
-                      <span>Full graph visualization</span>
-                    </li>
-                    <li className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-primary" />
-                      <span>Advanced filtering</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
               {/* Storage */}
               <div className="grid grid-cols-4 gap-px bg-muted/80">
                 <div className="bg-card p-6 border-t border-border/10">
