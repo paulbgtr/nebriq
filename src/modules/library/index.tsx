@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useTransition } from "react";
 import { useNotes } from "@/shared/hooks/use-notes";
+import { useSubscription } from "@/shared/hooks/use-subscription";
 import { Spinner } from "@/shared/components/spinner";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -13,6 +14,7 @@ import {
   BookMarked,
   Library,
   Compass,
+  Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ViewMode } from "./types";
@@ -32,6 +34,7 @@ import {
 
 export default function LibraryModule() {
   const { getNotesQuery, deleteNotesMutation } = useNotes();
+  const { isPro } = useSubscription();
   const { data: notes, isPending } = getNotesQuery;
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState<string[]>([]);
@@ -168,6 +171,14 @@ export default function LibraryModule() {
               Start your journey by creating your first note. Organize your
               thoughts, ideas, and inspirations in one place.
             </p>
+            {!isPro && (
+              <p className="text-xs text-muted-foreground/60 italic max-w-md mx-auto">
+                Free plan includes up to 50 notes.
+                <span className="text-amber-500/80 ml-1 font-medium">
+                  Upgrade to Pro for unlimited notes.
+                </span>
+              </p>
+            )}
           </div>
           <Button
             size="lg"
@@ -223,25 +234,50 @@ export default function LibraryModule() {
                 <h2 className="text-3xl font-bold text-foreground/90">
                   Knowledge Hub
                 </h2>
-                <p className="text-sm text-muted-foreground/80 flex items-center gap-2">
-                  <span className="flex items-center gap-1.5">
-                    <BookOpen className="h-4 w-4" />
-                    {notes.length} {handleNotePlural(notes.length)}
-                  </span>
-                  <span className="text-muted-foreground/40">•</span>
-                  <span className="flex items-center gap-1.5">
-                    <FolderIcon className="h-4 w-4" />
-                    {categorizedNotes.length} categories
-                  </span>
-                  {isSelectionMode && selectedNotes.length > 0 && (
-                    <>
-                      <span className="text-muted-foreground/40">•</span>
-                      <span className="text-primary font-medium flex items-center gap-1.5">
-                        {selectedNotes.length} selected
-                      </span>
-                    </>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                  <p className="text-sm text-muted-foreground/80 flex items-center gap-2">
+                    <span className="flex items-center gap-1.5">
+                      <BookOpen className="h-4 w-4" />
+                      {notes.length} {handleNotePlural(notes.length)}
+                    </span>
+                    <span className="text-muted-foreground/40">•</span>
+                    <span className="flex items-center gap-1.5">
+                      <FolderIcon className="h-4 w-4" />
+                      {categorizedNotes.length} categories
+                    </span>
+                    {isSelectionMode && selectedNotes.length > 0 && (
+                      <>
+                        <span className="text-muted-foreground/40">•</span>
+                        <span className="text-primary font-medium flex items-center gap-1.5">
+                          {selectedNotes.length} selected
+                        </span>
+                      </>
+                    )}
+                  </p>
+                  {!isPro && (
+                    <div className="text-xs flex items-center gap-1.5 text-muted-foreground/70">
+                      <div
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          notes.length > 40 ? "bg-amber-500" : "bg-muted"
+                        }`}
+                      />
+                      <span>{notes.length}/50 notes</span>
+                      {notes.length > 40 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-5 px-1.5 text-xs font-medium text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
+                          onClick={() =>
+                            (window.location.href = "/settings/subscription")
+                          }
+                        >
+                          <Zap className="h-3 w-3 mr-1" />
+                          Upgrade
+                        </Button>
+                      )}
+                    </div>
                   )}
-                </p>
+                </div>
               </div>
             </div>
           </motion.div>
