@@ -12,7 +12,12 @@ import {
   Shield,
   Trash2,
   Clock,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
+import { useState } from "react";
+import { useSubscription } from "../hooks/use-subscription";
 
 import {
   Sidebar,
@@ -52,6 +57,8 @@ export function AppSidebar() {
   const { user } = useUser();
   const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
     useChatHistoryStore();
+  const [showProFeatures, setShowProFeatures] = useState(false);
+  const { isPro } = useSubscription();
 
   const handleChatClick = (id: string) => {
     setActiveChatId(id);
@@ -79,6 +86,25 @@ export function AppSidebar() {
     }
   };
 
+  const proFeatures = [
+    {
+      title: "Deep Semantic Search",
+      description: "Find exactly what you need with advanced contextual search",
+    },
+    {
+      title: "Advanced Models",
+      description: "Access to our most powerful language models",
+    },
+    {
+      title: "Note Connections",
+      description: "Discover relationships between your notes automatically",
+    },
+    {
+      title: "Unlimited Usage",
+      description: "No restrictions on usage or message limits",
+    },
+  ];
+
   return (
     <Sidebar className="border-r border-border/40">
       <SidebarContent className="flex flex-col h-full">
@@ -102,6 +128,71 @@ export function AppSidebar() {
             </Button>
           </div>
 
+          {!isPro && (
+            <div className="px-4 py-3">
+              <div className="relative overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 transition-all">
+                {/* Pro badge */}
+                <div className="absolute -right-6 -top-6 rotate-45">
+                  <div className="bg-primary text-primary-foreground text-xs font-semibold px-8 py-1 shadow-sm">
+                    PRO
+                  </div>
+                </div>
+
+                <div className="p-3">
+                  <h3 className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    Upgrade to Pro
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1 mb-3">
+                    Unlock advanced features and enhanced capabilities
+                  </p>
+
+                  {showProFeatures && (
+                    <div className="space-y-2 mb-3 bg-background/50 rounded-md p-2">
+                      {proFeatures.map((feature, index) => (
+                        <div key={index} className="flex items-start gap-2">
+                          <div>
+                            <p className="text-xs font-medium">
+                              {feature.title}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {feature.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="w-full text-xs font-medium"
+                      asChild
+                    >
+                      <Link href="/settings/subscription">Subscribe Now</Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowProFeatures(!showProFeatures)}
+                    >
+                      {showProFeatures ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                      <span className="sr-only">
+                        {showProFeatures ? "Hide" : "Show"} Pro Features
+                      </span>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Main Navigation */}
           <SidebarGroup>
             <SidebarGroupLabel className="text-xs font-medium text-muted-foreground/80">
