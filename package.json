@@ -14,6 +14,7 @@
     "@langchain/mistralai": "^0.2.0",
     "@langchain/openai": "^0.3.14",
     "@langchain/xai": "^0.0.2",
+    "@lobehub/icons": "^1.80.0",
     "@million/lint": "latest",
     "@next/font": "^14.2.15",
     "@pinecone-database/pinecone": "^5.1.1",
