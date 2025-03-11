@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/server";
 import { VERSION } from "@/shared/config/version";
+import Link from "next/link";
 import {
   SidebarTrigger,
   SidebarProvider,
@@ -17,10 +18,18 @@ import { NoteTabs } from "@/shared/components/note-tabs";
 const Version = () => {
   return (
     <div className="absolute z-50 top-20 right-10">
-      <p className="text-xs text-muted-foreground/60 text-right">
-        Nebriq {VERSION.number} <br />
-        {VERSION.releaseDate}
-      </p>
+      <div className="text-xs text-muted-foreground/60 text-right ">
+        <p>
+          Nebriq {VERSION.number} <br />
+          {VERSION.releaseDate}
+        </p>
+        <Link
+          className="hover:text-muted-foreground transition-colors underline"
+          href="/changelog"
+        >
+          View Changelog
+        </Link>
+      </div>
     </div>
   );
 };
