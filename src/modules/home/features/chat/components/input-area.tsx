@@ -15,7 +15,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { FileText, X, StickyNote, Sparkles } from "lucide-react";
+import {
+  FileText,
+  X,
+  StickyNote,
+  Sun,
+  Cloud,
+  Moon,
+  Sunrise,
+  Sunset,
+  Coffee,
+} from "lucide-react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -80,12 +90,26 @@ const Greeting = () => {
   const currentHour = new Date().getHours();
   let timeGreeting = "Hi";
 
-  if (currentHour < 12) {
+  let TimeIcon = Coffee;
+
+  if (currentHour >= 5 && currentHour < 8) {
     timeGreeting = "Good morning";
-  } else if (currentHour < 18) {
+    TimeIcon = Sunrise;
+  } else if (currentHour >= 8 && currentHour < 12) {
+    timeGreeting = "Good morning";
+    TimeIcon = Coffee;
+  } else if (currentHour >= 12 && currentHour < 14) {
     timeGreeting = "Good afternoon";
+    TimeIcon = Sun;
+  } else if (currentHour >= 14 && currentHour < 18) {
+    timeGreeting = "Good afternoon";
+    TimeIcon = Cloud;
+  } else if (currentHour >= 18 && currentHour < 22) {
+    timeGreeting = "Good evening";
+    TimeIcon = Sunset;
   } else {
     timeGreeting = "Good evening";
+    TimeIcon = Moon;
   }
 
   return (
@@ -98,7 +122,7 @@ const Greeting = () => {
       }}
       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10"
     >
-      <Sparkles className="w-3 h-3 text-primary/70" />
+      <TimeIcon className="w-3.5 h-3.5 text-primary/80" />
       <span className="text-xs text-muted-foreground/70">{timeGreeting},</span>
       <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-primary/90 via-primary to-primary/80">
         {displayName}
