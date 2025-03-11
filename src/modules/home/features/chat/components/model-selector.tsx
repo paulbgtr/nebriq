@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Check,
 } from "lucide-react";
+import { OpenAI, Mistral, Gemini, Grok } from "@lobehub/icons";
 import { cn } from "@/shared/lib/utils";
 import {
   DropdownMenu,
@@ -31,6 +32,30 @@ import { Badge } from "@/shared/components/ui/badge";
 
 export const ModelSelector = () => {
   const { selectedModel, setSelectedModel } = useSelectedModelStore();
+
+  const getModelIcon = (
+    modelId: string,
+    className: string = "h-3 w-3",
+    model?: AIModel
+  ) => {
+    if (modelId.startsWith("gpt") || modelId.startsWith("o3")) {
+      return <OpenAI className={className} />;
+    } else if (modelId.startsWith("mistral")) {
+      return <Mistral className={className} />;
+    } else if (modelId.startsWith("gemini")) {
+      return <Gemini className={className} />;
+    } else if (modelId.startsWith("grok")) {
+      return <Grok className={className} />;
+    } else {
+      const modelToUse = model || selectedModel;
+      return modelToUse.capabilities && modelToUse.capabilities.length > 0 ? (
+        <ModelIcon
+          capability={modelToUse.capabilities[0]}
+          className={className}
+        />
+      ) : null;
+    }
+  };
 
   const groupModelsByCategory = () => {
     const beginnerModels: AIModel[] = [];
@@ -70,13 +95,7 @@ export const ModelSelector = () => {
             "transition-all duration-200 rounded-full"
           )}
         >
-          {selectedModel.capabilities &&
-          selectedModel.capabilities.length > 0 ? (
-            <ModelIcon
-              capability={selectedModel.capabilities[0]}
-              className="h-3 w-3"
-            />
-          ) : null}
+          {getModelIcon(selectedModel.id)}
           <span className="max-w-[80px] truncate">{selectedModel.name}</span>
           <ChevronDown className="h-3 w-3 opacity-50" />
         </Button>
@@ -107,6 +126,7 @@ export const ModelSelector = () => {
                       setSelectedModel(model);
                     }
                   }}
+                  getModelIcon={getModelIcon}
                 />
               ))}
             </div>
@@ -137,6 +157,7 @@ export const ModelSelector = () => {
                       setSelectedModel(model);
                     }
                   }}
+                  getModelIcon={getModelIcon}
                 />
               ))}
             </div>
@@ -167,6 +188,7 @@ export const ModelSelector = () => {
                       setSelectedModel(model);
                     }
                   }}
+                  getModelIcon={getModelIcon}
                 />
               ))}
             </div>
@@ -206,9 +228,19 @@ interface ModelItemProps {
   model: AIModel;
   isSelected: boolean;
   onSelect: () => void;
+  getModelIcon: (
+    modelId: string,
+    className?: string,
+    model?: AIModel
+  ) => React.ReactNode;
 }
 
-const ModelItem = ({ model, isSelected, onSelect }: ModelItemProps) => {
+const ModelItem = ({
+  model,
+  isSelected,
+  onSelect,
+  getModelIcon,
+}: ModelItemProps) => {
   const item = (
     <DropdownMenuItem
       key={model.id}
@@ -222,12 +254,7 @@ const ModelItem = ({ model, isSelected, onSelect }: ModelItemProps) => {
       onClick={onSelect}
     >
       <div className="flex items-center gap-1.5 min-w-0 flex-1">
-        {model.capabilities && model.capabilities.length > 0 ? (
-          <ModelIcon
-            capability={model.capabilities[0]}
-            className="h-3 w-3 text-primary/80 shrink-0"
-          />
-        ) : null}
+        {getModelIcon(model.id, "h-3 w-3 text-primary/80 shrink-0", model)}
         <span
           className={cn(
             "text-xs truncate",
@@ -241,7 +268,7 @@ const ModelItem = ({ model, isSelected, onSelect }: ModelItemProps) => {
       <div className="flex items-center gap-1 shrink-0">
         {model.isOpenSource && (
           <Badge variant="outline" className="px-1 py-0 h-4 text-[9px]">
-            OS
+            OSS
           </Badge>
         )}
         {isSelected && <Check className="h-3 w-3 text-primary" />}
