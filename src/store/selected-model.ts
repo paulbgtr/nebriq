@@ -6,8 +6,7 @@ export const models: AIModel[] = [
   {
     id: "gpt-4o-mini",
     name: "GPT-4o Mini",
-    description:
-      "Fast and affordable for everyday tasks. Best for quick responses.",
+    description: "Fast, affordable, ideal for simple tasks.",
     available: true,
     isOpenSource: false,
     category: "Beginner",
@@ -17,7 +16,7 @@ export const models: AIModel[] = [
   {
     id: "gpt-4o",
     name: "GPT-4o",
-    description: "Advanced reasoning for complex topics and in-depth analysis.",
+    description: "Advanced reasoning for complex, in-depth tasks.",
     available: true,
     isOpenSource: false,
     category: "Advanced",
@@ -27,8 +26,7 @@ export const models: AIModel[] = [
   {
     id: "o3-mini",
     name: "O3 Mini",
-    description:
-      "Specialized for STEM reasoning with strong math, coding, and science capabilities. Balances speed and accuracy.",
+    description: "STEM-focused with strong math and coding skills.",
     available: true,
     isOpenSource: false,
     category: "Specialized",
@@ -39,8 +37,7 @@ export const models: AIModel[] = [
   {
     id: "grok-2",
     name: "Grok 2",
-    description:
-      "Balanced with real-time information. Ideal for current events.",
+    description: "Real-time info for current events.",
     available: true,
     isOpenSource: false,
     category: "Specialized",
@@ -50,7 +47,7 @@ export const models: AIModel[] = [
   {
     id: "mistral-medium",
     name: "Mistral Medium",
-    description: "Balanced performance with real-time information.",
+    description: "Balanced, open-source for advanced language tasks.",
     available: true,
     isOpenSource: true,
     category: "Advanced",
@@ -60,7 +57,7 @@ export const models: AIModel[] = [
   {
     id: "mistral-small",
     name: "Mistral Small",
-    description: "Small and fast for basic tasks.",
+    description: "Lightweight, open-source for quick basic tasks.",
     available: true,
     isOpenSource: true,
     category: "Beginner",
@@ -70,8 +67,7 @@ export const models: AIModel[] = [
   {
     id: "gemini-1.5-pro",
     name: "Gemini 1.5 Pro",
-    description:
-      "Advanced reasoning with 2M token context window for complex analysis and multimodal tasks.",
+    description: "Multimodal with huge 2M token context for deep analysis.",
     available: true,
     isOpenSource: false,
     category: "Advanced",
@@ -82,8 +78,7 @@ export const models: AIModel[] = [
   {
     id: "gemini-1.5-flash",
     name: "Gemini 1.5 Flash",
-    description:
-      "Fast and versatile with 1M token context window for efficient multimodal processing.",
+    description: "Fast multimodal with 1M token context for efficiency.",
     available: true,
     isOpenSource: false,
     category: "Beginner",
