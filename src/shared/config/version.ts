@@ -2,5 +2,5 @@ import packageJson from "../../../package.json";
 
 export const VERSION = {
   number: packageJson.version,
-  releaseDate: "2025-03-11",
+  releaseDate: "2025-03-12",
 } as const;

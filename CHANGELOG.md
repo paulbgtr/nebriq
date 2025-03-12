@@ -1,5 +1,32 @@
 # Nebriq Changelog
 
+## [0.5.1-beta.1] - 2025-03-12
+
+### Added ✨
+
+- Add Claude 3.5 Sonnet model support
+- Add Meta Llama 3.3 and DeepSeek V3 models
+- Add Google Gemini and OpenAI O3 models
+- Implement intelligent model selection with auto-mode
+- Add model indicator and details to chat messages
+- Add model capabilities badges to tooltip
+- Add dynamic model icons for multiple AI providers
+- Add direct navigation to note creation page
+- Add LangChain Community package integration
+- Add Google GenAI LangChain integration
+- Add Lobe UI icons package
+
+### Changed 🔄
+
+- Simplify model selection UI and improve categorization
+- Streamline AI model descriptions for clarity and conciseness
+- Enhance greeting component with responsive help message
+- Improve time-based greeting with dynamic icons and refined time ranges
+- Improve list and text wrapping in prose styles
+- Remove pulsing animation from library module
+- Remove radial gradient background animation
+- Remove search history actions and schemas in favor of improved functionality
+
 ## [0.5.0-beta.1] - 2025-03-11
 
 ### Added ✨
