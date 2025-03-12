@@ -54,7 +54,7 @@ const menuItems = [
       {
         icon: CreditCard,
         label: "Manage Subscription",
-        href: "/settings/subscription",
+        href: "/subscription",
         description: "Upgrade or manage your plan",
       },
     ],

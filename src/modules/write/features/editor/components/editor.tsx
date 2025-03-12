@@ -517,9 +517,7 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
                   <div className="flex flex-col w-full gap-2">
                     <Button
                       className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
-                      onClick={() =>
-                        (window.location.href = "/settings/subscription")
-                      }
+                      onClick={() => (window.location.href = "/subscription")}
                     >
                       <Zap className="mr-2 h-4 w-4" />
                       Upgrade to Pro

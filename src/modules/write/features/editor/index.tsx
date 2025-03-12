@@ -31,7 +31,7 @@ export default function Write() {
   }, [id, isPro, notes]);
 
   const handleUpgrade = () => {
-    window.location.href = "/settings/subscription";
+    window.location.href = "/subscription";
   };
 
   return (

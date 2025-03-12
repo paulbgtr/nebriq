@@ -268,7 +268,7 @@ export default function LibraryModule() {
                           size="sm"
                           className="h-5 px-1.5 text-xs font-medium text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
                           onClick={() =>
-                            (window.location.href = "/settings/subscription")
+                            (window.location.href = "/subscription")
                           }
                         >
                           <Zap className="h-3 w-3 mr-1" />

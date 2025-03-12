@@ -197,7 +197,7 @@ export const ModelSelector = () => {
               size="sm"
               className="w-full mt-2 bg-amber-500 hover:bg-amber-600 text-white"
             >
-              <Link href="/settings/subscription">Upgrade Now</Link>
+              <Link href="/subscription">Upgrade Now</Link>
             </Button>
           </div>
         )}

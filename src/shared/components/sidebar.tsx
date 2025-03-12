@@ -197,7 +197,7 @@ export function AppSidebar() {
                       className="w-full text-xs font-medium bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-md animate-[pulse_5s_ease-in-out_infinite]"
                       asChild
                     >
-                      <Link href="/settings/subscription">Upgrade Now</Link>
+                      <Link href="/subscription">Upgrade Now</Link>
                     </Button>
                     <Button
                       variant="ghost"
