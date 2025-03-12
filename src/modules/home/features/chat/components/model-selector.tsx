@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Check, Zap } from "lucide-react";
+import { ChevronDown, Check, Gauge } from "lucide-react";
 import {
   OpenAI,
   Mistral,
@@ -80,7 +80,7 @@ export const ModelSelector = () => {
           className="h-8 gap-1.5 px-2.5 text-xs font-medium text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-full hover:bg-muted/40"
         >
           {isAutoMode ? (
-            <Zap className="h-3 w-3 text-amber-500" />
+            <Gauge className="h-3 w-3 text-amber-500" />
           ) : (
             getModelIcon(selectedModel)
           )}
@@ -99,7 +99,7 @@ export const ModelSelector = () => {
         <div className="px-2 py-2 mb-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <Zap
+              <Gauge
                 className={cn(
                   "h-3.5 w-3.5 transition-colors duration-200",
                   isAutoMode ? "text-amber-500" : "text-muted-foreground/50"
