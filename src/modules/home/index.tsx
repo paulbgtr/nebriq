@@ -12,12 +12,7 @@ import {
 } from "@/modules/home/features/chat/components/input-area";
 import { Spinner } from "@/shared/components/spinner";
 import { cn } from "@/shared/lib/utils";
-import { PlusCircle } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/shared/components/ui/tooltip";
+import { Plus } from "lucide-react";
 
 export default function HomeModule() {
   const [followUp, setFollowUp] = useState("");
@@ -80,36 +75,6 @@ export default function HomeModule() {
       className="fixed inset-0 top-16 flex flex-col bg-background"
     >
       <div className="absolute inset-0 flex flex-col max-w-5xl mx-auto w-full">
-        {mounted && (
-          <div className="absolute top-4 right-4 z-10">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={handleNewChat}
-                  className={cn(
-                    "flex items-center justify-center",
-                    "w-9 h-9",
-                    "rounded-full",
-                    "bg-background/95",
-                    "border border-border/30",
-                    "text-muted-foreground hover:text-primary",
-                    "shadow-sm",
-                    "transition-all duration-200 ease-in-out",
-                    "hover:scale-105 hover:shadow-md hover:border-primary/20",
-                    "backdrop-blur-sm",
-                    !chatContext.conversationHistory.length &&
-                      "opacity-0 pointer-events-none"
-                  )}
-                  aria-label="New Chat"
-                >
-                  <PlusCircle className="w-5 h-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>New Chat</TooltipContent>
-            </Tooltip>
-          </div>
-        )}
-
         {isAllNotesLoading ? (
           <div className="flex items-center justify-center flex-1">
             <Spinner size="sm" />
@@ -124,6 +89,30 @@ export default function HomeModule() {
                   : "justify-between"
               )}
             >
+              {mounted && chatContext.conversationHistory.length > 0 && (
+                <div className="w-full flex justify-center p-2">
+                  <button
+                    onClick={handleNewChat}
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5",
+                      "text-xs font-medium",
+                      "rounded-md",
+                      "bg-transparent",
+                      "border border-border/20",
+                      "text-muted-foreground hover:text-primary",
+                      "transition-colors duration-150 ease-in-out",
+                      "hover:border-border/50",
+                      "focus:outline-none focus:ring-1 focus:ring-primary/30",
+                      "aria-label-new-chat"
+                    )}
+                    aria-label="New Chat"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>New Chat</span>
+                  </button>
+                </div>
+              )}
+
               <ChatContent
                 scrollContainerRef={scrollContainerRef}
                 chatContext={chatContext}
