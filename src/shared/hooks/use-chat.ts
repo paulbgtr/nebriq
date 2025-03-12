@@ -75,7 +75,6 @@ export const useChat = (
   allNotes: z.infer<typeof noteSchema>[]
 ) => {
   const [query, setQuery] = useState("");
-  const { selectedModel } = useSelectedModelStore();
   const { activeChatId, addChat, updateChat, getChatById, setActiveChatId } =
     useChatHistoryStore();
 
@@ -328,12 +327,17 @@ export const useChat = (
         relevantNotes: freshRelevantNotes,
       };
 
+      const { selectedModel, isAutoMode, getModelForQuery } =
+        useSelectedModelStore.getState();
+
+      const modelToUse = isAutoMode ? getModelForQuery(message) : selectedModel;
+
       const data = await chat(
         message,
         userId,
         updatedContext,
         undefined,
-        selectedModel.id
+        modelToUse.id
       );
 
       if (data) {
@@ -345,6 +349,7 @@ export const useChat = (
               role: "assistant" as const,
               content: data,
               relevantNotes: freshRelevantNotes,
+              modelId: modelToUse.id,
             },
           ],
         };

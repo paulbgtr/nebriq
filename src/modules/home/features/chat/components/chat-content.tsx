@@ -20,6 +20,8 @@ import {
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
 import { InlineMath, BlockMath } from "react-katex";
+import { Sparkles } from "lucide-react";
+import { models } from "@/shared/data/models";
 
 type ChatContentProps = {
   scrollContainerRef: React.RefObject<HTMLDivElement>;
@@ -177,6 +179,10 @@ const MessageBubble = ({
     setMounted(true);
   }, []);
 
+  const modelDetails = message.modelId
+    ? models.find((m) => m.id === message.modelId)
+    : null;
+
   const processText = (text: string) => {
     const blocks = text.split(/(\\[[\s\S]*?\\]|\\\([\s\S]*?\\\))/g);
     return blocks.map((block, index) => {
@@ -265,6 +271,81 @@ const MessageBubble = ({
                 ? displayedText
                 : message.content
               : message.content
+          )}
+
+          {/* Model indicator for assistant messages */}
+          {mounted && message.role === "assistant" && modelDetails && (
+            <div className="flex items-center justify-start gap-1 mt-2 pt-1 border-t border-border/10 opacity-60 hover:opacity-100 transition-opacity">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-1 text-[8px] hover:text-muted-foreground/70 transition-colors group">
+                    <Sparkles
+                      className={cn(
+                        "h-2 w-2",
+                        modelDetails.category === "Beginner"
+                          ? "text-green-400/70 group-hover:text-green-400"
+                          : modelDetails.category === "Advanced"
+                            ? "text-violet-400/70 group-hover:text-violet-400"
+                            : "text-amber-400/70 group-hover:text-amber-400"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "font-medium",
+                        modelDetails.category === "Beginner"
+                          ? "text-green-500/50 group-hover:text-green-500/70"
+                          : modelDetails.category === "Advanced"
+                            ? "text-violet-500/50 group-hover:text-violet-500/70"
+                            : "text-amber-500/50 group-hover:text-amber-500/70"
+                      )}
+                    >
+                      {modelDetails.name}
+                    </span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side="top"
+                  align="end"
+                  className="w-56 p-2 rounded-lg text-xs shadow-md border border-border/30 bg-background/95 backdrop-blur-sm"
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium">{modelDetails.name}</div>
+                      <div
+                        className={cn(
+                          "text-[9px] px-1.5 py-0.5 rounded-full",
+                          modelDetails.category === "Beginner"
+                            ? "bg-green-500/10 text-green-500"
+                            : modelDetails.category === "Advanced"
+                              ? "bg-violet-500/10 text-violet-500"
+                              : "bg-amber-500/10 text-amber-500"
+                        )}
+                      >
+                        {modelDetails.category}
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-muted-foreground/80">
+                      {modelDetails.description}
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {modelDetails.capabilities?.map((capability) => (
+                        <span
+                          key={capability}
+                          className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-muted/50 text-[8px]"
+                        >
+                          {capability}
+                        </span>
+                      ))}
+                    </div>
+                    {modelDetails.isOpenSource && (
+                      <div className="text-[9px] text-muted-foreground/60 mt-1">
+                        ⭐ Open Source Model
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           )}
         </div>
       </div>
