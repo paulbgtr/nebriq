@@ -211,15 +211,21 @@ body {
   }
 
   .prose ul {
-    @apply my-3 list-disc list-inside space-y-1;
+    @apply my-3 list-disc list-outside pl-5 space-y-1;
   }
 
   .prose ol {
-    @apply my-3 list-decimal list-inside space-y-1;
+    @apply my-3 list-decimal list-outside pl-5 space-y-1;
   }
 
   .prose li {
     @apply text-foreground leading-relaxed;
+    white-space: pre-wrap;
+  }
+
+  .prose li p {
+    @apply inline;
+    white-space: pre-wrap;
   }
 
   .prose blockquote {
