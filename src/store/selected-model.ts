@@ -1,116 +1,21 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { AIModel } from "@/types/ai-model";
+import { AIModel, ModelCapability } from "@/types/ai-model";
+import { models } from "@/shared/data/models";
 
-export const models: AIModel[] = [
-  {
-    id: "gpt-4o-mini",
-    name: "GPT-4o Mini",
-    description: "Fast, affordable, ideal for simple tasks.",
-    available: true,
-    isOpenSource: false,
-    category: "Beginner",
-    capabilities: ["Fast", "Balanced"],
-    technicalDetails: "OpenAI's lightweight model with 8K context window",
-  },
-  {
-    id: "gpt-4o",
-    name: "GPT-4o",
-    description: "Advanced reasoning for complex, in-depth tasks.",
-    available: true,
-    isOpenSource: false,
-    category: "Advanced",
-    capabilities: ["Smart", "Creative"],
-    technicalDetails: "OpenAI's flagship model with 128K context window",
-  },
-  {
-    id: "o3-mini",
-    name: "O3 Mini",
-    description: "STEM-focused with strong math and coding skills.",
-    available: true,
-    isOpenSource: false,
-    category: "Specialized",
-    capabilities: ["Smart", "Fast"],
-    technicalDetails:
-      "OpenAI's specialized STEM reasoning model with function calling support and 8K context window",
-  },
-  {
-    id: "grok-2",
-    name: "Grok 2",
-    description: "Real-time info for current events.",
-    available: true,
-    isOpenSource: false,
-    category: "Specialized",
-    capabilities: ["Realtime", "Smart"],
-    technicalDetails: "xAI's model with real-time web access",
-  },
-  {
-    id: "mistral-medium",
-    name: "Mistral Medium",
-    description: "Balanced, open-source for advanced language tasks.",
-    available: true,
-    isOpenSource: true,
-    category: "Advanced",
-    capabilities: ["Balanced", "Smart"],
-    technicalDetails: "Mistral AI's 7B parameter open source model",
-  },
-  {
-    id: "mistral-small",
-    name: "Mistral Small",
-    description: "Lightweight, open-source for quick basic tasks.",
-    available: true,
-    isOpenSource: true,
-    category: "Beginner",
-    capabilities: ["Fast"],
-    technicalDetails: "Mistral AI's lightweight 3B parameter open source model",
-  },
-  {
-    id: "gemini-1.5-pro",
-    name: "Gemini 1.5 Pro",
-    description: "Multimodal with huge 2M token context for deep analysis.",
-    available: true,
-    isOpenSource: false,
-    category: "Advanced",
-    capabilities: ["Smart", "Creative", "Balanced"],
-    technicalDetails:
-      "Google's flagship model with 2 million token context window and multimodal capabilities",
-  },
-  {
-    id: "gemini-1.5-flash",
-    name: "Gemini 1.5 Flash",
-    description: "Fast multimodal with 1M token context for efficiency.",
-    available: true,
-    isOpenSource: false,
-    category: "Beginner",
-    capabilities: ["Fast", "Balanced"],
-    technicalDetails:
-      "Google's efficient model optimized for speed with 1 million token context window",
-  },
-  {
-    id: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-    name: "Meta Llama 3.3 70B Instruct Turbo",
-    description: "Balanced, open-source for advanced language tasks.",
-    available: true,
-    isOpenSource: true,
-    category: "Advanced",
-    capabilities: ["Smart", "Balanced"],
-    technicalDetails: "Meta's 8B parameter open source model",
-  },
-  {
-    id: "deepseek-ai/DeepSeek-V3",
-    name: "DeepSeek V3",
-    description: "Balanced, open-source for advanced language tasks.",
-    available: true,
-    isOpenSource: true,
-    category: "Advanced",
-    capabilities: ["Smart", "Balanced"],
-    technicalDetails: "DeepSeek's 7B parameter open source model",
-  },
-];
+export const complexityToCapabilities: Record<string, ModelCapability[]> = {
+  simple: ["Fast", "Balanced"],
+  medium: ["Balanced", "Smart"],
+  complex: ["Smart", "Creative"],
+  realtime: ["Realtime"],
+};
 
 type SelectedModelState = {
   selectedModel: AIModel;
+  isAutoMode: boolean;
   setSelectedModel: (model: AIModel) => void;
+  setAutoMode: (isAuto: boolean) => void;
+  getModelForQuery: (query: string) => AIModel;
 };
 
 const ensureModelProperties = (model: AIModel): AIModel => {
@@ -123,17 +28,128 @@ const ensureModelProperties = (model: AIModel): AIModel => {
   return models[0];
 };
 
+const analyzeQueryComplexity = (query: string): string => {
+  const queryLower = query.toLowerCase();
+
+  if (
+    queryLower.includes("latest") ||
+    queryLower.includes("current") ||
+    queryLower.includes("today") ||
+    queryLower.includes("news") ||
+    queryLower.includes("recent")
+  ) {
+    return "realtime";
+  }
+
+  const complexIndicators = [
+    "explain in detail",
+    "analyze",
+    "compare",
+    "why does",
+    "how would",
+    "implement",
+    "design",
+    "architecture",
+    "complex",
+    "difficult",
+    "advanced",
+    "research",
+    "theory",
+    "proof",
+    "creative",
+    "innovative",
+  ];
+
+  const mediumIndicators = [
+    "describe",
+    "explain",
+    "what is",
+    "how to",
+    "define",
+    "summarize",
+    "outline",
+    "guide",
+  ];
+
+  const complexCount = complexIndicators.filter((indicator) =>
+    queryLower.includes(indicator)
+  ).length;
+
+  const mediumCount = mediumIndicators.filter((indicator) =>
+    queryLower.includes(indicator)
+  ).length;
+
+  if (complexCount > 0 || query.length > 200) {
+    return "complex";
+  } else if (mediumCount > 0 || query.length > 100) {
+    return "medium";
+  }
+
+  return "simple";
+};
+
+const selectModelForComplexity = (complexity: string): AIModel => {
+  const requiredCapabilities =
+    complexityToCapabilities[complexity] || complexityToCapabilities.simple;
+
+  const candidateModels = models.filter(
+    (model) =>
+      model.available &&
+      requiredCapabilities.some((cap) => model.capabilities.includes(cap))
+  );
+
+  if (candidateModels.length === 0) {
+    return models[0];
+  }
+
+  if (complexity === "complex") {
+    const advancedModels = candidateModels.filter(
+      (m) => m.category === "Advanced"
+    );
+    if (advancedModels.length > 0) {
+      return advancedModels[0];
+    }
+  }
+
+  if (complexity === "realtime") {
+    const realtimeModels = candidateModels.filter((m) =>
+      m.capabilities.includes("Realtime")
+    );
+    if (realtimeModels.length > 0) {
+      return realtimeModels[0];
+    }
+  }
+
+  if (complexity === "simple") {
+    const beginnerModels = candidateModels.filter(
+      (m) => m.category === "Beginner"
+    );
+    if (beginnerModels.length > 0) {
+      return beginnerModels[0];
+    }
+  }
+
+  return candidateModels[0];
+};
+
 export const useSelectedModelStore = create<SelectedModelState>()(
   persist(
     (set) => ({
       selectedModel: models[0],
+      isAutoMode: true,
       setSelectedModel: (model) => set({ selectedModel: model }),
+      setAutoMode: (isAuto) => set({ isAutoMode: isAuto }),
+      getModelForQuery: (query) => {
+        const complexity = analyzeQueryComplexity(query);
+        return selectModelForComplexity(complexity);
+      },
     }),
     {
       name: "selected-model-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         selectedModel: ensureModelProperties(state.selectedModel),
+        isAutoMode: state.isAutoMode,
       }),
     }
   )
