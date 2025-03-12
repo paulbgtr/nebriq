@@ -9,7 +9,8 @@ export type ModelId =
   | "gemini-1.5-flash"
   | "meta-llama/Llama-3.3-70B-Instruct-Turbo"
   | "deepseek-ai/DeepSeek-V3"
-  | "claude-3-5-sonnet-20240620";
+  | "claude-3-5-sonnet-20240620"
+  | "deepseek-ai/DeepSeek-R1";
 
 export type ModelCategory = "Beginner" | "Advanced" | "Specialized";
 

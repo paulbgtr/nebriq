@@ -114,4 +114,14 @@ export const models: AIModel[] = [
     capabilities: ["Smart", "Balanced"],
     technicalDetails: "Anthropic's 100B parameter model",
   },
+  {
+    id: "deepseek-ai/DeepSeek-R1",
+    name: "DeepSeek R1",
+    description: "Deep thinking, deep reasoning, deep understanding.",
+    available: true,
+    isOpenSource: true,
+    category: "Specialized",
+    capabilities: ["Smart", "Balanced"],
+    technicalDetails: "DeepSeek's 7B parameter open source model",
+  },
 ];
