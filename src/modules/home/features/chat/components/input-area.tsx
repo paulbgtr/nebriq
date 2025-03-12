@@ -436,11 +436,6 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
               </div>
             </div>
           </form>
-          <AnimatePresence>
-            {isEmpty && (
-              <QueryExamples onSelect={(query) => setFollowUp(query)} />
-            )}
-          </AnimatePresence>
         </div>
       </div>
     );
