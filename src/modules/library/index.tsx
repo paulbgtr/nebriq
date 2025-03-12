@@ -9,7 +9,6 @@ import {
   FolderIcon,
   Plus,
   Network,
-  Sparkles,
   BookMarked,
   Library,
   Compass,
@@ -29,6 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import Link from "next/link";
 
 export default function LibraryModule() {
   const { getNotesQuery, deleteNotesMutation } = useNotes();
@@ -157,8 +157,10 @@ export default function LibraryModule() {
             size="lg"
             className="bg-primary/90 hover:bg-primary transition-colors duration-300 shadow-sm group"
           >
-            <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-            <span>Create Your First Note</span>
+            <Link href="/write">
+              <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+              <span>Create Your First Note</span>
+            </Link>
           </Button>
         </div>
       </motion.div>
