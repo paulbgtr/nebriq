@@ -7,6 +7,7 @@ import { ModelId } from "@/types/ai-model";
 import { ChatMistralAI } from "@langchain/mistralai";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
+import { ChatAnthropic } from "@langchain/anthropic";
 
 export const handleTokenLimits = async (
   userId: string,
@@ -76,6 +77,9 @@ export const getCompletion = async (prompt: string, modelId: ModelId) => {
     return (await llm.invoke(prompt)).content;
   } else if (llmname === "meta" || llmname === "deepseek") {
     llm = new ChatTogetherAI({ model });
+    return (await llm.invoke(prompt)).content;
+  } else if (llmname === "claude") {
+    llm = new ChatAnthropic({ model });
     return (await llm.invoke(prompt)).content;
   }
 };
