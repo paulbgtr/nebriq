@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 import { ChatContext } from "@/types/chat";
-import { StickyNote, Sparkles, Brain, ChevronRight } from "lucide-react";
+import { StickyNote, Brain, ChevronRight } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { MessageActions } from "./message-actions";
 import { LoadingIndicator } from "./loading-indicator";
@@ -20,7 +20,6 @@ import {
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
 import { InlineMath, BlockMath } from "react-katex";
-import { models } from "@/shared/data/models";
 import {
   Collapsible,
   CollapsibleContent,
@@ -248,11 +247,6 @@ const MessageBubble = ({
     setMounted(true);
   }, []);
 
-  const modelDetails = message.modelId
-    ? models.find((m) => m.id === message.modelId)
-    : null;
-
-  // Extract thinking process if it exists
   const extractThinking = (
     text: string
   ): { thinking: string | null; content: string } => {

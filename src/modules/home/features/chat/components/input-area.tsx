@@ -33,7 +33,6 @@ import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { ModelSelector } from "./model-selector";
 import { useUser } from "@/shared/hooks/use-user";
-import { QueryExamples } from "./query-examples";
 
 export interface InputAreaHandle {
   focusInput: () => void;
