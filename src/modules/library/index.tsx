@@ -143,22 +143,6 @@ export default function LibraryModule() {
             <div className="w-24 h-24 rounded-full bg-background/80 border border-primary/20 mx-auto flex items-center justify-center">
               <BookMarked className="h-12 w-12 text-primary/70 mx-auto" />
             </div>
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              animate={{
-                opacity: [0.4, 1, 0.4],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="w-24 h-24 rounded-full border border-primary/10 flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-primary/30 absolute top-3 right-3" />
-              </div>
-            </motion.div>
           </motion.div>
           <div className="space-y-3">
             <h3 className="text-2xl font-bold text-foreground/90">
