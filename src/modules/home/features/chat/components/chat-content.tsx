@@ -1,12 +1,12 @@
 import "katex/dist/katex.min.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 import { ChatContext } from "@/types/chat";
-import { StickyNote } from "lucide-react";
+import { StickyNote, Sparkles, Brain, ChevronRight } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { MessageActions } from "./message-actions";
 import { LoadingIndicator } from "./loading-indicator";
@@ -20,8 +20,12 @@ import {
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
 import { InlineMath, BlockMath } from "react-katex";
-import { Sparkles } from "lucide-react";
 import { models } from "@/shared/data/models";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/shared/components/ui/collapsible";
 
 type ChatContentProps = {
   scrollContainerRef: React.RefObject<HTMLDivElement>;
@@ -64,8 +68,8 @@ export const ChatContent = ({
           "opacity-0 pointer-events-none absolute"
       )}
     >
-      <div className="h-full px-4 sm:px-6 lg:px-8 pb-4">
-        <div className="space-y-4 max-w-3xl mx-auto py-4">
+      <div className="h-full px-2 sm:px-4 lg:px-6 pb-4 max-w-3xl mx-auto">
+        <div className="space-y-8 py-6">
           {chatContext.conversationHistory.map((message, index) => (
             <div
               key={index}
@@ -74,7 +78,8 @@ export const ChatContent = ({
                 message.role === "user"
                   ? "flex justify-end"
                   : "flex justify-start",
-                mounted && "animate-in fade-in-0 slide-in-from-bottom-2"
+                mounted &&
+                  "animate-in fade-in-0 slide-in-from-bottom-1 duration-300"
               )}
               style={!mounted ? { opacity: 0 } : undefined}
             >
@@ -102,26 +107,25 @@ const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
   };
 
   return (
-    <div className={cn("absolute -top-4", isAttached ? "-left-5" : "left-0")}>
+    <div className="mb-1.5">
       <Popover>
         <PopoverTrigger asChild>
           <button
             className={cn(
-              "group flex items-center gap-1.5 px-2 py-1",
+              "group flex items-center gap-1 px-1.5 py-0.5",
               "rounded-full",
-              "text-xs",
+              "text-[10px]",
               "shadow-sm",
-              "border",
-              "transition-all duration-200",
+              "transition-all duration-200 ease-in-out",
               isAttached
-                ? "bg-primary/10 hover:bg-primary/15 border-primary/20 text-primary/70"
-                : "bg-secondary/10 hover:bg-secondary/15 border-secondary/20 text-secondary-foreground/70"
+                ? "bg-primary/5 hover:bg-primary/10 text-primary/60 hover:text-primary/80 border border-primary/10"
+                : "bg-secondary/5 hover:bg-secondary/10 text-secondary-foreground/60 hover:text-secondary-foreground/80 border border-secondary/10"
             )}
           >
             <StickyNote
               className={cn(
-                "w-3 h-3",
-                isAttached ? "text-primary/70" : "text-secondary-foreground/70"
+                "w-2.5 h-2.5",
+                isAttached ? "text-primary/60" : "text-secondary-foreground/60"
               )}
             />
             <span className="font-medium">
@@ -135,10 +139,10 @@ const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="p-2 flex flex-col gap-1 rounded-lg shadow-md border border-border/30 bg-background/95 backdrop-blur-sm"
+          className="p-2 flex flex-col gap-1 rounded-lg shadow-md border border-border/20 bg-background/95 backdrop-blur-sm"
           sideOffset={5}
         >
-          <div className="text-xs font-medium text-muted-foreground mb-1 px-1">
+          <div className="text-xs font-medium text-muted-foreground/80 mb-1 px-1">
             {isAttached ? "Attached Notes" : "Referenced Sources"}
           </div>
           {notes.map((note) => (
@@ -147,7 +151,7 @@ const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
               onClick={() => handleNoteClick(note.id)}
               className={cn(
                 "w-full text-left",
-                "transition-colors duration-200 hover:bg-muted/50",
+                "transition-colors duration-200 hover:bg-muted/40",
                 "flex flex-col gap-0.5",
                 "p-2",
                 "rounded-md"
@@ -157,7 +161,7 @@ const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
                 {note.title || "Untitled"}
               </h5>
               <div className="text-[10px] text-muted-foreground/60 flex items-center gap-1">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/40"></span>
+                <span className="inline-block w-1 h-1 rounded-full bg-muted-foreground/30"></span>
                 {formatDate(note.created_at)}
               </div>
             </button>
@@ -168,12 +172,77 @@ const NoteStack = ({ notes, isAttached = false }: NoteStackProps) => {
   );
 };
 
+type ThinkingProcessProps = {
+  content: string;
+};
+
+const ThinkingProcess = ({ content }: ThinkingProcessProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!content) return null;
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-2 w-fit">
+      <CollapsibleTrigger className="group flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-secondary/5 hover:bg-secondary/10 text-secondary-foreground/60 hover:text-secondary-foreground/80 transition-all duration-200 ease-in-out border border-secondary/10">
+        <Brain className="w-2.5 h-2.5 text-secondary-foreground/60" />
+        <span className="font-medium">read my mind</span>
+        <ChevronRight
+          className={cn(
+            "w-2.5 h-2.5 text-secondary-foreground/60 transition-transform duration-200",
+            isOpen && "transform rotate-90"
+          )}
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-1.5 overflow-hidden text-[12px] px-3 py-2 rounded-md bg-secondary/5 border border-secondary/10 text-secondary-foreground/70">
+        <div className="prose-xs max-w-none">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              code({ className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || "");
+                return match ? (
+                  <SyntaxHighlighter
+                    style={vscDarkPlus}
+                    language={match[1]}
+                    PreTag="div"
+                    className="rounded-md text-[12px] my-2 !bg-black/80"
+                  >
+                    {String(children).replace(/\n$/, "")}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code
+                    className={cn(
+                      "px-1 py-0.5 rounded bg-muted/40 text-foreground/90 font-mono text-[85%]",
+                      className
+                    )}
+                    {...props}
+                  >
+                    {children}
+                  </code>
+                );
+              },
+              p({ children }) {
+                return (
+                  <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>
+                );
+              },
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
+
 const MessageBubble = ({
   message,
   displayedText,
   chatContext,
 }: MessageProps & Pick<ChatContentProps, "displayedText" | "chatContext">) => {
   const [mounted, setMounted] = useState(false);
+  const messageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -182,6 +251,40 @@ const MessageBubble = ({
   const modelDetails = message.modelId
     ? models.find((m) => m.id === message.modelId)
     : null;
+
+  // Extract thinking process if it exists
+  const extractThinking = (
+    text: string
+  ): { thinking: string | null; content: string } => {
+    const thinkRegex = /<think>([\s\S]*?)<\/think>/;
+    const match = text.match(thinkRegex);
+
+    if (match) {
+      const thinking = match[1].trim();
+      const content = text.replace(thinkRegex, "").trim();
+      return { thinking, content };
+    }
+
+    return { thinking: null, content: text };
+  };
+
+  // Process the message
+  const processMessageContent = () => {
+    const text =
+      message.role === "assistant" &&
+      message ===
+        chatContext.conversationHistory
+          .filter((m) => m.role === "assistant")
+          .slice(-1)[0]
+        ? mounted
+          ? displayedText
+          : message.content
+        : message.content;
+
+    return extractThinking(text);
+  };
+
+  const { thinking, content } = processMessageContent();
 
   const processText = (text: string) => {
     const blocks = text.split(/(\\[[\s\S]*?\\]|\\\([\s\S]*?\\\))/g);
@@ -205,13 +308,97 @@ const MessageBubble = ({
                   style={vscDarkPlus}
                   language={match[1]}
                   PreTag="div"
+                  className="rounded-md text-[13px] my-3 !bg-black/80"
                 >
                   {String(children).replace(/\n$/, "")}
                 </SyntaxHighlighter>
               ) : (
-                <code className={className} {...props}>
+                <code
+                  className={cn(
+                    "px-1.5 py-0.5 rounded bg-muted/40 text-foreground/90 font-mono text-[85%]",
+                    className
+                  )}
+                  {...props}
+                >
                   {children}
                 </code>
+              );
+            },
+            p({ children }) {
+              return (
+                <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>
+              );
+            },
+            ul({ children }) {
+              return (
+                <ul className="mb-3 last:mb-0 pl-6 space-y-1">{children}</ul>
+              );
+            },
+            ol({ children }) {
+              return (
+                <ol className="mb-3 last:mb-0 pl-6 space-y-1">{children}</ol>
+              );
+            },
+            li({ children }) {
+              return (
+                <li className="marker:text-muted-foreground/70">{children}</li>
+              );
+            },
+            h1({ children }) {
+              return (
+                <h1 className="text-xl font-semibold mt-5 mb-2">{children}</h1>
+              );
+            },
+            h2({ children }) {
+              return (
+                <h2 className="text-lg font-semibold mt-4 mb-2">{children}</h2>
+              );
+            },
+            h3({ children }) {
+              return (
+                <h3 className="text-base font-semibold mt-3 mb-1.5">
+                  {children}
+                </h3>
+              );
+            },
+            blockquote({ children }) {
+              return (
+                <blockquote className="border-l-2 border-muted pl-3 italic text-muted-foreground/80 my-2">
+                  {children}
+                </blockquote>
+              );
+            },
+            a({ children, href }) {
+              return (
+                <a
+                  href={href}
+                  className="text-primary hover:underline transition-all duration-200"
+                >
+                  {children}
+                </a>
+              );
+            },
+            table({ children }) {
+              return (
+                <div className="overflow-x-auto mb-3">
+                  <table className="min-w-full border-collapse text-sm">
+                    {children}
+                  </table>
+                </div>
+              );
+            },
+            th({ children }) {
+              return (
+                <th className="border border-border/20 px-2 py-1 text-left font-medium bg-muted/20">
+                  {children}
+                </th>
+              );
+            },
+            td({ children }) {
+              return (
+                <td className="border border-border/20 px-2 py-1">
+                  {children}
+                </td>
               );
             },
           }}
@@ -222,24 +409,12 @@ const MessageBubble = ({
     });
   };
 
-  const hasNotes =
-    (message.role === "assistant" && message.relevantNotes?.length) ||
-    (message.role === "user" && message.attachedNotes?.length);
-
   return (
-    <div>
-      <div
-        className={cn(
-          "relative p-1 text-sm",
-          mounted && "transition-all duration-200 ease-out",
-          message.role === "user"
-            ? "bg-muted/30 border-none rounded-2xl rounded-tr-sm"
-            : "bg-transparent border-0",
-          message.role === "user" ? "ml-12" : "mr-4",
-          hasNotes ? "mt-5" : message.role === "assistant" ? "mt-1" : "mt-0"
-        )}
-        style={!mounted ? { opacity: 0 } : undefined}
-      >
+    <div
+      ref={messageRef}
+      className={message.role === "user" ? "ml-auto" : "mr-auto"}
+    >
+      <div className="flex gap-3">
         {mounted &&
           message.role === "assistant" &&
           message.relevantNotes &&
@@ -252,30 +427,36 @@ const MessageBubble = ({
           message.attachedNotes.length > 0 && (
             <NoteStack notes={message.attachedNotes} isAttached={true} />
           )}
+
+        {/* Thinking process for assistant messages */}
+        {mounted && message.role === "assistant" && thinking && (
+          <ThinkingProcess content={thinking} />
+        )}
+      </div>
+      <div
+        className={cn(
+          "relative",
+          mounted && "transition-all duration-200 ease-out",
+          message.role === "user"
+            ? "bg-muted/20 rounded-2xl rounded-tr-sm"
+            : "bg-transparent" // No background for assistant messages
+        )}
+        style={!mounted ? { opacity: 0 } : undefined}
+      >
         <div
           className={cn(
-            "py-3 px-4 max-w-none",
-            message.role === "user" ? "prose-sm" : "prose-base",
+            "px-4 py-3",
+            message.role === "user" ? "text-[14px]" : "text-[15px]",
             message.role === "assistant"
-              ? "text-foreground/90 leading-relaxed"
-              : "text-foreground/80"
+              ? "text-foreground/90 font-normal"
+              : "text-foreground/85"
           )}
         >
-          {processText(
-            message.role === "assistant" &&
-              message ===
-                chatContext.conversationHistory
-                  .filter((m) => m.role === "assistant")
-                  .slice(-1)[0]
-              ? mounted
-                ? displayedText
-                : message.content
-              : message.content
-          )}
+          <div className="prose-sm max-w-none">{processText(content)}</div>
 
           {/* Model indicator for assistant messages */}
           {mounted && message.role === "assistant" && modelDetails && (
-            <div className="flex items-center justify-start gap-1 mt-2 pt-1 border-t border-border/10 opacity-60 hover:opacity-100 transition-opacity">
+            <div className="flex items-center justify-start gap-1 mt-3 pt-1 border-t border-border/5 opacity-40 hover:opacity-100 transition-opacity duration-300">
               <Popover>
                 <PopoverTrigger asChild>
                   <button className="flex items-center gap-1 text-[8px] hover:text-muted-foreground/70 transition-colors group">
@@ -306,7 +487,7 @@ const MessageBubble = ({
                 <PopoverContent
                   side="top"
                   align="end"
-                  className="w-56 p-2 rounded-lg text-xs shadow-md border border-border/30 bg-background/95 backdrop-blur-sm"
+                  className="w-56 p-2 rounded-lg text-xs shadow-md border border-border/20 bg-background/95 backdrop-blur-sm"
                 >
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
@@ -331,7 +512,7 @@ const MessageBubble = ({
                       {modelDetails.capabilities?.map((capability) => (
                         <span
                           key={capability}
-                          className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-muted/50 text-[8px]"
+                          className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-muted/30 text-[8px]"
                         >
                           {capability}
                         </span>
@@ -349,7 +530,16 @@ const MessageBubble = ({
           )}
         </div>
       </div>
-      {mounted && <MessageActions message={message} />}
+      {mounted && (
+        <div
+          className={cn(
+            "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+            message.role === "user" ? "text-right" : "text-left"
+          )}
+        >
+          <MessageActions message={message} />
+        </div>
+      )}
     </div>
   );
 };
