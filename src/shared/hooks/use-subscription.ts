@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/shared/lib/supabase/client";
 import { useUser } from "./use-user";
 
-export const useSubscription = () => {
+export const useSubscription = async () => {
   const { user } = useUser();
 
   const { data: subscription, isPending } = useQuery({
@@ -25,11 +25,13 @@ export const useSubscription = () => {
     enabled: !!user?.id,
   });
 
-  const isPro = subscription?.tier === "pro";
+  const isPro =
+    subscription?.tier === "pro" && subscription?.status === "active";
 
   return {
     subscription,
     isPending,
     isPro,
+    tier: subscription?.tier,
   };
 };
