@@ -1,9 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/shared/lib/supabase/client";
 import { useUser } from "./use-user";
+import { useState, useEffect } from "react";
 
-export const useSubscription = async () => {
+export type SubscriptionTier = "personal" | "pro" | null;
+
+export const useSubscription = () => {
   const { user } = useUser();
+  const [tier, setTier] = useState<SubscriptionTier>(null);
+  const [isFree, setIsFree] = useState(false);
 
   const { data: subscription, isPending } = useQuery({
     queryKey: ["subscription", user?.id],
@@ -25,13 +30,37 @@ export const useSubscription = async () => {
     enabled: !!user?.id,
   });
 
-  const isPro =
-    subscription?.tier === "pro" && subscription?.status === "active";
+  useEffect(() => {
+    if (isPending) return;
+
+    if (subscription?.status === "active") {
+      if (subscription.tier === "pro") {
+        setTier("pro");
+      } else if (subscription.tier === "personal") {
+        setTier("personal");
+      } else {
+        setTier(null);
+      }
+    } else {
+      setTier(null);
+    }
+  }, [isPending, subscription]);
+
+  const isSubscriptionActive = subscription?.status === "active";
+
+  useEffect(() => {
+    if (!isPending && !isSubscriptionActive) {
+      setIsFree(true);
+    }
+  }, [isPending, isSubscriptionActive]);
 
   return {
     subscription,
     isPending,
-    isPro,
-    tier: subscription?.tier,
+    tier,
+    isPro: tier === "pro",
+    isPersonal: tier === "personal",
+    isFree,
+    isSubscriptionActive,
   };
 };

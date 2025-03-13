@@ -34,7 +34,7 @@ import {
 
 export default function LibraryModule() {
   const { getNotesQuery, deleteNotesMutation } = useNotes();
-  const { isPro } = useSubscription();
+  const { isFree } = useSubscription();
   const { data: notes, isPending } = getNotesQuery;
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState<string[]>([]);
@@ -171,7 +171,7 @@ export default function LibraryModule() {
               Start your journey by creating your first note. Organize your
               thoughts, ideas, and inspirations in one place.
             </p>
-            {!isPro && (
+            {isFree && (
               <p className="text-xs text-muted-foreground/60 italic max-w-md mx-auto">
                 Free plan includes up to 50 notes.
                 <span className="text-amber-500/80 ml-1 font-medium">
@@ -254,7 +254,7 @@ export default function LibraryModule() {
                       </>
                     )}
                   </p>
-                  {!isPro && (
+                  {isFree && (
                     <div className="text-xs flex items-center gap-1.5 text-muted-foreground/70">
                       <div
                         className={`h-1.5 w-1.5 rounded-full ${

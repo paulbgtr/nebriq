@@ -28,7 +28,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
-  const { isPro } = useSubscription();
+  const { isPro, isPersonal } = useSubscription();
 
   const {
     id,
@@ -485,7 +485,7 @@ export function Editor({ initialNoteId }: { initialNoteId: string | null }) {
         </div>
       </div>
 
-      {isPro ? (
+      {isPro || isPersonal ? (
         <NoteDiscovery
           notes={discoveredNotes}
           isOpen={isDiscoveryOpen}

@@ -5,6 +5,5 @@ if (!process.env.POLAR_ACCESS_TOKEN) {
 }
 
 export const polar = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN,
-  server: "sandbox", // Use this option if you're using the sandbox environment - else use 'production' or omit the parameter
+  accessToken: "polar_oat_FMTTLU0bdT38mSSt17CsfatvmiFvPSk0xhDm3351JUW",
 });

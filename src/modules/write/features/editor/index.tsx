@@ -19,16 +19,18 @@ import { Button } from "@/shared/components/ui/button";
 export default function Write() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const { isPro } = useSubscription();
+  const { isFree, isPending } = useSubscription();
   const { getNotesQuery } = useNotes();
   const { data: notes } = getNotesQuery;
   const [showLimitDialog, setShowLimitDialog] = useState(false);
 
   useEffect(() => {
-    if (!id && !isPro && notes && notes.length >= 50) {
+    if (isPending) return;
+
+    if (!id && isFree && notes && notes.length >= 50) {
       setShowLimitDialog(true);
     }
-  }, [id, isPro, notes]);
+  }, [id, isFree, notes]);
 
   const handleUpgrade = () => {
     window.location.href = "/subscription";
@@ -44,8 +46,8 @@ export default function Write() {
               Note Limit Reached
             </DialogTitle>
             <DialogDescription>
-              You've reached the 50 note limit on the free plan. Upgrade to Pro
-              for unlimited notes and premium features.
+              You&apos;ve reached the 50 note limit on the free plan. Upgrade to
+              Pro for unlimited notes and premium features.
             </DialogDescription>
           </DialogHeader>
           <div className="p-4 bg-muted/30 rounded-lg border border-border">

@@ -12,13 +12,7 @@ import {
   Shield,
   Trash2,
   Clock,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
-  Flame,
-  CheckCircle2,
 } from "lucide-react";
-import { useState, useEffect } from "react";
 import { useSubscription } from "../hooks/use-subscription";
 
 import {
@@ -59,23 +53,7 @@ export function AppSidebar() {
   const { user } = useUser();
   const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
     useChatHistoryStore();
-  const [showProFeatures, setShowProFeatures] = useState(false);
-  const subscription = useSubscription();
-  const [isPro, setIsPro] = useState(false);
-
-  useEffect(() => {
-    const fetchSubscription = async () => {
-      try {
-        const data = await subscription;
-        setIsPro(data?.isPro || false);
-      } catch (error) {
-        console.error("Error fetching subscription:", error);
-        setIsPro(false);
-      }
-    };
-
-    fetchSubscription();
-  }, [subscription]);
+  const { isPro, isPending } = useSubscription();
 
   const handleChatClick = (id: string) => {
     setActiveChatId(id);
@@ -102,25 +80,6 @@ export function AppSidebar() {
       }, 100);
     }
   };
-
-  const proFeatures = [
-    {
-      title: "Deep Semantic Search",
-      description: "Find exactly what you need with advanced contextual search",
-    },
-    {
-      title: "Advanced Models",
-      description: "Access to our most powerful language models",
-    },
-    {
-      title: "Note Connections",
-      description: "Discover relationships between your notes automatically",
-    },
-    {
-      title: "Unlimited Usage",
-      description: "No restrictions on usage or message limits",
-    },
-  ];
 
   return (
     <Sidebar className="border-r border-border/40">
@@ -244,7 +203,7 @@ export function AppSidebar() {
         </div>
 
         <div className="mt-auto">
-          {!isPro && (
+          {!isPro && !isPending && (
             <>
               <div className="px-4 py-2">
                 <div className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-primary/20 p-3 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5">

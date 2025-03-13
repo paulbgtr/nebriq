@@ -40,8 +40,9 @@ export const POST = Webhooks({
       return;
     }
 
-    // const tier = productName.split(" ")[1].toLowerCase();
-    const tier = productName;
+    const tier = productName.split(" ")[1].toLowerCase();
+
+    console.log(payload.type);
 
     switch (payload.type) {
       case "subscription.created":
@@ -59,6 +60,15 @@ export const POST = Webhooks({
         }
 
         break;
+
+      case "subscription.active":
+        await supabase
+          .from("subscriptions")
+          .update({ status: "active" })
+          .eq("user_id", userData.user.id);
+
+        break;
+
       case "subscription.updated":
         await supabase
           .from("subscriptions")
