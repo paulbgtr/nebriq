@@ -18,7 +18,7 @@ import {
   Flame,
   CheckCircle2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSubscription } from "../hooks/use-subscription";
 
 import {
@@ -60,7 +60,22 @@ export function AppSidebar() {
   const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
     useChatHistoryStore();
   const [showProFeatures, setShowProFeatures] = useState(false);
-  const { isPro } = useSubscription();
+  const subscription = useSubscription();
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const data = await subscription;
+        setIsPro(data?.isPro || false);
+      } catch (error) {
+        console.error("Error fetching subscription:", error);
+        setIsPro(false);
+      }
+    };
+
+    fetchSubscription();
+  }, [subscription]);
 
   const handleChatClick = (id: string) => {
     setActiveChatId(id);
@@ -130,98 +145,6 @@ export function AppSidebar() {
             </Button>
           </div>
 
-          {!isPro && (
-            <div className="px-4 py-3">
-              <div className="relative overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-primary/15 hover:from-primary/15 hover:via-primary/10 hover:to-primary/20 transition-all duration-300 shadow-sm">
-                {/* Animated flame background */}
-                <div
-                  className="absolute inset-0 opacity-5 bg-repeat-x bg-[length:12px_12px] animate-[pulse_4s_ease-in-out_infinite]"
-                  style={{
-                    backgroundImage:
-                      "url(\"data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 0C6 0 7 3 7 5C7 6.5 5.5 7 5.5 9C5.5 10.5 6.5 12 6.5 12C6.5 12 4 11 3 9C2 7 3 5 4 3.5C5 2 6 0 6 0Z' fill='%23ff4500'/%3E%3C/svg%3E\")",
-                  }}
-                ></div>
-
-                {/* Pro badge with better positioning and style */}
-                <div className="absolute -right-8 -top-8 rotate-45">
-                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-10 py-1 shadow-md flex items-center justify-center">
-                    <Flame className="w-3 h-3 mr-1 animate-[pulse_2s_ease-in-out_infinite]" />
-                    PRO
-                  </div>
-                </div>
-
-                <div className="p-3.5">
-                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-orange-500" />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-500">
-                      Upgrade to Pro
-                    </span>
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1 mb-2">
-                    Unlock premium features today for maximum productivity
-                  </p>
-
-                  {/* View features button */}
-                  {!showProFeatures && (
-                    <button
-                      onClick={() => setShowProFeatures(true)}
-                      className="text-xs text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1 mb-3 transition-colors"
-                    >
-                      <span>View all features</span>
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
-                  )}
-
-                  {showProFeatures && (
-                    <div className="space-y-2 mb-3 bg-background/70 rounded-md p-2.5 border border-primary/10 transition-all duration-200 opacity-100">
-                      {proFeatures.map((feature, index) => (
-                        <div key={index} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3 h-3 text-orange-500 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs font-medium">
-                              {feature.title}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {feature.description}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="w-full text-xs font-medium bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-md animate-[pulse_5s_ease-in-out_infinite]"
-                      asChild
-                    >
-                      <Link href="/subscription">Upgrade Now</Link>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowProFeatures(!showProFeatures);
-                      }}
-                    >
-                      {showProFeatures ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                      <span className="sr-only">
-                        {showProFeatures ? "Hide" : "Show"} Pro Features
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           {/* Main Navigation */}
           <SidebarGroup>
             <SidebarGroupLabel className="text-xs font-medium text-muted-foreground/80">
@@ -321,7 +244,36 @@ export function AppSidebar() {
         </div>
 
         <div className="mt-auto">
-          <SidebarSeparator className="my-2 opacity-40" />
+          {!isPro && (
+            <>
+              <div className="px-4 py-2">
+                <div className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-primary/20 p-3 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary-rgb),0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                  <div className="flex flex-col gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-medium text-foreground mb-0.5">
+                        Upgrade to Pro
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        Unlock unlimited usage and advanced features
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => router.push("/subscription")}
+                      size="sm"
+                      variant="default"
+                      className="flex-shrink-0 px-2.5 py-1 h-auto text-xs bg-primary/90 hover:bg-primary text-primary-foreground shadow-sm shadow-primary/20 group-hover:shadow-md transition-all duration-200"
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <SidebarSeparator className="my-2 opacity-40" />
+            </>
+          )}
+
           <div className="px-4 py-2">
             <FeedbackPopover>
               <Button
