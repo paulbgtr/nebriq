@@ -12,7 +12,6 @@ import {
   Shield,
   Trash2,
   Clock,
-  Camera,
 } from "lucide-react";
 import { useSubscription } from "@/shared/hooks/use-subscription";
 import { Snap } from "./snap";
