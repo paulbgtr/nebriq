@@ -18,11 +18,10 @@ import {
   Image as ImageIcon,
   X,
   SparkleIcon,
-  Lightbulb,
-  PencilLine,
   Repeat,
 } from "lucide-react";
 import { useSubscription } from "../hooks/use-subscription";
+import { transcribe } from "@/app/actions/llm/transcribe";
 
 import {
   Sidebar,
@@ -87,22 +86,6 @@ export function AppSidebar() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [generatedNotes, setGeneratedNotes] = useState("");
 
-  // Dummy data for demonstration
-  const dummyNotesContent = `# Meeting Notes
-
-## Key Points
-- Implement new feature for Q3 product roadmap
-- Increase user retention by 15% by end of quarter
-- Review design system consistency issues
-
-## Action Items
-- **John**: Create mockups for mobile layout
-- **Sarah**: Finalize API documentation
-- **Team**: Review analytics dashboard by Friday
-
-## Follow-up
-Schedule follow-up meeting next Tuesday at 2pm`;
-
   const handleChatClick = (id: string) => {
     setActiveChatId(id);
     if (pathname === "/home") {
@@ -144,13 +127,33 @@ Schedule follow-up meeting next Tuesday at 2pm`;
     }
   };
 
-  const handleTranslate = () => {
+  const handleTranslate = async () => {
     setIsProcessing(true);
-    // Simulate processing delay
-    setTimeout(() => {
-      setGeneratedNotes(dummyNotesContent);
+
+    try {
+      if (!uploadedImage) return;
+
+      // Extract base64 data from the data URL
+      const base64Data = uploadedImage.split(",")[1];
+
+      // Call the transcribe function with the base64 image data
+      const result = await transcribe(base64Data);
+
+      if (result) {
+        setGeneratedNotes(result);
+      } else {
+        setGeneratedNotes(
+          "Sorry, we couldn't process this image. Please try again with a clearer image."
+        );
+      }
+    } catch (error) {
+      console.error("Transcription error:", error);
+      setGeneratedNotes(
+        "An error occurred during transcription. Please try again."
+      );
+    } finally {
       setIsProcessing(false);
-    }, 1500);
+    }
   };
 
   const handleDialogClose = () => {
@@ -467,27 +470,6 @@ Schedule follow-up meeting next Tuesday at 2pm`;
                     </button>
                   </div>
 
-                  <div className="flex flex-col space-y-2">
-                    <div className="bg-muted/30 rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Lightbulb className="w-4 h-4 text-amber-500" />
-                          <span className="text-sm font-medium">Options</span>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 mt-3 gap-3">
-                        <div className="flex items-center gap-2 text-sm bg-background/70 rounded-md p-2 border border-border/40">
-                          <PencilLine className="w-4 h-4 text-primary/70" />
-                          <span>Notes</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm bg-background/70 rounded-md p-2 border-border/40 border text-muted-foreground">
-                          <SparkleIcon className="w-4 h-4" />
-                          <span>Summary</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                   <Button
                     className="w-full gap-2"
                     onClick={handleTranslate}
@@ -501,7 +483,7 @@ Schedule follow-up meeting next Tuesday at 2pm`;
                     ) : (
                       <>
                         <SparkleIcon className="w-4 h-4" />
-                        Translate to Notes
+                        Transcribe
                       </>
                     )}
                   </Button>
@@ -512,30 +494,10 @@ Schedule follow-up meeting next Tuesday at 2pm`;
             <TabsContent value="results" className="space-y-4">
               {generatedNotes ? (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-primary" />
-                      Generated Notes
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 gap-1.5 text-xs"
-                      >
-                        <PencilLine className="w-3 h-3" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 gap-1.5 text-xs"
-                      >
-                        <Repeat className="w-3 h-3" />
-                        Regenerate
-                      </Button>
-                    </div>
-                  </div>
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-primary" />
+                    Transcribed Note
+                  </h3>
 
                   <div className="border rounded-lg">
                     <ScrollArea className="h-[300px] rounded-md">
