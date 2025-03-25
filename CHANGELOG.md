@@ -1,5 +1,38 @@
 # Nebriq Changelog
 
+## [1.0.0] - 2025-03-25
+
+### Added ✨
+
+- Implement subscription management and upgrade prompts
+- Refactor Polar client initialization and update checkout access token
+- Add function to retrieve POLAR_TOKEN with error handling
+- Add payment success page and update checkout API
+- Refactor Pro features handling and subscription state management
+- Refactor subscription management into modular components
+- Implement Polar webhook handling for subscription events
+- Add Polar client initialization with access token validation
+- Enhance message rendering with thinking process and improved styling
+- Add DeepSeek R1 open-source model
+
+### Changed 🔄
+
+- Clean up imports and remove unused ModelIcon component
+- Update bun.lockb file permissions to executable
+- Remove debugging console logs for cleaner code
+- Clean up chat components by removing unused imports
+- Revamp chat prompt handling and model integration
+- Remove QueryExamples component and related functionality
+- Replace Zap icon with Gauge in ModelSelector component
+- Update New Chat button styling and functionality
+- Remove model indicator from message bubble
+- Remove gradient text styling from h1 headers
+
+### Fixed 🐛
+
+- Update subscription links across components
+- Improve list and text wrapping in prose styles
+
 ## [0.5.1-beta.1] - 2025-03-12
 
 ### Added ✨
