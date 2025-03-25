@@ -4,7 +4,9 @@ import { Sparkles } from "lucide-react";
 import { PricingFAQ } from "@/modules/subscription/features/components/pricing-faq";
 
 export default async function SubscriptionModule() {
-  const { result } = await polar.products.list({
+  const polarClient = await polar();
+
+  const { result } = await polarClient.products.list({
     isArchived: false,
   });
 
