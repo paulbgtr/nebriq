@@ -13,6 +13,7 @@ import {
   Trash2,
   Clock,
 } from "lucide-react";
+import { useSubscription } from "../hooks/use-subscription";
 
 import {
   Sidebar,
@@ -52,6 +53,7 @@ export function AppSidebar() {
   const { user } = useUser();
   const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
     useChatHistoryStore();
+  const { isPro, isPending } = useSubscription();
 
   const handleChatClick = (id: string) => {
     setActiveChatId(id);
@@ -201,7 +203,36 @@ export function AppSidebar() {
         </div>
 
         <div className="mt-auto">
-          <SidebarSeparator className="my-2 opacity-40" />
+          {!isPro && !isPending && (
+            <>
+              <div className="px-4 py-2">
+                <div className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-primary/20 p-3 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary-rgb),0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                  <div className="flex flex-col gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-medium text-foreground mb-0.5">
+                        Upgrade to Pro
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        Unlock unlimited usage and advanced features
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => router.push("/subscription")}
+                      size="sm"
+                      variant="default"
+                      className="flex-shrink-0 px-2.5 py-1 h-auto text-xs bg-primary/90 hover:bg-primary text-primary-foreground shadow-sm shadow-primary/20 group-hover:shadow-md transition-all duration-200"
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <SidebarSeparator className="my-2 opacity-40" />
+            </>
+          )}
+
           <div className="px-4 py-2">
             <FeedbackPopover>
               <Button
