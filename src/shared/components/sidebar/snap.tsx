@@ -24,6 +24,7 @@ import { useUser } from "@/shared/hooks/use-user";
 import { useSubscription } from "@/shared/hooks/use-subscription";
 import Link from "next/link";
 import { cn } from "@/shared/lib/utils";
+import Image from "next/image";
 
 export const Snap = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -235,10 +236,12 @@ export const Snap = () => {
                 ) : (
                   <div className="space-y-4">
                     <div className="relative group rounded-lg overflow-hidden border border-border/60 bg-muted/20">
-                      <img
+                      <Image
                         src={uploadedImage}
                         alt="Uploaded image"
                         className="w-full max-h-[300px] object-contain"
+                        width={1000}
+                        height={1000}
                       />
                       <button
                         onClick={() => setUploadedImage(null)}
