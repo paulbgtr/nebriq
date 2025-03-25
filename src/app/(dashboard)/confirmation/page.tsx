@@ -1,24 +1,13 @@
+"use client";
+
 import { Button } from "@/shared/components/ui/button";
 import { ArrowRight, Home } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function Page({
-  searchParamsPromise,
-}: {
-  searchParamsPromise: Promise<{ checkoutId: string }>;
-}) {
-  const [checkoutId, setCheckoutId] = useState<string | null>(null);
-
-  useEffect(() => {
-    searchParamsPromise.then((params) => {
-      setCheckoutId(params.checkoutId);
-    });
-  }, [searchParamsPromise]);
-
-  if (checkoutId === null) {
-    return <div>Loading...</div>;
-  }
+export default function ConfirmationPage() {
+  const searchParams = useSearchParams();
+  const checkoutId = searchParams.get("checkoutId");
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
