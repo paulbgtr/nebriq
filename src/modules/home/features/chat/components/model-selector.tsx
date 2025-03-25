@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Scale,
-  CalendarSearch,
-  Zap,
-  Brain,
-  Sparkles,
-  Info,
-  ChevronDown,
-  Check,
-  Lock,
-  Gauge,
-} from "lucide-react";
+import { Info, ChevronDown, Check, Lock, Gauge } from "lucide-react";
 import {
   OpenAI,
   Mistral,
@@ -38,7 +27,7 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { Switch } from "@/shared/components/ui/switch";
 import { useSelectedModelStore } from "@/store/selected-model";
-import { AIModel, ModelCapability } from "@/types/ai-model";
+import { AIModel } from "@/types/ai-model";
 import { Badge } from "@/shared/components/ui/badge";
 import { models } from "@/shared/data/models";
 import { useSubscription } from "@/shared/hooks/use-subscription";
@@ -163,7 +152,7 @@ export const ModelSelector = () => {
           {/* Beginner Models */}
           <div className="px-2 py-1 flex items-center justify-between">
             <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
-              <span className="mr-1">🚀</span> Beginner
+              Beginner
             </DropdownMenuLabel>
             <span className="text-[9px] text-muted-foreground/50">
               Simple & Fast
@@ -194,7 +183,7 @@ export const ModelSelector = () => {
             <>
               <div className="px-2 py-1 flex items-center justify-between">
                 <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
-                  <span className="mr-1">🧠</span> Advanced
+                  Advanced
                   {!isPro && <Lock className="ml-1 h-3 w-3 text-amber-500" />}
                 </DropdownMenuLabel>
                 <span className="text-[9px] text-muted-foreground/50">
@@ -228,7 +217,7 @@ export const ModelSelector = () => {
             <>
               <div className="px-2 py-1 flex items-center justify-between">
                 <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
-                  <span className="mr-1">🔥</span> Specialized
+                  Specialized
                   {!isPro && <Lock className="ml-1 h-3 w-3 text-amber-500" />}
                 </DropdownMenuLabel>
                 <span className="text-[9px] text-muted-foreground/50">
@@ -279,31 +268,6 @@ export const ModelSelector = () => {
   );
 };
 
-const ModelIcon = ({
-  capability,
-  className,
-}: {
-  capability: ModelCapability;
-  className?: string;
-}) => {
-  if (!capability) return null;
-
-  switch (capability) {
-    case "Fast":
-      return <Zap className={className} />;
-    case "Smart":
-      return <Brain className={className} />;
-    case "Creative":
-      return <Sparkles className={className} />;
-    case "Realtime":
-      return <CalendarSearch className={className} />;
-    case "Balanced":
-      return <Scale className={className} />;
-    default:
-      return <Info className={className} />;
-  }
-};
-
 interface ModelItemProps {
   model: AIModel;
   isSelected: boolean;
@@ -352,7 +316,7 @@ const ModelItem = ({
       <div className="flex items-center gap-1 shrink-0">
         {model.isOpenSource && (
           <Badge variant="outline" className="px-1 py-0 h-4 text-[9px]">
-            OS
+            OSS
           </Badge>
         )}
         {isLocked && <Lock className="h-3 w-3 text-amber-500" />}
