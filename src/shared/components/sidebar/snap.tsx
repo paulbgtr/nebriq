@@ -31,6 +31,7 @@ export const Snap = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [generatedNotes, setGeneratedNotes] = useState("");
   const [showPaywall, setShowPaywall] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { toast } = useToast();
   const { createNoteMutation } = useNotes();
@@ -104,15 +105,18 @@ export const Snap = () => {
       title: "Success",
       description: "Note saved successfully",
     });
-
-    setGeneratedNotes("");
-    setUploadedImage(null);
   };
 
   const handleSnapClick = () => {
     if (!isPro) {
       setShowPaywall(true);
     }
+  };
+
+  const resetState = () => {
+    setUploadedImage(null);
+    setGeneratedNotes("");
+    setIsProcessing(false);
   };
 
   return (
@@ -154,7 +158,15 @@ export const Snap = () => {
         </DialogContent>
       </Dialog>
 
-      <Dialog>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) {
+            resetState();
+          }
+        }}
+      >
         <DialogTrigger asChild onClick={handleSnapClick}>
           <Button
             variant="ghost"
