@@ -104,6 +104,9 @@ export const Snap = () => {
       title: "Success",
       description: "Note saved successfully",
     });
+
+    setGeneratedNotes("");
+    setUploadedImage(null);
   };
 
   const handleSnapClick = () => {
