@@ -19,15 +19,6 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
     "monthly"
   );
 
-  // For debugging
-  console.log(
-    "Products:",
-    products.map((p) => ({
-      name: p.name,
-      interval: p.prices[0]?.recurringInterval,
-    }))
-  );
-
   // Group products by type and billing cycle
   const organizedProducts = useMemo(() => {
     // Extract unique product types (Free, Personal, Pro)
@@ -78,10 +69,6 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   // Sort product types in the desired order and filter by the selected billing cycle
   const displayProducts = useMemo(() => {
     const order = { free: 0, personal: 1, pro: 2, other: 3 };
-
-    // For debugging
-    console.log("Organized Products:", organizedProducts);
-    console.log("Current Billing Cycle:", billingCycle);
 
     return Object.entries(organizedProducts)
       .sort(
