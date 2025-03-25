@@ -1,14 +1,25 @@
 import { Button } from "@/shared/components/ui/button";
 import { ArrowRight, Home } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Page({
-  searchParams: { checkoutId },
+  searchParamsPromise,
 }: {
-  searchParams: {
-    checkoutId: string;
-  };
+  searchParamsPromise: Promise<{ checkoutId: string }>;
 }) {
+  const [checkoutId, setCheckoutId] = useState<string | null>(null);
+
+  useEffect(() => {
+    searchParamsPromise.then((params) => {
+      setCheckoutId(params.checkoutId);
+    });
+  }, [searchParamsPromise]);
+
+  if (checkoutId === null) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
       <div className="w-full max-w-2xl mx-auto">
