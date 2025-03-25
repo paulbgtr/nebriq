@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/server";
-import { VERSION } from "@/shared/config/version";
-import Link from "next/link";
 import {
   SidebarTrigger,
   SidebarProvider,
@@ -14,25 +12,6 @@ export const metadata: Metadata = {
 import { AppSidebar } from "@/shared/components/sidebar";
 import { UserActions } from "@/shared/components/user-actions";
 import { NoteTabs } from "@/shared/components/note-tabs";
-
-const Version = () => {
-  return (
-    <div className="absolute z-50 top-20 right-10">
-      <div className="text-xs text-muted-foreground/60 text-right ">
-        <p>
-          Nebriq {VERSION.number} <br />
-          {VERSION.releaseDate}
-        </p>
-        <Link
-          className="hover:text-muted-foreground transition-colors underline"
-          href="/changelog"
-        >
-          View Changelog
-        </Link>
-      </div>
-    </div>
-  );
-};
 
 export default async function DashboardLayout({
   children,
@@ -62,7 +41,6 @@ export default async function DashboardLayout({
           {children}
         </div>
       </main>
-      <Version />
     </SidebarProvider>
   );
 }
