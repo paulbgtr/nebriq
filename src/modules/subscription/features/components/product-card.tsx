@@ -145,10 +145,7 @@ export const ProductCard = ({
       </div>
 
       <div className="relative z-10">
-        <Link
-          href={`/api/checkout?productId=${product.id}&metadata=${checkoutMetadata}`}
-          className="w-full block"
-        >
+        <Link href={checkoutUrl} className="w-full block">
           <Button
             className={cn(
               "w-full group/button transition-all duration-300",
