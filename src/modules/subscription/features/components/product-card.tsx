@@ -43,9 +43,18 @@ export const ProductCard = ({
         customerEmail: userEmail,
         timestamp: new Date().toISOString(),
         source: "subscription_page",
+        productName: product.name,
+        productType: product.name.toLowerCase().includes("free")
+          ? "free"
+          : product.name.toLowerCase().includes("personal")
+            ? "personal"
+            : product.name.toLowerCase().includes("pro")
+              ? "pro"
+              : "other",
+        billingCycle: isYearly ? "yearly" : "monthly",
       })
     );
-  }, [userId, userEmail]);
+  }, [userId, userEmail, product.name, isYearly]);
 
   console.log("Product details:", {
     name: product.name,
@@ -53,10 +62,21 @@ export const ProductCard = ({
     price: firstPrice,
     isPopular,
     isYearly,
-    checkoutUrl: `/api/checkout?productId=${product.id}&metadata=${checkoutMetadata}`,
+    checkoutUrl: `/api/checkout?productId=${encodeURIComponent(
+      product.id
+    )}&metadata=${checkoutMetadata}`,
   });
 
-  const checkoutUrl = `/api/checkout?productId=${product.id}&metadata=${checkoutMetadata}`;
+  const checkoutUrl = `/api/checkout?productId=${encodeURIComponent(
+    product.id
+  )}&plan=${encodeURIComponent(product.name)}&metadata=${checkoutMetadata}`;
+
+  const handleCheckoutClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log(
+      `Checkout clicked for product: ${product.name} (${product.id})`
+    );
+    console.log(`URL: ${checkoutUrl}`);
+  };
 
   return (
     <div
@@ -154,17 +174,7 @@ export const ProductCard = ({
               ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary/20 shadow-lg shadow-primary/10"
               : "bg-muted hover:bg-muted/90 text-foreground focus:ring-2 focus:ring-border/50"
           )}
-        >
-          <span>Get {product.name}</span>
-          <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
-        </Link>
-
-        <Link
-          href={checkoutUrl}
-          className={cn(
-            buttonVariants({ variant: "default" }),
-            "w-full group/button transition-all duration-300"
-          )}
+          onClick={handleCheckoutClick}
         >
           <span>Get {product.name}</span>
           <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
