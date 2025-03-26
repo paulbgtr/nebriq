@@ -158,6 +158,17 @@ export const ProductCard = ({
           <span>Get {product.name}</span>
           <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
         </Link>
+
+        <Link
+          href={checkoutUrl}
+          className={cn(
+            buttonVariants({ variant: "default" }),
+            "w-full group/button transition-all duration-300"
+          )}
+        >
+          <span>Get {product.name}</span>
+          <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
+        </Link>
       </div>
     </div>
   );
