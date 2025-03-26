@@ -6,6 +6,7 @@ import { ProductCard } from "./components/product-card";
 import { Button } from "@/shared/components/ui/button";
 import { Loader2, LogIn } from "lucide-react";
 import Link from "next/link";
+import { useMemo } from "react";
 
 interface ProductsSectionProps {
   products: Product[];
@@ -47,31 +48,46 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
     );
   }
 
+  const checkoutMetadata = useMemo(() => {
+    return encodeURIComponent(
+      JSON.stringify({
+        userId: user.id,
+        customerEmail: user.email,
+        timestamp: new Date().toISOString(),
+      })
+    );
+  }, [user.id, user.email]);
+
+  const checkoutUrl = (id: string) =>
+    useMemo(() => {
+      return `${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${id}&metadata=${checkoutMetadata}`;
+    }, [id, checkoutMetadata]);
+
   return (
     <>
       <ProductCard
         product={products[3]}
         userId={user.id as string}
         userEmail={user.email as string}
-        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[3].id}`}
+        checkoutUrl={checkoutUrl(products[3].id)}
       />
       <ProductCard
         product={products[2]}
         userId={user.id as string}
         userEmail={user.email as string}
-        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[2].id}`}
+        checkoutUrl={checkoutUrl(products[2].id)}
       />
       <ProductCard
         product={products[1]}
         userId={user.id as string}
         userEmail={user.email as string}
-        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[1].id}`}
+        checkoutUrl={checkoutUrl(products[1].id)}
       />
       <ProductCard
         product={products[0]}
         userId={user.id as string}
         userEmail={user.email as string}
-        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[0].id}`}
+        checkoutUrl={checkoutUrl(products[0].id)}
       />
     </>
   );

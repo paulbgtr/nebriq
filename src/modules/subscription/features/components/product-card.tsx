@@ -19,6 +19,7 @@ export const ProductCard = ({
   product,
   userId,
   userEmail,
+  checkoutUrl,
 }: ProductCardProps) => {
   const firstPrice = product.prices[0];
   const isPopular = product.name.toLowerCase().includes("pro");
@@ -67,10 +68,6 @@ export const ProductCard = ({
       product.id
     )}&metadata=${checkoutMetadata}`,
   });
-
-  const checkoutUrl = `/api/checkout?productId=${encodeURIComponent(
-    product.id
-  )}&plan=${encodeURIComponent(product.name)}&metadata=${checkoutMetadata}`;
 
   const handleCheckoutClick = () => {
     console.log(
