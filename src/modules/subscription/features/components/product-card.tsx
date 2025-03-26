@@ -56,6 +56,8 @@ export const ProductCard = ({
     checkoutUrl: `/api/checkout?productId=${product.id}&metadata=${checkoutMetadata}`,
   });
 
+  const checkoutUrl = `/api/checkout?productId=${product.id}&metadata=${checkoutMetadata}`;
+
   return (
     <div
       className={cn(
