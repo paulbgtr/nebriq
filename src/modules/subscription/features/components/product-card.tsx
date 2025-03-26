@@ -71,7 +71,7 @@ export const ProductCard = ({
     product.id
   )}&plan=${encodeURIComponent(product.name)}&metadata=${checkoutMetadata}`;
 
-  const handleCheckoutClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleCheckoutClick = () => {
     console.log(
       `Checkout clicked for product: ${product.name} (${product.id})`
     );
