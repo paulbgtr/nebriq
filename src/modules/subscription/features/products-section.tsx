@@ -14,6 +14,17 @@ interface ProductsSectionProps {
 
 export const ProductsSection = ({ products }: ProductsSectionProps) => {
   const { user, isPending } = useUser();
+
+  const checkoutMetadata = useMemo(() => {
+    return encodeURIComponent(
+      JSON.stringify({
+        userId: user?.id,
+        customerEmail: user?.email,
+        timestamp: new Date().toISOString(),
+      })
+    );
+  }, [user?.id, user?.email]);
+
   if (isPending) {
     return (
       <div className="col-span-full min-h-[400px] flex items-center justify-center">
@@ -47,16 +58,6 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
       </div>
     );
   }
-
-  const checkoutMetadata = useMemo(() => {
-    return encodeURIComponent(
-      JSON.stringify({
-        userId: user.id,
-        customerEmail: user.email,
-        timestamp: new Date().toISOString(),
-      })
-    );
-  }, [user.id, user.email]);
 
   const checkoutUrl = (id: string) =>
     `${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${id}&metadata=${checkoutMetadata}`;
