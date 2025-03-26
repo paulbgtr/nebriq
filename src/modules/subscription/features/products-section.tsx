@@ -59,9 +59,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   }, [user.id, user.email]);
 
   const checkoutUrl = (id: string) =>
-    useMemo(() => {
-      return `${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${id}&metadata=${checkoutMetadata}`;
-    }, [id, checkoutMetadata]);
+    `${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${id}&metadata=${checkoutMetadata}`;
 
   return (
     <>
