@@ -159,6 +159,10 @@ export const ProductCard = ({
             <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
           </Button>
         </Link>
+
+        <Link href={checkoutUrl} className="w-full block">
+          Get {product.name}
+        </Link>
       </div>
     </div>
   );
