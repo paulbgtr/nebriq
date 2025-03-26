@@ -145,7 +145,7 @@ export const ProductCard = ({
       </div>
 
       <div className="relative z-10">
-        <Link href={checkoutUrl} className="w-full block">
+        <a href={checkoutUrl} className="w-full block">
           <Button
             className={cn(
               "w-full group/button transition-all duration-300",
@@ -158,7 +158,7 @@ export const ProductCard = ({
             <span>Get {product.name}</span>
             <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
           </Button>
-        </Link>
+        </a>
       </div>
     </div>
   );
