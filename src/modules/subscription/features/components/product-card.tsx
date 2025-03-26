@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/components/ui/button";
+import { buttonVariants } from "@/shared/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Separator } from "@/shared/components/ui/separator";
@@ -145,23 +145,18 @@ export const ProductCard = ({
       </div>
 
       <div className="relative z-10">
-        <Link href={checkoutUrl} className="w-full block">
-          <Button
-            className={cn(
-              "w-full group/button transition-all duration-300",
-              isPopular
-                ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary/20 shadow-lg shadow-primary/10"
-                : "bg-muted hover:bg-muted/90 text-foreground focus:ring-2 focus:ring-border/50"
-            )}
-            size="lg"
-          >
-            <span>Get {product.name}</span>
-            <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
-          </Button>
-        </Link>
-
-        <Link href={checkoutUrl} className="w-full block">
-          Get {product.name}
+        <Link
+          href={checkoutUrl}
+          className={cn(
+            buttonVariants({ variant: "default" }),
+            "w-full group/button transition-all duration-300",
+            isPopular
+              ? "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary/20 shadow-lg shadow-primary/10"
+              : "bg-muted hover:bg-muted/90 text-foreground focus:ring-2 focus:ring-border/50"
+          )}
+        >
+          <span>Get {product.name}</span>
+          <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
         </Link>
       </div>
     </div>
