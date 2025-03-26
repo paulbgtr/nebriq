@@ -49,14 +49,30 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
 
   return (
     <>
-      {products.map((product) => (
-        <ProductCard
-          key={`${product.id}`}
-          product={product}
-          userId={user.id as string}
-          userEmail={user.email as string}
-        />
-      ))}
+      <ProductCard
+        key={`${products[0].id}`}
+        product={products[0]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+      />
+      <ProductCard
+        key={`${products[1].id}`}
+        product={products[1]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+      />
+      <ProductCard
+        key={`${products[2].id}`}
+        product={products[2]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+      />
+      <ProductCard
+        key={`${products[3].id}`}
+        product={products[3]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+      />
     </>
   );
 };
