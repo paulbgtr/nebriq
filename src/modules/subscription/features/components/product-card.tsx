@@ -47,6 +47,15 @@ export const ProductCard = ({
     );
   }, [userId, userEmail]);
 
+  console.log("Product details:", {
+    name: product.name,
+    id: product.id,
+    price: firstPrice,
+    isPopular,
+    isYearly,
+    checkoutUrl: `/api/checkout?productId=${product.id}&metadata=${checkoutMetadata}`,
+  });
+
   return (
     <div
       className={cn(
