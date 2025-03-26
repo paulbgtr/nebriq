@@ -50,28 +50,28 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   return (
     <>
       <ProductCard
-        key={`${products[0].id}`}
-        product={products[0]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-      />
-      <ProductCard
-        key={`${products[1].id}`}
-        product={products[1]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-      />
-      <ProductCard
-        key={`${products[2].id}`}
-        product={products[2]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-      />
-      <ProductCard
-        key={`${products[3].id}`}
         product={products[3]}
         userId={user.id as string}
         userEmail={user.email as string}
+        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[3].id}`}
+      />
+      <ProductCard
+        product={products[2]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[2].id}`}
+      />
+      <ProductCard
+        product={products[1]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[1].id}`}
+      />
+      <ProductCard
+        product={products[0]}
+        userId={user.id as string}
+        userEmail={user.email as string}
+        checkoutUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${products[0].id}`}
       />
     </>
   );

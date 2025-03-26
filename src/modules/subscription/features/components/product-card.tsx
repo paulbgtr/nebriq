@@ -12,6 +12,7 @@ interface ProductCardProps {
   product: Product;
   userId: string;
   userEmail: string;
+  checkoutUrl: string;
 }
 
 export const ProductCard = ({
