@@ -60,7 +60,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   }
 
   const checkoutUrl = (id: string) =>
-    `${process.env.NEXT_PUBLIC_SITE_URL}/checkout?productId=${id}&metadata=${checkoutMetadata}`;
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout?productId=${id}&metadata=${checkoutMetadata}`;
 
   return (
     <>
