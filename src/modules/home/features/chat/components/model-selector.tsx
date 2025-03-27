@@ -85,7 +85,11 @@ export const ModelSelector = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 gap-1.5 px-2.5 text-xs font-medium text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-full hover:bg-muted/40"
+          disabled={isAutoMode}
+          className={cn(
+            "h-8 gap-1.5 px-2.5 text-xs font-medium text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-full hover:bg-muted/40",
+            isAutoMode && "opacity-60 cursor-not-allowed hover:bg-transparent"
+          )}
         >
           {isAutoMode ? (
             <Gauge className="h-3 w-3 text-amber-500" />
