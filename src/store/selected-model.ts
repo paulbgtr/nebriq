@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { AIModel, ModelCapability } from "@/types/ai-model";
 import { models } from "@/shared/data/models";
+import { classifyModel } from "@/app/actions/llm/model-classifier";
 
 export const complexityToCapabilities: Record<string, ModelCapability[]> = {
   simple: ["Fast", "Balanced"],
@@ -14,7 +15,7 @@ type SelectedModelState = {
   isAutoMode: boolean;
   setSelectedModel: (model: AIModel) => void;
   setAutoMode: (isAuto: boolean) => void;
-  getModelForQuery: (query: string) => AIModel;
+  getModelForQuery: (query: string) => Promise<AIModel>;
 };
 
 const ensureModelProperties = (model: AIModel): AIModel => {
@@ -27,81 +28,46 @@ const ensureModelProperties = (model: AIModel): AIModel => {
   return models[0];
 };
 
-const analyzeQueryComplexity = (query: string): string => {
-  const queryLower = query.toLowerCase();
+/**
+ * Checks if the query is trivial (e.g., a simple greeting or very short)
+ * and returns a default classification if so. Otherwise, returns null.
+ */
+export function filterSimpleQuery(query: string): string | null {
+  const trivialKeywords = ["hi", "hello", "hey", "what's up", "howdy"];
+  const trimmedQuery = query.trim().toLowerCase();
 
-  if (
-    queryLower.includes("latest") ||
-    queryLower.includes("current") ||
-    queryLower.includes("today") ||
-    queryLower.includes("news") ||
-    queryLower.includes("recent")
-  ) {
-    return "realtime";
+  if (trimmedQuery.split(/\s+/).length < 3) {
+    return "simple";
   }
 
-  const complexIndicators = [
-    "explain in detail",
-    "analyze",
-    "compare",
-    "why does",
-    "how would",
-    "implement",
-    "design",
-    "architecture",
-    "complex",
-    "difficult",
-    "advanced",
-    "research",
-    "theory",
-    "proof",
-    "creative",
-    "innovative",
-  ];
-
-  const mediumIndicators = [
-    "describe",
-    "explain",
-    "what is",
-    "how to",
-    "define",
-    "summarize",
-    "outline",
-    "guide",
-  ];
-
-  const complexCount = complexIndicators.filter((indicator) =>
-    queryLower.includes(indicator)
-  ).length;
-
-  const mediumCount = mediumIndicators.filter((indicator) =>
-    queryLower.includes(indicator)
-  ).length;
-
-  if (complexCount > 0 || query.length > 200) {
-    return "complex";
-  } else if (mediumCount > 0 || query.length > 100) {
-    return "medium";
+  for (const keyword of trivialKeywords) {
+    if (trimmedQuery === keyword || trimmedQuery.startsWith(`${keyword} `)) {
+      return "simple";
+    }
   }
 
-  return "simple";
-};
+  return null;
+}
 
 const selectModelForComplexity = (complexity: string): AIModel => {
   const requiredCapabilities =
     complexityToCapabilities[complexity] || complexityToCapabilities.simple;
 
-  const candidateModels = models.filter(
+  const modelsAvailableForAutoMode = models.filter(
+    (model) => model.id.split("-")[0] === "mistral"
+  );
+
+  const candidateModels = modelsAvailableForAutoMode.filter(
     (model) =>
       model.available &&
       requiredCapabilities.some((cap) => model.capabilities.includes(cap))
   );
 
   if (candidateModels.length === 0) {
-    return models[0];
+    return modelsAvailableForAutoMode[0];
   }
 
-  if (complexity === "complex") {
+  if (complexity === "advanced") {
     const advancedModels = candidateModels.filter(
       (m) => m.category === "Advanced"
     );
@@ -110,12 +76,12 @@ const selectModelForComplexity = (complexity: string): AIModel => {
     }
   }
 
-  if (complexity === "realtime") {
-    const realtimeModels = candidateModels.filter((m) =>
-      m.capabilities.includes("Realtime")
+  if (complexity === "balanced") {
+    const balancedModels = candidateModels.filter(
+      (m) => m.category === "Balanced"
     );
-    if (realtimeModels.length > 0) {
-      return realtimeModels[0];
+    if (balancedModels.length > 0) {
+      return balancedModels[0];
     }
   }
 
@@ -138,9 +104,13 @@ export const useSelectedModelStore = create<SelectedModelState>()(
       isAutoMode: true,
       setSelectedModel: (model) => set({ selectedModel: model }),
       setAutoMode: (isAuto) => set({ isAutoMode: isAuto }),
-      getModelForQuery: (query) => {
-        const complexity = analyzeQueryComplexity(query);
-        return selectModelForComplexity(complexity);
+      getModelForQuery: async (query) => {
+        let complexity = filterSimpleQuery(query);
+        if (!complexity) {
+          complexity = await classifyModel(query);
+        }
+        const model = selectModelForComplexity(complexity);
+        return model;
       },
     }),
     {
