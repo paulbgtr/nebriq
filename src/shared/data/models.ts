@@ -63,6 +63,16 @@ export const models: AIModel[] = [
     technicalDetails: "Mistral AI's lightweight 3B parameter open source model",
   },
   {
+    id: "mistral-large",
+    name: "Mistral Large",
+    description: "Advanced, open-source for advanced language tasks.",
+    available: true,
+    isOpenSource: true,
+    category: "Advanced",
+    capabilities: ["Smart", "Creative"],
+    technicalDetails: "Mistral AI's 13B parameter open source model",
+  },
+  {
     id: "gemini-1.5-pro",
     name: "Gemini 1.5 Pro",
     description: "Multimodal with huge 2M token context for deep analysis.",
