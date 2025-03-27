@@ -59,9 +59,9 @@ export const ModelSelector = () => {
     {} as Record<string, AIModel[]>
   );
 
-  const beginnerModels = modelsByCategory["Beginner"] || [];
+  const simpleModels = modelsByCategory["Simple"] || [];
+  const balancedModels = modelsByCategory["Balanced"] || [];
   const advancedModels = modelsByCategory["Advanced"] || [];
-  const specializedModels = modelsByCategory["Specialized"] || [];
 
   const getModelIcon = (model: AIModel, className = "h-3 w-3") => {
     const brandPrefix = Object.keys(MODEL_ICONS).find((prefix) =>
@@ -153,17 +153,17 @@ export const ModelSelector = () => {
             isAutoMode ? "opacity-60 pointer-events-none" : "opacity-100"
           )}
         >
-          {/* Beginner Models */}
+          {/* Simple Models */}
           <div className="px-2 py-1 flex items-center justify-between">
             <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
-              Beginner
+              Simple
             </DropdownMenuLabel>
             <span className="text-[9px] text-muted-foreground/50">
               Simple & Fast
             </span>
           </div>
           <div className="space-y-0.5 mb-1">
-            {beginnerModels.map((model) => (
+            {simpleModels.map((model) => (
               <ModelItem
                 key={model.id}
                 model={model}
@@ -180,6 +180,37 @@ export const ModelSelector = () => {
           </div>
           {advancedModels.length > 0 && (
             <DropdownMenuSeparator className="my-1" />
+          )}
+
+          {/* Balanced Models */}
+          {balancedModels.length > 0 && (
+            <>
+              <div className="px-2 py-1 flex items-center justify-between">
+                <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
+                  Balanced
+                  {!isPro && <Lock className="ml-1 h-3 w-3 text-amber-500" />}
+                </DropdownMenuLabel>
+                <span className="text-[9px] text-muted-foreground/50">
+                  For specific tasks
+                </span>
+              </div>
+              <div className="space-y-0.5 mb-1">
+                {balancedModels.map((model) => (
+                  <ModelItem
+                    key={model.id}
+                    model={model}
+                    isSelected={selectedModel.id === model.id}
+                    onSelect={() => {
+                      if (model.available && isPro) {
+                        setSelectedModel(model);
+                      }
+                    }}
+                    isLocked={!isPro}
+                    getModelIcon={getModelIcon}
+                  />
+                ))}
+              </div>
+            </>
           )}
 
           {/* Advanced Models */}
@@ -210,40 +241,9 @@ export const ModelSelector = () => {
                   />
                 ))}
               </div>
-              {specializedModels.length > 0 && (
+              {advancedModels.length > 0 && (
                 <DropdownMenuSeparator className="my-1" />
               )}
-            </>
-          )}
-
-          {/* Specialized Models */}
-          {specializedModels.length > 0 && (
-            <>
-              <div className="px-2 py-1 flex items-center justify-between">
-                <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
-                  Specialized
-                  {!isPro && <Lock className="ml-1 h-3 w-3 text-amber-500" />}
-                </DropdownMenuLabel>
-                <span className="text-[9px] text-muted-foreground/50">
-                  For specific tasks
-                </span>
-              </div>
-              <div className="space-y-0.5 mb-1">
-                {specializedModels.map((model) => (
-                  <ModelItem
-                    key={model.id}
-                    model={model}
-                    isSelected={selectedModel.id === model.id}
-                    onSelect={() => {
-                      if (model.available && isPro) {
-                        setSelectedModel(model);
-                      }
-                    }}
-                    isLocked={!isPro}
-                    getModelIcon={getModelIcon}
-                  />
-                ))}
-              </div>
             </>
           )}
         </div>

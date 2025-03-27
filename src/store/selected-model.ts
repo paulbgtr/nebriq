@@ -5,9 +5,8 @@ import { models } from "@/shared/data/models";
 
 export const complexityToCapabilities: Record<string, ModelCapability[]> = {
   simple: ["Fast", "Balanced"],
-  medium: ["Balanced", "Smart"],
-  complex: ["Smart", "Creative"],
-  realtime: ["Realtime"],
+  balanced: ["Balanced", "Smart"],
+  advanced: ["Smart", "Creative"],
 };
 
 type SelectedModelState = {
@@ -122,7 +121,7 @@ const selectModelForComplexity = (complexity: string): AIModel => {
 
   if (complexity === "simple") {
     const beginnerModels = candidateModels.filter(
-      (m) => m.category === "Beginner"
+      (m) => m.category === "Simple"
     );
     if (beginnerModels.length > 0) {
       return beginnerModels[0];

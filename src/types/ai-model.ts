@@ -12,7 +12,7 @@ export type ModelId =
   | "claude-3-5-sonnet-20240620"
   | "deepseek-ai/DeepSeek-R1";
 
-export type ModelCategory = "Beginner" | "Advanced" | "Specialized";
+export type ModelCategory = "Simple" | "Balanced" | "Advanced";
 
 export type ModelCapability =
   | "Fast"
