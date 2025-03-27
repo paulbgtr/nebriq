@@ -332,7 +332,9 @@ export const useChat = (
       const { selectedModel, isAutoMode, getModelForQuery } =
         useSelectedModelStore.getState();
 
-      const modelToUse = isAutoMode ? getModelForQuery(message) : selectedModel;
+      const modelToUse = isAutoMode
+        ? await getModelForQuery(message)
+        : selectedModel;
 
       const data = await chat(
         message,
