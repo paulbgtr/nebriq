@@ -108,51 +108,7 @@ export const ModelSelector = () => {
         side="top"
         className="w-56 p-1 backdrop-blur-xl bg-background/95"
       >
-        {isPro && (
-          <>
-            <div className="px-2 py-2 mb-1">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Gauge
-                    className={cn(
-                      "h-3.5 w-3.5 transition-colors duration-200",
-                      isAutoMode ? "text-amber-500" : "text-muted-foreground/50"
-                    )}
-                  />
-                  <span
-                    className={cn(
-                      "text-xs transition-colors duration-200",
-                      isAutoMode
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    Auto-select model
-                  </span>
-                </div>
-                <Switch
-                  checked={isAutoMode}
-                  onCheckedChange={setAutoMode}
-                  className="data-[state=checked]:bg-amber-500"
-                />
-              </div>
-              <p className="text-[9px] text-muted-foreground/70 mt-1">
-                {isAutoMode
-                  ? "AI will intelligently select the best model for your query"
-                  : "Manually select your preferred AI model"}
-              </p>
-            </div>
-
-            <DropdownMenuSeparator />
-          </>
-        )}
-
-        <div
-          className={cn(
-            "transition-opacity duration-200",
-            isAutoMode ? "opacity-60 pointer-events-none" : "opacity-100"
-          )}
-        >
+        <div className="transition-opacity duration-200">
           {/* Simple Models */}
           <div className="px-2 py-1 flex items-center justify-between">
             <DropdownMenuLabel className="text-[10px] text-muted-foreground/70 p-0 flex items-center">
@@ -241,9 +197,6 @@ export const ModelSelector = () => {
                   />
                 ))}
               </div>
-              {advancedModels.length > 0 && (
-                <DropdownMenuSeparator className="my-1" />
-              )}
             </>
           )}
         </div>
