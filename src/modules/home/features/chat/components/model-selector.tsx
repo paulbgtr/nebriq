@@ -25,7 +25,6 @@ import {
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
 import { Button } from "@/shared/components/ui/button";
-import { Switch } from "@/shared/components/ui/switch";
 import { useSelectedModelStore } from "@/store/selected-model";
 import { AIModel } from "@/types/ai-model";
 import { Badge } from "@/shared/components/ui/badge";
@@ -45,7 +44,7 @@ const MODEL_ICONS = {
 };
 
 export const ModelSelector = () => {
-  const { selectedModel, setSelectedModel, isAutoMode, setAutoMode } =
+  const { selectedModel, setSelectedModel, isAutoMode } =
     useSelectedModelStore();
   const { isPro } = useSubscription();
 
