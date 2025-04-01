@@ -1,9 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import { createClient } from "@/shared/lib/supabase/client";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import React from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -13,92 +10,9 @@ import {
   Sigma,
   FolderX,
 } from "lucide-react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/shared/components/ui/form";
 import { KnowledgeGraphVisualization } from "@/modules/landing-page/features/visuals/knowledge-graph-visualization";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/shared/hooks/use-toast";
-import { sendEmail } from "@/app/actions/emails/send-email";
-import { EmailTemplate } from "@/enums/email-template";
-import { extractFirstName } from "@/shared/lib/utils";
-
-const wishListSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Invalid email address")
-    .max(255, "Email is too long")
-    .trim()
-    .toLowerCase(),
-});
 
 export const HeroSection = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { toast } = useToast();
-
-  const form = useForm<z.infer<typeof wishListSchema>>({
-    resolver: zodResolver(wishListSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof wishListSchema>) => {
-    setIsSubmitting(true);
-
-    try {
-      const client = createClient();
-
-      const { email } = values;
-
-      const { error } = await client.from("wishlist").insert({
-        email,
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      await sendEmail(
-        "You're on our wish list!",
-        "waitlist@nebriq.com",
-        email,
-        EmailTemplate.WAITLIST,
-        {
-          firstName: extractFirstName(email),
-        }
-      );
-
-      form.reset();
-
-      toast({
-        title: "Added to wish list",
-        description: "You will receive updates soon.",
-      });
-    } catch (e) {
-      const errorDescription = (e as Error).message.includes(
-        "duplicate key value violates unique constraint"
-      )
-        ? "Your email is already on our wish list."
-        : "Something went wrong. Please try again.";
-
-      toast({
-        variant: "destructive",
-        title: "Adding to wish list failed",
-        description: errorDescription,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <section
       id="hero"
@@ -253,48 +167,6 @@ export const HeroSection = () => {
               transition={{ duration: 1, delay: 1.4 }}
               className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-primary/30 to-transparent mt-6"
             />
-          </motion.div>
-
-          {/* CTA Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="max-w-xl mx-auto"
-          >
-            <div className="relative group">
-              <div className="absolute transition-all duration-500 rounded-lg -inset-1 bg-gradient-to-r from-primary/50 via-primary/30 to-primary/50 blur-lg group-hover:blur-xl" />
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="relative flex gap-4 p-2 rounded-lg bg-background/80 backdrop-blur-sm border border-primary/10"
-                >
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="email"
-                            placeholder="Enter your email"
-                            className="h-12 bg-transparent border-primary/20 focus:border-primary/50 transition-colors"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="h-12 px-8 transition-all duration-300 bg-primary/90 hover:bg-primary hover:scale-[1.02] shadow-md hover:shadow-lg shadow-primary/10 hover:shadow-primary/20"
-                  >
-                    <span className="relative z-10">Join Waitlist</span>
-                  </Button>
-                </form>
-              </Form>
-            </div>
           </motion.div>
 
           {/* Feature Tags */}

@@ -101,10 +101,10 @@ export const CtaSection = () => {
                   className="absolute inset-0 transition-all duration-700 rounded-md blur-xl group-hover:blur-2xl opacity-30"
                 />
                 <Link
-                  href="#hero"
+                  href="/signup"
                   className={buttonVariants({ variant: "default" })}
                 >
-                  <span className="relative z-10">Join Waitlist</span>
+                  <span className="relative z-10">Get Started</span>
                   <motion.div
                     className="ml-2 relative z-10"
                     animate={{ x: [0, 4, 0] }}

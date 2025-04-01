@@ -47,7 +47,7 @@ export const Header = ({ motionConfig }: HeaderProps) => {
           </div>
 
           {/* Logo with improved animation */}
-          <div className="flex items-center gap-3 pr-4 sm:pr-5 border-r border-border/60">
+          <div className="flex items-center gap-3 pr-4 sm:pr-5">
             <div className="flex items-center gap-2.5">
               <div className="relative w-9 h-9">
                 <motion.div
@@ -70,17 +70,6 @@ export const Header = ({ motionConfig }: HeaderProps) => {
               <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground/80">
                 Nebriq
               </span>
-            </div>
-          </div>
-
-          {/* Redesigned Beta Badge */}
-          <div className="hidden md:flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/[0.08] border border-primary/15 shadow-sm shadow-primary/5">
-              <span className="relative flex w-2 h-2">
-                <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-primary/60"></span>
-                <span className="relative inline-flex w-2 h-2 rounded-full bg-primary"></span>
-              </span>
-              <span className="text-xs font-medium text-primary">BETA</span>
             </div>
           </div>
 
