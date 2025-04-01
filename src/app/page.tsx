@@ -7,13 +7,21 @@ import { Header } from "@/modules/landing-page/sections/header";
 import { Footer } from "@/modules/landing-page/sections/footer";
 import { PowerfulEditorSection } from "@/modules/landing-page/sections/powerful-editor";
 import { ProblemSection } from "@/modules/landing-page/sections/problem";
+import { PricingSection } from "@/modules/landing-page/sections/pricing-section";
+import { polar } from "@/shared/lib/polar/client";
 
-export default function Home() {
+export default async function Home() {
   const motionConfig = {
     initial: { opacity: 0, y: -100 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.6, ease: "easeOut" },
   };
+
+  const polarClient = await polar();
+
+  const { result } = await polarClient.products.list({
+    isArchived: false,
+  });
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -36,6 +44,8 @@ export default function Home() {
         <EssentialToolsSection />
 
         <PowerfulEditorSection />
+
+        <PricingSection products={result.items} />
 
         <CtaSection />
 

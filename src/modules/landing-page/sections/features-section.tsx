@@ -15,7 +15,7 @@ import { SmartLibraryVisualization } from "@/modules/landing-page/features/visua
 
 export const FeaturesOverviewSection = () => {
   return (
-    <section id="features-overview" className="relative py-24">
+    <section id="features" className="relative py-24">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
 
       {/* Futuristic grid pattern background */}
