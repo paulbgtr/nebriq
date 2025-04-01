@@ -384,7 +384,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         },
       ]);
     }
-  }, [id, setOpenNotes, title, content, openNotes]);
+  }, [id, setOpenNotes, title, content]);
 
   useEffect(() => {
     if (!editor) return;
