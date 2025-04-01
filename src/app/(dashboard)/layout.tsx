@@ -30,13 +30,15 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <main className="w-full">
-        <div className="flex justify-end items-center p-4 bg-background/50 backdrop-blur-sm sticky top-0 z-50 border-b border-border/40">
-          <div className="absolute left-4">
+        <div className="flex justify-between items-center p-4 bg-background/50 backdrop-blur-sm sticky top-0 z-50 border-b border-border/40">
+          <div className="flex items-center gap-4">
             <SidebarTrigger />
+          </div>
+          <div className="flex-1 mx-4 overflow-hidden">
+            <NoteTabs />
           </div>
           <UserActions email={data.user.email} />
         </div>
-        <NoteTabs />
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {children}
         </div>
