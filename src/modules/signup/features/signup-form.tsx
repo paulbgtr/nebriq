@@ -14,7 +14,7 @@ import { signup } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useTransition } from "react";
-import { Lock, Mail, ArrowRight } from "lucide-react";
+import { Lock, Mail, ArrowRight, Github } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signupSchema } from "@/shared/lib/schemas/auth/signup";
@@ -22,6 +22,7 @@ import { z } from "zod";
 import { cn } from "@/shared/lib/utils";
 import { getAuthErrorMessage } from "@/shared/lib/utils/auth-errors";
 import { AuthError } from "@supabase/supabase-js";
+import { signInWithGithub } from "@/app/actions/supabase/auth";
 
 export default function SignupForm() {
   const { toast } = useToast();
@@ -170,6 +171,29 @@ export default function SignupForm() {
             </Button>
           </form>
         </Form>
+
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          className="w-full h-11 flex items-center gap-2"
+          onClick={async () => {
+            await signInWithGithub();
+          }}
+          disabled={isPending}
+        >
+          <Github className="h-5 w-5" />
+          Sign up with GitHub
+        </Button>
       </div>
 
       <p className="px-8 text-center text-sm text-muted-foreground">
