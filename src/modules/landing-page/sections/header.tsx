@@ -87,6 +87,12 @@ export const Header = ({ motionConfig }: HeaderProps) => {
           {/* Center Nav Links */}
           <nav className="hidden sm:flex items-center gap-5 flex-grow justify-center px-4">
             <Link
+              href="#problem"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200"
+            >
+              Why Nebriq?
+            </Link>
+            <Link
               href="#features"
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200"
             >
