@@ -22,6 +22,7 @@ import { z } from "zod";
 import { cn } from "@/shared/lib/utils";
 import { getAuthErrorMessage } from "@/shared/lib/utils/auth-errors";
 import { AuthError } from "@supabase/supabase-js";
+
 export default function SignupForm() {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();

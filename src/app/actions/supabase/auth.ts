@@ -55,16 +55,6 @@ export async function signup(email: string, password: string) {
 
   const cleanEmail = email.toLowerCase().trim();
 
-  const { data: betaUser, error: betaError } = await supabase
-    .from("beta_users")
-    .select("*")
-    .eq("email", cleanEmail)
-    .single();
-
-  if (betaError || !betaUser) {
-    throw new Error("Beta access required");
-  }
-
   const {
     data: { user },
     error,
