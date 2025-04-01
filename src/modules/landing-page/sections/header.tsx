@@ -110,7 +110,7 @@ export const Header = ({ motionConfig }: HeaderProps) => {
               <Link
                 href="/signup"
                 className={cn(
-                  buttonVariants({ variant: "secondary", size: "sm" })
+                  buttonVariants({ variant: "default", size: "sm" })
                 )}
               >
                 Create Account
