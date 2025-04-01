@@ -8,6 +8,7 @@ import { createClient } from "@/shared/lib/supabase/server";
 import { sendEmail } from "@/app/actions/emails/send-email";
 import { EmailTemplate } from "@/enums/email-template";
 import { createTokenLimitIfNotExists } from "@/shared/lib/utils";
+import { Provider } from "@supabase/supabase-js";
 
 export async function login(email: string, password: string) {
   const supabase = await createClient();
@@ -48,6 +49,21 @@ export async function login(email: string, password: string) {
   );
 
   revalidatePath("/", "layout");
+}
+
+export async function signInWithGithub() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "github" as Provider,
+  });
+
+  if (error) {
+    console.error("Error signing in with GitHub:", error);
+    return redirect("/login?message=Could not authenticate with GitHub");
+  }
+
+  return redirect(data.url);
 }
 
 export async function signup(email: string, password: string) {
