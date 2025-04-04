@@ -48,29 +48,34 @@ export const Header = ({ motionConfig }: HeaderProps) => {
 
           {/* Logo with improved animation */}
           <div className="flex items-center gap-3 pr-4 sm:pr-5">
-            <div className="flex items-center gap-2.5">
-              <div className="relative w-9 h-9">
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/30 via-primary/20 to-primary/5"
-                  animate={{
-                    scale: [1, 1.15, 1],
-                    opacity: [0.6, 0.9, 0.6],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                    ease: "easeInOut",
-                  }}
-                />
-                <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/30 backdrop-blur-sm">
-                  <Compass className="w-5 h-5 text-primary" strokeWidth={1.5} />
+            <Link href="/">
+              <div className="flex items-center gap-2.5">
+                <div className="relative w-9 h-9">
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/30 via-primary/20 to-primary/5"
+                    animate={{
+                      scale: [1, 1.15, 1],
+                      opacity: [0.6, 0.9, 0.6],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <div className="relative flex items-center justify-center w-full h-full rounded-full border border-primary/30 backdrop-blur-sm">
+                    <Compass
+                      className="w-5 h-5 text-primary"
+                      strokeWidth={1.5}
+                    />
+                  </div>
                 </div>
+                <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground/80">
+                  Nebriq
+                </span>
               </div>
-              <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground/80">
-                Nebriq
-              </span>
-            </div>
+            </Link>
           </div>
 
           {/* Center Nav Links */}
