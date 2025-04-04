@@ -160,12 +160,88 @@ export const HeroSection = () => {
               and your knowledge accessible.
             </motion.p>
 
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8"
+            >
+              <motion.a
+                href="/signup"
+                className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-full bg-primary text-white shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:-translate-y-1"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2 font-medium">
+                  Get Started
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </span>
+                <motion.span
+                  className="absolute top-0 left-0 w-full h-full bg-white/10"
+                  initial={{ scale: 0, opacity: 0 }}
+                  whileHover={{ 
+                    scale: 1.5, 
+                    opacity: 0.2,
+                    transition: { duration: 0.4 }
+                  }}
+                />
+              </motion.a>
+              
+              <motion.a 
+                href="#features"
+                className="group relative overflow-hidden rounded-full px-6 py-3 text-sm font-medium text-primary hover:text-primary/80 transition-all duration-300"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Learn more
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="16" 
+                    height="16" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                    className="transition-transform duration-300 group-hover:translate-y-1"
+                  >
+                    <path d="m6 9 6 6 6-6"></path>
+                  </svg>
+                </span>
+                <motion.span 
+                  className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-[1px] bg-primary/30"
+                  initial={{ width: 0 }}
+                  whileHover={{ 
+                    width: "80%",
+                    transition: { duration: 0.3 }
+                  }}
+                />
+              </motion.a>
+            </motion.div>
+
             {/* Decorative line */}
             <motion.div
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
               transition={{ duration: 1, delay: 1.4 }}
-              className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-primary/30 to-transparent mt-6"
+              className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-primary/30 to-transparent mt-10"
             />
           </motion.div>
 
@@ -173,7 +249,7 @@ export const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            transition={{ duration: 0.8, delay: 1.7 }}
             className="flex flex-wrap justify-center gap-3 px-4"
           >
             {[
