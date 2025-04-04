@@ -109,11 +109,14 @@ export const PricingSection = ({ products }: PricingSectionProps) => {
   const hasYearlyProducts = yearlyProducts.length > 0;
 
   return (
-    <section id="pricing" className="w-full">
-      <div className="container mx-auto px-4 md:px-6 py-16 md:py-24">
+    <section
+      id="pricing"
+      className="w-full bg-gradient-to-b from-background to-muted/30"
+    >
+      <div className="container mx-auto px-4 md:px-6 py-20 md:py-28 lg:py-32">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            Simple, Transparent Pricing 🔥
+            Simple, Transparent Pricing
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground mb-8">
             Choose the plan that fits your workflow. Start for free, upgrade
@@ -122,13 +125,15 @@ export const PricingSection = ({ products }: PricingSectionProps) => {
 
           {/* Billing Cycle Toggle Switch */}
           {hasPaidProducts && (
-            <div className="inline-flex items-center justify-center space-x-1 rounded-full bg-muted/60 p-1 mb-16">
+            <div className="inline-flex items-center justify-center space-x-1 rounded-full bg-muted/60 p-1 mb-5">
               <Button
                 variant={billingCycle === BILLING_MONTH ? "secondary" : "ghost"}
                 size="sm"
                 className={cn(
                   "rounded-full px-6 transition-all duration-200",
-                  billingCycle === BILLING_MONTH ? "shadow-sm" : ""
+                  billingCycle === BILLING_MONTH
+                    ? "shadow-sm ring-1 ring-inset ring-primary/50"
+                    : ""
                 )}
                 onClick={() => setBillingCycle(BILLING_MONTH)}
               >
@@ -142,7 +147,9 @@ export const PricingSection = ({ products }: PricingSectionProps) => {
                   size="sm"
                   className={cn(
                     "rounded-full px-6 transition-all duration-200 relative",
-                    billingCycle === BILLING_YEAR ? "shadow-sm" : ""
+                    billingCycle === BILLING_YEAR
+                      ? "shadow-sm ring-1 ring-inset ring-primary/50"
+                      : ""
                   )}
                   onClick={() => setBillingCycle(BILLING_YEAR)}
                 >
@@ -161,8 +168,8 @@ export const PricingSection = ({ products }: PricingSectionProps) => {
           {/* Free Plan Card - First item in the grid */}
           <div
             className={cn(
-              "flex flex-col p-6 bg-card/40 backdrop-blur-sm rounded-lg shadow-lg border-2 border-dashed border-border/50 h-full", // Card styles
-              "transition-all duration-300 hover:shadow-primary/10" // Subtle hover
+              "flex flex-col p-6 bg-card/60 backdrop-blur-sm rounded-lg shadow-lg border border-border/70 h-full",
+              "transition-all duration-300 hover:shadow-primary/10"
             )}
           >
             <h3 className="text-2xl font-semibold mb-4 text-center">
