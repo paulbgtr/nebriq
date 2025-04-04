@@ -34,6 +34,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { ModelSelector } from "./model-selector";
+import { ModeSelector } from "./mode-selector";
 import { useUser } from "@/shared/hooks/use-user";
 import { useSelectedModelStore } from "@/store/selected-model";
 import { Switch } from "@/shared/components/ui/switch";
@@ -506,7 +507,10 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                   </Popover>
                 </div>
 
-                <ModelSelector />
+                <div className="flex items-center gap-2">
+                  <ModeSelector />
+                  <ModelSelector />
+                </div>
               </div>
             </div>
           </form>

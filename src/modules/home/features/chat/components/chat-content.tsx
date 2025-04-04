@@ -5,8 +5,16 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
-import { ChatContext } from "@/types/chat";
-import { StickyNote, Brain, ChevronRight } from "lucide-react";
+import { ChatContext, LLM_MODE_OPTIONS } from "@/types/chat";
+import {
+  StickyNote,
+  Brain,
+  ChevronRight,
+  BarChart2,
+  Lightbulb,
+  Code,
+  MessageSquare,
+} from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { MessageActions } from "./message-actions";
 import { LoadingIndicator } from "./loading-indicator";
@@ -403,11 +411,59 @@ const MessageBubble = ({
     });
   };
 
+  // Create a ModeIndicator component
+  const ModeIndicator = () => {
+    if (!message.mode || message.mode === "standard" || message.role === "user")
+      return null;
+
+    const modeOption = LLM_MODE_OPTIONS.find(
+      (option) => option.value === message.mode
+    );
+    if (!modeOption) return null;
+
+    const IconComponent = (() => {
+      switch (message.mode) {
+        case "analysis":
+          return BarChart2;
+        case "reflection":
+          return Brain;
+        case "ideation":
+          return Lightbulb;
+        case "engineering":
+          return Code;
+        default:
+          return MessageSquare;
+      }
+    })();
+
+    return (
+      <div className="flex items-center gap-1 mb-1">
+        <div
+          className={cn(
+            "flex items-center justify-center rounded-full w-5 h-5",
+            "bg-background border border-border/30"
+          )}
+        >
+          <IconComponent className={cn("w-3 h-3", modeOption.color)} />
+        </div>
+        <span className={cn("text-[10px] font-medium", modeOption.color)}>
+          {modeOption.label} Mode
+        </span>
+      </div>
+    );
+  };
+
   return (
     <div
       ref={messageRef}
       className={message.role === "user" ? "ml-auto" : "mr-auto"}
     >
+      {/* Show mode indicator only for assistant messages with special modes */}
+      {mounted &&
+        message.role === "assistant" &&
+        message.mode &&
+        message.mode !== "standard" && <ModeIndicator />}
+
       <div className="flex gap-3">
         {mounted &&
           message.role === "assistant" &&
