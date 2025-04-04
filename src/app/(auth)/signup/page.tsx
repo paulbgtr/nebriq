@@ -15,7 +15,6 @@ export default function SignupPage() {
               &ldquo;In a world of endless folders and complex systems, we chose
               a different path. Just write. Let your ideas flow.&rdquo;
             </p>
-            <footer className="text-sm">Beta Program</footer>
           </blockquote>
         </div>
         <div className="absolute inset-0 z-10">
