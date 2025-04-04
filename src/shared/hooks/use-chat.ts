@@ -281,10 +281,14 @@ export const useChat = (
           ? allNotes.filter((note) => attachedNoteIds.includes(note.id))
           : [];
 
+      // Get the current mode from the store
+      const { selectedMode: currentMode } = useSelectedModelStore.getState();
+
       const newMessage = {
         role: "user" as const,
         content: message.trim(),
         attachedNotes: attachedNotes.length > 0 ? attachedNotes : undefined,
+        mode: currentMode,
       };
 
       setQuery(message.trim());
@@ -329,6 +333,7 @@ export const useChat = (
         relevantNotes: freshRelevantNotes,
       };
 
+      // Get the latest store state
       const { selectedModel, isAutoMode, getModelForQuery } =
         useSelectedModelStore.getState();
 
@@ -341,7 +346,8 @@ export const useChat = (
         userId,
         updatedContext,
         undefined,
-        modelToUse.id
+        modelToUse.id,
+        currentMode // Using the mode we retrieved earlier
       );
 
       if (data) {
@@ -354,6 +360,7 @@ export const useChat = (
               content: data,
               relevantNotes: freshRelevantNotes,
               modelId: modelToUse.id,
+              mode: currentMode,
             },
           ],
         };
