@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { login } from "@/app/actions/supabase/auth";
+import { login, signInWithGoogle } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useTransition } from "react";
@@ -23,6 +23,7 @@ import { cn } from "@/shared/lib/utils";
 import { getAuthErrorMessage } from "@/shared/lib/utils/auth-errors";
 import { AuthError } from "@supabase/supabase-js";
 import { signInWithGithub } from "@/app/actions/supabase/auth";
+import { FaGoogle } from "react-icons/fa";
 
 export default function LoginForm() {
   const { toast } = useToast();
@@ -152,17 +153,31 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          className="w-full h-11 flex items-center gap-2"
-          onClick={async () => {
-            await signInWithGithub();
-          }}
-          disabled={isPending}
-        >
-          <Github className="h-5 w-5" />
-          Sign in with GitHub
-        </Button>
+        <div className="flex flex-col gap-4">
+          <Button
+            variant="outline"
+            className="w-full h-11 flex items-center gap-2"
+            onClick={async () => {
+              await signInWithGoogle();
+            }}
+            disabled={isPending}
+          >
+            <FaGoogle className="h-5 w-5" />
+            Sign in with Google
+          </Button>
+
+          <Button
+            variant="outline"
+            className="w-full h-11 flex items-center gap-2"
+            onClick={async () => {
+              await signInWithGithub();
+            }}
+            disabled={isPending}
+          >
+            <Github className="h-5 w-5" />
+            Sign in with GitHub
+          </Button>
+        </div>
       </div>
 
       <p className="px-8 text-center text-sm text-muted-foreground">

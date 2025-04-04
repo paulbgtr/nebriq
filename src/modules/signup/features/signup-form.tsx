@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
 import { useTransition } from "react";
 import { Lock, Mail, ArrowRight, Github } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signupSchema } from "@/shared/lib/schemas/auth/signup";
@@ -22,7 +23,10 @@ import { z } from "zod";
 import { cn } from "@/shared/lib/utils";
 import { getAuthErrorMessage } from "@/shared/lib/utils/auth-errors";
 import { AuthError } from "@supabase/supabase-js";
-import { signInWithGithub } from "@/app/actions/supabase/auth";
+import {
+  signInWithGithub,
+  signInWithGoogle,
+} from "@/app/actions/supabase/auth";
 
 export default function SignupForm() {
   const { toast } = useToast();
@@ -183,17 +187,31 @@ export default function SignupForm() {
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          className="w-full h-11 flex items-center gap-2"
-          onClick={async () => {
-            await signInWithGithub();
-          }}
-          disabled={isPending}
-        >
-          <Github className="h-5 w-5" />
-          Sign up with GitHub
-        </Button>
+        <div className="flex flex-col gap-4">
+          <Button
+            variant="outline"
+            className="w-full h-11 flex items-center gap-2"
+            onClick={async () => {
+              await signInWithGoogle();
+            }}
+            disabled={isPending}
+          >
+            <FaGoogle className="h-5 w-5" />
+            Sign up with Google
+          </Button>
+
+          <Button
+            variant="outline"
+            className="w-full h-11 flex items-center gap-2"
+            onClick={async () => {
+              await signInWithGithub();
+            }}
+            disabled={isPending}
+          >
+            <Github className="h-5 w-5" />
+            Sign up with GitHub
+          </Button>
+        </div>
       </div>
 
       <p className="px-8 text-center text-sm text-muted-foreground">
