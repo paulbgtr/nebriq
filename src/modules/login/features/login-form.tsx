@@ -53,14 +53,56 @@ export default function LoginForm() {
 
   return (
     <>
-      <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-        <p className="text-sm text-muted-foreground">
-          Enter your credentials to access your account
+      <div className="flex flex-col space-y-3 mb-6">
+        <div className="flex justify-center mb-1">
+          <div className="rounded-full bg-primary/10 p-2 w-10 h-10 flex items-center justify-center">
+            <Lock className="h-5 w-5 text-primary" />
+          </div>
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight text-center">Welcome back</h1>
+        <p className="text-sm text-muted-foreground text-center">
+          Sign in to continue to your workspace
         </p>
       </div>
 
       <div className="grid gap-6">
+        <div className="grid grid-cols-2 gap-3 mb-2">
+          <Button
+            variant="outline"
+            className="w-full h-11 flex items-center gap-2 border-border/60 hover:bg-muted/50 hover:border-primary/20 transition-all duration-200"
+            onClick={async () => {
+              await signInWithGoogle();
+            }}
+            disabled={isPending}
+          >
+            <FaGoogle className="h-4 w-4 text-[#4285F4]" />
+            <span className="text-sm font-medium">Google</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            className="w-full h-11 flex items-center gap-2 border-border/60 hover:bg-muted/50 hover:border-primary/20 transition-all duration-200"
+            onClick={async () => {
+              await signInWithGithub();
+            }}
+            disabled={isPending}
+          >
+            <Github className="h-4 w-4 text-foreground" />
+            <span className="text-sm font-medium">GitHub</span>
+          </Button>
+        </div>
+
+        <div className="relative my-3">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border/40" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-background px-2 text-muted-foreground">
+              or with email and password
+            </span>
+          </div>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -68,7 +110,7 @@ export default function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">Email</FormLabel>
+                  <FormLabel className="text-sm font-medium text-muted-foreground">Email</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
@@ -78,8 +120,10 @@ export default function LoginForm() {
                         placeholder="name@example.com"
                         className={cn(
                           "pl-9 pr-4 py-5 text-sm",
-                          "bg-background/50 hover:bg-background/80 focus:bg-background",
-                          "transition-colors duration-200"
+                          "bg-background hover:bg-background/80 focus:bg-background",
+                          "border-border/60 focus:border-primary/50",
+                          "rounded-md shadow-sm",
+                          "transition-all duration-200"
                         )}
                       />
                     </div>
@@ -94,9 +138,17 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">
-                    Password
-                  </FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel className="text-sm font-medium text-muted-foreground">
+                      Password
+                    </FormLabel>
+                    <Link
+                      href="/forgot-password"
+                      className="text-xs text-primary/90 hover:text-primary hover:underline transition-colors"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
                   <FormControl>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
@@ -106,8 +158,10 @@ export default function LoginForm() {
                         placeholder="••••••••"
                         className={cn(
                           "pl-9 pr-4 py-5 text-sm",
-                          "bg-background/50 hover:bg-background/80 focus:bg-background",
-                          "transition-colors duration-200"
+                          "bg-background hover:bg-background/80 focus:bg-background",
+                          "border-border/60 focus:border-primary/50",
+                          "rounded-md shadow-sm",
+                          "transition-all duration-200"
                         )}
                       />
                     </div>
@@ -117,19 +171,12 @@ export default function LoginForm() {
               )}
             />
 
-            <div className="flex items-center justify-end">
-              <Link
-                href="/forgot-password"
-                className="text-xs text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-
             <Button
               className={cn(
-                "w-full relative group h-11",
-                "bg-gradient-to-r from-primary to-primary/90"
+                "w-full relative group h-11 mt-2",
+                "bg-primary hover:bg-primary/90 text-primary-foreground",
+                "shadow-sm hover:shadow-md",
+                "transition-all duration-200"
               )}
               type="submit"
               disabled={isPending}
@@ -141,54 +188,32 @@ export default function LoginForm() {
             </Button>
           </form>
         </Form>
-
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <Button
-            variant="outline"
-            className="w-full h-11 flex items-center gap-2"
-            onClick={async () => {
-              await signInWithGoogle();
-            }}
-            disabled={isPending}
-          >
-            <FaGoogle className="h-5 w-5" />
-            Sign in with Google
-          </Button>
-
-          <Button
-            variant="outline"
-            className="w-full h-11 flex items-center gap-2"
-            onClick={async () => {
-              await signInWithGithub();
-            }}
-            disabled={isPending}
-          >
-            <Github className="h-5 w-5" />
-            Sign in with GitHub
-          </Button>
-        </div>
       </div>
 
-      <p className="px-8 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
-        <Link
-          href="/signup"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Create an account
-        </Link>
-      </p>
+      <div className="mt-8 text-center">
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/signup"
+            className="font-medium text-primary hover:text-primary/90 transition-colors"
+          >
+            Sign up now
+          </Link>
+        </p>
+      </div>
+      
+      <div className="mt-8 pt-4 border-t border-border/30 text-center">
+        <p className="text-xs text-muted-foreground/60">
+          By continuing, you agree to our{" "}
+          <Link href="/terms" className="hover:underline text-muted-foreground/80">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="hover:underline text-muted-foreground/80">
+            Privacy Policy
+          </Link>
+        </p>
+      </div>
     </>
   );
 }
