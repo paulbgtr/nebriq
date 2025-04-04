@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { AIModel, ModelCapability } from "@/types/ai-model";
+import { LLMMode } from "@/types/chat";
 import { models } from "@/shared/data/models";
 import { classifyModel } from "@/app/actions/llm/model-classifier";
 
@@ -12,8 +13,10 @@ export const complexityToCapabilities: Record<string, ModelCapability[]> = {
 
 type SelectedModelState = {
   selectedModel: AIModel;
+  selectedMode: LLMMode;
   isAutoMode: boolean;
   setSelectedModel: (model: AIModel) => void;
+  setSelectedMode: (mode: LLMMode) => void;
   setAutoMode: (isAuto: boolean) => void;
   getModelForQuery: (query: string) => Promise<AIModel>;
 };
@@ -101,8 +104,10 @@ export const useSelectedModelStore = create<SelectedModelState>()(
   persist(
     (set) => ({
       selectedModel: models[0],
+      selectedMode: "standard" as LLMMode,
       isAutoMode: true,
       setSelectedModel: (model) => set({ selectedModel: model }),
+      setSelectedMode: (mode) => set({ selectedMode: mode }),
       setAutoMode: (isAuto) => set({ isAutoMode: isAuto }),
       getModelForQuery: async (query) => {
         let complexity = filterSimpleQuery(query);
@@ -118,6 +123,7 @@ export const useSelectedModelStore = create<SelectedModelState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         selectedModel: ensureModelProperties(state.selectedModel),
+        selectedMode: state.selectedMode,
         isAutoMode: state.isAutoMode,
       }),
     }
