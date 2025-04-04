@@ -92,11 +92,51 @@ export default {
             opacity: "0.8",
           },
         },
+        "slidein": {
+          "0%": {
+            transform: "translateY(20px)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "translateY(0px)",
+            opacity: "1",
+          },
+        },
+        "slideinfromright": {
+          "0%": {
+            transform: "translateX(20px)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "translateX(0px)",
+            opacity: "1",
+          },
+        },
+        "fadein": {
+          "0%": {
+            opacity: "0",
+          },
+          "100%": {
+            opacity: "1",
+          },
+        },
+        "slowzoom": {
+          "0%": {
+            transform: "scale(1)",
+          },
+          "100%": {
+            transform: "scale(1.05)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "slidein": "slidein 0.6s ease-out",
+        "slideinfromright": "slideinfromright 0.6s ease-out",
+        "fadein": "fadein 0.4s ease-out",
+        "slowzoom": "slowzoom 20s ease-in-out alternate infinite",
       },
     },
   },
