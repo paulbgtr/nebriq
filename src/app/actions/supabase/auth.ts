@@ -57,13 +57,28 @@ export async function signInWithGithub() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github" as Provider,
     options: {
-      redirectTo: `https://nebriq.com/api/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
     },
   });
 
   if (error) {
     console.error("Error signing in with GitHub:", error);
     return redirect("/login?message=Could not authenticate with GitHub");
+  }
+
+  return redirect(data.url);
+}
+
+export async function signInWithGoogle() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google" as Provider,
+  });
+
+  if (error) {
+    console.error("Error signing in with Google:", error);
+    return redirect("/login?message=Could not authenticate with Google");
   }
 
   return redirect(data.url);
