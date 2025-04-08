@@ -7,7 +7,6 @@ import { headers } from "next/headers";
 import { createClient } from "@/shared/lib/supabase/server";
 import { sendEmail } from "@/app/actions/emails/send-email";
 import { EmailTemplate } from "@/enums/email-template";
-import { createTokenLimitIfNotExists } from "@/shared/lib/utils";
 import { Provider } from "@supabase/supabase-js";
 
 export async function login(email: string, password: string) {
@@ -25,8 +24,6 @@ export async function login(email: string, password: string) {
   if (error || !user) {
     throw new Error(error?.message || "Invalid login credentials");
   }
-
-  await createTokenLimitIfNotExists(user.id);
 
   const headersList = await headers();
   const userAgent = headersList.get("user-agent") || "Unknown browser";

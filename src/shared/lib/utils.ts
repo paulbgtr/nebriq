@@ -3,10 +3,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { tfidfResultSchema } from "./schemas/tfidf-result";
-import {
-  getUserTokenLimits,
-  createTokenLimit,
-} from "@/app/actions/supabase/token_limits";
 import { AddToWaitlist } from "@/shared/components/emails/add-to-waitlist";
 import { LoginNotification } from "@/shared/components/emails/login-notification";
 import { FeedbackEmail } from "@/shared/components/emails/feedback";
@@ -102,21 +98,6 @@ export const formatFileSize = (bytes: number): string => {
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-};
-
-/**
- * Creates a token limit if it does not exist for the given user ID.
- *
- * @param userId - The ID of the user for whom to create the token limit.
- */
-export const createTokenLimitIfNotExists = async (userId: string) => {
-  const tokenLimit = await getUserTokenLimits(userId);
-  if (!tokenLimit) {
-    await createTokenLimit({
-      user_id: userId,
-      token_limit: 5000,
-    });
-  }
 };
 
 /**

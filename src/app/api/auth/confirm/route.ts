@@ -3,7 +3,6 @@ import { type NextRequest } from "next/server";
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { createTokenLimitIfNotExists } from "@/shared/lib/utils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -19,13 +18,6 @@ export async function GET(request: NextRequest) {
     });
 
     if (!error) {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        await createTokenLimitIfNotExists(user.id);
-      }
       redirect("/home");
     }
   }
