@@ -4,7 +4,7 @@ import { useState, useCallback, useTransition } from "react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { useSubscription } from "@/shared/hooks/use-subscription";
 import { Spinner } from "@/shared/components/spinner";
-import { Button } from "@/shared/components/ui/button";
+import { Button, buttonVariants } from "@/shared/components/ui/button";
 import {
   BookOpen,
   FolderIcon,
@@ -31,7 +31,7 @@ import {
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
 import Link from "next/link";
-
+import { cn } from "@/shared/lib/utils";
 export default function LibraryModule() {
   const { getNotesQuery, deleteNotesMutation } = useNotes();
   const { isFree } = useSubscription();
@@ -128,7 +128,7 @@ export default function LibraryModule() {
       </motion.div>
     );
 
-  if (!notes?.length) {
+  if (notes?.length) {
     return (
       <motion.div
         className="min-h-[500px] flex flex-col items-center justify-center"
@@ -164,15 +164,16 @@ export default function LibraryModule() {
               </p>
             )}
           </div>
-          <Button
-            size="lg"
-            className="bg-primary/90 hover:bg-primary transition-colors duration-300 shadow-sm group"
+          <Link
+            href="/write"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "shadow-sm group"
+            )}
           >
-            <Link href="/write">
-              <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              <span>Create Your First Note</span>
-            </Link>
-          </Button>
+            <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
+            <span>Create Your First Note</span>
+          </Link>
         </div>
       </motion.div>
     );
