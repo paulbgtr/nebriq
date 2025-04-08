@@ -1,15 +1,37 @@
-import { getUserTokenLimits, updateTokenLimit } from "../supabase/token_limits";
+import { tokenLimitSchema } from "@/shared/lib/schemas/token-limit";
+import {
+  createTokenLimit,
+  getUserTokenLimits,
+  updateTokenLimit,
+} from "../supabase/token_limits";
 import { getEncoding } from "js-tiktoken";
+import { z } from "zod";
+
+/**
+ * If the token limit does not exist, it creates a new one with a default limit of 5000.
+ * Otherwise, it returns the existing token limit.
+ *
+ * @param userId - The ID of the user for whom to create the token limit.
+ */
+export const createTokenLimitIfNotExists = async (
+  userId: string
+): Promise<z.infer<typeof tokenLimitSchema>> => {
+  const tokenLimit = await getUserTokenLimits(userId);
+  if (!tokenLimit) {
+    return await createTokenLimit({
+      user_id: userId,
+      token_limit: 5000,
+    });
+  }
+
+  return tokenLimit;
+};
 
 export const handleTokenLimits = async (
   userId: string,
   prompt: string
 ): Promise<void> => {
-  const tokenLimit = await getUserTokenLimits(userId);
-
-  if (!tokenLimit) {
-    throw new Error("Token limit not found");
-  }
+  const tokenLimit = await createTokenLimitIfNotExists(userId);
 
   const resetDate = tokenLimit.reset_date;
   const tokensUsed = tokenLimit.tokens_used;
