@@ -128,7 +128,7 @@ export default function LibraryModule() {
       </motion.div>
     );
 
-  if (notes?.length) {
+  if (!notes?.length) {
     return (
       <motion.div
         className="min-h-[500px] flex flex-col items-center justify-center"
