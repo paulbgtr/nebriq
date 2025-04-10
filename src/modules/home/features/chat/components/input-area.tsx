@@ -25,19 +25,14 @@ import {
   Sunrise,
   Sunset,
   Coffee,
-  Settings,
-  Gauge,
 } from "lucide-react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
-import { ModelSelector } from "./model-selector";
 import { ModeSelector } from "./mode-selector";
 import { useUser } from "@/shared/hooks/use-user";
-import { useSelectedModelStore } from "@/store/selected-model";
-import { Switch } from "@/shared/components/ui/switch";
 
 export interface InputAreaHandle {
   focusInput: () => void;
@@ -160,11 +155,9 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
   ({ followUp, setFollowUp, setQuery, isEmpty = false }, ref) => {
     const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const { getNotesQuery } = useNotes();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const { isAutoMode, setAutoMode } = useSelectedModelStore();
 
     useImperativeHandle(ref, () => ({
       focusInput: () => {
@@ -237,6 +230,24 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
 
     const handleNoteRemove = (noteId: string) => {
       setSelectedNoteIds((prev) => prev.filter((id) => id !== noteId));
+    };
+
+    const SubmitButton = () => {
+      return (
+        <div className="flex items-center gap-2">
+          <Button
+            type="submit"
+            disabled={followUp.length === 0}
+            className={cn(
+              "flex items-center justify-center",
+              "h-8 w-8 rounded-lg",
+              "transition-all duration-300 ease-in-out"
+            )}
+          >
+            <FaArrowUp className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+      );
     };
 
     return (
@@ -320,23 +331,6 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                     "transition-all duration-300 ease-in-out"
                   )}
                 />
-                <div className="flex items-center gap-2 px-4">
-                  <Button
-                    type="submit"
-                    disabled={followUp.length === 0}
-                    className={cn(
-                      "flex items-center justify-center",
-                      "h-8 w-8 rounded-full",
-                      "transition-all duration-300 ease-in-out",
-                      followUp.length > 0
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "bg-muted/40 text-muted-foreground",
-                      "disabled:opacity-40 disabled:cursor-not-allowed"
-                    )}
-                  >
-                    <FaArrowUp className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
               </div>
 
               <div
@@ -353,7 +347,7 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                       <button
                         type="button"
                         className={cn(
-                          "flex items-center gap-2 px-2 py-1",
+                          "flex items-center gap-2 py-1",
                           "rounded-full",
                           "text-xs font-medium",
                           "hover:bg-muted/50",
@@ -436,80 +430,12 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                       </div>
                     </PopoverContent>
                   </Popover>
-
-                  <Popover
-                    open={isSettingsOpen}
-                    onOpenChange={setIsSettingsOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <button
-                        type="button"
-                        className={cn(
-                          "flex items-center gap-2 px-2 py-1",
-                          "rounded-full",
-                          "text-xs font-medium",
-                          "hover:bg-muted/50",
-                          "text-muted-foreground/70 hover:text-muted-foreground",
-                          "transition-colors duration-200"
-                        )}
-                      >
-                        <Settings className="w-3.5 h-3.5" />
-                        <span>Settings</span>
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      side="top"
-                      align="start"
-                      className="w-64 p-3 rounded-lg shadow-md border border-border/30 bg-background/95 backdrop-blur-sm"
-                    >
-                      <div className="space-y-3">
-                        <div className="space-y-2">
-                          <div className="text-xs font-medium text-muted-foreground mb-2">
-                            Chat Settings
-                          </div>
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1.5">
-                                <Gauge
-                                  className={cn(
-                                    "h-3.5 w-3.5 transition-colors duration-200",
-                                    isAutoMode
-                                      ? "text-amber-500"
-                                      : "text-muted-foreground/50"
-                                  )}
-                                />
-                                <span
-                                  className={cn(
-                                    "text-xs transition-colors duration-200",
-                                    isAutoMode
-                                      ? "text-foreground font-medium"
-                                      : "text-muted-foreground"
-                                  )}
-                                >
-                                  Auto-select model
-                                </span>
-                              </div>
-                              <Switch
-                                checked={isAutoMode}
-                                onCheckedChange={setAutoMode}
-                                className="data-[state=checked]:bg-amber-500"
-                              />
-                            </div>
-                            <p className="text-[9px] text-muted-foreground/70 mt-1">
-                              {isAutoMode
-                                ? "AI will intelligently select the best model for your query"
-                                : "Manually select your preferred AI model"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <ModeSelector />
-                  <ModelSelector />
+
+                  <SubmitButton />
                 </div>
               </div>
             </div>
