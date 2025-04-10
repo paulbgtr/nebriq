@@ -2,6 +2,12 @@ import { polar } from "@/shared/lib/polar/client";
 import { ProductsSection } from "@/modules/subscription/features/products-section";
 import { Sparkles } from "lucide-react";
 import { PricingFAQ } from "@/modules/subscription/features/components/pricing-faq";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/shared/components/ui/tabs";
 
 export default async function SubscriptionModule() {
   const polarClient = await polar();
@@ -70,9 +76,41 @@ export default async function SubscriptionModule() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative mb-20 mx-auto">
-        <div className="absolute -z-10 inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_75%)]"></div>
-        <ProductsSection products={result.items} />
+      <div className="mb-8">
+        <Tabs defaultValue="monthly" className="w-full">
+          <div className="flex justify-center mb-6">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsTrigger value="monthly">Monthly</TabsTrigger>
+              <TabsTrigger value="yearly">Yearly (Save 20%)</TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value="monthly">
+            <div className="relative w-full mb-20">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto max-w-3xl container">
+                <ProductsSection
+                  products={result.items.filter(
+                    (p) =>
+                      p.prices[0].recurringInterval?.toLowerCase() !== "year" &&
+                      p.prices[0].recurringInterval?.toLowerCase() !== "yearly"
+                  )}
+                />
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="yearly">
+            <div className="relative w-full mb-20">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto max-w-3xl container">
+                <ProductsSection
+                  products={result.items.filter(
+                    (p) =>
+                      p.prices[0].recurringInterval?.toLowerCase() === "year" ||
+                      p.prices[0].recurringInterval?.toLowerCase() === "yearly"
+                  )}
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       <PricingFAQ />

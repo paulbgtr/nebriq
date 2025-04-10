@@ -62,32 +62,28 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   const checkoutUrl = (id: string) =>
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout?productId=${id}&metadata=${checkoutMetadata}`;
 
+  // Check if products array has enough items
+  if (!products || products.length === 0) {
+    return (
+      <div className="col-span-full min-h-[200px] flex items-center justify-center">
+        <div className="p-8 text-center text-muted-foreground">
+          No products available for this billing cycle.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      <ProductCard
-        product={products[3]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-        checkoutUrl={checkoutUrl(products[3].id)}
-      />
-      <ProductCard
-        product={products[2]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-        checkoutUrl={checkoutUrl(products[2].id)}
-      />
-      <ProductCard
-        product={products[1]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-        checkoutUrl={checkoutUrl(products[1].id)}
-      />
-      <ProductCard
-        product={products[0]}
-        userId={user.id as string}
-        userEmail={user.email as string}
-        checkoutUrl={checkoutUrl(products[0].id)}
-      />
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          userId={user.id as string}
+          userEmail={user.email as string}
+          checkoutUrl={checkoutUrl(product.id)}
+        />
+      ))}
     </>
   );
 };
