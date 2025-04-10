@@ -171,12 +171,10 @@ export const Snap = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="relative flex-shrink-0 gap-1.5 pl-2.5 pr-3 h-9 border border-primary/20 group bg-background/50 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 overflow-hidden"
+            className="relative flex-shrink-0 gap-1.5 pl-2.5 pr-3 h-9 border border-primary/20 group bg-background/50 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 overflow-hidden group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-auto"
+            title="Snap to notes"
           >
             <Camera className="w-4 h-4 text-primary relative z-10" />
-            <span className="text-xs font-medium bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80 group-hover:from-primary/90 group-hover:to-primary transition-all">
-              Snap
-            </span>
           </Button>
         </DialogTrigger>
 
