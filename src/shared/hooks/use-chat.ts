@@ -334,12 +334,9 @@ export const useChat = (
       };
 
       // Get the latest store state
-      const { selectedModel, isAutoMode, getModelForQuery } =
-        useSelectedModelStore.getState();
+      const { getModelForQuery } = useSelectedModelStore.getState();
 
-      const modelToUse = isAutoMode
-        ? await getModelForQuery(message)
-        : selectedModel;
+      const modelToUse = await getModelForQuery(message);
 
       const data = await chat(
         message,
