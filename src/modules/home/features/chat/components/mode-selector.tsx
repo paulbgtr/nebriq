@@ -18,6 +18,11 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/components/ui/tooltip";
 
 type ModeIconProps = {
   mode: LLMMode;
@@ -50,31 +55,35 @@ export const ModeSelector = () => {
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <button
-          className={cn(
-            "flex items-center gap-1 text-xs text-muted-foreground/70 hover:text-foreground",
-            "transition-colors duration-200",
-            "px-2.5 py-1.5 rounded-md",
-            "hover:bg-muted/50 focus:bg-muted/50 focus:outline-none",
-            "border border-transparent hover:border-border/30"
-          )}
-        >
-          <span className="flex items-center gap-1.5">
-            <ModeIcon
-              mode={selectedMode}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
               className={cn(
-                "w-4 h-4",
-                selectedModeOption?.color || "text-blue-500"
+                "flex items-center gap-1 text-xs text-muted-foreground/70 hover:text-foreground",
+                "transition-colors duration-200",
+                "px-2.5 py-1.5 rounded-md",
+                "hover:bg-muted/50 focus:bg-muted/50 focus:outline-none",
+                "border border-transparent hover:border-border/30"
               )}
-            />
-            <span className="font-medium hidden sm:inline-block">
-              {selectedModeOption?.label || "Standard"}
-            </span>
-          </span>
-          <ChevronDown className="w-3 h-3 ml-0.5 text-muted-foreground/50" />
-        </button>
-      </PopoverTrigger>
+            >
+              <span className="flex items-center gap-1.5">
+                <ModeIcon
+                  mode={selectedMode}
+                  className={cn(
+                    "w-4 h-4",
+                    selectedModeOption?.color || "text-blue-500"
+                  )}
+                />
+              </span>
+              <ChevronDown className="w-3 h-3 ml-0.5 text-muted-foreground/50" />
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p>Reasoning mode</p>
+        </TooltipContent>
+      </Tooltip>
       <PopoverContent
         side="top"
         align="end"
