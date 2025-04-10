@@ -63,7 +63,7 @@ export const models: AIModel[] = [
     technicalDetails: "Mistral AI's lightweight 3B parameter open source model",
   },
   {
-    id: "mistral-large",
+    id: "mistral-large-latest",
     name: "Mistral Large",
     description: "Advanced, open-source for advanced language tasks.",
     available: true,
