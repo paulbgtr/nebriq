@@ -27,7 +27,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <AppSidebar />
       <main className="w-full">
         <div className="flex justify-between items-center p-4 bg-background/50 backdrop-blur-sm sticky top-0 z-50 border-b border-border/40">

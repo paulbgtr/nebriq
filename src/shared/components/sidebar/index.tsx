@@ -12,6 +12,7 @@ import {
   Shield,
   Trash2,
   Clock,
+  Crown,
 } from "lucide-react";
 import { useSubscription } from "@/shared/hooks/use-subscription";
 import { Snap } from "./snap";
@@ -84,28 +85,34 @@ export function AppSidebar() {
 
   return (
     <>
-      <Sidebar className="border-r border-border/40">
+      <Sidebar className="border-r border-border/40" collapsible="icon">
         <SidebarContent className="flex flex-col h-full">
           <div className="flex-1">
             {/* Action buttons row */}
-            <div className="flex items-center gap-2 px-4 py-3">
-              <Button
-                variant="default"
-                size="sm"
-                className={cn(
-                  "flex-1 gap-2 transition-all duration-200 hover:scale-102 shadow-sm",
-                  pathname === "/write" && "opacity-80"
-                )}
-                disabled={pathname === "/write"}
-                asChild
-              >
-                <Link href="/write">
-                  <Pen className="w-4 h-4" />
-                  <span>Compose</span>
-                </Link>
-              </Button>
+            <div className="flex items-center gap-2 px-4 py-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:flex-col">
+              <div className="flex-1 flex items-center justify-center">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className={cn(
+                    "w-full gap-2 transition-all duration-200 hover:scale-102 shadow-sm group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center ",
+                    pathname === "/write" && "opacity-80"
+                  )}
+                  disabled={pathname === "/write"}
+                  asChild
+                >
+                  <Link href="/write" title="Create new note">
+                    <Pen className="w-4 h-4" />
+                    <span className="group-data-[collapsible=icon]:hidden">
+                      Compose
+                    </span>
+                  </Link>
+                </Button>
+              </div>
 
-              <Snap />
+              <div className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center">
+                <Snap />
+              </div>
             </div>
 
             {/* Main Navigation */}
@@ -119,6 +126,7 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.name}>
                       <SidebarMenuButton
                         asChild
+                        tooltip={item.tooltip}
                         className={cn(
                           "w-full gap-2 transition-all duration-150",
                           pathname === item.href
@@ -169,6 +177,7 @@ export function AppSidebar() {
                             >
                               <SidebarMenuButton
                                 onClick={() => handleChatClick(chat.id)}
+                                tooltip={chat.title}
                                 className={cn(
                                   "w-full gap-2 transition-all duration-150 justify-between pr-2",
                                   activeChatId === chat.id
@@ -177,6 +186,7 @@ export function AppSidebar() {
                                 )}
                               >
                                 <div className="flex items-center gap-2 overflow-hidden">
+                                  <MessageSquarePlus className="w-4 h-4 flex-shrink-0 text-muted-foreground" />
                                   <div className="truncate text-sm">
                                     <span className="truncate">
                                       {chat.title}
@@ -185,7 +195,7 @@ export function AppSidebar() {
                                 </div>
                                 <div
                                   role="button"
-                                  className="w-6 h-6 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-100 transition-opacity rounded-full hover:bg-muted"
+                                  className="w-6 h-6 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-100 transition-opacity rounded-full hover:bg-muted group-data-[collapsible=icon]:hidden"
                                   onClick={(e) => handleDeleteChat(e, chat.id)}
                                 >
                                   <Trash2 className="w-3 h-3" />
@@ -212,10 +222,10 @@ export function AppSidebar() {
             {!isPro && !isPending && (
               <>
                 <div className="px-4 py-2">
-                  <div className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-primary/20 p-3 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5">
+                  <div className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-primary/20 p-3 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary-rgb),0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 group-data-[collapsible=icon]:hidden">
                       <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-medium text-foreground mb-0.5">
                           Upgrade to Pro
@@ -233,21 +243,29 @@ export function AppSidebar() {
                         Upgrade
                       </Button>
                     </div>
+
+                    <Crown
+                      className="hidden w-5 h-5 text-amber-500 group-data-[collapsible=icon]:block cursor-pointer"
+                      onClick={() => router.push("/subscription")}
+                    />
                   </div>
                 </div>
                 <SidebarSeparator className="my-2 opacity-40" />
               </>
             )}
 
-            <div className="px-4 py-2">
+            <div className="px-4 py-2 flex items-center justify-center">
               <FeedbackPopover>
                 <Button
                   variant="outline"
                   size="sm"
                   className="w-full gap-2 text-sm border-dashed border-muted-foreground/30 bg-transparent hover:bg-muted/30 hover:border-muted-foreground/50 transition-all"
+                  title="Share Feedback"
                 >
                   <MessageSquarePlus className="w-4 h-4 text-primary/70" />
-                  <span>Share Feedback</span>
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    Share Feedback
+                  </span>
                 </Button>
               </FeedbackPopover>
             </div>
@@ -260,22 +278,28 @@ export function AppSidebar() {
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       asChild
+                      tooltip="Privacy Policy"
                       className="w-full gap-2 text-xs text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/30"
                     >
                       <Link href="/privacy">
                         <Shield className="w-3 h-3" />
-                        <span>Privacy Policy</span>
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          Privacy Policy
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       asChild
+                      tooltip="Terms of Service"
                       className="w-full gap-2 text-xs text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/30"
                     >
                       <Link href="/terms">
                         <FileText className="w-3 h-3" />
-                        <span>Terms of Service</span>
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          Terms of Service
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
