@@ -37,7 +37,7 @@ Key traits:
 
   // Mode-specific instructions
   let modeInstructions = "";
-  
+
   switch (mode) {
     case "analysis":
       modeInstructions = `You are currently in ANALYSIS mode. Your job is to:
@@ -51,7 +51,7 @@ Key traits:
 
 When analyzing, focus on producing substantive, thoughtful breakdowns rather than superficial summaries.`;
       break;
-      
+
     case "reflection":
       modeInstructions = `You are currently in REFLECTION mode. Your job is to:
 - Ask 2-3 thoughtful questions that help the user clarify meaning, emotion, or intention
@@ -65,7 +65,7 @@ When analyzing, focus on producing substantive, thoughtful breakdowns rather tha
 
 Your questions should feel genuinely helpful rather than generic or forced.`;
       break;
-      
+
     case "ideation":
       modeInstructions = `You are currently in IDEATION mode. Your job is to:
 - Suggest 2-3 creative extensions, angles, or metaphors related to the user's content
@@ -79,7 +79,7 @@ Your questions should feel genuinely helpful rather than generic or forced.`;
 
 Your suggestions should genuinely enhance the user's thinking rather than simply restating their ideas.`;
       break;
-      
+
     case "engineering":
       modeInstructions = `You are currently in ENGINEERING mode. Your job is to:
 - Extract concrete action steps or implementation plans
@@ -93,7 +93,7 @@ Your suggestions should genuinely enhance the user's thinking rather than simply
 
 Focus on moving from concepts to concrete implementations with realistic approaches.`;
       break;
-      
+
     default: // "standard" mode
       modeInstructions = `You are in STANDARD mode. Your job is to:
 - Have a natural conversation with the user
@@ -112,6 +112,7 @@ Focus on moving from concepts to concrete implementations with realistic approac
 ${modeInstructions}
 
 When responding:
+- If the user\'s query relates to a topic for which no relevant notes were provided or found, gently encourage them to explore the topic further and offer to help create a starting note. For example: "You don\'t have a note on [topic] yet. Would you like me to briefly explain, and then we can create a note together with key concepts so you can build on it as you learn?" 🔥
 - If the user includes notes, refer to them specifically
 - If relevant notes are mentioned but not included, acknowledge them without being pushy
 - Format your response appropriately for readability
