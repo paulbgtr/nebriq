@@ -13,7 +13,7 @@ import { Input } from "@/shared/components/ui/input";
 import { resetPassword } from "@/app/actions/supabase/auth";
 import Link from "next/link";
 import { useToast } from "@/shared/hooks/use-toast";
-import { useTransition, useState } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { Lock, ArrowLeft, CheckCircle } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,14 +22,15 @@ import { z } from "zod";
 import { cn } from "@/shared/lib/utils";
 import { getAuthErrorMessage } from "@/shared/lib/utils/auth-errors";
 import { AuthError } from "@supabase/supabase-js";
-import { useSearchParams } from "next/navigation";
+import { createClient } from "@/shared/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function ResetPasswordForm() {
   const { toast } = useToast();
+  const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token") || "";
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -76,24 +77,21 @@ export default function ResetPasswordForm() {
     );
   }
 
-  if (!token) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-bold">Invalid reset link</h1>
-          <p className="text-muted-foreground text-sm">
-            The password reset link is invalid or has expired. Please request a
-            new one.
-          </p>
-        </div>
-        <div className="text-center space-y-4">
-          <Button variant="default" className="w-full" asChild>
-            <Link href="/forgot-password">Request new reset link</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const checkSession = async () => {
+      const supabase = createClient();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.push("/forgot-password?error=session");
+      }
+    };
+
+    checkSession();
+  }, []);
 
   return (
     <>
