@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useChat } from "@/shared/hooks/use-chat";
+import useChat from "@/shared/hooks/use-chat";
 import { useUser } from "@/shared/hooks/use-user";
 import { useRelevantNotesStore } from "@/store/relevant-notes";
 import { useNotes } from "@/shared/hooks/use-notes";
