@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 import { ChatContext } from "@/types/chat";
 
 export type ChatHistoryItem = {
@@ -20,121 +19,57 @@ type ChatHistoryState = {
   getChatById: (id: string) => ChatHistoryItem | undefined;
 };
 
-export const useChatHistoryStore = create<ChatHistoryState>()(
-  persist(
-    (set, get) => ({
-      chatHistory: [],
-      activeChatId: null,
+export const useChatHistoryStore = create<ChatHistoryState>((set, get) => ({
+  chatHistory: [],
+  activeChatId: null,
 
-      addChat: (context: ChatContext) => {
-        const id = crypto.randomUUID();
-        const title = generateChatTitle(context);
-        const now = new Date();
+  addChat: (context: ChatContext) => {
+    const id = crypto.randomUUID();
+    const now = new Date();
+    const title = generateChatTitle(context);
 
-        const newChat: ChatHistoryItem = {
-          id,
-          title,
-          createdAt: now,
-          updatedAt: now,
-          context,
-        };
+    const newChat: ChatHistoryItem = {
+      id,
+      title,
+      createdAt: now,
+      updatedAt: now,
+      context,
+    };
 
-        set((state) => {
-          // Check if we already have a chat with the same content
-          const existingChatIndex = state.chatHistory.findIndex(
-            (chat) => JSON.stringify(chat.context) === JSON.stringify(context)
-          );
+    set((state) => ({
+      chatHistory: [newChat, ...state.chatHistory],
+      activeChatId: id,
+    }));
 
-          let updatedHistory = [...state.chatHistory];
+    return id;
+  },
 
-          // If this is a duplicate, don't add it
-          if (existingChatIndex !== -1) {
-            return {
-              chatHistory: updatedHistory,
-              activeChatId: state.chatHistory[existingChatIndex].id,
-            };
-          }
+  updateChat: (id, context) => {
+    set((state) => ({
+      chatHistory: state.chatHistory.map((chat) =>
+        chat.id === id ? { ...chat, context, updatedAt: new Date() } : chat
+      ),
+    }));
+  },
 
-          // Add the new chat to the beginning
-          updatedHistory = [newChat, ...updatedHistory];
+  deleteChat: (id) => {
+    set((state) => ({
+      chatHistory: state.chatHistory.filter((chat) => chat.id !== id),
+      activeChatId: state.activeChatId === id ? null : state.activeChatId,
+    }));
+  },
 
-          // Keep only the 10 most recent chats
-          if (updatedHistory.length > 10) {
-            updatedHistory.length = 10;
-          }
+  setActiveChatId: (id) => set({ activeChatId: id }),
 
-          return {
-            chatHistory: updatedHistory,
-            activeChatId: id,
-          };
-        });
+  getChatById: (id) => get().chatHistory.find((chat) => chat.id === id),
+}));
 
-        return id;
-      },
-
-      updateChat: (id: string, context: ChatContext) => {
-        set((state) => {
-          const chatToUpdate = state.chatHistory.find((chat) => chat.id === id);
-
-          // If chat doesn't exist, don't update anything
-          if (!chatToUpdate) return state;
-
-          // Only update the content, not the position in the list
-          return {
-            chatHistory: state.chatHistory.map((chat) =>
-              chat.id === id
-                ? {
-                    ...chat,
-                    context,
-                    // Only update the title if it's a new chat (no title or "New Chat")
-                    title:
-                      !chat.title || chat.title === "New Chat"
-                        ? generateChatTitle(context)
-                        : chat.title,
-                    // Only update updatedAt if the content has changed
-                    updatedAt:
-                      JSON.stringify(chat.context) !== JSON.stringify(context)
-                        ? new Date()
-                        : chat.updatedAt,
-                  }
-                : chat
-            ),
-          };
-        });
-      },
-
-      deleteChat: (id: string) => {
-        set((state) => ({
-          chatHistory: state.chatHistory.filter((chat) => chat.id !== id),
-          activeChatId: state.activeChatId === id ? null : state.activeChatId,
-        }));
-      },
-
-      setActiveChatId: (id: string | null) => {
-        set({ activeChatId: id });
-      },
-
-      getChatById: (id: string) => {
-        return get().chatHistory.find((chat) => chat.id === id);
-      },
-    }),
-    {
-      name: "chat-history-storage",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
-
-// Helper function to generate a title from the first user message
 function generateChatTitle(context: ChatContext): string {
   const firstUserMessage = context.conversationHistory.find(
     (msg) => msg.role === "user"
   );
-
-  if (!firstUserMessage) return "New Chat";
-
-  const content = firstUserMessage.content.trim();
-
-  // Limit to first 30 characters
-  return content.length > 30 ? `${content.substring(0, 30)}...` : content;
+  const content = firstUserMessage?.content.trim() ?? "";
+  return content.length > 30
+    ? content.slice(0, 30) + "..."
+    : content || "New Chat";
 }
