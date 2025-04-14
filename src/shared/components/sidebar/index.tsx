@@ -11,7 +11,6 @@ import {
   FileText,
   Shield,
   Trash2,
-  Clock,
   Crown,
 } from "lucide-react";
 import { useSubscription } from "@/shared/hooks/use-subscription";
@@ -153,13 +152,12 @@ export function AppSidebar() {
             </SidebarGroup>
 
             {/* Chat History Section */}
-            {user && chatHistory.length > 0 && (
+            {user && (
               <>
                 <SidebarSeparator className="my-2 opacity-40" />
                 <SidebarGroup>
-                  <SidebarGroupLabel className="flex items-center gap-1 text-xs font-medium text-muted-foreground/80">
-                    <Clock className="w-3 h-3" />
-                    <span>Chat History</span>
+                  <SidebarGroupLabel className="text-xs font-medium text-muted-foreground/70">
+                    Chat History
                   </SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
@@ -179,14 +177,13 @@ export function AppSidebar() {
                                 onClick={() => handleChatClick(chat.id)}
                                 tooltip={chat.title}
                                 className={cn(
-                                  "w-full gap-2 transition-all duration-150 justify-between pr-2",
+                                  "w-full transition-all duration-150 justify-between pr-2 py-1.5",
                                   activeChatId === chat.id
-                                    ? "bg-primary/8 text-primary font-medium"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                                    ? "bg-primary/5 text-primary/90 font-medium"
+                                    : "text-muted-foreground/80 hover:text-foreground/90 hover:bg-muted/30"
                                 )}
                               >
-                                <div className="flex items-center gap-2 overflow-hidden">
-                                  <MessageSquarePlus className="w-4 h-4 flex-shrink-0 text-muted-foreground" />
+                                <div className="flex items-center overflow-hidden pl-1">
                                   <div className="truncate text-sm">
                                     <span className="truncate">
                                       {chat.title}
@@ -195,7 +192,7 @@ export function AppSidebar() {
                                 </div>
                                 <div
                                   role="button"
-                                  className="w-6 h-6 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-100 transition-opacity rounded-full hover:bg-muted group-data-[collapsible=icon]:hidden"
+                                  className="w-5 h-5 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-80 transition-opacity rounded-sm hover:bg-muted/50 group-data-[collapsible=icon]:hidden"
                                   onClick={(e) => handleDeleteChat(e, chat.id)}
                                 >
                                   <Trash2 className="w-3 h-3" />
@@ -205,11 +202,11 @@ export function AppSidebar() {
                             </SidebarMenuItem>
                           ))
                       ) : (
-                        <SidebarMenuItem>
-                          <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                            No chat history yet
-                          </div>
-                        </SidebarMenuItem>
+                        <div className="px-3 py-2">
+                          <p className="text-xs text-muted-foreground/50 italic">
+                            Your conversations will appear here
+                          </p>
+                        </div>
                       )}
                     </SidebarMenu>
                   </SidebarGroupContent>
