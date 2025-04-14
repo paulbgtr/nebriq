@@ -42,7 +42,7 @@ export default function ResetPasswordForm() {
   const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
     startTransition(async () => {
       try {
-        await resetPassword(values.password, token);
+        await resetPassword(values.password);
         setIsSubmitSuccessful(true);
       } catch (error) {
         toast({
@@ -63,18 +63,13 @@ export default function ResetPasswordForm() {
           </div>
           <h1 className="text-2xl font-bold">Password reset successful</h1>
           <p className="text-muted-foreground text-sm">
-            Your password has been successfully reset. You can now log in with your new password.
+            Your password has been successfully reset. You can now log in with
+            your new password.
           </p>
         </div>
         <div className="text-center space-y-4">
-          <Button
-            variant="default"
-            className="w-full"
-            asChild
-          >
-            <Link href="/login">
-              Back to login
-            </Link>
+          <Button variant="default" className="w-full" asChild>
+            <Link href="/login">Back to login</Link>
           </Button>
         </div>
       </div>
@@ -87,18 +82,13 @@ export default function ResetPasswordForm() {
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-bold">Invalid reset link</h1>
           <p className="text-muted-foreground text-sm">
-            The password reset link is invalid or has expired. Please request a new one.
+            The password reset link is invalid or has expired. Please request a
+            new one.
           </p>
         </div>
         <div className="text-center space-y-4">
-          <Button
-            variant="default"
-            className="w-full"
-            asChild
-          >
-            <Link href="/forgot-password">
-              Request new reset link
-            </Link>
+          <Button variant="default" className="w-full" asChild>
+            <Link href="/forgot-password">Request new reset link</Link>
           </Button>
         </div>
       </div>
