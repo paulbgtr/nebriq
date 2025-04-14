@@ -219,3 +219,32 @@ export async function requestAccountDeletion(formData: FormData) {
     }
   );
 }
+
+export async function forgotPassword(email: string) {
+  const supabase = await createClient();
+  const cleanEmail = email.toLowerCase().trim();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+}
+
+export async function resetPassword(password: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+}
