@@ -10,6 +10,7 @@ import { EmailTemplate } from "@/enums/email-template";
 import { EmailData } from "@/types/email-data";
 import { DeletionRequestAdmin } from "@/shared/components/emails/deletion-request-admin";
 import { DeletionRequestUser } from "../components/emails/deletion-request-user";
+import { PasswordReset } from "@/shared/components/emails/password-reset";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -145,6 +146,11 @@ export function getEmailTemplate<T extends EmailTemplate>(
       const userData = data as EmailData[EmailTemplate.DELETION_REQUEST_USER];
       return DeletionRequestUser({
         reason: userData.reason,
+      });
+    case EmailTemplate.PASSWORD_RESET:
+      const resetData = data as EmailData[EmailTemplate.PASSWORD_RESET];
+      return PasswordReset({
+        resetLink: resetData.resetLink,
       });
     default:
       throw new Error(`Unknown email template: ${template}`);

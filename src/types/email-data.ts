@@ -23,4 +23,7 @@ export type EmailData = {
   [EmailTemplate.DELETION_REQUEST_USER]: {
     reason: string;
   };
+  [EmailTemplate.PASSWORD_RESET]: {
+    resetLink: string;
+  };
 };
