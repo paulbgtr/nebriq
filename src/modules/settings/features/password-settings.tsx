@@ -24,7 +24,7 @@ export const PasswordSettings = () => {
       </CardHeader>
       <form>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="password">Current Password</Label>
             <div className="relative">
               <Input
@@ -36,7 +36,7 @@ export const PasswordSettings = () => {
               />
               <Lock className="h-4 w-4 absolute left-2.5 top-2.5 text-muted-foreground" />
             </div>
-          </div>
+          </div> */}
           <div className="space-y-2">
             <Label htmlFor="newPassword">New Password</Label>
             <div className="relative">
