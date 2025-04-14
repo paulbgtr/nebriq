@@ -40,6 +40,22 @@ export default function ResetPasswordForm() {
     },
   });
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const supabase = createClient();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.push("/forgot-password?error=session");
+      }
+    };
+
+    checkSession();
+  }, []);
+
   const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
     startTransition(async () => {
       try {
@@ -76,22 +92,6 @@ export default function ResetPasswordForm() {
       </div>
     );
   }
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const supabase = createClient();
-
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        router.push("/forgot-password?error=session");
-      }
-    };
-
-    checkSession();
-  }, []);
 
   return (
     <>
