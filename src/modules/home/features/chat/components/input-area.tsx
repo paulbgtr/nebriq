@@ -58,23 +58,34 @@ const AttachedNotePreview = ({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       className={cn(
-        "flex items-center gap-2 px-2.5 py-1",
+        "flex items-center gap-2 px-3 py-1.5",
         "rounded-full",
         "bg-primary/5 hover:bg-primary/10",
-        "border border-primary/15",
-        "group transition-colors duration-200"
+        "border border-primary/20",
+        "shadow-sm",
+        "group transition-all duration-200 ease-out"
       )}
     >
-      <FileText className="w-3 h-3 text-primary/60 shrink-0" />
-      <span className="text-xs font-medium truncate max-w-[120px] text-primary/80">
-        {note.title || "Untitled"}
-      </span>
+      <div className="flex items-center gap-1.5">
+        <FileText className="w-3 h-3 text-primary/60 shrink-0" />
+        <span className="text-xs font-medium truncate max-w-[120px] text-primary/80">
+          {note.title || "Untitled"}
+        </span>
+      </div>
       <button
         onClick={onRemove}
-        className="text-primary/40 hover:text-primary/80 opacity-0 group-hover:opacity-100 transition-opacity"
+        className={cn(
+          "text-primary/40 hover:text-primary/80",
+          "opacity-0 group-hover:opacity-100",
+          "transition-all duration-200",
+          "focus:opacity-100 focus:outline-none",
+          "w-4 h-4 rounded-full",
+          "flex items-center justify-center",
+          "hover:bg-primary/10 active:scale-90"
+        )}
         aria-label="Remove note"
       >
-        <X className="w-3 h-3" />
+        <X className="w-2.5 h-2.5" />
       </button>
     </motion.div>
   );
@@ -123,30 +134,28 @@ const Greeting = () => {
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: 0.4,
+        duration: 0.5,
         ease: [0.22, 1, 0.36, 1],
       }}
       className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1.5",
-        "rounded-full",
-        "bg-muted/20 border border-border/30",
-        "text-muted-foreground/70",
+        "inline-flex items-center gap-2 px-4 py-2",
+        "rounded-xl",
+        "bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/15",
+        "text-primary/80",
+        "shadow-sm",
         "transition-all duration-300 ease-in-out"
       )}
     >
-      <TimeIcon className="w-3.5 h-3.5 text-muted-foreground/60" />
-      <div className="flex items-center gap-1">
-        <span className="text-xs">{timeGreeting},</span>
-        <span className="text-xs font-medium text-foreground/80">
-          {displayName}
-        </span>
+      <div className="rounded-full bg-primary/10 p-1.5">
+        <TimeIcon className="w-3.5 h-3.5 text-primary/70" />
       </div>
-      <span className="hidden sm:inline-block text-[10px] text-muted-foreground/50 mx-0.5">
-        •
-      </span>
-      <span className="hidden sm:inline-block text-[10px] text-muted-foreground/50">
-        {helpMessage}
-      </span>
+      <div className="flex flex-col leading-tight">
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-medium">{timeGreeting},</span>
+          <span className="text-xs font-semibold">{displayName}</span>
+        </div>
+        <span className="text-[10px] text-primary/70">{helpMessage}</span>
+      </div>
     </motion.div>
   );
 };
@@ -240,8 +249,12 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
             disabled={followUp.length === 0}
             className={cn(
               "flex items-center justify-center",
-              "h-8 w-8 rounded-lg",
-              "transition-all duration-300 ease-in-out"
+              "h-9 w-9 rounded-full",
+              "transition-all duration-300 ease-in-out",
+              "shadow-sm",
+              "bg-primary hover:bg-primary/90",
+              "active:scale-95 disabled:opacity-50",
+              "disabled:pointer-events-none"
             )}
           >
             <FaArrowUp className="w-3.5 h-3.5" />
@@ -308,16 +321,34 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                 "backdrop-blur-xl overflow-hidden",
                 "focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30",
                 "transition-all duration-300 ease-in-out shadow-sm",
+                "hover:shadow-md hover:border-primary/20",
                 isEmpty && "shadow-lg"
               )}
             >
-              <div className="flex items-center">
+              <div className="flex items-center relative">
+                <motion.div
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/30 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: followUp.length > 0 ? 0 : 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-medium">Ask Briq</span>
+                    <span className="hidden sm:inline text-[10px] opacity-70">
+                      •
+                    </span>
+                    <span className="hidden sm:inline text-[10px] opacity-70">
+                      &quot;Summarize this note&quot; or &quot;Generate
+                      ideas&quot;
+                    </span>
+                  </div>
+                </motion.div>
                 <Textarea
                   ref={textareaRef}
                   value={followUp}
                   onChange={(e) => setFollowUp(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Message Briq..."
+                  placeholder=""
                   rows={1}
                   aria-label="Type your message"
                   className={cn(
@@ -347,12 +378,14 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                       <button
                         type="button"
                         className={cn(
-                          "flex items-center gap-2 py-1",
+                          "flex items-center gap-2 py-1.5 px-3",
                           "rounded-full",
                           "text-xs font-medium",
-                          "hover:bg-muted/50",
+                          "hover:bg-muted/70",
+                          "active:scale-95",
                           "text-muted-foreground/70 hover:text-muted-foreground",
-                          "transition-colors duration-200"
+                          "transition-all duration-200 ease-out",
+                          "border border-transparent hover:border-border/40"
                         )}
                       >
                         <StickyNote className="w-3.5 h-3.5" />
@@ -362,25 +395,44 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                     <PopoverContent
                       side="top"
                       align="start"
-                      className="w-80 p-3 rounded-lg shadow-md border border-border/30 bg-background/95 backdrop-blur-sm"
+                      className="w-80 p-4 rounded-xl shadow-lg border border-border/30 bg-background/95 backdrop-blur-sm"
+                      sideOffset={8}
                     >
                       <div className="space-y-3">
                         <div className="space-y-2">
-                          <div className="text-xs font-medium text-muted-foreground mb-2">
+                          <div className="text-sm font-medium text-foreground mb-3">
                             Attach notes to your message
                           </div>
                           <div className="relative">
+                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                              <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 15 15"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="text-muted-foreground/50"
+                              >
+                                <path
+                                  d="M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z"
+                                  fill="currentColor"
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                ></path>
+                              </svg>
+                            </div>
                             <input
                               type="text"
                               placeholder="Search notes..."
                               value={searchQuery}
                               onChange={handleSearchChange}
                               className={cn(
-                                "w-full py-1.5 px-2.5",
-                                "text-xs",
-                                "rounded-md border border-input/50 focus:border-primary/30",
-                                "bg-background",
-                                "focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:outline-none"
+                                "w-full py-2.5 pl-9 pr-3",
+                                "text-sm",
+                                "rounded-lg border border-input/50 focus:border-primary/30",
+                                "bg-background/80",
+                                "focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:outline-none",
+                                "transition-all duration-200"
                               )}
                             />
                           </div>
@@ -395,22 +447,25 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                                   exit={{ opacity: 0, scale: 0.95 }}
                                   onClick={() => handleNoteSelect(note.id)}
                                   className={cn(
-                                    "w-full text-left p-2 rounded-md",
-                                    "transition-colors duration-200",
-                                    "hover:bg-muted/50"
+                                    "w-full text-left p-3 rounded-lg",
+                                    "transition-all duration-200 ease-out",
+                                    "hover:bg-muted/70 hover:shadow-sm",
+                                    "border border-transparent hover:border-border/40",
+                                    "active:scale-[0.98]"
                                   )}
                                 >
-                                  <div className="space-y-1">
+                                  <div className="space-y-1.5">
                                     <div className="flex items-start justify-between gap-2">
-                                      <h5 className="font-medium text-sm text-foreground/90 truncate">
-                                        {note.title || "Untitled"}
+                                      <h5 className="font-medium text-sm text-foreground truncate flex items-center gap-1.5">
+                                        <FileText className="w-3.5 h-3.5 text-primary/60 shrink-0" />
+                                        <span>{note.title || "Untitled"}</span>
                                       </h5>
-                                      <time className="text-[10px] text-muted-foreground/60 whitespace-nowrap">
+                                      <time className="text-[10px] text-muted-foreground/60 whitespace-nowrap bg-muted/40 py-0.5 px-1.5 rounded-full">
                                         {formatDate(note.created_at)}
                                       </time>
                                     </div>
                                     {note.content && (
-                                      <p className="text-xs text-muted-foreground line-clamp-2">
+                                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                                         {note.content.replace(/<[^>]*>/g, "")}
                                       </p>
                                     )}
@@ -419,9 +474,14 @@ export const InputArea = forwardRef<InputAreaHandle, Props>(
                               ))}
                             </AnimatePresence>
                             {filteredNotes?.length === 0 && (
-                              <div className="text-center py-6">
-                                <p className="text-sm text-muted-foreground">
+                              <div className="text-center py-8 px-4">
+                                <StickyNote className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+                                <p className="text-sm font-medium text-muted-foreground/70 mb-1">
                                   No notes found
+                                </p>
+                                <p className="text-xs text-muted-foreground/50">
+                                  Try a different search term or create a new
+                                  note
                                 </p>
                               </div>
                             )}
