@@ -27,7 +27,5 @@ export async function runAgent(
     tools,
   });
 
-  const result = await executor.invoke({ input });
-
-  return result.output;
+  return executor;
 }
