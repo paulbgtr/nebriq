@@ -235,7 +235,7 @@ export const chat = async (
   mode: LLMMode = "standard"
 ): Promise<string | null> => {
   try {
-    const result = await runAgent(query, modelId, mode);
+    const result = await runAgent(query, modelId, mode, userId);
     return result || null;
   } catch (error) {
     if ((error as Error).message === "Request aborted") {

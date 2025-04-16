@@ -1,17 +1,18 @@
 import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
-import { ChatOpenAI } from "@langchain/openai";
 import { searchNotes } from "./tools";
 import { LLMMode } from "@/types/chat";
 import { createPromptTemplate } from "./prompt";
+import { ChatMistralAI } from "@langchain/mistralai";
 
 export async function runAgent(
   input: string,
   modelId = "gpt-4o-mini",
-  mode: LLMMode = "standard"
+  mode: LLMMode = "standard",
+  userId: string
 ) {
-  const llm = new ChatOpenAI({ modelName: "gpt-4o-mini" });
+  const llm = new ChatMistralAI({ modelName: modelId });
 
-  const tools = [searchNotes];
+  const tools = [searchNotes(userId)];
 
   const agentPrompt = createPromptTemplate(mode);
 
