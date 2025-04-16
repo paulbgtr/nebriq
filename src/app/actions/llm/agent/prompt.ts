@@ -1,8 +1,7 @@
 import { LLMMode } from "@/types/chat";
 import {
   ChatPromptTemplate,
-  SystemMessagePromptTemplate,
-  HumanMessagePromptTemplate,
+  MessagesPlaceholder,
 } from "@langchain/core/prompts";
 
 /**
@@ -102,7 +101,8 @@ When responding:
 - Be genuinely helpful and thoughtful`;
 
   return ChatPromptTemplate.fromMessages([
-    SystemMessagePromptTemplate.fromTemplate(systemTemplate),
-    HumanMessagePromptTemplate.fromTemplate("{agent_scratchpad}"),
+    ["system", systemTemplate],
+    ["human", "{input}"],
+    new MessagesPlaceholder("agent_scratchpad"),
   ]);
 };
