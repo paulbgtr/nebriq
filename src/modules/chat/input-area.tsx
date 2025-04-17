@@ -28,7 +28,7 @@ import { ModeSelector } from "../home/features/chat/components/mode-selector";
 import { chat } from "@/app/actions/llm/chat";
 import { useUser } from "@/shared/hooks/use-user";
 import { useRouter } from "next/navigation";
-import { routeros } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import queryClient from "@/shared/lib/react-query";
 
 const AttachedNotePreview = ({
   note,
@@ -149,9 +149,9 @@ export const InputArea = ({ chatId }: Props) => {
         chatId
       );
 
-      console.log(res);
-
-      router.refresh();
+      queryClient.invalidateQueries({
+        queryKey: ["chat-history-element", chatId],
+      });
     }
   };
 
