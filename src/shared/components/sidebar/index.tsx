@@ -29,9 +29,10 @@ import {
 } from "@/shared/components/ui/sidebar";
 import { FeedbackPopover } from "@/shared/components/feedback/feedback-popover";
 import { Button } from "@/shared/components/ui/button";
-import { useChatHistoryStore } from "@/store/chat-history";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/shared/hooks/use-user";
+import { useChatHistory } from "@/shared/hooks/use-chat-history";
+import { createClient } from "@/shared/lib/supabase/client";
 
 const navItems = [
   {
@@ -52,33 +53,38 @@ export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useUser();
-  const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
-    useChatHistoryStore();
+  //   const { chatHistory, activeChatId, setActiveChatId, deleteChat } =
+  //     useChatHistoryStore();
   const { isPro, isPending } = useSubscription();
 
+  const { chats, isLoading } = useChatHistory();
+
   const handleChatClick = (id: string) => {
-    setActiveChatId(id);
-    if (pathname === "/home") {
-      router.refresh();
-    } else {
-      router.push("/home");
-    }
+    // Navigate to the chat route
+    router.push(`/c/${id}`);
   };
 
-  const handleDeleteChat = (e: React.MouseEvent, id: string) => {
+  const handleDeleteChat = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
 
-    const isActiveChat = id === activeChatId;
+    if (!confirm("Are you sure you want to delete this chat?")) {
+      return;
+    }
 
-    deleteChat(id);
+    try {
+      const supabase = createClient();
+      await supabase.from("chats").delete().eq("id", id);
 
-    if (isActiveChat) {
-      setTimeout(() => {
-        const inputArea = document.querySelector("textarea");
-        if (inputArea) {
-          inputArea.focus();
-        }
-      }, 100);
+      // Refresh the chat list
+      router.refresh();
+
+      // If we're currently viewing the deleted chat, redirect to home
+      if (pathname.includes(`/home/c/${id}`)) {
+        router.push("/home");
+      }
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+      alert("Failed to delete chat.");
     }
   };
 
@@ -161,46 +167,43 @@ export function AppSidebar() {
                   </SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
-                      {chatHistory.length > 0 ? (
-                        chatHistory
-                          .sort(
-                            (a, b) =>
-                              new Date(b.createdAt).getTime() -
-                              new Date(a.createdAt).getTime()
-                          )
-                          .map((chat) => (
-                            <SidebarMenuItem
-                              key={chat.id}
-                              className="relative group/chat-item"
+                      {isLoading ? (
+                        <div className="px-3 py-2 text-xs text-muted-foreground/50 italic">
+                          Loading...
+                        </div>
+                      ) : chats && chats.length > 0 ? (
+                        chats.map((chat) => (
+                          <SidebarMenuItem
+                            key={chat.id}
+                            className="relative group/chat-item"
+                          >
+                            <SidebarMenuButton
+                              onClick={() => handleChatClick(chat.id)}
+                              className={cn(
+                                "w-full transition-all duration-150 justify-between pr-2 py-1.5",
+                                pathname.includes(`/home/c/${chat.id}`)
+                                  ? "bg-primary/5 text-primary/90 font-medium"
+                                  : "text-muted-foreground/80 hover:text-foreground/90 hover:bg-muted/30"
+                              )}
                             >
-                              <SidebarMenuButton
-                                onClick={() => handleChatClick(chat.id)}
-                                tooltip={chat.title}
-                                className={cn(
-                                  "w-full transition-all duration-150 justify-between pr-2 py-1.5",
-                                  activeChatId === chat.id
-                                    ? "bg-primary/5 text-primary/90 font-medium"
-                                    : "text-muted-foreground/80 hover:text-foreground/90 hover:bg-muted/30"
-                                )}
+                              <div className="flex items-center overflow-hidden pl-1">
+                                <div className="truncate text-sm">
+                                  <span className="truncate">
+                                    {chat.created_at || "Untitled chat"}
+                                  </span>
+                                </div>
+                              </div>
+                              <div
+                                role="button"
+                                className="w-5 h-5 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-80 transition-opacity rounded-sm hover:bg-muted/50 group-data-[collapsible=icon]:hidden"
+                                onClick={(e) => handleDeleteChat(e, chat.id)}
                               >
-                                <div className="flex items-center overflow-hidden pl-1">
-                                  <div className="truncate text-sm">
-                                    <span className="truncate">
-                                      {chat.title}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div
-                                  role="button"
-                                  className="w-5 h-5 flex items-center justify-center opacity-0 group-hover/chat-item:opacity-80 transition-opacity rounded-sm hover:bg-muted/50 group-data-[collapsible=icon]:hidden"
-                                  onClick={(e) => handleDeleteChat(e, chat.id)}
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                  <span className="sr-only">Delete</span>
-                                </div>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          ))
+                                <Trash2 className="w-3 h-3" />
+                                <span className="sr-only">Delete</span>
+                              </div>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))
                       ) : (
                         <div className="px-3 py-2">
                           <p className="text-xs text-muted-foreground/50 italic">
