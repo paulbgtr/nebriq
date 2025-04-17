@@ -13,18 +13,23 @@ export const chat = async (
   context?: ChatContext,
   signal?: AbortSignal,
   modelId: ModelId = "gpt-4o-mini",
-  mode: LLMMode = "standard"
+  mode: LLMMode = "standard",
+  sessionId?: string // Add sessionId parameter
 ): Promise<string | null> => {
   try {
     const agent = await runAgent(query, modelId, mode, userId);
+
+    const chatSessionId = sessionId || userId;
+
+    console.log(`Using session ID for chat: ${chatSessionId}`);
 
     const chainWithHistory = new RunnableWithMessageHistory({
       runnable: agent,
       inputMessagesKey: "input",
       historyMessagesKey: "chat_history",
-      getMessageHistory: async (sessionId) => {
+      getMessageHistory: async (_sessionId) => {
         const chatHistory = new PostgresChatMessageHistory({
-          sessionId,
+          sessionId: chatSessionId, // Use the provided sessionId
           pool,
           tableName: "messages",
         });
@@ -34,10 +39,10 @@ export const chat = async (
 
     const result = await chainWithHistory.invoke(
       { input: query },
-      { configurable: { sessionId: userId } }
+      { configurable: { sessionId: chatSessionId } }
     );
 
-    await pool.end();
+    // await pool.end();
 
     return result.output || null;
   } catch (error) {
