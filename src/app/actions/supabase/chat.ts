@@ -40,7 +40,7 @@ export const getMessagesForChat = async (
   const { data: messages, error: messagesError } = await supabase
     .from("messages")
     .select("*")
-    .eq("chat_id", chatId);
+    .eq("session_id", chatId);
 
   if (messagesError) throw new Error(messagesError.message);
 
