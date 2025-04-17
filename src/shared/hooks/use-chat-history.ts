@@ -11,6 +11,7 @@ import {
 } from "@/shared/lib/schemas/chat-history";
 import { z } from "zod";
 import { useUser } from "./use-user";
+import queryClient from "../lib/react-query";
 
 type Chat = z.infer<typeof chatSchema>;
 type ChatHistoryElement = z.infer<typeof chatHistoryElementSchema>;
@@ -66,11 +67,17 @@ const useCreateChat = (userId: string | undefined) => {
 
       return createChat(userId, title);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    },
   });
 };
 
 const useDeleteChat = () => {
   return useMutation({
     mutationFn: async (chatId: string) => deleteChat(chatId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    },
   });
 };
