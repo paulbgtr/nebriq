@@ -101,8 +101,9 @@ When responding:
 - Be genuinely helpful and thoughtful`;
 
   return ChatPromptTemplate.fromMessages([
+    new MessagesPlaceholder("chat_history"),
+    new MessagesPlaceholder("agent_scratchpad"),
     ["system", systemTemplate],
     ["human", "{input}"],
-    new MessagesPlaceholder("agent_scratchpad"),
   ]);
 };
