@@ -2,7 +2,7 @@ import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
 import { searchNotes } from "./tools";
 import { LLMMode } from "@/types/chat";
 import { createPromptTemplate } from "./prompt";
-import { ChatMistralAI } from "@langchain/mistralai";
+import { ChatOpenAI } from "@langchain/openai";
 
 export async function runAgent(
   input: string,
@@ -10,7 +10,7 @@ export async function runAgent(
   mode: LLMMode = "standard",
   userId: string
 ) {
-  const llm = new ChatMistralAI({ modelName: modelId });
+  const llm = new ChatOpenAI({ modelName: "gpt-4o-mini" });
 
   const tools = [searchNotes(userId)];
 
