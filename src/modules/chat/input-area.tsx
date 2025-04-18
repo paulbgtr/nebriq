@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
@@ -27,8 +29,9 @@ import { noteSchema } from "@/shared/lib/schemas/note";
 import { ModeSelector } from "../home/features/chat/components/mode-selector";
 import { chat } from "@/app/actions/llm/chat";
 import { useUser } from "@/shared/hooks/use-user";
-import { useRouter } from "next/navigation";
 import queryClient from "@/shared/lib/react-query";
+import { useChatHistory } from "../../shared/hooks/use-chat-history";
+import { useRouter } from "next/navigation";
 
 const AttachedNotePreview = ({
   note,
@@ -77,10 +80,11 @@ const AttachedNotePreview = ({
 };
 
 type Props = {
-  chatId: string;
+  chatId?: string;
+  onOptimisticSubmit?: (messageContent: string) => void;
 };
 
-export const InputArea = ({ chatId }: Props) => {
+export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
   const [followUp, setFollowUp] = useState("");
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -88,8 +92,11 @@ export const InputArea = ({ chatId }: Props) => {
   const { getNotesQuery } = useNotes();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { user } = useUser();
   const router = useRouter();
+  const { user } = useUser();
+  const { createChat } = useChatHistory();
+
+  const isNewChat = !chatId;
 
   const selectedNotes =
     getNotesQuery.data?.filter((note) => selectedNoteIds.includes(note.id)) ||
@@ -117,41 +124,81 @@ export const InputArea = ({ chatId }: Props) => {
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (followUp.trim()) {
-        if (selectedNoteIds.length > 0) {
-          localStorage.setItem(
-            "attachedNoteIds",
-            JSON.stringify(selectedNoteIds)
-          );
-        }
-        setFollowUp("");
-        setSelectedNoteIds([]);
-      }
+      handleSubmit(e);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(followUp, chatId);
+    const currentFollowUp = followUp.trim();
+    const currentSelectedNoteIds = [...selectedNoteIds];
 
-    if (!user?.id) {
+    if (!user?.id || !currentFollowUp) {
       return;
     }
 
-    if (followUp.trim()) {
-      const res = await chat(
-        followUp,
-        user?.id,
+    if (isNewChat) {
+      onOptimisticSubmit?.(currentFollowUp);
+    }
+
+    setFollowUp("");
+    setSelectedNoteIds([]);
+
+    let targetChatId = chatId;
+
+    try {
+      if (isNewChat) {
+        const newChat = await createChat("New chat");
+
+        if (!newChat || !newChat.id) {
+          console.error("Failed to create new chat or missing ID.");
+          setFollowUp(currentFollowUp);
+          setSelectedNoteIds(currentSelectedNoteIds);
+          return;
+        }
+
+        targetChatId = newChat.id;
+        if (currentSelectedNoteIds.length > 0) {
+          localStorage.setItem(
+            `attachedNoteIds_${targetChatId}`,
+            JSON.stringify(currentSelectedNoteIds)
+          );
+        }
+        router.push(`/c/${targetChatId}`);
+      } else {
+        if (currentSelectedNoteIds.length > 0) {
+          localStorage.setItem(
+            `attachedNoteIds_${chatId}`,
+            JSON.stringify(currentSelectedNoteIds)
+          );
+        }
+      }
+
+      if (!targetChatId) {
+        console.error("No target chat ID available.");
+        setFollowUp(currentFollowUp);
+        setSelectedNoteIds(currentSelectedNoteIds);
+        return;
+      }
+
+      await chat(
+        currentFollowUp,
+        user.id,
         undefined,
         undefined,
         "mistral-medium",
         "standard",
-        chatId
+        targetChatId
       );
 
-      queryClient.invalidateQueries({
-        queryKey: ["chat-history-element", chatId],
+      await queryClient.invalidateQueries({
+        queryKey: ["chat-history-element", targetChatId],
       });
+    } catch (error) {
+      console.error("Error submitting message:", error);
+      setFollowUp(currentFollowUp);
+      setSelectedNoteIds(currentSelectedNoteIds);
+    } finally {
     }
   };
 
@@ -190,11 +237,12 @@ export const InputArea = ({ chatId }: Props) => {
   return (
     <div
       className={cn(
+        "pb-4",
         "max-w-xl mx-auto",
-        "fixed bottom-0 left-0 right-0",
         "w-full bg-background/70 backdrop-blur-xl border-t border-border/20",
         "transition-all duration-500 ease-in-out",
-        "flex-shrink-0"
+        "flex-shrink-0",
+        !isNewChat && "fixed bottom-0 left-0 right-0"
       )}
     >
       <div className="relative space-y-3">
