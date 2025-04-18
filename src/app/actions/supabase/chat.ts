@@ -52,17 +52,24 @@ export const getMessagesForChat = async (
   return chatHistoryElement;
 };
 
-export const createChat = async (userId: string, title: string) => {
+export const createChat = async (
+  userId: string,
+  title: string
+): Promise<Chat> => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("chats").insert({
-    user_id: userId,
-    title,
-  });
+  const { data, error } = await supabase
+    .from("chats")
+    .insert({
+      user_id: userId,
+      title,
+    })
+    .select()
+    .single();
 
   if (error) throw new Error(error.message);
 
-  return data;
+  return chatSchema.parse(data);
 };
 
 export const deleteChat = async (chatId: string) => {
