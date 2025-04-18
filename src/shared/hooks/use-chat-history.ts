@@ -5,6 +5,7 @@ import {
   getMessagesForChat,
   getUserChats,
 } from "@/app/actions/supabase/chat";
+import { chat as sendChatMessageAction } from "@/app/actions/llm/chat";
 import {
   chatSchema,
   chatHistoryElementSchema,
@@ -12,9 +13,25 @@ import {
 import { z } from "zod";
 import { useUser } from "./use-user";
 import queryClient from "../lib/react-query";
+import { ModelId } from "@/types/ai-model";
+import { LLMMode } from "@/types/chat";
+import { randomInt } from "crypto";
 
 type Chat = z.infer<typeof chatSchema>;
 type ChatHistoryElement = z.infer<typeof chatHistoryElementSchema>;
+
+type SendMessageVariables = {
+  messageContent: string;
+  chatId: string;
+  userId: string;
+  model?: ModelId;
+  mode?: LLMMode;
+};
+
+type MutationContext = {
+  previousChatHistory: ChatHistoryElement | undefined;
+  queryKey: (string | undefined)[];
+};
 
 export const useChatHistoryElement = (chatId: string) => {
   return useQuery<ChatHistoryElement>({
@@ -23,6 +40,78 @@ export const useChatHistoryElement = (chatId: string) => {
     enabled: !!chatId,
     staleTime: 1000 * 60 * 2,
     refetchOnWindowFocus: false,
+  });
+};
+
+export const useSendMessage = () => {
+  return useMutation<void, Error, SendMessageVariables, MutationContext>({
+    mutationFn: async ({ messageContent, chatId, userId, model, mode }) => {
+      await sendChatMessageAction(messageContent, userId, model, mode, chatId);
+    },
+
+    onMutate: async (variables): Promise<MutationContext> => {
+      const { chatId, messageContent, userId } = variables;
+      const queryKey = ["chat-history-element", chatId];
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousChatHistory =
+        queryClient.getQueryData<ChatHistoryElement>(queryKey);
+
+      queryClient.setQueryData<ChatHistoryElement | undefined>(
+        queryKey,
+        (old) => {
+          const optimisticUserMessage = {
+            id: randomInt(100000000000000, 999999999999999),
+            message: { type: "human", content: messageContent },
+            created_at: new Date().toISOString(),
+            session_id: chatId,
+          };
+          const optimisticAssistantMessage = {
+            id: randomInt(100000000000000, 999999999999999),
+            message: { type: "ai", content: "..." },
+            created_at: new Date().toISOString(),
+            session_id: chatId,
+            isLoading: true,
+          };
+
+          if (!old) {
+            console.warn("Optimistic update on empty cache for", queryKey);
+            return {
+              id: chatId,
+              user_id: userId,
+              title: null,
+              created_at: new Date().toISOString(),
+              messages: [optimisticUserMessage, optimisticAssistantMessage],
+            };
+          }
+
+          const newMessages = [
+            ...(old.messages || []),
+            optimisticUserMessage,
+            optimisticAssistantMessage,
+          ];
+
+          return {
+            ...old,
+            messages: newMessages,
+          };
+        }
+      );
+
+      return { previousChatHistory, queryKey };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousChatHistory) {
+        queryClient.setQueryData(context.queryKey, context.previousChatHistory);
+      }
+      console.error("Error sending message:", err);
+    },
+    onSettled: (data, error, variables, context) => {
+      if (context?.queryKey) {
+        queryClient.invalidateQueries({ queryKey: context.queryKey });
+      }
+    },
   });
 };
 
