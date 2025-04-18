@@ -1,6 +1,6 @@
 "use server";
 
-import { ChatContext, LLMMode } from "@/types/chat";
+import { LLMMode } from "@/types/chat";
 import { ModelId } from "@/types/ai-model";
 import { runAgent } from "@/app/actions/llm/agent";
 import { RunnableWithMessageHistory } from "@langchain/core/runnables";
@@ -10,14 +10,12 @@ import { pool } from "@/shared/lib/db/pool";
 export const chat = async (
   query: string,
   userId: string,
-  context?: ChatContext,
-  signal?: AbortSignal,
   modelId: ModelId = "gpt-4o-mini",
   mode: LLMMode = "standard",
-  sessionId?: string // Add sessionId parameter
+  sessionId?: string
 ): Promise<string | null> => {
   try {
-    const agent = await runAgent(query, modelId, mode, userId);
+    const agent = await runAgent(modelId, mode, userId);
 
     const chatSessionId = sessionId || userId;
 
@@ -27,9 +25,9 @@ export const chat = async (
       runnable: agent,
       inputMessagesKey: "input",
       historyMessagesKey: "chat_history",
-      getMessageHistory: async (_sessionId) => {
+      getMessageHistory: async () => {
         const chatHistory = new PostgresChatMessageHistory({
-          sessionId: chatSessionId, // Use the provided sessionId
+          sessionId: chatSessionId,
           pool,
           tableName: "messages",
         });
