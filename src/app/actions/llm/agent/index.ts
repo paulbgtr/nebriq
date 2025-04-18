@@ -3,14 +3,14 @@ import { searchNotes } from "./tools";
 import { LLMMode } from "@/types/chat";
 import { createPromptTemplate } from "./prompt";
 import { ChatOpenAI } from "@langchain/openai";
+import { ModelId } from "@/types/ai-model";
 
 export async function runAgent(
-  input: string,
-  modelId = "gpt-4o-mini",
+  modelId: ModelId,
   mode: LLMMode = "standard",
   userId: string
 ) {
-  const llm = new ChatOpenAI({ modelName: "gpt-4o-mini" });
+  const llm = new ChatOpenAI({ modelName: modelId });
 
   const tools = [searchNotes(userId)];
 
