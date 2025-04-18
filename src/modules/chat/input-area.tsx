@@ -10,28 +10,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import {
-  FileText,
-  X,
-  StickyNote,
-  Sun,
-  Cloud,
-  Moon,
-  Sunrise,
-  Sunset,
-  Coffee,
-} from "lucide-react";
+import { FileText, X, StickyNote } from "lucide-react";
 import { useNotes } from "@/shared/hooks/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { ModeSelector } from "../home/features/chat/components/mode-selector";
-import { chat } from "@/app/actions/llm/chat";
 import { useUser } from "@/shared/hooks/use-user";
-import queryClient from "@/shared/lib/react-query";
-import { useChatHistory } from "../../shared/hooks/use-chat-history";
+import {
+  useChatHistory,
+  useSendMessage,
+} from "../../shared/hooks/use-chat-history";
 import { useRouter } from "next/navigation";
+import { useSelectedModelStore } from "@/store/selected-model";
 
 const AttachedNotePreview = ({
   note,
@@ -81,10 +73,9 @@ const AttachedNotePreview = ({
 
 type Props = {
   chatId?: string;
-  onOptimisticSubmit?: (messageContent: string) => void;
 };
 
-export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
+export const InputArea = ({ chatId }: Props) => {
   const [followUp, setFollowUp] = useState("");
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -95,6 +86,8 @@ export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
   const router = useRouter();
   const { user } = useUser();
   const { createChat } = useChatHistory();
+  const { mutate: sendMessage, isPending: isSending } = useSendMessage();
+  const { selectedModel, selectedMode } = useSelectedModelStore();
 
   const isNewChat = !chatId;
 
@@ -133,12 +126,8 @@ export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
     const currentFollowUp = followUp.trim();
     const currentSelectedNoteIds = [...selectedNoteIds];
 
-    if (!user?.id || !currentFollowUp) {
+    if (!user?.id || !currentFollowUp || isSending) {
       return;
-    }
-
-    if (isNewChat) {
-      onOptimisticSubmit?.(currentFollowUp);
     }
 
     setFollowUp("");
@@ -165,6 +154,13 @@ export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
           );
         }
         router.push(`/c/${targetChatId}`);
+        sendMessage({
+          messageContent: currentFollowUp,
+          chatId: targetChatId,
+          userId: user.id,
+          model: selectedModel.id,
+          mode: selectedMode,
+        });
       } else {
         if (currentSelectedNoteIds.length > 0) {
           localStorage.setItem(
@@ -172,33 +168,20 @@ export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
             JSON.stringify(currentSelectedNoteIds)
           );
         }
+        sendMessage({
+          messageContent: currentFollowUp,
+          chatId: targetChatId!,
+          userId: user.id,
+          model: selectedModel.id,
+          mode: selectedMode,
+        });
       }
-
-      if (!targetChatId) {
-        console.error("No target chat ID available.");
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
+      if (!isSending) {
         setFollowUp(currentFollowUp);
         setSelectedNoteIds(currentSelectedNoteIds);
-        return;
       }
-
-      await chat(
-        currentFollowUp,
-        user.id,
-        undefined,
-        undefined,
-        "mistral-medium",
-        "standard",
-        targetChatId
-      );
-
-      await queryClient.invalidateQueries({
-        queryKey: ["chat-history-element", targetChatId],
-      });
-    } catch (error) {
-      console.error("Error submitting message:", error);
-      setFollowUp(currentFollowUp);
-      setSelectedNoteIds(currentSelectedNoteIds);
-    } finally {
     }
   };
 
@@ -217,7 +200,7 @@ export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
       <div className="flex items-center gap-2">
         <Button
           type="submit"
-          disabled={followUp.length === 0}
+          disabled={followUp.length === 0 || isSending}
           className={cn(
             "flex items-center justify-center",
             "h-9 w-9 rounded-full",
@@ -228,7 +211,11 @@ export const InputArea = ({ chatId, onOptimisticSubmit }: Props) => {
             "disabled:pointer-events-none"
           )}
         >
-          <FaArrowUp className="w-3.5 h-3.5" />
+          {isSending ? (
+            <span className="animate-spin">⏳</span>
+          ) : (
+            <FaArrowUp className="w-3.5 h-3.5" />
+          )}
         </Button>
       </div>
     );
