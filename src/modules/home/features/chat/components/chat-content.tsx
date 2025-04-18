@@ -85,10 +85,10 @@ export const ChatContent = ({
                 message.role === "user"
                   ? "flex justify-end"
                   : "flex justify-start",
-                mounted &&
-                  "animate-in fade-in-0 slide-in-from-bottom-1 duration-300"
+                mounted 
+                  ? "animate-in fade-in-0 slide-in-from-bottom-1 duration-300"
+                  : "opacity-0"
               )}
-              style={!mounted ? { opacity: 0 } : undefined}
             >
               <MessageBubble
                 message={message}
@@ -486,12 +486,13 @@ const MessageBubble = ({
       <div
         className={cn(
           "relative",
-          mounted && "transition-all duration-200 ease-out",
+          mounted 
+            ? "transition-all duration-200 ease-out" 
+            : "opacity-0",
           message.role === "user"
             ? "bg-muted/20 rounded-2xl rounded-tr-sm"
             : "bg-transparent" // No background for assistant messages
         )}
-        style={!mounted ? { opacity: 0 } : undefined}
       >
         <div
           className={cn(
