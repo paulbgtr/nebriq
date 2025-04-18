@@ -1,7 +1,7 @@
 "use client";
 
 import { useChatHistoryElement } from "@/shared/hooks/use-chat-history";
-
+import { MessageBubble } from "@/shared/components/chat/message-bubble";
 type Props = {
   chatId: string;
 };
@@ -18,19 +18,11 @@ export const ChatContent = ({ chatId }: Props) => {
   return (
     <div className="flex flex-col max-w-3xl mx-auto space-y-4">
       {messages.map((msg) => (
-        <div
+        <MessageBubble
           key={msg.id}
-          className={`p-3 rounded-lg max-w-xl ${
-            msg.message.type === "human"
-              ? "bg-blue-100 self-end text-blue-900"
-              : "bg-gray-100 self-start text-gray-900"
-          }`}
-        >
-          <p className="text-sm whitespace-pre-wrap">
-            {/* Removed Strong tag for simplicity, using background color instead */}
-            {msg.message.content}
-          </p>
-        </div>
+          role={msg.message.type === "human" ? "user" : "assistant"}
+          content={msg.message.content}
+        />
       ))}
     </div>
   );

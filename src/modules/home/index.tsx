@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import { InputArea } from "../chat/input-area";
+import { MessageBubble } from "@/shared/components/chat/message-bubble";
 
 type OptimisticMessage = {
   role: "user";
@@ -33,11 +34,12 @@ export default function HomeModule() {
             )}
           >
             {optimisticMessage && (
-              <div className="flex-1 overflow-y-auto pt-4 w-full">
-                <div className="flex justify-end mb-4">
-                  <div className="bg-primary text-primary-foreground p-3 rounded-lg max-w-[80%] break-words">
-                    {optimisticMessage.content}
-                  </div>
+              <div className="flex-1 overflow-y-auto pt-4 w-full ml-4">
+                <div className="flex justify-end mt-4">
+                  <MessageBubble
+                    role={optimisticMessage.role}
+                    content={optimisticMessage.content}
+                  />
                 </div>
               </div>
             )}
