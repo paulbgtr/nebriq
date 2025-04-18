@@ -31,7 +31,7 @@ export const useChatHistory = () => {
 
   const { data: chats, isLoading } = useChats(user?.id);
 
-  const { mutate: createChat, isPending: isCreatingChat } = useCreateChat(
+  const { mutateAsync: createChat, isPending: isCreatingChat } = useCreateChat(
     user?.id
   );
   const { mutate: deleteChat, isPending: isDeletingChat } = useDeleteChat();
@@ -61,14 +61,17 @@ const useChats = (userId: string | undefined) => {
 };
 
 const useCreateChat = (userId: string | undefined) => {
-  return useMutation({
+  return useMutation<Chat, Error, string>({
     mutationFn: async (title: string) => {
-      if (!userId) throw new Error("User not found");
+      if (!userId) throw new Error("User not found for creating chat");
 
       return createChat(userId, title);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    onSuccess: (newChat) => {
+      queryClient.invalidateQueries({ queryKey: ["chats", userId] });
+      queryClient.setQueryData(["chat-history-element", newChat.id], {
+        messages: [],
+      });
     },
   });
 };
