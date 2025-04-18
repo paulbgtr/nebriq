@@ -79,7 +79,7 @@ export function AppSidebar() {
       router.refresh();
 
       // If we're currently viewing the deleted chat, redirect to home
-      if (pathname.includes(`/home/c/${id}`)) {
+      if (pathname.includes(`/c/${id}`)) {
         router.push("/home");
       }
     } catch (error) {
@@ -181,7 +181,7 @@ export function AppSidebar() {
                               onClick={() => handleChatClick(chat.id)}
                               className={cn(
                                 "w-full transition-all duration-150 justify-between pr-2 py-1.5",
-                                pathname.includes(`/home/c/${chat.id}`)
+                                pathname.includes(`/c/${chat.id}`)
                                   ? "bg-primary/5 text-primary/90 font-medium"
                                   : "text-muted-foreground/80 hover:text-foreground/90 hover:bg-muted/30"
                               )}
@@ -189,7 +189,7 @@ export function AppSidebar() {
                               <div className="flex items-center overflow-hidden pl-1">
                                 <div className="truncate text-sm">
                                   <span className="truncate">
-                                    {chat.created_at || "Untitled chat"}
+                                    {chat.title || "Untitled chat"}
                                   </span>
                                 </div>
                               </div>
