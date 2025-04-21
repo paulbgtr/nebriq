@@ -3,7 +3,7 @@
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { FaArrowUp } from "react-icons/fa";
-import { KeyboardEvent, useState, useCallback, useRef } from "react";
+import { KeyboardEvent, useState, useCallback, useRef, useEffect } from "react";
 import { Textarea } from "@/shared/components/ui/textarea";
 import {
   Popover,
@@ -75,9 +75,10 @@ const AttachedNotePreview = ({
 
 type Props = {
   chatId?: string;
+  setIsModelThinking?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const InputArea = ({ chatId }: Props) => {
+export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
   const [followUp, setFollowUp] = useState("");
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -90,6 +91,12 @@ export const InputArea = ({ chatId }: Props) => {
   const { createChat } = useChatHistory();
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
   const { selectedModel, selectedMode } = useSelectedModelStore();
+
+  useEffect(() => {
+    if (!isSending && setIsModelThinking) {
+      setIsModelThinking(false);
+    }
+  }, [isSending, setIsModelThinking]);
 
   const isNewChat = !chatId;
 
@@ -138,6 +145,10 @@ export const InputArea = ({ chatId }: Props) => {
 
     setFollowUp("");
     setSelectedNoteIds([]);
+
+    if (setIsModelThinking) {
+      setIsModelThinking(true);
+    }
 
     let targetChatId = chatId;
 
