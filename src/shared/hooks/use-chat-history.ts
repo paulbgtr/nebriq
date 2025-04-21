@@ -85,7 +85,7 @@ export const useSendMessage = () => {
           };
           const optimisticAssistantMessage = {
             id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
-            message: { type: "ai", content: "..." },
+            message: { type: "ai", content: "" },
             created_at: new Date().toISOString(),
             session_id: chatId,
             isLoading: true,
