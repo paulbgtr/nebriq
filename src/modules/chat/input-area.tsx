@@ -130,6 +130,10 @@ export const InputArea = ({ chatId }: Props) => {
       return;
     }
 
+    const currentSelectedNotes = getNotesQuery.data?.filter((note) =>
+      currentSelectedNoteIds.includes(note.id)
+    );
+
     setFollowUp("");
     setSelectedNoteIds([]);
 
@@ -160,6 +164,7 @@ export const InputArea = ({ chatId }: Props) => {
           userId: user.id,
           model: selectedModel.id,
           mode: selectedMode,
+          attachedNotes: currentSelectedNotes,
         });
       } else {
         if (currentSelectedNoteIds.length > 0) {
@@ -174,6 +179,7 @@ export const InputArea = ({ chatId }: Props) => {
           userId: user.id,
           model: selectedModel.id,
           mode: selectedMode,
+          attachedNotes: currentSelectedNotes,
         });
       }
     } catch (error) {

@@ -15,7 +15,9 @@ import { useUser } from "./use-user";
 import queryClient from "../lib/react-query";
 import { ModelId } from "@/types/ai-model";
 import { LLMMode } from "@/types/chat";
+import { noteSchema } from "../lib/schemas/note";
 
+type Note = z.infer<typeof noteSchema>;
 type Chat = z.infer<typeof chatSchema>;
 type ChatHistoryElement = z.infer<typeof chatHistoryElementSchema>;
 
@@ -25,6 +27,7 @@ type SendMessageVariables = {
   userId: string;
   model?: ModelId;
   mode?: LLMMode;
+  attachedNotes?: Note[];
 };
 
 type MutationContext = {
@@ -44,8 +47,22 @@ export const useChatHistoryElement = (chatId: string) => {
 
 export const useSendMessage = () => {
   return useMutation<void, Error, SendMessageVariables, MutationContext>({
-    mutationFn: async ({ messageContent, chatId, userId, model, mode }) => {
-      await sendChatMessageAction(messageContent, userId, model, mode, chatId);
+    mutationFn: async ({
+      messageContent,
+      chatId,
+      userId,
+      model,
+      mode,
+      attachedNotes,
+    }) => {
+      await sendChatMessageAction({
+        query: messageContent,
+        userId: userId,
+        modelId: model,
+        mode: mode,
+        sessionId: chatId,
+        attachedNotes: attachedNotes,
+      });
     },
 
     onMutate: async (variables): Promise<MutationContext> => {
