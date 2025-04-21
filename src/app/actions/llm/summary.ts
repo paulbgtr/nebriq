@@ -29,9 +29,12 @@ export async function summarizeText({
     });
 
     const promptText = `
-    Summarize the following text in no more than ${maxLength} characters.
+    Provide a concise, useful summary of the following text in no more than ${maxLength} characters.
     
-    IMPORTANT: Return ONLY the summary itself. Do NOT include phrases like "The text is about" or any commentary about the text. Just output the direct summary.
+    IMPORTANT: 
+    - Return ONLY the summary itself. Do NOT include phrases like "The text is about" or any commentary.
+    - For very short inputs or single words, provide a brief definition or contextual meaning.
+    - Never say there's not enough text to summarize.
     
     Text to summarize:
     ${text}
