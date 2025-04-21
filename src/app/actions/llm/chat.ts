@@ -8,7 +8,7 @@ import { pool } from "@/shared/lib/db/pool";
 import { noteSchema } from "../../../shared/lib/schemas/note";
 import { z } from "zod";
 import { createPromptTemplate } from "./prompt";
-import { searchNotes } from "./tools";
+import { createNoteTool, searchNotes } from "./tools";
 import { createAgent } from "./agent";
 
 type Note = z.infer<typeof noteSchema>;
@@ -38,7 +38,7 @@ export const chat = async ({
       : [];
 
     const prompt = createPromptTemplate(mode, normalizedNotes);
-    const tools = [searchNotes(userId)];
+    const tools = [searchNotes(userId), createNoteTool(userId)];
 
     // @ts-expect-error - this is a workaround to avoid type errors
     const agent = await createAgent({ modelId, prompt, tools });

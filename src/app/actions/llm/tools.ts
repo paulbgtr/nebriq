@@ -1,7 +1,7 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
-import { getNotes } from "../supabase/notes";
+import { createNote, getNotes } from "../supabase/notes";
 
 export const searchNotes = (userId: string) =>
   tool(
@@ -21,6 +21,32 @@ export const searchNotes = (userId: string) =>
       description: "Search for semantically relevant notes using a query.",
       schema: z.object({
         query: z.string(),
+      }),
+    }
+  );
+
+export const createNoteTool = (userId: string) =>
+  tool(
+    async ({
+      title,
+      content,
+    }: {
+      title: string;
+      content: string;
+    }): Promise<string> => {
+      const note = await createNote({
+        title,
+        content,
+        user_id: userId,
+      });
+      return `Note created: ${note.title}`;
+    },
+    {
+      name: "create_note",
+      description: "Create a new note with a title and content.",
+      schema: z.object({
+        title: z.string(),
+        content: z.string(),
       }),
     }
   );
