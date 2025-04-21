@@ -15,7 +15,6 @@ import { useUser } from "./use-user";
 import queryClient from "../lib/react-query";
 import { ModelId } from "@/types/ai-model";
 import { LLMMode } from "@/types/chat";
-import { randomInt } from "crypto";
 
 type Chat = z.infer<typeof chatSchema>;
 type ChatHistoryElement = z.infer<typeof chatHistoryElementSchema>;
@@ -62,13 +61,13 @@ export const useSendMessage = () => {
         queryKey,
         (old) => {
           const optimisticUserMessage = {
-            id: randomInt(100000000000000, 999999999999999),
+            id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
             message: { type: "human", content: messageContent },
             created_at: new Date().toISOString(),
             session_id: chatId,
           };
           const optimisticAssistantMessage = {
-            id: randomInt(100000000000000, 999999999999999),
+            id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
             message: { type: "ai", content: "..." },
             created_at: new Date().toISOString(),
             session_id: chatId,
