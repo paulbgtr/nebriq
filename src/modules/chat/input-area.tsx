@@ -24,6 +24,7 @@ import {
 } from "../../shared/hooks/use-chat-history";
 import { useRouter } from "next/navigation";
 import { useSelectedModelStore } from "@/store/selected-model";
+import { generateChatTitle } from "@/app/actions/llm/summary";
 
 const AttachedNotePreview = ({
   note,
@@ -141,7 +142,10 @@ export const InputArea = ({ chatId }: Props) => {
 
     try {
       if (isNewChat) {
-        const newChat = await createChat("New chat");
+        const title = await generateChatTitle(currentFollowUp);
+        console.log(title);
+
+        const newChat = await createChat(title);
 
         if (!newChat || !newChat.id) {
           console.error("Failed to create new chat or missing ID.");
