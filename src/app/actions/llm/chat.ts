@@ -2,24 +2,48 @@
 
 import { LLMMode } from "@/types/chat";
 import { ModelId } from "@/types/ai-model";
-import { runAgent } from "@/app/actions/llm/agent";
 import { RunnableWithMessageHistory } from "@langchain/core/runnables";
 import { PostgresChatMessageHistory } from "@langchain/community/stores/message/postgres";
 import { pool } from "@/shared/lib/db/pool";
+import { noteSchema } from "../../../shared/lib/schemas/note";
+import { z } from "zod";
+import { createPromptTemplate } from "./prompt";
+import { searchNotes } from "./tools";
+import { createAgent } from "./agent";
 
-export const chat = async (
-  query: string,
-  userId: string,
-  modelId: ModelId = "gpt-4o-mini",
-  mode: LLMMode = "standard",
-  sessionId?: string
-): Promise<string | null> => {
+type Note = z.infer<typeof noteSchema>;
+
+type ChatVariables = {
+  query: string;
+  userId: string;
+  modelId?: ModelId;
+  mode?: LLMMode;
+  sessionId?: string;
+  attachedNotes?: Note[];
+};
+
+export const chat = async ({
+  query,
+  userId,
+  modelId = "gpt-4o-mini",
+  mode = "standard",
+  sessionId,
+  attachedNotes,
+}: ChatVariables): Promise<string | null> => {
   try {
-    const agent = await runAgent(modelId, mode, userId);
+    const normalizedNotes = attachedNotes
+      ? attachedNotes.map(
+          (note) => `Title: ${note.title}, Content: ${note.content}`
+        )
+      : [];
+
+    const prompt = createPromptTemplate(mode, normalizedNotes);
+    const tools = [searchNotes(userId)];
+
+    // @ts-expect-error - this is a workaround to avoid type errors
+    const agent = await createAgent({ modelId, prompt, tools });
 
     const chatSessionId = sessionId || userId;
-
-    console.log(`Using session ID for chat: ${chatSessionId}`);
 
     const chainWithHistory = new RunnableWithMessageHistory({
       runnable: agent,
