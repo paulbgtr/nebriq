@@ -62,6 +62,45 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: "hsl(var(--foreground))",
+            a: {
+              color: "hsl(var(--primary))",
+              "&:hover": {
+                color: "hsl(var(--primary))",
+              },
+            },
+            h1: {
+              color: "hsl(var(--foreground))",
+            },
+            h2: {
+              color: "hsl(var(--foreground))",
+            },
+            h3: {
+              color: "hsl(var(--foreground))",
+            },
+            h4: {
+              color: "hsl(var(--foreground))",
+            },
+            blockquote: {
+              color: "hsl(var(--muted-foreground))",
+              borderLeftColor: "hsl(var(--muted))",
+            },
+            code: {
+              color: "hsl(var(--foreground))",
+              backgroundColor: "hsl(var(--muted)/0.4)",
+            },
+            pre: {
+              backgroundColor: "hsl(var(--muted)/0.2)",
+            },
+            strong: {
+              color: "hsl(var(--foreground))",
+            },
+          },
+        },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -92,7 +131,7 @@ export default {
             opacity: "0.8",
           },
         },
-        "slidein": {
+        slidein: {
           "0%": {
             transform: "translateY(20px)",
             opacity: "0",
@@ -102,7 +141,7 @@ export default {
             opacity: "1",
           },
         },
-        "slideinfromright": {
+        slideinfromright: {
           "0%": {
             transform: "translateX(20px)",
             opacity: "0",
@@ -112,7 +151,7 @@ export default {
             opacity: "1",
           },
         },
-        "fadein": {
+        fadein: {
           "0%": {
             opacity: "0",
           },
@@ -120,7 +159,7 @@ export default {
             opacity: "1",
           },
         },
-        "slowzoom": {
+        slowzoom: {
           "0%": {
             transform: "scale(1)",
           },
@@ -133,12 +172,12 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-        "slidein": "slidein 0.6s ease-out",
-        "slideinfromright": "slideinfromright 0.6s ease-out",
-        "fadein": "fadein 0.4s ease-out",
-        "slowzoom": "slowzoom 20s ease-in-out alternate infinite",
+        slidein: "slidein 0.6s ease-out",
+        slideinfromright: "slideinfromright 0.6s ease-out",
+        fadein: "fadein 0.4s ease-out",
+        slowzoom: "slowzoom 20s ease-in-out alternate infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

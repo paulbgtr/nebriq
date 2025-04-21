@@ -25,6 +25,7 @@ export const ChatContent = ({ chatId }: Props) => {
           key={msg.id.toString()}
           role={msg.message.type === "human" ? "user" : "assistant"}
           content={msg.message.content}
+          renderMarkdown={msg.message.type !== "human"}
         />
       ))}
     </div>
