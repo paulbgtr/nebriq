@@ -222,11 +222,7 @@ export const InputArea = ({ chatId }: Props) => {
             "disabled:pointer-events-none"
           )}
         >
-          {isSending ? (
-            <span className="animate-spin">⏳</span>
-          ) : (
-            <FaArrowUp className="w-3.5 h-3.5" />
-          )}
+          <FaArrowUp className="w-3.5 h-3.5" />
         </Button>
       </div>
     );
@@ -237,7 +233,7 @@ export const InputArea = ({ chatId }: Props) => {
       className={cn(
         "pb-4",
         "max-w-xl mx-auto",
-        "w-full bg-background/70 backdrop-blur-xl border-t border-border/20",
+        "w-full bg-background/70 backdrop-blur-xl",
         "transition-all duration-500 ease-in-out",
         "flex-shrink-0",
         "space-y-2",
