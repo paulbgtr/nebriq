@@ -24,8 +24,8 @@ import {
 } from "../../shared/hooks/use-chat-history";
 import { useRouter } from "next/navigation";
 import { useSelectedModelStore } from "@/store/selected-model";
-import { generateChatTitle } from "@/app/actions/llm/summary";
 import { Greeting } from "./components/greeting";
+import { summarizeText } from "@/app/actions/llm/summary";
 
 const AttachedNotePreview = ({
   note,
@@ -143,8 +143,14 @@ export const InputArea = ({ chatId }: Props) => {
 
     try {
       if (isNewChat) {
-        const title = await generateChatTitle(currentFollowUp);
-        console.log(title);
+        const title = await summarizeText({ text: currentFollowUp });
+
+        if (!title) {
+          console.error("Failed to generate chat title.");
+          setFollowUp(currentFollowUp);
+          setSelectedNoteIds(currentSelectedNoteIds);
+          return;
+        }
 
         const newChat = await createChat(title);
 
