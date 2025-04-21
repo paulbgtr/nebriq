@@ -14,11 +14,13 @@ export const chatHistoryElementSchema = z.object({
     z.object({
       id: z.number(),
       session_id: z.string(),
+      created_at: z.string().optional(),
       message: z.object({
         type: z.string(),
         content: z.string(),
         additional_kwargs: z.any(),
         response_metadata: z.any(),
+        created_at: z.string().optional(),
       }),
     })
   ),

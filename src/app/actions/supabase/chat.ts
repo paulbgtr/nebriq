@@ -46,7 +46,11 @@ export const getMessagesForChat = async (
 
   const chatHistoryElement = chatHistoryElementSchema.parse({
     ...chat,
-    messages,
+    messages: messages.sort(
+      (a, b) =>
+        new Date(a.created_at || "").getTime() -
+        new Date(b.created_at || "").getTime()
+    ),
   });
 
   return chatHistoryElement;

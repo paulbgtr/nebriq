@@ -74,16 +74,19 @@ export type Database = {
       }
       messages: {
         Row: {
+          created_at: string | null
           id: number
           message: Json
           session_id: string
         }
         Insert: {
+          created_at?: string | null
           id?: number
           message: Json
           session_id: string
         }
         Update: {
+          created_at?: string | null
           id?: number
           message?: Json
           session_id?: string
@@ -389,7 +392,7 @@ export type Database = {
         Returns: number
       }
       l2_normalize: {
-        Args: { "": unknown } | { "": unknown } | { "": string }
+        Args: { "": string } | { "": unknown } | { "": unknown }
         Returns: unknown
       }
       match_page_sections: {
