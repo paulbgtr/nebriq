@@ -139,7 +139,9 @@ export const useChatHistory = () => {
   const { mutateAsync: createChat, isPending: isCreatingChat } = useCreateChat(
     user?.id
   );
-  const { mutate: deleteChat, isPending: isDeletingChat } = useDeleteChat();
+  const { mutate: deleteChat, isPending: isDeletingChat } = useDeleteChat(
+    user?.id
+  );
 
   return {
     chats,
@@ -181,11 +183,11 @@ const useCreateChat = (userId: string | undefined) => {
   });
 };
 
-const useDeleteChat = () => {
+const useDeleteChat = (userId: string | undefined) => {
   return useMutation({
     mutationFn: async (chatId: string) => deleteChat(chatId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["chats", userId] });
     },
   });
 };

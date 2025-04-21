@@ -32,7 +32,6 @@ import { Button } from "@/shared/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/shared/hooks/use-user";
 import { useChatHistory } from "@/shared/hooks/use-chat-history";
-import { createClient } from "@/shared/lib/supabase/client";
 
 const navItems = [
   {
@@ -57,7 +56,7 @@ export function AppSidebar() {
   //     useChatHistoryStore();
   const { isPro, isPending } = useSubscription();
 
-  const { chats, isLoading } = useChatHistory();
+  const { chats, isLoading, deleteChat } = useChatHistory();
 
   const handleChatClick = (id: string) => {
     // Navigate to the chat route
@@ -72,13 +71,8 @@ export function AppSidebar() {
     }
 
     try {
-      const supabase = createClient();
-      await supabase.from("chats").delete().eq("id", id);
+      deleteChat(id);
 
-      // Refresh the chat list
-      router.refresh();
-
-      // If we're currently viewing the deleted chat, redirect to home
       if (pathname.includes(`/c/${id}`)) {
         router.push("/home");
       }
