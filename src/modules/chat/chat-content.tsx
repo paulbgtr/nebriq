@@ -12,7 +12,7 @@ export const ChatContent = ({ chatId }: Props) => {
     useChatHistoryElement(chatId);
 
   if (isHistoryLoading || !chatHistoryElement) {
-    return <div>Loading chat history...</div>;
+    return null;
   }
 
   const messages = chatHistoryElement.messages || [];
