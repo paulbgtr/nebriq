@@ -214,7 +214,7 @@ export const InputArea = ({ chatId }: Props) => {
           disabled={followUp.length === 0 || isSending}
           className={cn(
             "flex items-center justify-center",
-            "h-9 w-9 rounded-full",
+            "h-9 w-9 rounded-xl",
             "transition-all duration-300 ease-in-out",
             "shadow-sm",
             "bg-primary hover:bg-primary/90",
