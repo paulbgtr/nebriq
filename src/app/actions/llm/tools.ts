@@ -10,8 +10,6 @@ export const searchNotes = (userId: string) =>
 
       const results = await semanticSearch(query, notes, userId);
 
-      console.log(results);
-
       if (!results.length) return "No relevant notes found.";
 
       return results.map((r) => `📘 ${r.title}\n${r.content}`).join("\n\n");
