@@ -10,6 +10,7 @@ import { z } from "zod";
 import { createPromptTemplate } from "./prompt";
 import { createNoteTool, searchNotes } from "./tools";
 import { createAgent } from "./agent";
+import { handleTokenLimits } from "./utils";
 
 type Note = z.infer<typeof noteSchema>;
 
@@ -38,6 +39,9 @@ export const chat = async ({
       : [];
 
     const prompt = createPromptTemplate(mode, normalizedNotes);
+
+    await handleTokenLimits(userId, modelId);
+
     const tools = [searchNotes(userId), createNoteTool(userId)];
 
     // @ts-expect-error - this is a workaround to avoid type errors
