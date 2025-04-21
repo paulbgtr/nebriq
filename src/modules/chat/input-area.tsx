@@ -25,6 +25,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useSelectedModelStore } from "@/store/selected-model";
 import { generateChatTitle } from "@/app/actions/llm/summary";
+import { Greeting } from "./components/greeting";
 
 const AttachedNotePreview = ({
   note,
@@ -239,9 +240,11 @@ export const InputArea = ({ chatId }: Props) => {
         "w-full bg-background/70 backdrop-blur-xl border-t border-border/20",
         "transition-all duration-500 ease-in-out",
         "flex-shrink-0",
+        "space-y-2",
         !isNewChat && "fixed bottom-0 left-0 right-0"
       )}
     >
+      {isNewChat && <Greeting />}
       <div className="relative space-y-3">
         <form onSubmit={handleSubmit} className="relative space-y-3">
           <AnimatePresence>
