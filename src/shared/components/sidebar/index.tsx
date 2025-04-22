@@ -32,6 +32,17 @@ import { Button } from "@/shared/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/shared/hooks/use-user";
 import { useChatHistory } from "@/shared/hooks/use-chat-history";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/shared/components/ui/alert-dialog";
 
 const navItems = [
   {
@@ -57,6 +68,8 @@ export function AppSidebar() {
   const { isPro, isPending } = useSubscription();
 
   const { chats, isLoading, deleteChat } = useChatHistory();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [chatToDelete, setChatToDelete] = useState<string | null>(null);
 
   const handleChatClick = (id: string) => {
     // Navigate to the chat route
@@ -65,20 +78,25 @@ export function AppSidebar() {
 
   const handleDeleteChat = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
+    setChatToDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
 
-    if (!confirm("Are you sure you want to delete this chat?")) {
-      return;
-    }
+  const confirmDelete = async () => {
+    if (!chatToDelete) return;
 
     try {
-      deleteChat(id);
+      deleteChat(chatToDelete);
 
-      if (pathname.includes(`/c/${id}`)) {
+      if (pathname.includes(`/c/${chatToDelete}`)) {
         router.push("/home");
       }
     } catch (error) {
       console.error("Error deleting chat:", error);
       alert("Failed to delete chat.");
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setChatToDelete(null);
     }
   };
 
@@ -303,6 +321,30 @@ export function AppSidebar() {
           </div>
         </SidebarContent>
       </Sidebar>
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Chat</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this chat? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
