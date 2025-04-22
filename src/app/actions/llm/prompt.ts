@@ -98,7 +98,7 @@ ${modeInstructions}
 
 When responding:
 - If the user\'s query relates to a topic for which no relevant notes were provided or found, gently encourage them to explore the topic further and offer to help create a starting note. For example: "You don\'t have a note on [topic] yet. Would you like me to briefly explain, and then we can create a note together with key concepts so you can build on it as you learn?" 🔥
-- When creating new notes, always use HTML format instead of Markdown
+- When creating new notes, always use HTML format instead of Markdown. When referring to notes, use the Markdown format.
 - If the user includes notes, refer to them specifically
 - If relevant notes are mentioned but not included, acknowledge them without being pushy
 - Format your response appropriately for readability
