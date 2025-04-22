@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { useSelectedModelStore } from "@/store/selected-model";
 import { Greeting } from "./components/greeting";
 import { summarizeText } from "@/app/actions/llm/summary";
+import { useGlobalKeyDown } from "./use-global-key-down";
 
 const AttachedNotePreview = ({
   note,
@@ -100,6 +101,8 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
 
   const isNewChat = !chatId;
 
+  useGlobalKeyDown({ textareaRef, setFollowUp });
+
   const selectedNotes =
     getNotesQuery.data?.filter((note) => selectedNoteIds.includes(note.id)) ||
     [];
@@ -135,7 +138,7 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
     const currentFollowUp = followUp.trim();
     const currentSelectedNoteIds = [...selectedNoteIds];
 
-    if (!user?.id || !currentFollowUp || isSending || !chatId) {
+    if (!user?.id || !currentFollowUp || isSending) {
       return;
     }
 
@@ -163,7 +166,7 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
       if (!isNewChat) {
         sendMessage({
           messageContent: currentFollowUp,
-          chatId: targetChatId,
+          chatId: targetChatId!,
           userId: user.id,
           model: selectedModel.id,
           mode: selectedMode,
@@ -172,7 +175,20 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
         return;
       }
 
-      const title = await summarizeText({ text: currentFollowUp });
+      const titlePrompt = `
+      Generate a concise title for a chat based on the following text.
+
+      IMPORTANT:
+      - Do not include any special characters or punctuation.
+
+      Text to summarize:
+      ${currentFollowUp}
+      `;
+
+      const title = await summarizeText({
+        text: currentFollowUp,
+        prompt: titlePrompt,
+      });
 
       if (!title) {
         console.error("Failed to generate chat title.");
@@ -258,6 +274,7 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
         "transition-all duration-500 ease-in-out",
         "flex-shrink-0",
         "space-y-2",
+        "cursor-text",
         !isNewChat && "fixed bottom-0 left-0 right-0"
       )}
     >
@@ -337,8 +354,8 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
             <div
               className={cn(
                 "flex items-center justify-between",
-                "border-t border-border/10",
-                "bg-muted/20",
+                // "border-t border-border/10",
+                // "bg-muted/20",
                 "px-4 py-2.5"
               )}
             >
