@@ -18,7 +18,7 @@ import { useEditorCounts } from "@/modules/write/hooks/use-editor-counts";
 import { useCustomEditor } from "@/modules/write/hooks/use-editor";
 import { useNoteDiscovery } from "@/modules/write/hooks/use-note-discovery";
 import { NoteDiscovery } from "./note-discovery";
-import { useSubscription } from "@/shared/hooks/use-subscription";
+import { useSubscription } from "@/shared/hooks/data/use-subscription";
 import {
   Tooltip,
   TooltipContent,

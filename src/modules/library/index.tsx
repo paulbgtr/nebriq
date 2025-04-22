@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useCallback, useTransition } from "react";
-import { useNotes } from "@/shared/hooks/use-notes";
-import { useSubscription } from "@/shared/hooks/use-subscription";
+import { useNotes } from "@/shared/hooks/data/use-notes";
+import { useSubscription } from "@/shared/hooks/data/use-subscription";
 import { Spinner } from "@/shared/components/spinner";
 import { Button, buttonVariants } from "@/shared/components/ui/button";
 import {

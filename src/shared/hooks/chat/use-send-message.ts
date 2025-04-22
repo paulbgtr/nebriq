@@ -1,24 +1,13 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  createChat,
-  deleteChat,
-  getMessagesForChat,
-  getUserChats,
-} from "@/app/actions/supabase/chat";
-import { chat as sendChatMessageAction } from "@/app/actions/llm/chat";
-import {
-  chatSchema,
-  chatHistoryElementSchema,
-} from "@/shared/lib/schemas/chat-history";
-import { z } from "zod";
-import { useUser } from "./use-user";
-import queryClient from "../lib/react-query";
 import { ModelId } from "@/types/ai-model";
 import { LLMMode } from "@/types/chat";
-import { noteSchema } from "../lib/schemas/note";
+import { useMutation } from "@tanstack/react-query";
+import queryClient from "../../lib/react-query";
+import { noteSchema } from "../../lib/schemas/note";
+import { chatHistoryElementSchema } from "../../lib/schemas/chat-history";
+import { chat as sendChatMessageAction } from "@/app/actions/llm/chat";
+import { z } from "zod";
 
 type Note = z.infer<typeof noteSchema>;
-type Chat = z.infer<typeof chatSchema>;
 type ChatHistoryElement = z.infer<typeof chatHistoryElementSchema>;
 
 type SendMessageVariables = {
@@ -33,16 +22,6 @@ type SendMessageVariables = {
 type MutationContext = {
   previousChatHistory: ChatHistoryElement | undefined;
   queryKey: (string | undefined)[];
-};
-
-export const useChatHistoryElement = (chatId: string) => {
-  return useQuery<ChatHistoryElement>({
-    queryKey: ["chat-history-element", chatId],
-    queryFn: async () => await getMessagesForChat(chatId),
-    enabled: !!chatId,
-    staleTime: 1000 * 60 * 2,
-    refetchOnWindowFocus: false,
-  });
 };
 
 export const useSendMessage = () => {
@@ -127,67 +106,6 @@ export const useSendMessage = () => {
       if (context?.queryKey) {
         queryClient.invalidateQueries({ queryKey: context.queryKey });
       }
-    },
-  });
-};
-
-export const useChatHistory = () => {
-  const { user } = useUser();
-
-  const { data: chats, isLoading } = useChats(user?.id);
-
-  const { mutateAsync: createChat, isPending: isCreatingChat } = useCreateChat(
-    user?.id
-  );
-  const { mutate: deleteChat, isPending: isDeletingChat } = useDeleteChat(
-    user?.id
-  );
-
-  return {
-    chats,
-    isLoading,
-    createChat,
-    deleteChat,
-    isCreatingChat,
-    isDeletingChat,
-  };
-};
-
-const useChats = (userId: string | undefined) => {
-  return useQuery<Chat[]>({
-    queryKey: ["chats", userId],
-    queryFn: async () => {
-      if (!userId) throw new Error("User not found");
-
-      return getUserChats(userId);
-    },
-    enabled: !!userId,
-    staleTime: 1000 * 60 * 2,
-    refetchOnWindowFocus: false,
-  });
-};
-
-const useCreateChat = (userId: string | undefined) => {
-  return useMutation<Chat, Error, string>({
-    mutationFn: async (title: string) => {
-      if (!userId) throw new Error("User not found for creating chat");
-
-      return createChat(userId, title);
-    },
-    onSuccess: (newChat) => {
-      queryClient.invalidateQueries({ queryKey: ["chats", userId] });
-      queryClient.setQueryData(["chat-history-element", newChat.id], {
-        messages: [],
-      });
-    },
-  });
-};
-
-const useDeleteChat = (userId: string | undefined) => {
-  return useMutation({
-    mutationFn: async (chatId: string) => deleteChat(chatId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chats", userId] });
     },
   });
 };

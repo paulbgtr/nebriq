@@ -3,14 +3,14 @@ import "katex/dist/katex.min.css";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useEditor } from "@tiptap/react";
 import createSuggestion from "@/shared/lib/tippy/suggestion";
-import { useUser } from "@/shared/hooks/use-user";
-import { useNotes } from "@/shared/hooks/use-notes";
+import { useUser } from "@/shared/hooks/data/use-user";
+import { useNotes } from "@/shared/hooks/data/use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { all, createLowlight } from "lowlight";
 import { useSyncNoteConnections } from "./use-sync-note-connections";
 import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "@/shared/hooks/use-toast";
-import { useNoteConnections } from "@/shared/hooks/use-note-connections";
+import { useNoteConnections } from "@/shared/hooks/editor/use-note-connections";
 import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
 import { useSyncNoteToPinecone } from "./use-sync-note-to-pinecone";
 

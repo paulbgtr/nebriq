@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/shared/hooks/use-toast";
 

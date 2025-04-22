@@ -31,7 +31,7 @@ import {
 import { Editor } from "@tiptap/react";
 import { useRef } from "react";
 import { useToast } from "@/shared/hooks/use-toast";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { upload } from "@/app/actions/supabase/storage";
 import { Bucket } from "@/types/bucket";
 

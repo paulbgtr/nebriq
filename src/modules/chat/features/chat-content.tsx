@@ -1,7 +1,7 @@
 "use client";
 
-import { useChatHistoryElement } from "@/shared/hooks/use-chat-history";
-import { MessageBubble } from "@/shared/components/chat/message-bubble";
+import { useChatHistoryElement } from "@/modules/chat/hooks/use-chat-history-element";
+import { MessageBubble } from "@/modules/chat/components/message-bubble";
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 

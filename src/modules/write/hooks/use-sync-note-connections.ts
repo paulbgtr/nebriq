@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
-import { useNoteConnections } from "@/shared/hooks/use-note-connections";
-import { useNotes } from "@/shared/hooks/use-notes";
+import { useNoteConnections } from "@/shared/hooks/editor/use-note-connections";
+import { useNotes } from "@/shared/hooks/data/use-notes";
 import queryClient from "@/shared/lib/react-query";
 
 export const useSyncNoteConnections = (noteId: string, content: string) => {

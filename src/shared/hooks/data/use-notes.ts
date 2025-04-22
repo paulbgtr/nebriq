@@ -7,7 +7,7 @@ import {
   deleteNotes,
 } from "@/app/actions/supabase/notes";
 import queryClient from "@/shared/lib/react-query";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 
 export const useNotes = () => {
   const { user } = useUser();

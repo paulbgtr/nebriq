@@ -11,22 +11,20 @@ import {
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
 import { FileText, X, StickyNote } from "lucide-react";
-import { useNotes } from "@/shared/hooks/use-notes";
+import { useNotes } from "@/shared/hooks/data/use-notes";
 import { formatDate } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
-import { ModeSelector } from "../home/features/chat/components/mode-selector";
-import { useUser } from "@/shared/hooks/use-user";
-import {
-  useChatHistory,
-  useSendMessage,
-} from "../../shared/hooks/use-chat-history";
+import { ModeSelector } from "../../../modules/chat/components/mode-selector";
+import { useUser } from "@/shared/hooks/data/use-user";
+import { useChatHistory } from "../../hooks/chat/use-chat-history";
 import { useRouter } from "next/navigation";
 import { useSelectedModelStore } from "@/store/selected-model";
-import { Greeting } from "./components/greeting";
+import { Greeting } from "../../../modules/chat/components/greeting";
 import { summarizeText } from "@/app/actions/llm/summary";
-import { useGlobalKeyDown } from "./use-global-key-down";
+import { useGlobalKeyDown } from "../../hooks/chat/use-global-key-down";
+import { useSendMessage } from "@/shared/hooks/chat/use-send-message";
 
 const AttachedNotePreview = ({
   note,

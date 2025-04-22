@@ -1,4 +1,4 @@
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { Sunrise, Coffee, Cloud, Sunset, Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";

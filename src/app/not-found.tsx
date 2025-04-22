@@ -3,7 +3,7 @@
 import { buttonVariants } from "@/shared/components/ui/button";
 import Link from "next/link";
 import { SearchX } from "lucide-react";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 
 export default function NotFound() {
   const { user } = useUser();

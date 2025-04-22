@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { X, Plus, Hash } from "lucide-react";
-import { useTags } from "@/shared/hooks/use-tags";
+import { useTags } from "@/shared/hooks/data/use-tags";
 import { useToast } from "@/shared/hooks/use-toast";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { cn } from "@/shared/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 

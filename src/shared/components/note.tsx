@@ -5,7 +5,7 @@ import { z } from "zod";
 import { motion } from "framer-motion";
 import { cn } from "../lib/utils";
 
-import { useNotes } from "@/shared/hooks/use-notes";
+import { useNotes } from "@/shared/hooks/data/use-notes";
 import { useNoteTabsStore } from "@/store/note-tabs";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { formatDate, formatHTMLNoteContent } from "../lib/utils";

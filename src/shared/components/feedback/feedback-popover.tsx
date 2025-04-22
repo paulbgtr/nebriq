@@ -10,7 +10,7 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { MessageSquarePlus, Send, Loader2 } from "lucide-react";
 import { sendEmail } from "@/app/actions/emails/send-email";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { useToast } from "@/shared/hooks/use-toast";
 import { EmailTemplate } from "@/enums/email-template";
 import { Badge } from "@/shared/components/ui/badge";

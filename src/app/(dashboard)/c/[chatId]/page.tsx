@@ -1,8 +1,5 @@
-"use client";
-
-import { use, useState } from "react";
-import { ChatContent } from "@/modules/chat/chat-content";
-import { InputArea } from "@/modules/chat/input-area";
+import { use } from "react";
+import ChatModule from "@/modules/chat";
 
 export default function ChatPage({
   params,
@@ -10,12 +7,6 @@ export default function ChatPage({
   params: Promise<{ chatId: string }>;
 }) {
   const { chatId } = use(params);
-  const [isModelThinking, setIsModelThinking] = useState(false);
 
-  return (
-    <div>
-      <ChatContent chatId={chatId} isModelThinking={isModelThinking} />
-      <InputArea chatId={chatId} setIsModelThinking={setIsModelThinking} />
-    </div>
-  );
+  return <ChatModule chatId={chatId} />;
 }

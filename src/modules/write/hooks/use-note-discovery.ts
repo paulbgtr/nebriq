@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { Editor } from "@tiptap/react";
 import { semanticSearch } from "@/app/actions/search/semantic-search";
-import { useNotes } from "@/shared/hooks/use-notes";
+import { useNotes } from "@/shared/hooks/data/use-notes";
 import { z } from "zod";
 import { noteSchema } from "@/shared/lib/schemas/note";
 import { useNoteTabsStore } from "@/store/note-tabs";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 
 type DiscoveredNote = z.infer<typeof noteSchema> & {
   matchScore: number;

@@ -1,23 +1,7 @@
-"use client";
-
-import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
-import { InputArea } from "../chat/input-area";
-import { MessageBubble } from "@/shared/components/chat/message-bubble";
-
-type OptimisticMessage = {
-  role: "user";
-  content: string;
-};
+import { InputArea } from "../../shared/components/chat/input-area";
 
 export default function HomeModule() {
-  const [optimisticMessage, setOptimisticMessage] =
-    useState<OptimisticMessage | null>(null);
-
-  const handleOptimisticSubmit = (content: string) => {
-    setOptimisticMessage({ role: "user", content });
-  };
-
   return (
     <article
       role="main"
@@ -28,23 +12,10 @@ export default function HomeModule() {
           <div
             className={cn(
               "w-full flex flex-col h-full px-4",
-              optimisticMessage
-                ? "justify-between"
-                : "items-center justify-center"
+              "items-center justify-center"
             )}
           >
-            {optimisticMessage && (
-              <div className="flex-1 overflow-y-auto pt-4 w-full ml-4">
-                <div className="flex justify-end mt-4">
-                  <MessageBubble
-                    role={optimisticMessage.role}
-                    content={optimisticMessage.content}
-                  />
-                </div>
-              </div>
-            )}
-
-            <InputArea onOptimisticSubmit={handleOptimisticSubmit} />
+            <InputArea />
           </div>
         </div>
       </div>

@@ -59,7 +59,9 @@ export default function LoginForm() {
             <Lock className="h-5 w-5 text-primary" />
           </div>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-center">Welcome back</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-center">
+          Welcome back
+        </h1>
         <p className="text-sm text-muted-foreground text-center">
           Sign in to continue to your workspace
         </p>
@@ -110,7 +112,9 @@ export default function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium text-muted-foreground">Email</FormLabel>
+                  <FormLabel className="text-sm font-medium text-muted-foreground">
+                    Email
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
@@ -201,15 +205,21 @@ export default function LoginForm() {
           </Link>
         </p>
       </div>
-      
+
       <div className="mt-8 pt-4 border-t border-border/30 text-center">
         <p className="text-xs text-muted-foreground/60">
           By continuing, you agree to our{" "}
-          <Link href="/terms" className="hover:underline text-muted-foreground/80">
+          <Link
+            href="/terms"
+            className="hover:underline text-muted-foreground/80"
+          >
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="hover:underline text-muted-foreground/80">
+          <Link
+            href="/privacy"
+            className="hover:underline text-muted-foreground/80"
+          >
             Privacy Policy
           </Link>
         </p>

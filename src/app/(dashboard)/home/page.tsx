@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { Onboarding } from "@/shared/components/onboarding";
 import HomeModule from "@/modules/home";
 

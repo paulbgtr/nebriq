@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useToast } from "@/shared/hooks/use-toast";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { syncSingleNote } from "@/app/actions/pinecone/sync";
 
 /**

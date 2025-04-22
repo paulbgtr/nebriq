@@ -3,8 +3,8 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Editor } from "./components/editor";
-import { useSubscription } from "@/shared/hooks/use-subscription";
-import { useNotes } from "@/shared/hooks/use-notes";
+import { useSubscription } from "@/shared/hooks/data/use-subscription";
+import { useNotes } from "@/shared/hooks/data/use-notes";
 import { AlertCircle, Zap } from "lucide-react";
 import {
   Dialog,

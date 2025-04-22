@@ -13,7 +13,7 @@ import {
   Trash2,
   Crown,
 } from "lucide-react";
-import { useSubscription } from "@/shared/hooks/use-subscription";
+import { useSubscription } from "@/shared/hooks/data/use-subscription";
 import { Snap } from "./snap";
 
 import {
@@ -30,8 +30,8 @@ import {
 import { FeedbackPopover } from "@/shared/components/feedback/feedback-popover";
 import { Button } from "@/shared/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/shared/hooks/use-user";
-import { useChatHistory } from "@/shared/hooks/use-chat-history";
+import { useUser } from "@/shared/hooks/data/use-user";
+import { useChatHistory } from "@/shared/hooks/chat/use-chat-history";
 import { useState } from "react";
 import {
   AlertDialog,

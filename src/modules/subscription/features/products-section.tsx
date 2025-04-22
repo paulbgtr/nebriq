@@ -1,7 +1,7 @@
 "use client";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import { useUser } from "@/shared/hooks/use-user";
+import { useUser } from "@/shared/hooks/data/use-user";
 import { ProductCard } from "./components/product-card";
 import { Button } from "@/shared/components/ui/button";
 import { Loader2, LogIn } from "lucide-react";
