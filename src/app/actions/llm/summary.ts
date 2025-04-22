@@ -1,6 +1,6 @@
 "use server";
 
-import { ChatMistralAI } from "@langchain/mistralai";
+import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage } from "@langchain/core/messages";
 import { ModelId } from "@/types/ai-model";
 
@@ -15,7 +15,7 @@ type SummaryOptions = {
  */
 export async function summarizeText({
   text,
-  modelId = "mistral-small",
+  modelId = "gpt-4o-mini",
   maxLength = 500,
 }: SummaryOptions): Promise<string | null> {
   try {
@@ -23,8 +23,8 @@ export async function summarizeText({
       return null;
     }
 
-    const model = new ChatMistralAI({
-      apiKey: process.env.MISTRAL_API_KEY,
+    const model = new ChatOpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
       modelName: modelId,
     });
 
