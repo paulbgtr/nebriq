@@ -172,14 +172,16 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
           return;
         }
 
-        targetChatId = newChat.id;
         if (currentSelectedNoteIds.length > 0) {
           localStorage.setItem(
             `attachedNoteIds_${targetChatId}`,
             JSON.stringify(currentSelectedNoteIds)
           );
         }
+
+        targetChatId = newChat.id;
         router.push(`/c/${targetChatId}`);
+
         sendMessage({
           messageContent: currentFollowUp,
           chatId: targetChatId,
