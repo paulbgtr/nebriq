@@ -68,8 +68,6 @@ export const chat = async ({
       { configurable: { sessionId: chatSessionId } }
     );
 
-    // await pool.end();
-
     return result.output || null;
   } catch (error) {
     if ((error as Error).message === "Request aborted") {
