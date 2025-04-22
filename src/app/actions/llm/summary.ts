@@ -8,6 +8,7 @@ type SummaryOptions = {
   text: string;
   modelId?: ModelId;
   maxLength?: number;
+  prompt?: string;
 };
 
 /**
@@ -17,6 +18,7 @@ export async function summarizeText({
   text,
   modelId = "gpt-4o-mini",
   maxLength = 500,
+  prompt,
 }: SummaryOptions): Promise<string | null> {
   try {
     if (!text || text.trim().length === 0) {
@@ -28,13 +30,10 @@ export async function summarizeText({
       modelName: modelId,
     });
 
-    const promptText = `
+    const promptText =
+      prompt ||
+      `
     Provide a concise, useful summary of the following text in no more than ${maxLength} characters.
-    
-    IMPORTANT: 
-    - Return ONLY the summary itself. Do NOT include phrases like "The text is about" or any commentary.
-    - For very short inputs or single words, provide a brief definition or contextual meaning.
-    - Never say there's not enough text to summarize.
     
     Text to summarize:
     ${text}
