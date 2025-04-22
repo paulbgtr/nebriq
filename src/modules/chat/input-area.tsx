@@ -135,7 +135,7 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
     const currentFollowUp = followUp.trim();
     const currentSelectedNoteIds = [...selectedNoteIds];
 
-    if (!user?.id || !currentFollowUp || isSending) {
+    if (!user?.id || !currentFollowUp || isSending || !chatId) {
       return;
     }
 
@@ -150,38 +150,17 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
       setIsModelThinking(true);
     }
 
+    if (currentSelectedNoteIds.length > 0) {
+      localStorage.setItem(
+        `attachedNoteIds_${chatId}`,
+        JSON.stringify(currentSelectedNoteIds)
+      );
+    }
+
     let targetChatId = chatId;
 
     try {
-      if (isNewChat) {
-        const title = await summarizeText({ text: currentFollowUp });
-
-        if (!title) {
-          console.error("Failed to generate chat title.");
-          setFollowUp(currentFollowUp);
-          setSelectedNoteIds(currentSelectedNoteIds);
-          return;
-        }
-
-        const newChat = await createChat(title);
-
-        if (!newChat || !newChat.id) {
-          console.error("Failed to create new chat or missing ID.");
-          setFollowUp(currentFollowUp);
-          setSelectedNoteIds(currentSelectedNoteIds);
-          return;
-        }
-
-        if (currentSelectedNoteIds.length > 0) {
-          localStorage.setItem(
-            `attachedNoteIds_${targetChatId}`,
-            JSON.stringify(currentSelectedNoteIds)
-          );
-        }
-
-        targetChatId = newChat.id;
-        router.push(`/c/${targetChatId}`);
-
+      if (!isNewChat) {
         sendMessage({
           messageContent: currentFollowUp,
           chatId: targetChatId,
@@ -190,22 +169,45 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
           mode: selectedMode,
           attachedNotes: currentSelectedNotes,
         });
-      } else {
-        if (currentSelectedNoteIds.length > 0) {
-          localStorage.setItem(
-            `attachedNoteIds_${chatId}`,
-            JSON.stringify(currentSelectedNoteIds)
-          );
-        }
-        sendMessage({
-          messageContent: currentFollowUp,
-          chatId: targetChatId!,
-          userId: user.id,
-          model: selectedModel.id,
-          mode: selectedMode,
-          attachedNotes: currentSelectedNotes,
-        });
+        return;
       }
+
+      const title = await summarizeText({ text: currentFollowUp });
+
+      if (!title) {
+        console.error("Failed to generate chat title.");
+        setFollowUp(currentFollowUp);
+        setSelectedNoteIds(currentSelectedNoteIds);
+        return;
+      }
+
+      const newChat = await createChat(title);
+
+      if (!newChat || !newChat.id) {
+        console.error("Failed to create new chat or missing ID.");
+        setFollowUp(currentFollowUp);
+        setSelectedNoteIds(currentSelectedNoteIds);
+        return;
+      }
+
+      if (currentSelectedNoteIds.length > 0) {
+        localStorage.setItem(
+          `attachedNoteIds_${targetChatId}`,
+          JSON.stringify(currentSelectedNoteIds)
+        );
+      }
+
+      targetChatId = newChat.id;
+      router.push(`/c/${targetChatId}`);
+
+      sendMessage({
+        messageContent: currentFollowUp,
+        chatId: targetChatId,
+        userId: user.id,
+        model: selectedModel.id,
+        mode: selectedMode,
+        attachedNotes: currentSelectedNotes,
+      });
     } catch (error) {
       console.error("Error in handleSubmit:", error);
       if (!isSending) {
