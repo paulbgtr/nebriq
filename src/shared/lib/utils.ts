@@ -1,8 +1,5 @@
-import { noteSchema } from "./schemas/note";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { z } from "zod";
-import { tfidfResultSchema } from "./schemas/tfidf-result";
 import { AddToWaitlist } from "@/shared/components/emails/add-to-waitlist";
 import { LoginNotification } from "@/shared/components/emails/login-notification";
 import { FeedbackEmail } from "@/shared/components/emails/feedback";
