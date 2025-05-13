@@ -25,6 +25,7 @@ import { Greeting } from "../../../modules/chat/components/greeting";
 import { summarizeText } from "@/app/actions/llm/summary";
 import { useGlobalKeyDown } from "../../hooks/chat/use-global-key-down";
 import { useSendMessage } from "@/shared/hooks/chat/use-send-message";
+import { usePendingMessagesStore } from "@/store/pending-messages";
 
 const AttachedNotePreview = ({
   note,
@@ -84,6 +85,7 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { getNotesQuery } = useNotes();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { addPendingMessage } = usePendingMessagesStore();
 
   const router = useRouter();
   const { user } = useUser();
@@ -151,20 +153,11 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
       setIsModelThinking(true);
     }
 
-    if (currentSelectedNoteIds.length > 0) {
-      localStorage.setItem(
-        `attachedNoteIds_${chatId}`,
-        JSON.stringify(currentSelectedNoteIds)
-      );
-    }
-
-    let targetChatId = chatId;
-
     try {
       if (!isNewChat) {
         sendMessage({
           messageContent: currentFollowUp,
-          chatId: targetChatId!,
+          chatId: chatId!,
           userId: user.id,
           model: selectedModel.id,
           mode: selectedMode,
@@ -204,24 +197,15 @@ export const InputArea = ({ chatId, setIsModelThinking }: Props) => {
         return;
       }
 
-      if (currentSelectedNoteIds.length > 0) {
-        localStorage.setItem(
-          `attachedNoteIds_${targetChatId}`,
-          JSON.stringify(currentSelectedNoteIds)
-        );
-      }
-
-      targetChatId = newChat.id;
-      router.push(`/c/${targetChatId}`);
-
-      sendMessage({
-        messageContent: currentFollowUp,
-        chatId: targetChatId,
-        userId: user.id,
+      addPendingMessage(newChat.id, {
+        content: currentFollowUp,
         model: selectedModel.id,
         mode: selectedMode,
-        attachedNotes: currentSelectedNotes,
+        attachedNotes: currentSelectedNotes || [],
+        timestamp: Date.now(),
       });
+
+      router.push(`/c/${newChat.id}`);
     } catch (error) {
       console.error("Error in handleSubmit:", error);
       if (!isSending) {
