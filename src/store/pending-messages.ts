@@ -1,12 +1,14 @@
 import { create } from "zustand";
 import { ModelId } from "@/types/ai-model";
 import { LLMMode } from "@/types/chat";
+import { noteSchema } from "@/shared/lib/schemas/note";
+import { z } from "zod";
 
 export type PendingMessage = {
   content: string;
   model: ModelId;
   mode: LLMMode;
-  attachedNotes: any[];
+  attachedNotes: z.infer<typeof noteSchema>[];
   timestamp: number;
 };
 
