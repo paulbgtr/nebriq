@@ -6,6 +6,8 @@ import {
 } from "../supabase/token_limits";
 import { getEncoding } from "js-tiktoken";
 import { z } from "zod";
+import { createClient } from "@/shared/lib/supabase/server";
+import { noteSchema } from "@/shared/lib/schemas/note";
 
 /**
  * If the token limit does not exist, it creates a new one with a default limit of 5000.
@@ -69,4 +71,49 @@ export const handleTokenLimits = async (
     tokens_used: totalTokens,
     reset_date: resetDate,
   });
+};
+
+/**
+ * Handles the association of attached notes with the last user message in a session.
+ *
+ * @param attachedNotes - An array of notes to be attached, inferred from the note schema.
+ * @param sessionId - The session identifier for which the notes are to be attached.
+ * @throws Will throw an error if no user message is found or if there is an issue with the database operation.
+ */
+export const handleAttachedNotes = async (
+  attachedNotes: z.infer<typeof noteSchema>[],
+  sessionId: string
+) => {
+  const supabase = await createClient();
+
+  /**
+   * Retrieves the last user message for a given session.
+   *
+   * @param sessionId - The session identifier to search for the last user message.
+   * @returns The last user message data.
+   * @throws Will throw an error if no user message is found or if there is an issue with the database operation.
+   */
+  const getLastUserMessage = async (sessionId: string) => {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("id")
+      .eq("session_id", sessionId)
+      .eq("message_type", "human")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error || !data) throw error ?? new Error("No user message found");
+
+    return data;
+  };
+
+  if (attachedNotes?.length && sessionId) {
+    const insertedMessage = await getLastUserMessage(sessionId);
+    const links = attachedNotes.map((note) => ({
+      message_id: insertedMessage.id,
+      note_id: note.id,
+    }));
+    await supabase.from("message_notes").insert(links);
+  }
 };

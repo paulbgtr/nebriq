@@ -10,7 +10,7 @@ import { z } from "zod";
 import { createPromptTemplate } from "./prompt";
 import { createNoteTool, searchNotes } from "./tools";
 import { createAgent } from "./agent";
-import { handleTokenLimits } from "./utils";
+import { handleAttachedNotes, handleTokenLimits } from "./utils";
 
 type Note = z.infer<typeof noteSchema>;
 
@@ -67,6 +67,8 @@ export const chat = async ({
       { input: query },
       { configurable: { sessionId: chatSessionId } }
     );
+
+    await handleAttachedNotes(attachedNotes || [], chatSessionId);
 
     return result.output || null;
   } catch (error) {
