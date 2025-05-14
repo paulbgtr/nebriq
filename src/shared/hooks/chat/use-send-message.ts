@@ -96,13 +96,13 @@ export const useSendMessage = () => {
 
       return { previousChatHistory, queryKey };
     },
-    onError: (err, variables, context) => {
+    onError: (err, _, context) => {
       if (context?.previousChatHistory) {
         queryClient.setQueryData(context.queryKey, context.previousChatHistory);
       }
       console.error("Error sending message:", err);
     },
-    onSettled: (data, error, variables, context) => {
+    onSettled: (_, __, ___, context) => {
       if (context?.queryKey) {
         queryClient.invalidateQueries({ queryKey: context.queryKey });
       }
