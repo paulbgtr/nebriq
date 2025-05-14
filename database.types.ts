@@ -72,6 +72,39 @@ export type Database = {
         }
         Relationships: []
       }
+      message_notes: {
+        Row: {
+          id: number
+          message_id: number | null
+          note_id: string | null
+        }
+        Insert: {
+          id?: number
+          message_id?: number | null
+          note_id?: string | null
+        }
+        Update: {
+          id?: number
+          message_id?: number | null
+          note_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_notes_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_notes_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           created_at: string | null
