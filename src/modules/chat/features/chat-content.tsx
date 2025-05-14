@@ -95,6 +95,7 @@ export const ChatContent = ({ chatId, isModelThinking = false }: Props) => {
                 content={msg.message.content}
                 renderMarkdown={msg.message.type !== "human"}
                 className="w-full"
+                attachedNotes={msg.attachedNotes}
               />
             </motion.div>
           );
