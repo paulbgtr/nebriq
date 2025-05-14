@@ -22,6 +22,16 @@ export const chatHistoryElementSchema = z.object({
         response_metadata: z.any(),
         created_at: z.string().optional(),
       }),
+      attachedNotes: z
+        .array(
+          z.object({
+            id: z.string(),
+            title: z.string().nullable(),
+            content: z.string().nullable(),
+          })
+        )
+        .optional()
+        .default([]),
     })
   ),
 });

@@ -39,14 +39,30 @@ export const getMessagesForChat = async (
 
   const { data: messages, error: messagesError } = await supabase
     .from("messages")
-    .select("*")
+    .select(
+      `
+        *,
+        message_notes (
+          notes (
+            id,
+            title,
+            content
+          )
+        )
+      `
+    )
     .eq("session_id", chatId);
 
   if (messagesError) throw new Error(messagesError.message);
 
+  const enrichedMessages = messages.map((msg) => ({
+    ...msg,
+    attachedNotes: msg.message_notes?.map((link) => link.notes) || [],
+  }));
+
   const chatHistoryElement = chatHistoryElementSchema.parse({
     ...chat,
-    messages: messages.sort(
+    messages: enrichedMessages.sort(
       (a, b) =>
         new Date(a.created_at || "").getTime() -
         new Date(b.created_at || "").getTime()
