@@ -36,55 +36,29 @@
 
 ---
 
-## 🚀 Getting Started
+## 🧪 Open Source, Work in Progress
 
-> **Nebriq is open source. Self-hostable. Yours.**  
-> You can run it locally, or deploy it wherever you like.
+Nebriq is open source and evolving.  
+The current repo reflects the core codebase, but:
 
-### 1. Clone the repo
+- Self-hosting instructions are not yet complete
+- Some features rely on paid services (e.g. Tiptap Pro)
+- Migrations and environment setup may change
 
-```bash
-git clone https://github.com/yourusername/nebriq.git
-cd nebriq
-```
-
-### 2. Install dependencies
-
-```bash
-bun install
-```
-
-### 3. Set up your .env
-
-```bash
-cp .env.example .env
-```
-
-Fill in your Supabase credentials (SUPABASE_URL, SUPABASE_ANON_KEY, etc.)
-
-### 4. Set up the Supabase Project and run migrations
-
-- Go to [supabase.com](https://supabase.com) and create a new project.
-- Push migrations to your project. - Reference [supabase/cli/push](https://supabase.com/docs/reference/cli/supabase-db-push) for more details.
-
-### 5. Start the dev server
-
-```bash
-bun dev
-```
-
-Open http://localhost:3000 to start writing ✍️
+We’re working toward a fully self-hostable, community-friendly version.  
+In the meantime, feel free to explore the code, open issues, or contribute ideas 🙏
 
 ---
 
 ## 📦 Tech Stack
 
-• Next.js (App Router)
-• Supabase (auth, storage, realtime DB)
-• TypeScript
-• TailwindCSS
-• AI/LLM integration (local + remote)
-• Graph-based knowledge linking
+- Next.js (App Router)
+- Supabase (auth, storage, realtime DB)
+- TypeScript
+- TailwindCSS
+- Pinecone (vector DB)
+- Langchain (LLM)
+- Tiptap (rich text editor)
 
 ---
 
@@ -93,17 +67,13 @@ Open http://localhost:3000 to start writing ✍️
 AGPLv3 — Nebriq is free and open source.
 If you run it as a public service, you’re required to share your changes too.
 
-Want a commercial license or support? Get in touch
-
 ---
 
 ## 🌱 Roadmap
 
-• Offline-first mode (local-first db)
-• Custom LLM adapters (Ollama, LM Studio, Claude)
-• Mobile-ready UI
-• Public note publishing
-• Plugin system (extensions, embeddables)
+- Offline-first mode (local-first db)
+- Custom LLM adapters (Ollama, LM Studio, Claude)
+- Mobile-ready UI
 
 ---
 
