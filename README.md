@@ -1,47 +1,119 @@
-# Nebriq
+# 🧠 Nebriq
 
-## Overview
+> _Write. Ask. Know._  
+> A future-facing AI writing space that transforms your thoughts into a dynamic, connected knowledge system — no folders, no friction, no context lost.
 
-Nebriq is an AI-powered writing workspace designed to enhance your writing process. It helps you organize thoughts, connect ideas, and produce better content efficiently. With a clean and intuitive interface, Nebriq allows you to focus on what truly matters—your ideas.
+---
 
-## Features
+## ✨ What is Nebriq?
 
-- **AI Insights**: Generate quizzes and get fresh perspectives on your notes.
-- **Smart Search**: Find any note instantly, even if you don't remember the exact words.
-- **Dynamic Connections**: Link related notes with a simple click, revealing new insights.
-- **Rich Formatting**: Style your notes exactly how you want with Markdown and LaTeX support.
-- **Collaboration Tools**: Share your notes and collaborate with others seamlessly.
+**Nebriq** is an AI-powered, folderless note-taking tool designed for how your brain actually works — not how filing cabinets do.
 
-## Getting Started
+- 📓 Just write. No need to organize stuff manually.
+- 🔍 Ask questions in plain language. Get answers with references.
+- 🌐 Discover hidden connections between ideas as you write.
+- 🧭 Navigate your thinking like a living knowledge map.
+- 📶 Built for privacy, built for devs — 100% open source.
 
-To get started with Nebriq, follow these steps:
+---
 
-1. **Clone the Repository**:
+## 🔥 Core Features
 
-   ```bash
-   git clone https://github.com/yourusername/nebriq.git
-   cd nebriq
-   ```
+- 💬 **AI Chat with Your Notes**  
+  Ask things like: _"What were the key points from last week’s research?"_
 
-2. **Install Dependencies**:
+- 🕸 **Dynamic Knowledge Graph**  
+  See how your thoughts connect. Explore patterns in real time.
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+- ⚡️ **Smart Search & Context Retrieval**  
+  Natural language + AI = “I don’t remember the exact words” is no problem.
 
-3. **Run the Development Server**:
+- 🧠 **Semantic Linking on the Fly**  
+  Notes auto-connect as you write. Your knowledge evolves without extra effort.
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+- 🎨 **Markdown, LaTeX & Code Support**  
+  Beautiful formatting for deep thinking, math, and dev workflows.
 
-4. **Open in Browser**:
-   Navigate to [http://localhost:3000](http://localhost:3000) to see your application in action.
+---
 
-## Usage
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file. Nebriq uses `next/font` to automatically optimize and load fonts, ensuring a smooth user experience.
+> **Nebriq is open source. Self-hostable. Yours.**  
+> You can run it locally, or deploy it wherever you like.
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/yourusername/nebriq.git
+cd nebriq
+```
+
+### 2. Install dependencies
+
+```bash
+bun install
+```
+
+### 3. Set up your .env
+
+```bash
+cp .env.example .env
+```
+
+Fill in your Supabase credentials (SUPABASE_URL, SUPABASE_ANON_KEY, etc.)
+
+### 4. Set up the Supabase Project and run migrations
+
+- Go to [supabase.com](https://supabase.com) and create a new project.
+- Push migrations to your project. - Reference [supabase/cli/push](https://supabase.com/docs/reference/cli/supabase-db-push) for more details.
+
+### 5. Start the dev server
+
+```bash
+bun dev
+```
+
+Open http://localhost:3000 to start writing ✍️
+
+---
+
+## 📦 Tech Stack
+
+• Next.js (App Router)
+• Supabase (auth, storage, realtime DB)
+• TypeScript
+• TailwindCSS
+• AI/LLM integration (local + remote)
+• Graph-based knowledge linking
+
+---
+
+## 🛡 License
+
+AGPLv3 — Nebriq is free and open source.
+If you run it as a public service, you’re required to share your changes too.
+
+Want a commercial license or support? Get in touch
+
+---
+
+## 🌱 Roadmap
+
+• Offline-first mode (local-first db)
+• Custom LLM adapters (Ollama, LM Studio, Claude)
+• Mobile-ready UI
+• Public note publishing
+• Plugin system (extensions, embeddables)
+
+---
+
+## ❤️ Contributing
+
+Nebriq is open to contributions — ideas, issues, PRs, memes, all welcome.
+Let’s build the next-gen brain together.
+
+---
+
+## 🌀 Stay in the loop
+
+- 🌐 Website: [nebriq.com](https://nebriq.com)
