@@ -15,9 +15,11 @@ import { extractNoteConnectionsFromContent } from "@/shared/lib/utils";
 import { useSyncNoteToPinecone } from "./use-sync-note-to-pinecone";
 
 import Image from "@tiptap/extension-image";
-import Mathematics, {
-  defaultShouldRender,
-} from "@tiptap-pro/extension-mathematics";
+// import Mathematics, {
+//   defaultShouldRender,
+// } from "@tiptap-pro/extension-mathematics";
+// commenting to reduce the amount of proprietary software in the repo
+// todo: use https://github.com/aarkue/tiptap-math-extension
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
@@ -78,7 +80,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
             variant: "destructive",
           });
         },
-      }
+      },
     );
   };
 
@@ -105,14 +107,14 @@ export const useCustomEditor = (initialNoteId: string | null) => {
               const updatedNotes = openNotes.map((note) =>
                 note.id === id
                   ? { ...note, title: updatedNote.title || "Untitled" }
-                  : note
+                  : note,
               );
               setOpenNotes(updatedNotes);
 
               syncNoteToPinecone(
                 id,
                 updatedNote.title || "",
-                updatedNote.content || ""
+                updatedNote.content || "",
               );
             },
             onError: () => {
@@ -124,7 +126,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
                 variant: "destructive",
               });
             },
-          }
+          },
         );
       },
       [
@@ -136,9 +138,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         openNotes,
         setOpenNotes,
         syncNoteToPinecone,
-      ]
+      ],
     ),
-    1000
+    1000,
   );
 
   const handleTitleChange = (newTitle: string) => {
@@ -149,7 +151,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
     }
 
     const updatedNotes = openNotes.map((note) =>
-      note.id === id ? { ...note, title: newTitle } : note
+      note.id === id ? { ...note, title: newTitle } : note,
     );
     setOpenNotes(updatedNotes);
 
@@ -181,7 +183,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           setIsSaving(false);
           isUpdatingRef.current = false;
         },
-      }
+      },
     );
   }, 800);
 
@@ -204,9 +206,9 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           },
           suggestion: createSuggestion(id),
         }),
-        Mathematics.configure({
-          shouldRender: defaultShouldRender,
-        }),
+        // Mathematics.configure({
+        //   shouldRender: defaultShouldRender,
+        // }),
         TextAlign.configure({
           types: ["heading", "paragraph"],
         }),
@@ -237,7 +239,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
               }
 
               const allowedProtocols = ctx.protocols.map((p) =>
-                typeof p === "string" ? p : p.scheme
+                typeof p === "string" ? p : p.scheme,
               );
 
               if (!allowedProtocols.includes(protocol)) {
@@ -289,7 +291,8 @@ export const useCustomEditor = (initialNoteId: string | null) => {
           if (node?.type.name === "mention") {
             const mentionTitle = node.attrs.id;
             const note = getNotesQuery.data?.find(
-              (note) => note.title?.toLowerCase() === mentionTitle.toLowerCase()
+              (note) =>
+                note.title?.toLowerCase() === mentionTitle.toLowerCase(),
             );
             if (note) {
               window.location.href = `/write?id=${note.id}`;
@@ -321,7 +324,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
         }
       },
     },
-    [id, handleEditorUpdate]
+    [id, handleEditorUpdate],
   );
 
   useEffect(() => {
@@ -411,7 +414,7 @@ export const useCustomEditor = (initialNoteId: string | null) => {
   useEffect(() => {
     if (initialNoteId) {
       const note = getNotesQuery.data?.find(
-        (note) => note.id === initialNoteId
+        (note) => note.id === initialNoteId,
       );
 
       if (note) {
