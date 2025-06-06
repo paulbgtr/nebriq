@@ -11,6 +11,7 @@ import {
   FolderX,
 } from "lucide-react";
 import { KnowledgeGraphVisualization } from "@/modules/landing-page/features/visuals/knowledge-graph-visualization";
+import { Star } from "lucide-react";
 
 export const HeroSection = () => {
   return (
@@ -175,15 +176,15 @@ export const HeroSection = () => {
               >
                 <span className="relative z-10 flex items-center justify-center gap-2 font-medium">
                   Get Started
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="18" 
-                    height="18" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
                     strokeLinejoin="round"
                     className="transition-transform duration-300 group-hover:translate-x-1"
                   >
@@ -194,43 +195,30 @@ export const HeroSection = () => {
                 <motion.span
                   className="absolute top-0 left-0 w-full h-full bg-white/10"
                   initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{ 
-                    scale: 1.5, 
+                  whileHover={{
+                    scale: 1.5,
                     opacity: 0.2,
-                    transition: { duration: 0.4 }
+                    transition: { duration: 0.4 },
                   }}
                 />
               </motion.a>
-              
-              <motion.a 
-                href="#features"
+
+              <motion.a
+                href="https://github.com/paulbgtr/nebriq"
                 className="group relative overflow-hidden rounded-full px-6 py-3 text-sm font-medium text-primary hover:text-primary/80 transition-all duration-300"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Learn more
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="16" 
-                    height="16" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                    className="transition-transform duration-300 group-hover:translate-y-1"
-                  >
-                    <path d="m6 9 6 6 6-6"></path>
-                  </svg>
+                <span className="relative z-10 flex items-center justify-center gap-4">
+                  Star on Github
+                  <Star className="w-5 h-5" />
                 </span>
-                <motion.span 
+                <motion.span
                   className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-[1px] bg-primary/30"
                   initial={{ width: 0 }}
-                  whileHover={{ 
+                  whileHover={{
                     width: "80%",
-                    transition: { duration: 0.3 }
+                    transition: { duration: 0.3 },
                   }}
                 />
               </motion.a>
