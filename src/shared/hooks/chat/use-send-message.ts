@@ -61,6 +61,7 @@ export const useSendMessage = () => {
             message: { type: "human", content: messageContent },
             created_at: new Date().toISOString(),
             session_id: chatId,
+            attachedNotes: [],
           };
           const optimisticAssistantMessage = {
             id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
@@ -68,6 +69,7 @@ export const useSendMessage = () => {
             created_at: new Date().toISOString(),
             session_id: chatId,
             isLoading: true,
+            attachedNotes: [],
           };
 
           if (!old) {
@@ -91,7 +93,7 @@ export const useSendMessage = () => {
             ...old,
             messages: newMessages,
           };
-        }
+        },
       );
 
       return { previousChatHistory, queryKey };
