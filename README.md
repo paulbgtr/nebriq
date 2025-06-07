@@ -3,6 +3,8 @@
 > _Write. Ask. Know._  
 > A future-facing AI writing space that transforms your thoughts into a dynamic, connected knowledge system — no folders, no friction, no context lost.
 
+![screenshot](readme-assets/cool-screenshot.png)
+
 ---
 
 ## ✨ What is Nebriq?
