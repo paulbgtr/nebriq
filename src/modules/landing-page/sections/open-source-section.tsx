@@ -20,53 +20,52 @@ import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 
 // Memoized feature badge component
-const FeatureBadge = memo(({ icon: Icon, text }: {
-  icon: React.ElementType;
-  text: string;
-}) => (
-  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-    <Icon className="w-4 h-4 text-primary" />
-    <span className="text-sm font-medium text-primary">{text}</span>
-  </div>
-));
+const FeatureBadge = memo(
+  ({ icon: Icon, text }: { icon: React.ElementType; text: string }) => (
+    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+      <Icon className="w-4 h-4 text-primary" />
+      <span className="text-sm font-medium text-primary">{text}</span>
+    </div>
+  ),
+);
 
 FeatureBadge.displayName = "FeatureBadge";
 
 // Memoized benefit card component
-const BenefitCard = memo(({ 
-  icon: Icon, 
-  title, 
-  description, 
-  delay = 0 
-}: {
-  icon: React.ElementType;
-  title: string;
-  description: string;
-  delay?: number;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
-    className="group relative"
-  >
-    <div className="relative h-full p-6 rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      {/* Icon */}
-      <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-muted/50">
-        <Icon className="w-6 h-6 text-primary" />
+const BenefitCard = memo(
+  ({
+    icon: Icon,
+    title,
+    description,
+    delay = 0,
+  }: {
+    icon: React.ElementType;
+    title: string;
+    description: string;
+    delay?: number;
+  }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay }}
+      className="group relative"
+    >
+      <div className="relative h-full p-6 rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        {/* Icon */}
+        <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-muted/50">
+          <Icon className="w-6 h-6 text-primary" />
+        </div>
+
+        <h4 className="mb-3 text-lg font-semibold text-foreground">{title}</h4>
+
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {description}
+        </p>
       </div>
-
-      <h4 className="mb-3 text-lg font-semibold text-foreground">
-        {title}
-      </h4>
-
-      <p className="text-sm text-muted-foreground leading-relaxed">
-        {description}
-      </p>
-    </div>
-  </motion.div>
-));
+    </motion.div>
+  ),
+);
 
 BenefitCard.displayName = "BenefitCard";
 
@@ -84,7 +83,8 @@ const CodeBlock = memo(() => (
     </div>
     <div className="space-y-2 font-mono text-sm">
       <div className="text-muted-foreground">
-        <span className="text-green-500">$</span> git clone https://github.com/paulbgtr/nebriq
+        <span className="text-green-500">$</span> git clone
+        https://github.com/paulbgtr/nebriq
       </div>
       <div className="text-muted-foreground">
         <span className="text-green-500">$</span> cd nebriq
@@ -108,44 +108,48 @@ export const OpenSourceSection = () => {
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: [0.21, 0.45, 0.27, 0.99] }
+    transition: { duration: 0.6, ease: [0.21, 0.45, 0.27, 0.99] },
   };
 
   const benefits = [
     {
       icon: Lock,
       title: "Your Data, Your Rules",
-      description: "Complete transparency. No vendor lock-in. Self-host anywhere with full control over your data."
+      description:
+        "Complete transparency. No vendor lock-in. Self-host anywhere with full control over your data.",
     },
     {
       icon: Users,
       title: "Community Powered",
-      description: "Built by developers, for developers. Every voice matters in shaping the future of note-taking."
+      description:
+        "Built by developers, for developers. Every voice matters in shaping the future of note-taking.",
     },
     {
       icon: Zap,
       title: "Innovation Unleashed",
-      description: "Rapid iteration, cutting-edge features, zero corporate bureaucracy slowing down progress."
+      description:
+        "Rapid iteration, cutting-edge features, zero corporate bureaucracy slowing down progress.",
     },
     {
       icon: Globe,
       title: "Global Impact",
-      description: "Your contributions reach developers worldwide, creating lasting value for the entire community."
-    }
+      description:
+        "Your contributions reach developers worldwide, creating lasting value for the entire community.",
+    },
   ];
 
   const perks = [
     { icon: ArrowRight, text: "Direct influence on roadmap" },
     { icon: Star, text: "Founding member recognition" },
     { icon: Coffee, text: "1-on-1 access to core team" },
-    { icon: Zap, text: "Priority feature requests" }
+    { icon: Zap, text: "Priority feature requests" },
   ];
 
   return (
     <section id="open-source" className="relative py-16 sm:py-24">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/5 to-background" />
-      
+
       <div className="relative z-10 px-4 mx-auto max-w-6xl">
         <motion.div
           initial="initial"
@@ -154,7 +158,7 @@ export const OpenSourceSection = () => {
           className="space-y-16"
         >
           {/* Section Header */}
-          <motion.div 
+          <motion.div
             {...fadeInUp}
             transition={{ delay: 0.1 }}
             className="text-center space-y-4"
@@ -176,8 +180,8 @@ export const OpenSourceSection = () => {
             </h2>
 
             <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
-              Nebriq isn't just open source—it's open opportunity. Join us in building 
-              the future of intelligent note-taking.
+              Nebriq isn&apos;t just open source—it&apos;s open opportunity.
+              Join us in building the future of intelligent note-taking.
             </p>
           </motion.div>
 
@@ -193,10 +197,10 @@ export const OpenSourceSection = () => {
                 <h3 className="text-2xl sm:text-3xl font-bold text-foreground">
                   Code. Community. Innovation.
                 </h3>
-                
+
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  Every line of code is transparent. Every decision is collaborative. 
-                  Every feature serves the community first.
+                  Every line of code is transparent. Every decision is
+                  collaborative. Every feature serves the community first.
                 </p>
               </div>
 
@@ -212,7 +216,7 @@ export const OpenSourceSection = () => {
                     <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
-                
+
                 <Button size="lg" variant="outline" asChild>
                   <Link href="#" className="group">
                     <BookOpen className="w-5 h-5 mr-2" />
@@ -245,7 +249,8 @@ export const OpenSourceSection = () => {
                 Why Open Source Matters
               </h3>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Transparency, collaboration, and community-driven innovation at the heart of everything we build.
+                Transparency, collaboration, and community-driven innovation at
+                the heart of everything we build.
               </p>
             </div>
 
@@ -269,7 +274,7 @@ export const OpenSourceSection = () => {
             <div className="relative p-8 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-background/50 to-primary/5 backdrop-blur-sm">
               {/* Enhanced glow for CTA */}
               <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-2xl opacity-40 -z-10" />
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div className="space-y-6">
                   <div className="flex items-center gap-3">
@@ -278,17 +283,20 @@ export const OpenSourceSection = () => {
                       Be an Early Pioneer
                     </h3>
                   </div>
-                  
+
                   <p className="text-base sm:text-lg text-muted-foreground">
-                    Join a select group of early contributors who are shaping the future of note-taking. 
-                    Your ideas don't just matter—they become reality.
+                    Join a select group of early contributors who are shaping
+                    the future of note-taking. Your ideas don&apos;t just
+                    matter—they become reality.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {perks.map((perk, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <perk.icon className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span className="text-sm text-foreground">{perk.text}</span>
+                        <span className="text-sm text-foreground">
+                          {perk.text}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -297,7 +305,9 @@ export const OpenSourceSection = () => {
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg border border-border/50 bg-card/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-foreground">Current Status</span>
+                      <span className="text-sm font-medium text-foreground">
+                        Current Status
+                      </span>
                       <span className="px-2 py-1 text-xs bg-green-500/20 text-green-600 dark:text-green-400 rounded-full">
                         🟢 Active Development
                       </span>
