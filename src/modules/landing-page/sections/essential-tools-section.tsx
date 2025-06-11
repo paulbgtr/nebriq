@@ -1,5 +1,6 @@
 "use client";
 
+import React, { memo } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -8,158 +9,191 @@ import {
   Maximize,
   Cloud,
   Type,
-  Sigma,
+  Brain,
   Code,
   Tag,
 } from "lucide-react";
-import { FuturisticCard } from "@/modules/landing-page/components/futuristic-card";
+
+// Memoized tool card component for better performance
+const ToolCard = memo(
+  ({
+    title,
+    description,
+    icon: Icon,
+    delay = 0,
+    accentColor = "primary",
+  }: {
+    title: string;
+    description: string;
+    icon: React.ElementType;
+    delay?: number;
+    accentColor?: string;
+  }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay }}
+      className="group relative"
+    >
+      <div className="relative h-full p-6 rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        {/* Simple accent line */}
+        <div
+          className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${accentColor} to-${accentColor}/60 rounded-t-xl`}
+        />
+
+        {/* Icon */}
+        <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-muted/50">
+          <Icon className={`w-6 h-6 text-${accentColor}`} />
+        </div>
+
+        <h3 className="mb-3 text-lg font-semibold text-foreground">{title}</h3>
+
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {description}
+        </p>
+      </div>
+    </motion.div>
+  ),
+);
+
+ToolCard.displayName = "ToolCard";
 
 export const EssentialToolsSection = () => {
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: [0.21, 0.45, 0.27, 0.99] },
+  };
+
+  const tools = [
+    {
+      title: "Focus Mode",
+      description:
+        "Distraction-free writing environment that adapts to your workflow and helps maintain deep focus.",
+      icon: Maximize,
+      accentColor: "primary",
+    },
+    {
+      title: "Smart Organization",
+      description:
+        "No folders needed. Your notes organize themselves based on content and connections.",
+      icon: FolderX,
+      accentColor: "purple-500",
+    },
+    {
+      title: "Instant Sync",
+      description:
+        "Real-time synchronization across all your devices with offline support.",
+      icon: Cloud,
+      accentColor: "blue-500",
+    },
+    {
+      title: "Rich Formatting",
+      description:
+        "Beautiful typography and formatting that enhances readability without complexity.",
+      icon: Type,
+      accentColor: "green-500",
+    },
+    {
+      title: "Math Support",
+      description:
+        "Write mathematical expressions with LaTeX support and live preview rendering.",
+      icon: Brain,
+      accentColor: "emerald-500",
+    },
+    {
+      title: "Code Blocks",
+      description:
+        "Syntax highlighting for over 100+ programming languages with smart indentation.",
+      icon: Code,
+      accentColor: "yellow-500",
+    },
+    {
+      title: "Smart Tags",
+      description:
+        "Automatic tagging based on content analysis helps organize and discover notes.",
+      icon: Tag,
+      accentColor: "pink-500",
+    },
+    {
+      title: "Semantic Search",
+      description:
+        "Find notes by meaning, not just keywords. Search understands context and intent.",
+      icon: Search,
+      accentColor: "indigo-500",
+    },
+  ];
+
   return (
-    <section className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+    <section className="relative py-16 sm:py-24">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/10 via-background to-muted/10" />
 
-      {/* Futuristic grid pattern background */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="relative z-10 px-4 mx-auto max-w-6xl">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial="initial"
+          whileInView="animate"
           viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 px-6 mx-auto max-w-7xl">
-        <div className="mb-16 text-center">
+          className="space-y-16"
+        >
+          {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 mb-4 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm"
+            {...fadeInUp}
+            transition={{ delay: 0.1 }}
+            className="text-center space-y-4"
           >
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">
-              Essential Tools
-            </span>
-          </motion.div>
-          <h2 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground">
-              Minimalist Design, Maximum Power
-            </span>
-          </h2>
-          <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
-            Cutting-edge tools engineered for the future of writing, with an
-            interface that fades away to let your ideas take center stage.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-8 mt-16 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              title: "Neural Focus",
-              description:
-                "AI-enhanced environment that adapts to your flow state and eliminates distractions",
-              icon: Maximize,
-              glowColor: "rgba(var(--primary-rgb), 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Fluid Organization",
-              description:
-                "Transcend traditional hierarchies with a system that evolves with your thinking",
-              icon: FolderX,
-              glowColor: "rgba(124, 58, 237, 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Quantum Sync",
-              description:
-                "Instantaneous multi-device synchronization with zero latency",
-              icon: Cloud,
-              glowColor: "rgba(59, 130, 246, 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Adaptive Formatting",
-              description:
-                "Context-aware styling that intuitively responds to your content",
-              icon: Type,
-              glowColor: "rgba(var(--primary-rgb), 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Mathematical Engine",
-              description:
-                "Seamlessly integrate complex equations with real-time rendering",
-              icon: Sigma,
-              glowColor: "rgba(16, 185, 129, 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Code Intelligence",
-              description:
-                "Smart syntax highlighting with AI-powered code suggestions",
-              icon: Code,
-              glowColor: "rgba(245, 158, 11, 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Contextual Tagging",
-              description:
-                "Automatic semantic labeling that creates meaningful connections",
-              icon: Tag,
-              glowColor: "rgba(236, 72, 153, 0.3)",
-              variant: "neon" as const,
-            },
-            {
-              title: "Cognitive Search",
-              description:
-                "Thought-based retrieval that understands intent, not just keywords",
-              icon: Search,
-              glowColor: "rgba(79, 70, 229, 0.3)",
-              variant: "neon" as const,
-            },
-          ].map((feature, index) => (
-            <FuturisticCard
-              key={feature.title}
-              delay={index * 0.1}
-              className="backdrop-blur-sm h-full"
-              glowColor={feature.glowColor}
-              variant={feature.variant}
-            >
-              <div className="space-y-4">
-                <div className="relative w-12 h-12 flex items-center justify-center">
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-primary/10"
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      opacity: [0.7, 0.9, 0.7],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                    }}
-                  />
-                  <feature.icon className="w-6 h-6 text-primary relative z-10" />
-                </div>
-                <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary/80">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {feature.description}
-                </p>
+            {/* Badge */}
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-primary">
+                  Essential Tools
+                </span>
               </div>
-            </FuturisticCard>
-          ))}
-        </div>
+            </div>
+
+            {/* Main Headline */}
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+              <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                Simple Tools,
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Powerful Results
+              </span>
+            </h2>
+
+            <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
+              Everything you need to write, organize, and discover your ideas.
+              Clean design that gets out of your way.
+            </p>
+          </motion.div>
+
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {tools.map((tool, index) => (
+              <ToolCard key={tool.title} {...tool} delay={0.3 + index * 0.05} />
+            ))}
+          </div>
+
+          {/* Bottom CTA Section */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ delay: 0.8 }}
+            className="text-center pt-8"
+          >
+            <div className="max-w-2xl mx-auto space-y-4">
+              <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
+                Ready to transform your writing?
+              </h3>
+              <p className="text-muted-foreground">
+                Join thousands of writers who&apos;ve already discovered a
+                better way to organize their thoughts.
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
