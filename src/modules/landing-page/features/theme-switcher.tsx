@@ -9,10 +9,31 @@ import { Button } from "@/shared/components/ui/button";
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  // useEffect only runs on the client, so now we can safely show the UI
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
+
+  // Render a static version during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="relative w-8 h-8 transition-colors hover:bg-primary/10 hover:text-primary"
+        aria-label="Toggle theme"
+      >
+        <Sun className="w-4 h-4 text-primary" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    );
+  }
 
   return (
     <Button
@@ -20,6 +41,7 @@ export function ModeToggle() {
       size="icon"
       onClick={toggleTheme}
       className="relative w-8 h-8 transition-colors hover:bg-primary/10 hover:text-primary"
+      aria-label="Toggle theme"
     >
       <motion.div
         initial={false}
