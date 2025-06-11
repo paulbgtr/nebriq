@@ -19,11 +19,17 @@ interface HeaderProps {
 export const Header = ({ motionConfig }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
-
+  
   // Transform scroll position to opacity and blur values
   const headerOpacity = useTransform(scrollY, [0, 100], [0.9, 0.95]);
   const headerBlur = useTransform(scrollY, [0, 100], [12, 20]);
+
+  // Prevent hydration issues with scroll-based animations
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close mobile menu when clicking outside or on escape
   useEffect(() => {
@@ -68,9 +74,12 @@ export const Header = ({ motionConfig }: HeaderProps) => {
       <motion.div
         {...motionConfig}
         className="fixed top-4 md:top-6 inset-x-0 z-50 px-4"
-        style={{
+        style={mounted ? {
           opacity: headerOpacity,
           backdropFilter: `blur(${headerBlur}px)`,
+        } : {
+          opacity: 0.9,
+          backdropFilter: 'blur(12px)',
         }}
       >
         <div className="flex justify-center">
