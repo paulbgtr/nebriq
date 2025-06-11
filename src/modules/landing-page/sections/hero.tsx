@@ -74,12 +74,25 @@ export const HeroSection = () => {
             transition={{ delay: 0.1 }}
             className="flex justify-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-primary" />
+            <motion.div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Sparkles className="w-4 h-4 text-primary" />
+              </motion.div>
               <span className="text-sm font-medium text-primary">
-                AI-Powered Writing Assistant
+                ✨ Your AI Second Brain
               </span>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Main Headline */}
@@ -89,9 +102,27 @@ export const HeroSection = () => {
             className="space-y-4"
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-              <span className="block bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 bg-clip-text text-transparent">
-                Write. Ask. Know.
-              </span>
+              <motion.span
+                className="block bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_100%]"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                Turn Thoughts Into
+              </motion.span>
+              <motion.span
+                className="block bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 bg-clip-text text-transparent"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                Connected Knowledge
+              </motion.span>
             </h1>
 
             <motion.p
@@ -99,8 +130,9 @@ export const HeroSection = () => {
               transition={{ delay: 0.4 }}
               className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground leading-relaxed"
             >
-              A minimal writing space that uses AI to organize your notes and
-              make your knowledge accessible—no folders, just connections.
+              Stop losing brilliant ideas in endless folders. Write naturally,
+              ask questions, and watch AI weave your thoughts into a living web
+              of knowledge that grows smarter with you.
             </motion.p>
           </motion.div>
 
@@ -110,22 +142,27 @@ export const HeroSection = () => {
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="group min-w-40" asChild>
+            <Button
+              size="lg"
+              className="group min-w-40 relative overflow-hidden"
+              asChild
+            >
               <motion.a
                 href="/signup"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="relative overflow-hidden"
               >
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                <motion.div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative z-10">Start Building Your Brain</span>
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1 relative z-10" />
               </motion.a>
             </Button>
 
             <Button
               variant="outline"
               size="lg"
-              className="group min-w-40"
+              className="group min-w-40 hover:bg-muted/50"
               asChild
             >
               <motion.a
@@ -135,9 +172,19 @@ export const HeroSection = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Github className="w-4 h-4 mr-2" />
-                Star on GitHub
-                <Star className="w-4 h-4 ml-2 transition-transform group-hover:scale-110" />
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Github className="w-4 h-4 mr-2" />
+                </motion.div>
+                View Source
+                <motion.div
+                  whileHover={{ rotate: [0, 180] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Star className="w-4 h-4 ml-2 transition-colors group-hover:text-yellow-500" />
+                </motion.div>
               </motion.a>
             </Button>
           </motion.div>
@@ -148,9 +195,21 @@ export const HeroSection = () => {
             transition={{ delay: 0.8 }}
             className="flex flex-wrap items-center justify-center gap-3 pt-4"
           >
-            <FeatureBadge icon={Sparkles} text="AI-Powered" delay={0.9} />
-            <FeatureBadge icon={ArrowRight} text="No Folders" delay={1.0} />
-            <FeatureBadge icon={Star} text="Smart Connections" delay={1.1} />
+            <FeatureBadge
+              icon={Sparkles}
+              text="AI That Actually Gets You"
+              delay={0.9}
+            />
+            <FeatureBadge
+              icon={ArrowRight}
+              text="Zero Organizing Required"
+              delay={1.0}
+            />
+            <FeatureBadge
+              icon={Star}
+              text="Ideas That Find Each Other"
+              delay={1.1}
+            />
           </motion.div>
 
           {/* Main Visualization */}
@@ -192,44 +251,76 @@ export const HeroSection = () => {
 
               {/* Floating UI Elements - Simplified */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-                className="absolute top-6 left-6 px-3 py-2 rounded-lg bg-background/80 backdrop-blur-md border border-border/50 shadow-lg"
+                initial={{ opacity: 0, scale: 0.9, x: -20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 1.2, duration: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="absolute top-6 left-6 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-border/50 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
               >
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                  <span className="font-medium">Write your thoughts</span>
+                  <motion.div
+                    className="w-2 h-2 bg-primary rounded-full"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span className="font-medium">
+                    💭 &quot;Just had an idea...&quot;
+                  </span>
                 </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.4, duration: 0.5 }}
-                className="absolute top-6 right-6 px-3 py-2 rounded-lg bg-background/80 backdrop-blur-md border border-border/50 shadow-lg"
+                initial={{ opacity: 0, scale: 0.9, x: 20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 1.4, duration: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="absolute top-6 right-6 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-border/50 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
               >
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                  <span className="font-medium">Ask questions</span>
+                  <motion.div
+                    className="w-2 h-2 bg-blue-500 rounded-full"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                  />
+                  <span className="font-medium">
+                    🤔 &quot;What was that about...?&quot;
+                  </span>
                 </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.6, duration: 0.5 }}
-                className="absolute bottom-6 left-1/2 -translate-x-1/2 px-3 py-2 rounded-lg bg-background/80 backdrop-blur-md border border-border/50 shadow-lg"
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 1.6, duration: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-border/50 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
               >
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="font-medium">Discover connections</span>
+                  <motion.div
+                    className="w-2 h-2 bg-emerald-500 rounded-full"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                  />
+                  <span className="font-medium">
+                    ✨ &quot;Oh, these connect!&quot;
+                  </span>
                 </div>
               </motion.div>
             </div>
 
-            {/* Subtle glow effect */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-3xl blur-2xl opacity-50 -z-10" />
+            {/* Enhanced glow effect */}
+            <motion.div
+              className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-emerald-500/10 rounded-3xl blur-2xl opacity-50 -z-10"
+              animate={{
+                opacity: [0.3, 0.6, 0.3],
+                scale: [1, 1.02, 1],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
           </motion.div>
         </motion.div>
       </div>
