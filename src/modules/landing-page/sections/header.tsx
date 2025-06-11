@@ -24,13 +24,13 @@ export const Header = ({ motionConfig }: HeaderProps) => {
       <div className="flex justify-center">
         <div
           className={cn(
-            "relative w-full max-w-4xl flex items-center gap-4 px-4 sm:px-6 py-3 rounded-2xl border shadow-md",
+            "relative w-full max-w-4xl flex justify-between items-center gap-4 px-4 sm:px-6 py-3",
             "bg-background/80 backdrop-blur-lg",
-            "border-border/40 shadow-neutral-900/10 dark:shadow-black/15",
-            "hover:shadow-neutral-900/15 dark:hover:shadow-black/20 transition-shadow duration-300"
+            "rounded-2xl border shadow-md border-border/40 shadow-neutral-900/10 dark:shadow-black/15",
+            "hover:shadow-neutral-900/15 dark:hover:shadow-black/20 transition-shadow duration-300",
           )}
         >
-          {/* Glow effect (kept similar, maybe adjust opacity/blur if desired) */}
+          {/* Glow effect */}
           <div className="absolute inset-0 -z-10 overflow-hidden rounded-2xl">
             <motion.div
               initial={{ opacity: 0 }}
@@ -46,7 +46,7 @@ export const Header = ({ motionConfig }: HeaderProps) => {
             />
           </div>
 
-          {/* Logo with improved animation */}
+          {/* Logo */}
           <div className="flex items-center gap-3 pr-4 sm:pr-5">
             <Link href="/">
               <div className="flex items-center gap-2.5">
@@ -107,7 +107,7 @@ export const Header = ({ motionConfig }: HeaderProps) => {
                 href="/login"
                 className={cn(
                   buttonVariants({ variant: "ghost", size: "sm" }),
-                  "text-muted-foreground hover:text-primary"
+                  "text-muted-foreground hover:text-primary",
                 )}
               >
                 Sign in
@@ -115,20 +115,25 @@ export const Header = ({ motionConfig }: HeaderProps) => {
               <Link
                 href="/signup"
                 className={cn(
-                  buttonVariants({ variant: "default", size: "sm" })
+                  buttonVariants({ variant: "default", size: "sm" }),
                 )}
               >
                 Create Account
               </Link>
             </div>
             <ModeToggle />
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="sm:hidden">
-            <Button variant="ghost" size="icon" aria-label="Open menu">
-              <Menu className="h-5 w-5 text-muted-foreground" />
-            </Button>
+            {/* Mobile Menu Button */}
+            <div>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+                className="sm:hidden"
+              >
+                <Menu className="h-5 w-5 text-muted-foreground" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
