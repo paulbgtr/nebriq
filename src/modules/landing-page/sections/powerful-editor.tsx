@@ -1,148 +1,176 @@
 "use client";
 
+import React, { memo, Suspense } from "react";
 import { motion } from "framer-motion";
-import { Type, Maximize } from "lucide-react";
-import { EditorVisualization } from "@/modules/landing-page/features/visuals/editor-visualization";
+import { Type, Maximize, Loader2 } from "lucide-react";
+
+// Lazy load the heavy editor visualization component
+const EditorVisualization = React.lazy(() =>
+  import("@/modules/landing-page/features/visuals/editor-visualization").then(
+    (module) => ({ default: module.EditorVisualization }),
+  ),
+);
+
+// Loading fallback component
+const EditorLoader = () => (
+  <div className="flex items-center justify-center w-full h-full min-h-[400px] bg-muted/20 rounded-xl">
+    <div className="flex items-center gap-3 text-muted-foreground">
+      <Loader2 className="w-6 h-6 animate-spin" />
+      <span className="text-sm">Loading editor...</span>
+    </div>
+  </div>
+);
+
+// Memoized feature badge component
+const FeatureBadge = memo(
+  ({ icon: Icon, text }: { icon: React.ElementType; text: string }) => (
+    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
+      <Icon className="w-4 h-4 text-primary" />
+      <span className="text-sm font-medium text-primary">{text}</span>
+    </div>
+  ),
+);
+
+FeatureBadge.displayName = "FeatureBadge";
 
 export const PowerfulEditorSection = () => {
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: [0.21, 0.45, 0.27, 0.99] },
+  };
+
   return (
-    <section className="relative py-24 overflow-hidden">
-      {/* Atmospheric background effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+    <section className="relative py-16 sm:py-24">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/5 to-background" />
 
-      {/* Futuristic grid pattern background */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="relative z-10 px-4 mx-auto max-w-6xl">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial="initial"
+          whileInView="animate"
           viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
-      <div className="absolute inset-0">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 5, repeat: Infinity }}
-          className="absolute -left-1/4 top-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-[100px]"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-          className="absolute -right-1/4 bottom-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-[100px]"
-        />
-      </div>
-
-      <div className="relative z-10 px-4 sm:px-6 mx-auto max-w-7xl">
-        <div className="mb-12 sm:mb-16 text-center">
+          className="space-y-16"
+        >
+          {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 mb-4 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm"
+            {...fadeInUp}
+            transition={{ delay: 0.1 }}
+            className="text-center space-y-4"
           >
-            <div className="relative w-4 h-4 flex items-center justify-center">
-              <motion.div
-                className="absolute inset-0 rounded-full bg-primary/10"
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.7, 0.9, 0.7],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                }}
-              />
-              <Type className="w-4 h-4 text-primary relative z-10" />
+            {/* Badge */}
+            <div className="flex justify-center">
+              <FeatureBadge icon={Type} text="Powerful Editor" />
             </div>
-            <span className="text-sm font-medium text-primary">
-              Powerful Editor
-            </span>
+
+            {/* Main Headline */}
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+              <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                Write Without
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Distractions
+              </span>
+            </h2>
+
+            <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
+              A clean, powerful editor that stays out of your way. Focus on
+              writing while AI works quietly in the background.
+            </p>
           </motion.div>
-          <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold md:text-4xl lg:text-5xl">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground">
-              Write Without Limits
-            </span>
-          </h2>
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
-            A powerful editor that stays out of your way. Focus on writing while
-            AI works in the background.
-          </p>
-        </div>
 
-        <div className="relative">
+          {/* Editor Showcase */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative group"
+            {...fadeInUp}
+            transition={{ delay: 0.3 }}
+            className="relative"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{
-                opacity: [0.4, 0.3, 0.4],
-                scale: [0.98, 1.02, 0.98],
-              }}
-              transition={{
-                duration: 3,
-                ease: "easeInOut",
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-              style={{ backgroundColor: "rgba(var(--primary-rgb), 0.3)" }}
-              className="absolute inset-0 transition-all duration-700 rounded-xl sm:rounded-2xl blur-2xl group-hover:blur-3xl opacity-20"
-            />
-            <div className="relative aspect-[16/10] sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-primary/20 backdrop-blur-sm">
-              <EditorVisualization />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-background/90" />
+            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-border/50 bg-card/30 backdrop-blur-sm shadow-2xl">
+              {/* Subtle glow */}
+              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-2xl opacity-40 -z-10" />
 
-              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 lg:p-12">
-                <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4 md:space-y-6">
-                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-primary/10 backdrop-blur-md border border-primary/20">
-                    <div className="relative w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center">
-                      <motion.div
-                        className="absolute inset-0 rounded-full bg-primary/10"
-                        animate={{
-                          scale: [1, 1.1, 1],
-                          opacity: [0.7, 0.9, 0.7],
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          repeatType: "reverse",
-                        }}
-                      />
-                      <Maximize className="w-3 h-3 sm:w-4 sm:h-4 text-primary relative z-10" />
-                    </div>
-                    <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">
-                      Distraction Free
-                    </span>
+              {/* Editor Visualization */}
+              <div className="absolute inset-0">
+                <Suspense fallback={<EditorLoader />}>
+                  <EditorVisualization />
+                </Suspense>
+              </div>
+
+              {/* Overlay with content */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+
+              {/* Bottom content */}
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <div className="max-w-2xl space-y-4">
+                  <div className="flex justify-start">
+                    <FeatureBadge icon={Maximize} text="Distraction Free" />
                   </div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary/80">
-                    Focus on Writing
+
+                  <h3 className="text-2xl sm:text-3xl font-bold text-foreground">
+                    Pure Writing Experience
                   </h3>
-                  <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                    A clean, minimal interface that lets you focus on what
-                    matters most - your ideas. No cluttered toolbars, just pure
-                    writing bliss.
+
+                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                    Clean interface, smart formatting, and seamless performance.
+                    Everything you need, nothing you don&apos;t.
                   </p>
                 </div>
               </div>
             </div>
           </motion.div>
-        </div>
+
+          {/* Feature Highlights */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ delay: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {[
+              {
+                title: "Minimal Interface",
+                description:
+                  "Clean design that puts your content first. No clutter, just focus.",
+              },
+              {
+                title: "Smart Formatting",
+                description:
+                  "Intelligent text styling that adapts to your writing style and preferences.",
+              },
+              {
+                title: "Seamless Performance",
+                description:
+                  "Lightning-fast response times even with large documents and complex formatting.",
+              },
+            ].map((feature, index) => (
+              <div key={index} className="text-center space-y-3">
+                <h4 className="text-lg font-semibold text-foreground">
+                  {feature.title}
+                </h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Call to Action */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ delay: 0.7 }}
+            className="text-center pt-8"
+          >
+            <div className="max-w-2xl mx-auto space-y-4">
+              <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
+                Experience the difference
+              </h3>
+              <p className="text-muted-foreground">
+                Join writers who&apos;ve discovered the joy of distraction-free
+                writing with intelligent assistance.
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
