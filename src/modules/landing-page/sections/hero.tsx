@@ -1,494 +1,325 @@
 "use client";
 
-import React from "react";
+import React, { memo, Suspense } from "react";
 import { motion } from "framer-motion";
-import {
-  Sparkles,
-  BotMessageSquare,
-  Waypoints,
-  Type,
-  Sigma,
-  FolderX,
-} from "lucide-react";
-import { KnowledgeGraphVisualization } from "@/modules/landing-page/features/visuals/knowledge-graph-visualization";
-import { Star } from "lucide-react";
+import { Sparkles, ArrowRight, Star, Github } from "lucide-react";
+import { Button } from "@/shared/components/ui/button";
+
+// Lazy load the heavy visualization component
+const KnowledgeGraphVisualization = React.lazy(() =>
+  import(
+    "@/modules/landing-page/features/visuals/knowledge-graph-visualization"
+  ).then((module) => ({ default: module.KnowledgeGraphVisualization })),
+);
+
+// Memoized feature badge component for better performance
+const FeatureBadge = memo(
+  ({
+    icon: Icon,
+    text,
+    delay = 0,
+  }: {
+    icon: React.ElementType;
+    text: string;
+    delay?: number;
+  }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay }}
+      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/60 border border-border/50 backdrop-blur-sm"
+    >
+      <Icon className="w-3.5 h-3.5 text-primary" />
+      <span className="text-xs font-medium text-muted-foreground">{text}</span>
+    </motion.div>
+  ),
+);
+
+FeatureBadge.displayName = "FeatureBadge";
 
 export const HeroSection = () => {
+  // Optimized animation variants
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: [0.21, 0.45, 0.27, 0.99] },
+  };
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
   return (
-    <section
-      id="hero"
-      className="relative flex items-center justify-center min-h-[90vh] pt-32 pb-24 md:pb-12 lg:pb-6 overflow-hidden"
-    >
-      {/* Floating elements */}
-      <div className="absolute inset-0">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.3, 0.1] }}
-          transition={{ duration: 5, repeat: Infinity }}
-          className="absolute rounded-full top-1/4 -left-20 w-60 h-60 bg-primary/20 blur-[100px]"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-          className="absolute rounded-full bottom-1/4 -right-20 w-80 h-80 bg-secondary/20 blur-[100px]"
-        />
-        {/* Additional ambient light effects */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.05, 0.15, 0.05] }}
-          transition={{ duration: 8, repeat: Infinity, delay: 2 }}
-          className="absolute rounded-full top-1/2 left-1/3 w-40 h-40 bg-blue-500/20 blur-[80px]"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 6, repeat: Infinity, delay: 3 }}
-          className="absolute rounded-full bottom-1/3 right-1/3 w-32 h-32 bg-purple-500/20 blur-[60px]"
-        />
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center px-4 pt-24 pb-16 overflow-hidden">
+      {/* Optimized background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20" />
 
-      {/* Futuristic grid pattern background - matching Essential Tools section */}
-      <div className="absolute inset-0 opacity-5">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
+      {/* Subtle ambient glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
 
-      {/* Main content */}
-      <div className="relative z-10 px-4 mx-auto max-w-7xl">
+      <div className="relative z-10 w-full max-w-6xl mx-auto">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="text-center space-y-16"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="text-center space-y-8"
         >
-          {/* Hero title */}
+          {/* AI Badge */}
           <motion.div
-            className="relative space-y-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.2,
-              ease: [0.21, 0.45, 0.27, 0.99],
-            }}
+            {...fadeInUp}
+            transition={{ delay: 0.1 }}
+            className="flex justify-center"
           >
-            {/* Decorative elements */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.5, delay: 0.2 }}
-              className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1 mb-4 border rounded-full border-primary/20 bg-background/80 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Sparkles className="w-4 h-4 text-primary" />
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Sparkles className="w-4 h-4 text-primary" />
+              </motion.div>
               <span className="text-sm font-medium text-primary">
-                AI-Powered Writing
+                ✨ Your AI Second Brain
               </span>
             </motion.div>
+          </motion.div>
 
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground/80 relative"
-                >
-                  Write.
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.8, delay: 1.2 }}
-                    className="absolute -bottom-2 left-0 h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"
-                  />
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/90 to-primary/80 relative"
-                >
-                  Ask.
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.8, delay: 1.4 }}
-                    className="absolute -bottom-2 left-0 h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"
-                  />
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.9 }}
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 relative"
-                >
-                  Know.
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.8, delay: 1.6 }}
-                    className="absolute -bottom-2 left-0 h-[2px] bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"
-                  />
-                </motion.span>
-              </div>
+          {/* Main Headline */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
+          >
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
+              <motion.span
+                className="block bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_100%]"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                Turn Thoughts Into
+              </motion.span>
+              <motion.span
+                className="block bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 bg-clip-text text-transparent"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                Connected Knowledge
+              </motion.span>
             </h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-              className="max-w-2xl mx-auto text-xl text-muted-foreground leading-relaxed"
+              {...fadeInUp}
+              transition={{ delay: 0.4 }}
+              className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground leading-relaxed"
             >
-              A simple writing space that uses AI to keep your notes organized
-              and your knowledge accessible.
+              Stop losing brilliant ideas in endless folders. Write naturally,
+              ask questions, and watch AI weave your thoughts into a living web
+              of knowledge that grows smarter with you.
             </motion.p>
+          </motion.div>
 
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.5 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8"
+          {/* CTA Buttons */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ delay: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Button
+              size="lg"
+              className="group min-w-40 relative overflow-hidden"
+              asChild
             >
               <motion.a
                 href="/signup"
-                className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-full bg-primary text-white shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:-translate-y-1"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                className="relative overflow-hidden"
               >
-                <span className="relative z-10 flex items-center justify-center gap-2 font-medium">
-                  Get Started
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="transition-transform duration-300 group-hover:translate-x-1"
-                  >
-                    <path d="M5 12h14"></path>
-                    <path d="m12 5 7 7-7 7"></path>
-                  </svg>
-                </span>
-                <motion.span
-                  className="absolute top-0 left-0 w-full h-full bg-white/10"
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{
-                    scale: 1.5,
-                    opacity: 0.2,
-                    transition: { duration: 0.4 },
-                  }}
-                />
+                <motion.div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative z-10">Start Building Your Brain</span>
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1 relative z-10" />
               </motion.a>
+            </Button>
 
+            <Button
+              variant="outline"
+              size="lg"
+              className="group min-w-40 hover:bg-muted/50"
+              asChild
+            >
               <motion.a
                 href="https://github.com/paulbgtr/nebriq"
-                className="group relative overflow-hidden rounded-full px-6 py-3 text-sm font-medium text-primary hover:text-primary/80 transition-all duration-300"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <span className="relative z-10 flex items-center justify-center gap-4">
-                  Star on Github
-                  <Star className="w-5 h-5" />
-                </span>
-                <motion.span
-                  className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-[1px] bg-primary/30"
-                  initial={{ width: 0 }}
-                  whileHover={{
-                    width: "80%",
-                    transition: { duration: 0.3 },
-                  }}
-                />
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Github className="w-4 h-4 mr-2" />
+                </motion.div>
+                View Source
+                <motion.div
+                  whileHover={{ rotate: [0, 180] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Star className="w-4 h-4 ml-2 transition-colors group-hover:text-yellow-500" />
+                </motion.div>
               </motion.a>
-            </motion.div>
+            </Button>
+          </motion.div>
 
-            {/* Decorative line */}
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 1, delay: 1.4 }}
-              className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-primary/30 to-transparent mt-10"
+          {/* Feature Badges */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ delay: 0.8 }}
+            className="flex flex-wrap items-center justify-center gap-3 pt-4"
+          >
+            <FeatureBadge
+              icon={Sparkles}
+              text="AI That Actually Gets You"
+              delay={0.9}
+            />
+            <FeatureBadge
+              icon={ArrowRight}
+              text="Zero Organizing Required"
+              delay={1.0}
+            />
+            <FeatureBadge
+              icon={Star}
+              text="Ideas That Find Each Other"
+              delay={1.1}
             />
           </motion.div>
 
-          {/* Feature Tags */}
+          {/* Main Visualization */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.7 }}
-            className="flex flex-wrap justify-center gap-3 px-4"
+            {...fadeInUp}
+            transition={{ delay: 1.0 }}
+            className="relative max-w-4xl mx-auto mt-16"
           >
-            {[
-              {
-                icon: Sparkles,
-                text: "AI-Powered",
-                color: "from-blue-500/20 to-blue-600/10",
-                glowColor: "rgba(59, 130, 246, 0.3)",
-              },
-              {
-                icon: Waypoints,
-                text: "Dynamic Knowledge Maps",
-                color: "from-purple-500/20 to-purple-600/10",
-                glowColor: "rgba(124, 58, 237, 0.3)",
-              },
-              {
-                icon: FolderX,
-                text: "No Folders",
-                color: "from-green-500/20 to-green-600/10",
-                glowColor: "rgba(16, 185, 129, 0.3)",
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={feature.text}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 1.2 + index * 0.1,
-                  ease: "easeOut",
-                }}
-                className="relative group"
-              >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{
-                    opacity: [0.4, 0.3, 0.4],
-                    scale: [0.98, 1.02, 0.98],
-                  }}
-                  transition={{
-                    duration: 3,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                  }}
-                  style={{ backgroundColor: feature.glowColor }}
-                  className="absolute inset-0 transition-all duration-700 rounded-full blur-xl group-hover:blur-2xl opacity-20"
-                />
-                <div
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r ${feature.color} backdrop-blur-sm border border-primary/10 shadow-sm relative z-10`}
-                >
-                  <div className="relative w-4 h-4 flex items-center justify-center">
-                    <motion.div
-                      className="absolute inset-0 rounded-full bg-primary/10"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.7, 0.9, 0.7],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                    <feature.icon className="w-4 h-4 text-primary relative z-10" />
-                  </div>
-                  <span className="text-sm font-medium">{feature.text}</span>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-border/50 bg-card/50 backdrop-blur-sm shadow-2xl">
+              {/* Gradient overlays */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-primary/5" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
 
-          {/* Futuristic 3D Visualization */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="relative w-full max-w-[90vw] mx-auto mt-8"
-          >
-            <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-primary/20 shadow-xl shadow-primary/5">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 blur-2xl" />
-
-              {/* Interactive Knowledge Graph Visualization */}
+              {/* Visualization Container */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <KnowledgeGraphVisualization />
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center w-full h-full">
+                      <div className="flex items-center gap-3 text-muted-foreground">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                          className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full"
+                        />
+                        <span className="text-sm">
+                          Loading visualization...
+                        </span>
+                      </div>
+                    </div>
+                  }
+                >
+                  <KnowledgeGraphVisualization />
+                </Suspense>
               </div>
 
-              {/* Floating UI Elements */}
+              {/* Floating UI Elements - Simplified */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.4 }}
-                className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 p-4 rounded-lg bg-background/40 backdrop-blur-md border border-primary/20 shadow-lg shadow-primary/5"
-                whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                initial={{ opacity: 0, scale: 0.9, x: -20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 1.2, duration: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="absolute top-6 left-6 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-border/50 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
               >
-                <div className="flex items-center gap-2">
-                  <div className="relative w-5 h-5 flex items-center justify-center">
-                    <motion.div
-                      className="absolute inset-0 rounded-full bg-primary/10"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.7, 0.9, 0.7],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                    <Type className="w-5 h-5 text-primary relative z-10" />
-                  </div>
-                  <span className="text-sm font-medium">
-                    Write your thoughts
+                <div className="flex items-center gap-2 text-sm">
+                  <motion.div
+                    className="w-2 h-2 bg-primary rounded-full"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span className="font-medium">
+                    💭 &quot;Just had an idea...&quot;
                   </span>
                 </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.6 }}
-                className="absolute top-1/2 right-1/4 transform translate-x-1/2 -translate-y-1/2 p-4 rounded-lg bg-background/60 backdrop-blur-md border border-blue-400/30 shadow-lg shadow-blue-400/10"
-                whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                initial={{ opacity: 0, scale: 0.9, x: 20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 1.4, duration: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="absolute top-6 right-6 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-border/50 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
               >
-                <div className="flex items-center gap-2">
-                  <div className="relative w-5 h-5 flex items-center justify-center">
-                    <motion.div
-                      className="absolute inset-0 rounded-full bg-blue-400/10"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.7, 0.9, 0.7],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                    <BotMessageSquare className="w-5 h-5 text-blue-400 relative z-10" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">
-                    Ask questions
+                <div className="flex items-center gap-2 text-sm">
+                  <motion.div
+                    className="w-2 h-2 bg-blue-500 rounded-full"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                  />
+                  <span className="font-medium">
+                    🤔 &quot;What was that about...?&quot;
                   </span>
                 </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.8 }}
-                className="absolute bottom-1/4 left-1/2 transform -translate-x-1/2 translate-y-1/2 p-4 rounded-lg bg-background/40 backdrop-blur-md border border-primary/20 shadow-lg shadow-primary/5"
-                whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 1.6, duration: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-border/50 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
               >
-                <div className="flex items-center gap-2">
-                  <div className="relative w-5 h-5 flex items-center justify-center">
-                    <motion.div
-                      className="absolute inset-0 rounded-full bg-primary/10"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.7, 0.9, 0.7],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                    <Sigma className="w-5 h-5 text-primary relative z-10" />
-                  </div>
-                  <span className="text-sm font-medium">
-                    Discover connections
+                <div className="flex items-center gap-2 text-sm">
+                  <motion.div
+                    className="w-2 h-2 bg-emerald-500 rounded-full"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                  />
+                  <span className="font-medium">
+                    ✨ &quot;Oh, these connect!&quot;
                   </span>
                 </div>
               </motion.div>
-
-              {/* Animated connection lines */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                <motion.path
-                  d="M25%,25% Q50%,15% 75%,50%"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.3 }}
-                  transition={{ duration: 1.5, delay: 2 }}
-                  fill="none"
-                  stroke="url(#lineGradient1)"
-                  strokeWidth="1"
-                  strokeDasharray="5,5"
-                />
-                <motion.path
-                  d="M75%,50% Q60%,70% 50%,75%"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.3 }}
-                  transition={{ duration: 1.5, delay: 2.2 }}
-                  fill="none"
-                  stroke="url(#lineGradient2)"
-                  strokeWidth="1"
-                  strokeDasharray="5,5"
-                />
-                <defs>
-                  <linearGradient
-                    id="lineGradient1"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                  >
-                    <stop
-                      offset="0%"
-                      stopColor="var(--primary)"
-                      stopOpacity="0.5"
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor="var(--secondary)"
-                      stopOpacity="0.5"
-                    />
-                  </linearGradient>
-                  <linearGradient
-                    id="lineGradient2"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                  >
-                    <stop
-                      offset="0%"
-                      stopColor="var(--secondary)"
-                      stopOpacity="0.5"
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor="var(--primary)"
-                      stopOpacity="0.5"
-                    />
-                  </linearGradient>
-                </defs>
-              </svg>
-
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-transparent opacity-50" />
             </div>
 
-            {/* Subtle pulse effect at the bottom */}
+            {/* Enhanced glow effect */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0.2, 0.5, 0.2] }}
+              className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-emerald-500/10 rounded-3xl blur-2xl opacity-50 -z-10"
+              animate={{
+                opacity: [0.3, 0.6, 0.3],
+                scale: [1, 1.02, 1],
+              }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                repeatType: "reverse",
+                ease: "easeInOut",
               }}
-              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full bg-primary/10 blur-3xl"
             />
           </motion.div>
         </motion.div>

@@ -8,6 +8,7 @@ import { Footer } from "@/modules/landing-page/sections/footer";
 import { PowerfulEditorSection } from "@/modules/landing-page/sections/powerful-editor";
 import { ProblemSection } from "@/modules/landing-page/sections/problem";
 import { PricingSection } from "@/modules/landing-page/sections/pricing-section";
+import { OpenSourceSection } from "@/modules/landing-page/sections/open-source-section";
 import { polar } from "@/shared/lib/polar/client";
 
 export default async function Home() {
@@ -28,7 +29,7 @@ export default async function Home() {
       <Header motionConfig={motionConfig} />
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-1 mt-10">
         <div className="absolute inset-0 overflow-hidden -z-10">
           <NeuralNetwork />
 
@@ -44,6 +45,8 @@ export default async function Home() {
         <EssentialToolsSection />
 
         <PowerfulEditorSection />
+
+        <OpenSourceSection />
 
         <PricingSection products={result.items} />
 
