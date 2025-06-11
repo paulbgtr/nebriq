@@ -16,24 +16,6 @@ import { SmartLibraryVisualization } from "@/modules/landing-page/features/visua
 export const FeaturesOverviewSection = () => {
   return (
     <section id="features" className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-
-      {/* Futuristic grid pattern background */}
-      <div className="absolute inset-0 opacity-5">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
       <div className="relative z-10 px-6 mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <motion.div

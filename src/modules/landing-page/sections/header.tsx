@@ -30,22 +30,6 @@ export const Header = ({ motionConfig }: HeaderProps) => {
             "hover:shadow-neutral-900/15 dark:hover:shadow-black/20 transition-shadow duration-300",
           )}
         >
-          {/* Glow effect */}
-          <div className="absolute inset-0 -z-10 overflow-hidden rounded-2xl">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0.04, 0.12, 0.04] }}
-              transition={{ duration: 8, repeat: Infinity }}
-              className="absolute -left-10 top-1/2 -translate-y-1/2 w-40 h-20 bg-primary/30 blur-[35px]"
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0.08, 0.18, 0.08] }}
-              transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-              className="absolute -right-10 top-1/2 -translate-y-1/2 w-40 h-20 bg-primary/30 blur-[35px]"
-            />
-          </div>
-
           {/* Logo */}
           <div className="flex items-center gap-3 pr-4 sm:pr-5">
             <Link href="/">

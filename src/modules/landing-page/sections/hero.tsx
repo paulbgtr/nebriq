@@ -20,51 +20,6 @@ export const HeroSection = () => {
       id="hero"
       className="relative flex items-center justify-center min-h-[90vh] pt-32 pb-24 md:pb-12 lg:pb-6 overflow-hidden"
     >
-      {/* Floating elements */}
-      <div className="absolute inset-0">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.3, 0.1] }}
-          transition={{ duration: 5, repeat: Infinity }}
-          className="absolute rounded-full top-1/4 -left-20 w-60 h-60 bg-primary/20 blur-[100px]"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-          className="absolute rounded-full bottom-1/4 -right-20 w-80 h-80 bg-secondary/20 blur-[100px]"
-        />
-        {/* Additional ambient light effects */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.05, 0.15, 0.05] }}
-          transition={{ duration: 8, repeat: Infinity, delay: 2 }}
-          className="absolute rounded-full top-1/2 left-1/3 w-40 h-40 bg-blue-500/20 blur-[80px]"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 6, repeat: Infinity, delay: 3 }}
-          className="absolute rounded-full bottom-1/3 right-1/3 w-32 h-32 bg-purple-500/20 blur-[60px]"
-        />
-      </div>
-
-      {/* Futuristic grid pattern background - matching Essential Tools section */}
-      <div className="absolute inset-0 opacity-5">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
       {/* Main content */}
       <div className="relative z-10 px-4 mx-auto max-w-7xl">
         <motion.div
