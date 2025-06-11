@@ -6,27 +6,6 @@ import { Sparkles, Settings, FolderX, Compass } from "lucide-react";
 export const ProblemSection = () => {
   return (
     <section id="problem" className="relative py-16 sm:py-24 mt-16 sm:mt-32">
-      {/* Dynamic background with subtle animation */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
-
-        {/* Futuristic grid pattern background - matching Essential Tools section */}
-        <div className="absolute inset-0 opacity-5">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.5 }}
-            className="w-full h-full"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
-            }}
-          />
-        </div>
-      </div>
-
       {/* Content */}
       <div className="relative z-10 px-6 mx-auto max-w-7xl">
         <motion.div
@@ -271,7 +250,7 @@ export const ProblemSection = () => {
               <div className="absolute top-0 right-0 w-32 h-32 translate-x-1/2 -translate-y-1/2 bg-primary/10 blur-3xl rounded-full" />
 
               <div className="relative flex items-start gap-4">
-                <div className="flex-shrink-0 mt-1">
+                <div className="hidden md:flex flex-shrink-0 mt-1">
                   <div className="relative w-12 h-12 flex items-center justify-center">
                     <motion.div
                       className="absolute inset-0 rounded-full bg-primary/10"
