@@ -3,7 +3,7 @@ import { HeroSection } from "@/modules/landing-page/sections/hero";
 import { FeaturesOverviewSection } from "@/modules/landing-page/sections/features-section";
 import { EssentialToolsSection } from "@/modules/landing-page/sections/essential-tools-section";
 import { CtaSection } from "@/modules/landing-page/sections/cta-section";
-import { Header } from "@/modules/landing-page/sections/header";
+import { Header } from "@/shared/components/header
 import { Footer } from "@/modules/landing-page/sections/footer";
 import { PowerfulEditorSection } from "@/modules/landing-page/sections/powerful-editor";
 import { ProblemSection } from "@/modules/landing-page/sections/problem";
@@ -12,12 +12,6 @@ import { OpenSourceSection } from "@/modules/landing-page/sections/open-source-s
 import { polar } from "@/shared/lib/polar/client";
 
 export default async function Home() {
-  const motionConfig = {
-    initial: { opacity: 0, y: -100 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: "easeOut" },
-  };
-
   const polarClient = await polar();
 
   const { result } = await polarClient.products.list({
@@ -26,10 +20,10 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header motionConfig={motionConfig} />
+      <Header />
 
       {/* Main Content */}
-      <main className="flex-1 mt-10">
+      <main className="flex-1 mt-[5rem]">
         <div className="absolute inset-0 overflow-hidden -z-10">
           <NeuralNetwork />
 
