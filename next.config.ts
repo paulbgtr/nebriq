@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import MillionLint from "@million/lint";
+import withMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -7,7 +7,15 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "2mb",
     },
   },
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
 };
 
-// export default MillionLint.next()(nextConfig);
-export default nextConfig;
+const mdxConfig = withMDX({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
+export default mdxConfig(nextConfig);
