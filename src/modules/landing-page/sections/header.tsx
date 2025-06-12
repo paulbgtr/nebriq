@@ -21,7 +21,7 @@ export const Header = ({ motionConfig }: HeaderProps) => {
   const [activeSection, setActiveSection] = useState("");
   const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
-  
+
   // Transform scroll position to opacity and blur values
   const headerOpacity = useTransform(scrollY, [0, 100], [0.9, 0.95]);
   const headerBlur = useTransform(scrollY, [0, 100], [12, 20]);
@@ -74,13 +74,17 @@ export const Header = ({ motionConfig }: HeaderProps) => {
       <motion.div
         {...motionConfig}
         className="fixed top-4 md:top-6 inset-x-0 z-50 px-4"
-        style={mounted ? {
-          opacity: headerOpacity,
-          backdropFilter: `blur(${headerBlur}px)`,
-        } : {
-          opacity: 0.9,
-          backdropFilter: 'blur(12px)',
-        }}
+        style={
+          mounted
+            ? {
+                opacity: headerOpacity,
+                backdropFilter: `blur(${headerBlur}px)`,
+              }
+            : {
+                opacity: 0.9,
+                backdropFilter: "blur(12px)",
+              }
+        }
       >
         <div className="flex justify-center">
           <motion.div
@@ -267,17 +271,19 @@ export const Header = ({ motionConfig }: HeaderProps) => {
 
       {/* Mobile Menu Overlay */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0 }}
         animate={{
           opacity: isMobileMenuOpen ? 1 : 0,
-          scale: isMobileMenuOpen ? 1 : 0.95,
           pointerEvents: isMobileMenuOpen ? "auto" : "none",
         }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         className="fixed inset-0 z-40 lg:hidden"
       >
         {/* Backdrop */}
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isMobileMenuOpen ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
           className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -290,7 +296,7 @@ export const Header = ({ motionConfig }: HeaderProps) => {
             opacity: isMobileMenuOpen ? 1 : 0,
           }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="absolute top-[calc(50%-320px)] left-4 right-4 bg-background/90 backdrop-blur-xl rounded-2xl border shadow-2xl p-6"
+          className="absolute top-28 left-4 right-4 bg-background/95 backdrop-blur-xl rounded-2xl border shadow-2xl p-6 max-h-[calc(100vh-6rem)] overflow-y-auto"
         >
           <nav className="flex flex-col gap-4 mb-6">
             {navLinks.map((link, index) => (
