@@ -88,9 +88,8 @@ export const CtaSection = () => {
             </h2>
 
             <p className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground">
-              Join thousands of writers who&apos;ve already discovered a better
-              way to organize their thoughts. Start free, no credit card
-              required.
+              Join writers who&apos;ve already discovered a better way to
+              organize their thoughts. Start free, no credit card required.
             </p>
           </motion.div>
 

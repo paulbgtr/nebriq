@@ -188,8 +188,8 @@ export const EssentialToolsSection = () => {
                 Ready to transform your writing?
               </h3>
               <p className="text-muted-foreground">
-                Join thousands of writers who&apos;ve already discovered a
-                better way to organize their thoughts.
+                Join writers who&apos;ve already discovered a better way to
+                organize their thoughts.
               </p>
             </div>
           </motion.div>
