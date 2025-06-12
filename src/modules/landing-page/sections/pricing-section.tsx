@@ -402,23 +402,6 @@ export const PricingSection = ({ products }: PricingSectionProps) => {
               </motion.div>
             )}
           </div>
-
-          {/* Bottom CTA Section */}
-          <motion.div
-            {...fadeInUp}
-            transition={{ delay: 0.8 }}
-            className="text-center pt-8"
-          >
-            <div className="max-w-2xl mx-auto space-y-4">
-              <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
-                Ready to get started?
-              </h3>
-              <p className="text-muted-foreground">
-                Join thousands of users who trust Nebriq with their most
-                important ideas.
-              </p>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </section>
