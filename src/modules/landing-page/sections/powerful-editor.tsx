@@ -101,9 +101,9 @@ export const PowerfulEditorSection = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
 
               {/* Bottom content */}
-              <div className="absolute bottom-0 left-0 right-0 p-8">
+              <div className="absolute bottom-0 text-right right-8 p-8">
                 <div className="max-w-2xl space-y-4">
-                  <div className="flex justify-start">
+                  <div className="flex justify-end">
                     <FeatureBadge icon={Maximize} text="Distraction Free" />
                   </div>
 
