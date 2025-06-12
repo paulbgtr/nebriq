@@ -90,7 +90,7 @@ export const HeroSection = () => {
                 <Sparkles className="w-4 h-4 text-primary" />
               </motion.div>
               <span className="text-sm font-medium text-primary">
-                ✨ Your AI Second Brain
+                Your AI Second Brain
               </span>
             </motion.div>
           </motion.div>
