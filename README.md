@@ -80,7 +80,16 @@ If you run it as a public service, you’re required to share your changes too.
 ## ❤️ Contributing
 
 Nebriq is open to contributions — ideas, issues, PRs, memes, all welcome.
-Let’s build the next-gen brain together.
+Let's build the next-gen brain together.
+
+**Ready to contribute?** Check out our [Contributing Guide](CONTRIBUTING.md) for:
+- 🚀 Local development setup
+- 🐛 Bug reporting guidelines  
+- 💡 Feature request process
+- 🔧 Code contribution workflow
+- 📚 Documentation improvements
+
+Whether you're fixing a typo or building a major feature, every contribution makes Nebriq better for everyone! 🙏
 
 ---
 
