@@ -3,7 +3,7 @@ import { HeroSection } from "@/modules/landing-page/sections/hero";
 import { FeaturesOverviewSection } from "@/modules/landing-page/sections/features-section";
 import { EssentialToolsSection } from "@/modules/landing-page/sections/essential-tools-section";
 import { CtaSection } from "@/modules/landing-page/sections/cta-section";
-import { Header } from "@/shared/components/header
+import { Header } from "@/shared/components/header";
 import { Footer } from "@/modules/landing-page/sections/footer";
 import { PowerfulEditorSection } from "@/modules/landing-page/sections/powerful-editor";
 import { ProblemSection } from "@/modules/landing-page/sections/problem";

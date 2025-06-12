@@ -149,7 +149,7 @@ export const Header = () => {
                         }}
                       >
                         <Compass
-                          className="w-5 h-5 text-primary group-hover:text-primary/90 transition-colors duration-300"
+                          className="w-6 h-6 text-primary group-hover:text-primary/90 transition-colors duration-300"
                           strokeWidth={1.5}
                         />
                       </motion.div>
@@ -166,7 +166,7 @@ export const Header = () => {
             </motion.div>
 
             {/* Center Nav Links */}
-            <nav className="hidden lg:flex items-center gap-8 flex-grow justify-center px-6 relative z-10">
+            <nav className="hidden lg:flex items-center gap-4 flex-grow justify-center px-6 relative z-10">
               {navLinks.map((link, index) => {
                 const isExternalLink = !link.href.startsWith("#");
                 const linkId = isExternalLink ? link.href : link.href.slice(1);
