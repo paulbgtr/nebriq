@@ -1,22 +1,16 @@
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { createClient } from "@/shared/lib/supabase/server";
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
+  const session = await auth();
 
-  const { data } = await supabase.auth.getUser();
-
-  if (data?.user) {
+  if (session && session.user) {
     redirect("/home");
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      {children}
-    </div>
-  );
+  return <main>{children}</main>;
 }
