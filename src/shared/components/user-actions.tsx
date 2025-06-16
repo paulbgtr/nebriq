@@ -73,7 +73,7 @@ const menuItems = [
 ];
 
 type UserActionsProps = {
-  email: string | undefined;
+  email: string | null | undefined;
 };
 
 export const UserActions = ({ email }: UserActionsProps) => {
